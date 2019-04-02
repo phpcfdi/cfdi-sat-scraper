@@ -1,0 +1,32 @@
+{
+    "name": "phpcfdi/cfdi-sat-scraper",
+    "type": "library",
+    "description": "Web Scraping para extraer facturas electronicas desde la pagina del SAT",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Cesar Aguilera",
+            "email": "cesargnu29@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "ext-curl": "*",
+        "ext-libxml": "*",
+        "ext-simplexml": "*",
+        "ext-dom": "*",
+        "guzzlehttp/guzzle": "^6.3",
+        "phpunit/phpunit": "^6.2",
+        "symfony/dom-crawler": "^4.2",
+        "symfony/css-selector": "^4.2"
+    },
+    "autoload":{
+        "psr-4":{
+            "PhpCfdi\\CfdiSatScraper\\" : "src"
+        }
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^0.11.5",
+        "friendsofphp/php-cs-fixer": "^2.14"
+    }
+}
