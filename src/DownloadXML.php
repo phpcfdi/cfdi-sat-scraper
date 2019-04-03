@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpCfdi\CfdiSatScraper;
 
-use Closure;
 use GuzzleHttp\Promise\EachPromise;
 use Psr\Http\Message\ResponseInterface;
 
@@ -32,13 +33,13 @@ class DownloadXML
     /**
      * @param callable $callback
      */
-    public function download(callable $callback)
+    public function download(callable $callback): void
     {
         $promises = $this->makePromises();
 
         (new EachPromise($promises, [
             'concurrency' => $this->concurrency,
-            'fulfilled' => function (ResponseInterface $response) use ($callback) {
+            'fulfilled' => function (ResponseInterface $response) use ($callback): void {
                 $callback($response->getBody(), $this->getFileName($response));
             },
         ]))->promise()
@@ -68,9 +69,9 @@ class DownloadXML
     {
         $contentDisposition = $response->getHeaderLine('content-disposition');
         $partsOfContentDisposition = explode(';', $contentDisposition);
-        $fileName = str_replace('filename=', '', isset($partsOfContentDisposition[1]) ? $partsOfContentDisposition[1] : '');
+        $fileName = str_replace('filename=', '', $partsOfContentDisposition[1] ?? '');
 
-        return !empty($fileName) ? $fileName : uniqid() . '.xml';
+        return ! empty($fileName) ? $fileName : uniqid() . '.xml';
     }
 
     /**
@@ -102,20 +103,22 @@ class DownloadXML
      * @param bool $createDir
      * @param int $mode
      */
-    public function saveTo(string $path, bool $createDir, $mode = 0775)
+    public function saveTo(string $path, bool $createDir, $mode = 0775): void
     {
-        if (!$createDir && !file_exists($path)) {
+        if (! $createDir && ! file_exists($path)) {
             throw new \InvalidArgumentException("The provider path [{$path}] not exists");
         }
 
-        if ($createDir && !file_exists($path)) {
+        if ($createDir && ! file_exists($path)) {
             mkdir($path, $mode);
         }
 
-        $this->download(function ($content, $name) use ($path) {
-            $f = new \SplFileObject($path . DIRECTORY_SEPARATOR . $name, 'w');
-            $f->fwrite($content);
-            $f = null;
-        });
+        $this->download(
+            function ($content, $name) use ($path): void {
+                $f = new \SplFileObject($path . DIRECTORY_SEPARATOR . $name, 'w');
+                $f->fwrite($content);
+                $f = null;
+            }
+        );
     }
 }

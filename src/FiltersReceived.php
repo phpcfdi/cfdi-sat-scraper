@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpCfdi\CfdiSatScraper;
 
 use PhpCfdi\CfdiSatScraper\Contracts\Filters;
@@ -9,14 +11,6 @@ use PhpCfdi\CfdiSatScraper\Contracts\Filters;
  */
 class FiltersReceived extends BaseFilters implements Filters
 {
-    /**
-     * FiltersReceived constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      * @return array
      */

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpCfdi\CfdiSatScraper\Contracts;
 
 interface Filters

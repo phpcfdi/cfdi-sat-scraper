@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
 use PhpCfdi\CfdiSatScraper\Validators\CiecValidator;
-use PhpCfdi\CfdiSatScraper\Validators\RfcValidator;
 use PhpCfdi\CfdiSatScraper\Validators\Contracts\ValidatorInterface;
+use PhpCfdi\CfdiSatScraper\Validators\RfcValidator;
 
 class Options
 {
@@ -21,13 +22,14 @@ class Options
 
     /**
      * Options constructor.
+     *
      * @param array $options
      */
     public function __construct(array $options = [])
     {
         $this->validators = [
             RfcValidator::class,
-            CiecValidator::class
+            CiecValidator::class,
         ];
 
         foreach ($options as $option => $value) {
@@ -43,7 +45,7 @@ class Options
         return [
             'rfc',
             'ciec',
-            'loginUrl'
+            'loginUrl',
         ];
     }
 
@@ -58,17 +60,17 @@ class Options
     }
 
     /**
-     * @param $name
-     * @param $value
+     * @param  $name
+     * @param  $value
      * @throws \InvalidArgumentException
      */
-    public function __set($name, $value)
+    public function __set($name, $value): void
     {
         if (empty($value)) {
             throw new \InvalidArgumentException("The field {$value} is empty");
         }
 
-        if (!in_array($name, $this->getAvailableKeys())) {
+        if (! in_array($name, $this->getAvailableKeys())) {
             throw new \InvalidArgumentException("the option {$name} not exists");
         }
 
@@ -76,8 +78,8 @@ class Options
             /**
              * @var $validatorInstance ValidatorInterface
              */
-            $validatorInstance = new $validator;
-            if ($validatorInstance->can($name) && !$validatorInstance->isValid($value)) {
+            $validatorInstance = new $validator();
+            if ($validatorInstance->can($name) && ! $validatorInstance->isValid($value)) {
                 throw new \InvalidArgumentException("The value for option {$name} is invalid");
             }
         }

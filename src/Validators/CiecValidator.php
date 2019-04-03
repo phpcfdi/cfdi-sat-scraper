@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Validators;
@@ -14,15 +15,15 @@ class CiecValidator implements ValidatorInterface
      */
     public function can(string $key): bool
     {
-        return $key === 'ciec';
+        return 'ciec' === $key;
     }
 
     /**
-     * @param $value
+     * @param  $value
      * @return bool
      */
     public function isValid($value): bool
     {
-        return !empty($value);
+        return ! empty($value);
     }
 }

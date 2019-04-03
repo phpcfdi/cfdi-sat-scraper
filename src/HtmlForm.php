@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpCfdi\CfdiSatScraper;
 
 use DOMDocument;
@@ -7,6 +9,7 @@ use DOMDocument;
 class HtmlForm
 {
     public $xpathForm;
+
     public $htmlSource;
 
     /**
@@ -68,11 +71,11 @@ class HtmlForm
         $document = $sxe;
         $inputValues = [];
 
-        $xpath = $document->xpath('//'.$this->xpathForm.'/'.$element);
+        $xpath = $document->xpath('//' . $this->xpathForm . '/' . $element);
 
         foreach ($xpath as $input) {
-            $name = (string) $input->attributes()->{'name'};
-            $value = (string) $input->attributes()->{'value'};
+            $name = (string)$input->attributes()->{'name'};
+            $value = (string)$input->attributes()->{'value'};
             if (preg_match('!!u', $value)) {
                 $value = utf8_decode($value);
             }

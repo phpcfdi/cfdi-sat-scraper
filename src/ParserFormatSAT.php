@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpCfdi\CfdiSatScraper;
 
 /**
@@ -8,9 +10,13 @@ namespace PhpCfdi\CfdiSatScraper;
 class ParserFormatSAT
 {
     public $source;
+
     public $values;
+
     public $items;
+
     public $valids;
+
     public $sorted;
 
     /**
@@ -26,12 +32,12 @@ class ParserFormatSAT
         $this->valids = ['EVENTTARGET', '__EVENTARGUMENT', '__LASTFOCUS', '__VIEWSTATE'];
     }
 
-    private function process()
+    private function process(): void
     {
         $this->values = explode('|', $this->source);
     }
 
-    private function orderValues()
+    private function orderValues(): void
     {
         $this->sorted = [];
         foreach (range(0, count($this->values) - 1) as $index) {

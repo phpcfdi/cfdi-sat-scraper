@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpCfdi\CfdiSatScraper;
 
 /**
@@ -8,15 +10,25 @@ namespace PhpCfdi\CfdiSatScraper;
 abstract class BaseFilters
 {
     public $year;
+
     public $month;
+
     public $day;
+
     public $taxId;
+
     public $hour_start;
+
     public $minute_start;
+
     public $second_start;
+
     public $hour_end;
+
     public $minute_end;
+
     public $second_end;
+
     public $stateVoucher;
 
     /**
@@ -42,11 +54,11 @@ abstract class BaseFilters
      */
     protected function dayFormat()
     {
-        if ((int) $this->day < 10) {
-            $this->day = '0'.(int) $this->day;
+        if ((int)$this->day < 10) {
+            $this->day = '0' . (int)$this->day;
         }
 
-        return (string) $this->day;
+        return (string)$this->day;
     }
 
     /**
@@ -54,7 +66,7 @@ abstract class BaseFilters
      */
     protected function getCentralFilter()
     {
-        if ($this->taxId != '') {
+        if ('' != $this->taxId) {
             return 'RdoFolioFiscal';
         }
 
@@ -69,11 +81,11 @@ abstract class BaseFilters
     public function converterSecondsToHours($pSecStart)
     {
         $segStart = $pSecStart - 1;
-        $hours = (int) floor($segStart / 3600);
-        $minutes = (int) floor(($segStart - ($hours * 3600)) / 60);
-        $seconds = (int) $segStart - ($hours * 3600) - ($minutes * 60);
+        $hours = (int)floor($segStart / 3600);
+        $minutes = (int)floor(($segStart - ($hours * 3600)) / 60);
+        $seconds = (int)$segStart - ($hours * 3600) - ($minutes * 60);
 
-        return $this->formatNumber($hours).':'.$this->formatNumber($minutes).':'.$this->formatNumber($seconds);
+        return $this->formatNumber($hours) . ':' . $this->formatNumber($minutes) . ':' . $this->formatNumber($seconds);
     }
 
     /**
@@ -96,11 +108,11 @@ abstract class BaseFilters
      */
     protected function formatNumber($num)
     {
-        if ((int) $num < 10) {
-            $num = '0'.$num;
+        if ((int)$num < 10) {
+            $num = '0' . $num;
         }
 
-        return (string) $num;
+        return (string)$num;
     }
 
     /**
@@ -110,6 +122,6 @@ abstract class BaseFilters
      */
     protected function formatNumberInt($num)
     {
-        return (int) $num;
+        return (int)$num;
     }
 }

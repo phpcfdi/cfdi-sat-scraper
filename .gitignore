@@ -1,2 +1,6 @@
-/vendor/
-composer.lock
+# do not include this files on git
+/vendor
+/build
+/composer.lock
+/node_modules
+/package-lock.json

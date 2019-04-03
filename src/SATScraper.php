@@ -1,25 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpCfdi\CfdiSatScraper;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\Filters;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATCredentialsException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATException;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use Symfony\Component\DomCrawler\Crawler;
-use PhpCfdi\CfdiSatScraper\Contracts\Filters;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Cookie\CookieJar;
-use GuzzleHttp\Client;
 
 /**
  * Class SATScraper.
  */
 class SATScraper
 {
-    const SAT_CREDENTIAL_ERROR = 'El RFC o CIEC son incorrectos';
+    public const SAT_CREDENTIAL_ERROR = 'El RFC o CIEC son incorrectos';
 
     /**
      * @var string
@@ -98,6 +100,7 @@ class SATScraper
 
     /**
      * SATScraper constructor.
+     *
      * @param Options $options
      * @param Client $client
      * @param CookieJar $cookie
@@ -116,7 +119,7 @@ class SATScraper
      *
      * @return SATScraper
      */
-    public function setCaptchaResolver(CaptchaResolverInterface $captchaResolver): SATScraper
+    public function setCaptchaResolver(CaptchaResolverInterface $captchaResolver): self
     {
         $this->captchaResolver = $captchaResolver;
 
@@ -128,7 +131,7 @@ class SATScraper
      *
      * @return SATScraper
      */
-    public function setDownloadType(string $downloadType = DownloadType::RECEIVED): SATScraper
+    public function setDownloadType(string $downloadType = DownloadType::RECEIVED): self
     {
         $this->downloadType = $downloadType;
 
@@ -136,10 +139,10 @@ class SATScraper
     }
 
     /**
-     * @param string $stateVoucher
+     * @param  string $stateVoucher
      * @return SATScraper
      */
-    public function setStateVoucher(string $stateVoucher): SATScraper
+    public function setStateVoucher(string $stateVoucher): self
     {
         $this->stateVoucher = $stateVoucher;
 
@@ -151,7 +154,7 @@ class SATScraper
      *
      * @return SATScraper
      */
-    public function setMaxTriesCaptcha(int $maxTriesCaptcha): SATScraper
+    public function setMaxTriesCaptcha(int $maxTriesCaptcha): self
     {
         $this->maxTriesCaptcha = $maxTriesCaptcha;
 
@@ -163,7 +166,7 @@ class SATScraper
      *
      * @return SATScraper
      */
-    public function setMaxTriesLogin(int $maxTriesLogin): SATScraper
+    public function setMaxTriesLogin(int $maxTriesLogin): self
     {
         $this->maxTriesLogin = $maxTriesLogin;
 
@@ -175,7 +178,7 @@ class SATScraper
      * @throws SATAuthenticatedException
      * @throws SATCredentialsException
      */
-    public function initScraper(): SATScraper
+    public function initScraper(): self
     {
         $this->login();
         $data = $this->dataAuth();
@@ -192,11 +195,14 @@ class SATScraper
     protected function getCaptchaValue(): ?string
     {
         try {
-            $image = $this->client->get(URLS::SAT_URL_CAPTCHA, [
-                'future' => true,
-                'verify' => false,
-                'cookies' => $this->cookie
-            ])->getBody()->getContents();
+            $image = $this->client->get(
+                URLS::SAT_URL_CAPTCHA,
+                [
+                    'future' => true,
+                    'verify' => false,
+                    'cookies' => $this->cookie,
+                ]
+            )->getBody()->getContents();
 
             $imageBase64 = base64_encode($image);
 
@@ -209,7 +215,7 @@ class SATScraper
                 return $this->getCaptchaValue();
             }
 
-            throw new $e;
+            throw new $e();
         }
     }
 
@@ -219,24 +225,27 @@ class SATScraper
      */
     protected function login(): string
     {
-        $response = $this->client->post($this->loginUrl, [
-            'future' => true,
-            'verify' => false,
-            'cookies' => $this->cookie,
-            'headers' => Headers::post(
-                URLS::SAT_HOST_CFDI_AUTH,
-                URLS::SAT_URL_LOGIN
-            ),
-            'form_params' => [
-                'Ecom_Password' => $this->ciec,
-                'Ecom_User_ID' => $this->rfc,
-                'option' => 'credential',
-                'submit' => 'Enviar',
-                'jcaptcha' => $this->getCaptchaValue()
-            ],
-        ])->getBody()->getContents();
+        $response = $this->client->post(
+            $this->loginUrl,
+            [
+                'future' => true,
+                'verify' => false,
+                'cookies' => $this->cookie,
+                'headers' => Headers::post(
+                    URLS::SAT_HOST_CFDI_AUTH,
+                    URLS::SAT_URL_LOGIN
+                ),
+                'form_params' => [
+                    'Ecom_Password' => $this->ciec,
+                    'Ecom_User_ID' => $this->rfc,
+                    'option' => 'credential',
+                    'submit' => 'Enviar',
+                    'jcaptcha' => $this->getCaptchaValue(),
+                ],
+            ]
+        )->getBody()->getContents();
 
-        if (strpos($response, 'Ecom_User_ID') !== false) {
+        if (false !== strpos($response, 'Ecom_User_ID')) {
             if ($this->triesLogin < $this->maxTriesLogin) {
                 $this->triesLogin++;
                 return $this->login();
@@ -253,18 +262,21 @@ class SATScraper
      */
     protected function dataAuth(): array
     {
-        $response = $this->client->get(URLS::SAT_URL_PORTAL_CFDI, [
-            'future' => true,
-            'cookies' => $this->cookie,
-            'verify' => false,
-        ])->getBody()->getContents();
+        $response = $this->client->get(
+            URLS::SAT_URL_PORTAL_CFDI,
+            [
+                'future' => true,
+                'cookies' => $this->cookie,
+                'verify' => false,
+            ]
+        )->getBody()->getContents();
         $inputs = $this->parseInputs($response);
 
         return $inputs;
     }
 
     /**
-     * @param array $inputs
+     * @param  array $inputs
      * @return array
      *
      * @throws SATAuthenticatedException
@@ -272,12 +284,15 @@ class SATScraper
     protected function postDataAuth(array $inputs): array
     {
         try {
-            $response = $this->client->post(URLS::SAT_URL_PORTAL_CFDI, [
-                'future' => true,
-                'cookies' => $this->cookie,
-                'verify' => false,
-                'form_params' => $inputs,
-            ])->getBody()->getContents();
+            $response = $this->client->post(
+                URLS::SAT_URL_PORTAL_CFDI,
+                [
+                    'future' => true,
+                    'cookies' => $this->cookie,
+                    'verify' => false,
+                    'form_params' => $inputs,
+                ]
+            )->getBody()->getContents();
             $inputs = $this->parseInputs($response);
 
             return $inputs;
@@ -293,12 +308,15 @@ class SATScraper
      */
     protected function start(array $inputs = []): array
     {
-        $response = $this->client->post(URLS::SAT_URL_PORTAL_CFDI, [
-            'future' => true,
-            'cookies' => $this->cookie,
-            'verify' => false,
-            'form_params' => $inputs,
-        ])->getBody()->getContents();
+        $response = $this->client->post(
+            URLS::SAT_URL_PORTAL_CFDI,
+            [
+                'future' => true,
+                'cookies' => $this->cookie,
+                'verify' => false,
+                'form_params' => $inputs,
+            ]
+        )->getBody()->getContents();
         $inputs = $this->parseInputs($response);
 
         return $inputs;
@@ -321,16 +339,19 @@ class SATScraper
 
         $data = array_merge($inputs, $data);
 
-        $response = $this->client->post(URLS::SAT_URL_PORTAL_CFDI_CONSULTA, [
-            'future' => true,
-            'cookies' => $this->cookie,
-            'verify' => false,
-            'form_params' => $data,
-            'headers' => Headers::post(
-                URLS::SAT_HOST_CFDI_AUTH,
-                URLS::SAT_URL_PORTAL_CFDI
-            ),
-        ])->getBody()->getContents();
+        $response = $this->client->post(
+            URLS::SAT_URL_PORTAL_CFDI_CONSULTA,
+            [
+                'future' => true,
+                'cookies' => $this->cookie,
+                'verify' => false,
+                'form_params' => $data,
+                'headers' => Headers::post(
+                    URLS::SAT_HOST_CFDI_AUTH,
+                    URLS::SAT_URL_PORTAL_CFDI
+                ),
+            ]
+        )->getBody()->getContents();
 
         return $response;
     }
@@ -343,7 +364,7 @@ class SATScraper
         $this->data = [];
         foreach ($uuids as $uuid) {
             $filters = new FiltersReceived();
-            if ($this->downloadType == 'emitidos') {
+            if ('emitidos' == $this->downloadType) {
                 $filters = new FiltersIssued();
             }
 
@@ -357,8 +378,8 @@ class SATScraper
     }
 
     /**
-     * @param \DateTime $start
-     * @param \DateTime $end
+     * @param  \DateTime $start
+     * @param  \DateTime $end
      * @throws SATAuthenticatedException
      * @throws SATCredentialsException
      * @throws SATException
@@ -397,10 +418,10 @@ class SATScraper
         $queryStop = false;
         $totalRecords = 0;
 
-        while ($queryStop === false) {
+        while (false === $queryStop) {
             $result = $this->downloadSeconds($day, (int)$secondInitial, (int)$secondEnd);
 
-            if ($result >= 500 && !is_null($this->onFiveHundred) && is_callable($this->onFiveHundred)) {
+            if ($result >= 500 && ! is_null($this->onFiveHundred) && is_callable($this->onFiveHundred)) {
                 $params = [
                     'count' => $result,
                     'year' => $day->format('Y'),
@@ -412,9 +433,9 @@ class SATScraper
                 call_user_func($this->onFiveHundred, $params);
             }
 
-            if ($result < 500 && $result !== '-1') {
+            if ($result < 500 && '-1' !== $result) {
                 $totalRecords = (int)$totalRecords + $result;
-                if ($secondEnd == 86400) {
+                if (86400 == $secondEnd) {
                     $queryStop = true;
                 }
                 if ($secondEnd < 86400) {
@@ -426,7 +447,7 @@ class SATScraper
                     $secondEnd = floor($secondInitial + (($secondEnd - $secondInitial) / 2));
                 } elseif ($secondEnd <= $secondInitial) {
                     $totalRecords = (int)$totalRecords + $result;
-                    if ($secondEnd == 86400) {
+                    if (86400 == $secondEnd) {
                         $queryStop = true;
                     } elseif ($secondEnd < 86400) {
                         $secondInitial = $secondEnd + 1;
@@ -447,7 +468,7 @@ class SATScraper
     protected function downloadSeconds(\DateTime $day, $startSec, $endSec): int
     {
         $filters = new FiltersReceived();
-        if ($this->downloadType == 'emitidos') {
+        if ('emitidos' == $this->downloadType) {
             $filters = new FiltersIssued();
         }
 
@@ -455,7 +476,7 @@ class SATScraper
         $filters->month = $day->format('m');
         $filters->day = $day->format('d');
 
-        if ($startSec != '0') {
+        if ('0' != $startSec) {
             $time = $filters->converterSecondsToHours($startSec);
             $time_start = explode(':', $time);
             $filters->hour_start = $time_start[0];
@@ -484,7 +505,7 @@ class SATScraper
      */
     protected function runQueryDate(Filters $filters): string
     {
-        if ($this->downloadType == 'emitidos') {
+        if ('emitidos' == $this->downloadType) {
             $url = URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR;
             $result = $this->enterQueryTransmitter($filters);
         } else {
@@ -497,16 +518,19 @@ class SATScraper
 
         $values = $this->getSearchValues($html, $inputs, $filters);
 
-        $response = $this->client->post($url, [
-            'form_params' => $values,
-            'headers' => Headers::postAjax(
-                URLS::SAT_HOST_PORTAL_CFDI,
-                $url
-            ),
-            'cookies' => $this->cookie,
-            'future' => true,
-            'verify' => false,
-        ]);
+        $response = $this->client->post(
+            $url,
+            [
+                'form_params' => $values,
+                'headers' => Headers::postAjax(
+                    URLS::SAT_HOST_PORTAL_CFDI,
+                    $url
+                ),
+                'cookies' => $this->cookie,
+                'future' => true,
+                'verify' => false,
+            ]
+        );
 
         return $response->getBody()->getContents();
     }
@@ -518,27 +542,33 @@ class SATScraper
      */
     protected function enterQueryReceiver(Filters $filters): array
     {
-        $response = $this->client->get(URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR, [
-            'future' => true,
-            'cookies' => $this->cookie,
-            'verify' => false,
-        ]);
+        $response = $this->client->get(
+            URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR,
+            [
+                'future' => true,
+                'cookies' => $this->cookie,
+                'verify' => false,
+            ]
+        );
 
         $html = $response->getBody()->getContents();
 
         $inputs = $this->parseInputs($html);
         $post = array_merge($inputs, $filters->getFormPostDates());
 
-        $response = $this->client->post(URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR, [
-            'form_params' => $post,
-            'headers' => Headers::postAjax(
-                URLS::SAT_HOST_PORTAL_CFDI,
-                URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR
-            ),
-            'future' => true,
-            'verify' => false,
-            'cookies' => $this->cookie,
-        ]);
+        $response = $this->client->post(
+            URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR,
+            [
+                'form_params' => $post,
+                'headers' => Headers::postAjax(
+                    URLS::SAT_HOST_PORTAL_CFDI,
+                    URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR
+                ),
+                'future' => true,
+                'verify' => false,
+                'cookies' => $this->cookie,
+            ]
+        );
 
         return [
             'html' => $response->getBody()->getContents(),
@@ -553,27 +583,33 @@ class SATScraper
      */
     protected function enterQueryTransmitter(Filters $filters): array
     {
-        $response = $this->client->get(URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR, [
-            'future' => true,
-            'cookies' => $this->cookie,
-            'verify' => false,
-        ]);
+        $response = $this->client->get(
+            URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR,
+            [
+                'future' => true,
+                'cookies' => $this->cookie,
+                'verify' => false,
+            ]
+        );
 
         $html = $response->getBody()->getContents();
 
         $inputs = $this->parseInputs($html);
         $post = array_merge($inputs, $filters->getFormPostDates());
 
-        $response = $this->client->post(URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR, [
-            'form_params' => $post,
-            'headers' => Headers::postAjax(
-                URLS::SAT_HOST_PORTAL_CFDI,
-                URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR
-            ),
-            'future' => true,
-            'verify' => false,
-            'cookies' => $this->cookie,
-        ]);
+        $response = $this->client->post(
+            URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR,
+            [
+                'form_params' => $post,
+                'headers' => Headers::postAjax(
+                    URLS::SAT_HOST_PORTAL_CFDI,
+                    URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR
+                ),
+                'future' => true,
+                'verify' => false,
+                'cookies' => $this->cookie,
+            ]
+        );
 
         return [
             'html' => $response->getBody()->getContents(),
@@ -621,41 +657,50 @@ class SATScraper
         $crawler = new Crawler($html);
 
         $filteredElements = $crawler->filter('table#ctl00_MainContent_tblResult > tr')
-            ->reduce(function (Crawler $node) {
-                return $node->children()->first()->getNode(0)->tagName === 'td';
-            });
+            ->reduce(
+                function (Crawler $node) {
+                    return 'td' === $node->children()->first()->getNode(0)->tagName;
+                }
+            );
 
         $numberOfElements = $filteredElements->count();
 
         if ($numberOfElements < 500) {
-            $filteredElements->each(function (Crawler $node) {
-                $tds = $node->filter('td[style="WORD-BREAK:BREAK-ALL;"]');
+            $filteredElements->each(
+                function (Crawler $node): void {
+                    $tds = $node->filter('td[style="WORD-BREAK:BREAK-ALL;"]');
 
-                $temp['uuid'] = trim($tds->getNode(0)->textContent);
-                $temp['rfcEmisor'] = trim($tds->getNode(1)->textContent);
-                $temp['nombreEmisor'] = trim($tds->getNode(2)->textContent);
-                $temp['rfcReceptor'] = trim($tds->getNode(3)->textContent);
-                $temp['nombreReceptor'] = trim($tds->getNode(4)->textContent);
-                $temp['fechaEmision'] = trim($tds->getNode(5)->textContent);
-                $temp['fechaCertificacion'] = trim($tds->getNode(6)->textContent);
-                $temp['pacCertifico'] = trim($tds->getNode(7)->textContent);
-                $temp['total'] = trim($tds->getNode(8)->textContent);
-                $temp['efectoComprobante'] = trim($tds->getNode(9)->textContent);
-                $temp['estatusCancelacion'] = trim($tds->getNode(10)->textContent);
-                $temp['estadoComprobante'] = trim($tds->getNode(11)->textContent);
-                $temp['estatusProcesoCancelacion'] = trim($tds->getNode(12)->textContent);
-                $temp['fechaProcesoCancelacion'] = trim($tds->getNode(13)->textContent);
-                $temp['fechaCancelacion'] = $temp['fechaProcesoCancelacion'];
+                    $temp['uuid'] = trim($tds->getNode(0)->textContent);
+                    $temp['rfcEmisor'] = trim($tds->getNode(1)->textContent);
+                    $temp['nombreEmisor'] = trim($tds->getNode(2)->textContent);
+                    $temp['rfcReceptor'] = trim($tds->getNode(3)->textContent);
+                    $temp['nombreReceptor'] = trim($tds->getNode(4)->textContent);
+                    $temp['fechaEmision'] = trim($tds->getNode(5)->textContent);
+                    $temp['fechaCertificacion'] = trim($tds->getNode(6)->textContent);
+                    $temp['pacCertifico'] = trim($tds->getNode(7)->textContent);
+                    $temp['total'] = trim($tds->getNode(8)->textContent);
+                    $temp['efectoComprobante'] = trim($tds->getNode(9)->textContent);
+                    $temp['estatusCancelacion'] = trim($tds->getNode(10)->textContent);
+                    $temp['estadoComprobante'] = trim($tds->getNode(11)->textContent);
+                    $temp['estatusProcesoCancelacion'] = trim($tds->getNode(12)->textContent);
+                    $temp['fechaProcesoCancelacion'] = trim($tds->getNode(13)->textContent);
+                    $temp['fechaCancelacion'] = $temp['fechaProcesoCancelacion'];
+                    $temp['urlXml'] = null;
 
-                $onClickAttribute = $node->filter('span#BtnDescarga')->first()->attr('onclick');
+                    $spansBtnDownload = $node->filter('span#BtnDescarga');
+                    $onClickAttribute = $spansBtnDownload->count() > 0 ? $spansBtnDownload->first()->attr('onclick') : null;
 
-                $temp['urlXml'] = str_replace(
-                    ["return AccionCfdi('", "','Recuperacion');"],
-                    [URLS::SAT_URL_PORTAL_CFDI, ''],
-                    $onClickAttribute
-                );
-                $this->data[$temp['uuid']] = $temp;
-            });
+                    if (! is_null($onClickAttribute)) {
+                        $temp['urlXml'] = str_replace(
+                            ["return AccionCfdi('", "','Recuperacion');"],
+                            [URLS::SAT_URL_PORTAL_CFDI, ''],
+                            $onClickAttribute
+                        );
+                    }
+
+                    $this->data[$temp['uuid']] = $temp;
+                }
+            );
         }
 
         return $numberOfElements;
@@ -683,6 +728,10 @@ class SATScraper
     public function getUrls(): \Generator
     {
         foreach ($this->getData() as $uuid => $data) {
+            if (is_null($data['urlXml'])) {
+                continue;
+            }
+
             yield $data['urlXml'];
         }
     }
@@ -708,7 +757,7 @@ class SATScraper
      */
     public function downloader(): DownloadXML
     {
-        return (new DownloadXML)
+        return (new DownloadXML())
             ->setSatScraper($this);
     }
 

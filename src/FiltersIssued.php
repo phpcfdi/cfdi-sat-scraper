@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpCfdi\CfdiSatScraper;
 
 use PhpCfdi\CfdiSatScraper\Contracts\Filters;
@@ -9,14 +11,6 @@ use PhpCfdi\CfdiSatScraper\Contracts\Filters;
  */
 class FiltersIssued extends BaseFilters implements Filters
 {
-    /**
-     * FiltersIssued constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      * @return array
      */
@@ -28,11 +22,11 @@ class FiltersIssued extends BaseFilters implements Filters
         $post['__EVENTTARGET'] = '';
         $post['__LASTFOCUS'] = '';
         $post['ctl00$MainContent$BtnBusqueda'] = 'Buscar CFDI';
-        $post['ctl00$MainContent$CldFechaInicial2$Calendario_text'] = $this->dayFormat().'/'.$this->month.'/'.$this->year;
+        $post['ctl00$MainContent$CldFechaInicial2$Calendario_text'] = $this->dayFormat() . '/' . $this->month . '/' . $this->year;
         $post['ctl00$MainContent$CldFechaInicial2$DdlHora'] = $this->formatNumberInt($this->hour_start);
         $post['ctl00$MainContent$CldFechaInicial2$DdlMinuto'] = $this->formatNumberInt($this->minute_start);
         $post['ctl00$MainContent$CldFechaInicial2$DdlSegundo'] = $this->formatNumberInt($this->second_start);
-        $post['ctl00$MainContent$CldFechaFinal2$Calendario_text'] = $this->dayFormat().'/'.$this->month.'/'.$this->year;
+        $post['ctl00$MainContent$CldFechaFinal2$Calendario_text'] = $this->dayFormat() . '/' . $this->month . '/' . $this->year;
         $post['ctl00$MainContent$CldFechaFinal2$DdlHora'] = $this->formatNumberInt($this->hour_end);
         $post['ctl00$MainContent$CldFechaFinal2$DdlMinuto'] = $this->formatNumberInt($this->minute_end);
         $post['ctl00$MainContent$CldFechaFinal2$DdlSegundo'] = $this->formatNumberInt($this->second_end);
