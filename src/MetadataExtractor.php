@@ -25,10 +25,10 @@ class MetadataExtractor
 
         $data = $filteredElements->each(
             function (Crawler $node): array {
-                $temp = $this->obtainMetadataValues($node);
-                $temp['fechaCancelacion'] = $temp['fechaProcesoCancelacion'];
-                $temp['urlXml'] = $this->obtainUrlXml($node);
-                return $temp;
+                $metadata = $this->obtainMetadataValues($node);
+                $metadata['fechaCancelacion'] = $metadata['fechaProcesoCancelacion'];
+                $metadata['urlXml'] = $this->obtainUrlXml($node);
+                return $metadata;
             }
         );
 
