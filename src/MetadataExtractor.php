@@ -27,18 +27,7 @@ class MetadataExtractor
             function (Crawler $node): array {
                 $temp = $this->obtainMetadataValues($node);
                 $temp['fechaCancelacion'] = $temp['fechaProcesoCancelacion'];
-                $temp['urlXml'] = null;
-
-                $spansBtnDownload = $node->filter('span#BtnDescarga');
-                $onClickAttribute = $spansBtnDownload->count() > 0 ? $spansBtnDownload->first()->attr('onclick') : null;
-
-                if (! is_null($onClickAttribute)) {
-                    $temp['urlXml'] = str_replace(
-                        ["return AccionCfdi('", "','Recuperacion');"],
-                        [URLS::SAT_URL_PORTAL_CFDI, ''],
-                        $onClickAttribute
-                    );
-                }
+                $temp['urlXml'] = $this->obtainUrlXml($node);
                 return $temp;
             }
         );
@@ -66,5 +55,22 @@ class MetadataExtractor
         $temp['estatusProcesoCancelacion'] = trim($tds->getNode(12)->textContent);
         $temp['fechaProcesoCancelacion'] = trim($tds->getNode(13)->textContent);
         return $temp;
+    }
+
+    public function obtainUrlXml(Crawler $row): ?string
+    {
+        $spansBtnDownload = $row->filter('span#BtnDescarga');
+        $onClickAttribute = $spansBtnDownload->count() > 0 ? $spansBtnDownload->first()->attr('onclick') : null;
+
+        $urlXml = null;
+        if (! is_null($onClickAttribute)) {
+            $urlXml = str_replace(
+                ["return AccionCfdi('", "','Recuperacion');"],
+                [URLS::SAT_URL_PORTAL_CFDI, ''],
+                $onClickAttribute
+            );
+        }
+
+        return $urlXml;
     }
 }
