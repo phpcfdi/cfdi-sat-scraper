@@ -24,6 +24,11 @@
             "PhpCfdi\\CfdiSatScraper\\" : "src"
         }
     },
+    "autoload-dev":{
+        "psr-4":{
+            "PhpCfdi\\CfdiSatScraper\\Tests\\" : "tests"
+        }
+    },
     "config": {
       "preferred-install": {
         "*": "dist"
