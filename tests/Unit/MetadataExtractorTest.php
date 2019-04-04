@@ -9,6 +9,20 @@ use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
 class MetadataExtractorTest extends TestCase
 {
+    public function testGettingMoreThanMaxRecordsPerPageReturnAllElements(): void
+    {
+        $sample = $this->fileContentPath('fake-to-extract-metadata-ten-cfdi.html');
+        $extractor = new MetadataExtractor(5);
+        $this->assertSame(10, $extractor->extract($sample));
+        $list = $extractor->getData();
+        $this->assertCount(10, $list);
+
+        foreach (range(1, 5) as $i) {
+            $uuid = sprintf('B97262E5-704C-4BF7-AE26-%012d', $i);
+            $this->assertArrayHasKey($uuid, $list);
+        }
+    }
+
     public function testUsingFakeInputWithTenUuids(): void
     {
         $sample = $this->fileContentPath('fake-to-extract-metadata-ten-cfdi.html');
