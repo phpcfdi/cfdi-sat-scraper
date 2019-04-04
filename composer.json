@@ -53,11 +53,15 @@
         "dev:fix-style": [
             "vendor/bin/php-cs-fixer fix --verbose",
             "vendor/bin/phpcbf --colors -sp src/ tests/"
+        ],
+        "dev:tests": [
+            "vendor/bin/phpunit --verbose"
         ]
     },
     "scripts-descriptions": {
-        "dev:build": "DEV: run dev:fix-style dev:tests and dev:docs, run before pull request",
+        "dev:build": "DEV: run dev:fix-style and dev:tests, run before pull request",
         "dev:check-style": "DEV: search for code style errors using php-cs-fixer and phpcs",
-        "dev:fix-style": "DEV: fix code style errors using php-cs-fixer and phpcbf"
+        "dev:fix-style": "DEV: fix code style errors using php-cs-fixer and phpcbf",
+        "dev:tests": "DEV: run executes phpunit tests"
     }
 }
