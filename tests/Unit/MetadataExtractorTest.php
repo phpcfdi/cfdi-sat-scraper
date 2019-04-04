@@ -6,9 +6,17 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
 use PhpCfdi\CfdiSatScraper\MetadataExtractor;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
+use Symfony\Component\DomCrawler\Crawler;
 
 class MetadataExtractorTest extends TestCase
 {
+    public function testObtainUrlWithoutButton(): void
+    {
+        $row = new Crawler('<tr></tr>');
+        $extractor = new MetadataExtractor();
+        $this->assertNull($extractor->obtainUrlXml($row));
+    }
+
     public function testUsingFakeInputWithTenUuids(): void
     {
         $sample = $this->fileContentPath('fake-to-extract-metadata-ten-cfdi.html');
