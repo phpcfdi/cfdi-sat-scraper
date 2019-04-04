@@ -12,7 +12,7 @@ use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
 class SatScraperMakeDataTest extends TestCase
 {
-    public function testRetrieve()
+    public function testRetrieve(): void
     {
         // this sample file contains 1 UUID only
         $sample = $this->fileContentPath('sample-to-extract-metadata.html');
