@@ -13,8 +13,7 @@ class MetadataExtractorTest extends TestCase
     {
         $sample = $this->fileContentPath('fake-to-extract-metadata-ten-cfdi.html');
         $extractor = new MetadataExtractor();
-        $this->assertSame(10, $extractor->extract($sample));
-        $list = $extractor->getData();
+        $list = $extractor->extract($sample);
         $this->assertCount(10, $list);
 
         foreach (range(1, 10) as $i) {
@@ -27,17 +26,19 @@ class MetadataExtractorTest extends TestCase
     {
         $sample = $this->fileContentPath('fake-to-extract-metadata-zero-cfdi.html');
         $extractor = new MetadataExtractor();
-        $this->assertSame(0, $extractor->extract($sample));
-        $this->assertSame([], $extractor->getData());
+        $list = $extractor->extract($sample);
+        $this->assertCount(0, $list);
+        $this->assertSame([], $list);
     }
 
     public function testUsingFakeInput(): void
     {
         $sample = $this->fileContentPath('fake-to-extract-metadata-one-cfdi.html');
         $extractor = new MetadataExtractor();
-        $this->assertSame(1, $extractor->extract($sample));
+        $list = $extractor->extract($sample);
+        $this->assertCount(1, $list);
         $expectedUuid = 'B97262E5-704C-4BF7-AE26-9174FEF04D63';
-        $this->assertArrayHasKey($expectedUuid, $extractor->getData());
+        $this->assertArrayHasKey($expectedUuid, $list);
     }
 
     public function testExtractUsingSampleWithOneUuid(): void
@@ -46,7 +47,8 @@ class MetadataExtractorTest extends TestCase
         $sample = $this->fileContentPath('sample-to-extract-metadata.html');
 
         $extractor = new MetadataExtractor();
-        $this->assertSame(1, $extractor->extract($sample));
+        $data = $extractor->extract($sample);
+        $this->assertCount(1, $data);
 
         $expectedUuid = 'B97262E5-704C-4BF7-AE26-9174FEF04D63';
 
@@ -80,7 +82,6 @@ class MetadataExtractorTest extends TestCase
             ],
         ];
 
-        $data = $extractor->getData();
         $this->assertArrayHasKey($expectedUuid, $data);
 
         $document = $data[$expectedUuid];
@@ -94,7 +95,8 @@ class MetadataExtractorTest extends TestCase
     {
         $sample = $this->fileContentPath('sample-to-extract-metadata-zero-cfdi.html');
         $extractor = new MetadataExtractor();
-        $this->assertSame(0, $extractor->extract($sample));
-        $this->assertSame([], $extractor->getData());
+        $list = $extractor->extract($sample);
+        $this->assertCount(0, $list);
+        $this->assertSame([], $list);
     }
 }

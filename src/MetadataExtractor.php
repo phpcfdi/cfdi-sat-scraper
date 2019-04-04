@@ -8,19 +8,11 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class MetadataExtractor
 {
-    /** @var array[] */
-    private $data = [];
-
-    public function getData(): array
-    {
-        return $this->data;
-    }
-
     /**
      * @param string $html
-     * @return int
+     * @return array
      */
-    public function extract(string $html): int
+    public function extract(string $html): array
     {
         $crawler = new Crawler($html);
 
@@ -31,10 +23,8 @@ class MetadataExtractor
                 }
             );
 
-        $numberOfElements = $filteredElements->count();
-
-        $filteredElements->each(
-            function (Crawler $node): void {
+        $data = $filteredElements->each(
+            function (Crawler $node): array {
                 $tds = $node->filter('td[style="WORD-BREAK:BREAK-ALL;"]');
 
                 $temp['uuid'] = trim($tds->getNode(0)->textContent);
@@ -64,11 +54,11 @@ class MetadataExtractor
                         $onClickAttribute
                     );
                 }
-
-                $this->data[$temp['uuid']] = $temp;
+                return $temp;
             }
         );
 
-        return $numberOfElements;
+        $data = array_combine(array_column($data, 'uuid'), $data);
+        return $data;
     }
 }
