@@ -16,23 +16,25 @@ class MetadataExtractor
     {
         $crawler = new Crawler($html);
 
-        $filteredElements = $crawler->filter('table#ctl00_MainContent_tblResult > tr')
+        // build data array as a collection of metadata
+        $data = $crawler
+            ->filter('table#ctl00_MainContent_tblResult > tr')
             ->reduce(
-                function (Crawler $node) {
-                    return 'td' === $node->children()->first()->getNode(0)->tagName;
+                function (Crawler $row) {
+                    return ('td' === $row->children()->first()->nodeName());
+                }
+            )->each(
+                function (Crawler $row): array {
+                    $metadata = $this->obtainMetadataValues($row);
+                    $metadata['fechaCancelacion'] = $metadata['fechaProcesoCancelacion'];
+                    $metadata['urlXml'] = $this->obtainUrlXml($row);
+                    return $metadata;
                 }
             );
 
-        $data = $filteredElements->each(
-            function (Crawler $node): array {
-                $metadata = $this->obtainMetadataValues($node);
-                $metadata['fechaCancelacion'] = $metadata['fechaProcesoCancelacion'];
-                $metadata['urlXml'] = $this->obtainUrlXml($node);
-                return $metadata;
-            }
-        );
-
+        // build metadata using uuid as key
         $data = array_combine(array_column($data, 'uuid'), $data);
+
         return $data;
     }
 
