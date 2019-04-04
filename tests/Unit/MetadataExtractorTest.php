@@ -67,4 +67,12 @@ class MetadataExtractorTest extends TestCase
             $this->assertSame($value, $document[$key]);
         }
     }
+
+    public function testExtractUsingSampleWithZeroUuid(): void
+    {
+        $sample = $this->fileContentPath('sample-to-extract-metadata-zero-cfdi.html');
+        $extractor = new MetadataExtractor();
+        $this->assertSame(0, $extractor->extract($sample));
+        $this->assertSame([], $extractor->getData());
+    }
 }
