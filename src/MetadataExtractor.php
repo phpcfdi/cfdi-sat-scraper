@@ -11,14 +11,6 @@ class MetadataExtractor
     /** @var array[] */
     private $data = [];
 
-    /** @var int */
-    private $maximumRecordsPerPage;
-
-    public function __construct(int $maximumRcordsPerPage)
-    {
-        $this->maximumRecordsPerPage = $maximumRcordsPerPage;
-    }
-
     public function getData(): array
     {
         return $this->data;

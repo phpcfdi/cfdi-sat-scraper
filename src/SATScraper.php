@@ -653,7 +653,7 @@ class SATScraper
      */
     protected function makeData($html): int
     {
-        $extractor = new MetadataExtractor(500);
+        $extractor = new MetadataExtractor();
         $numberOfElements = $extractor->extract($html);
         $this->data = array_merge($this->data, $extractor->getData());
         return $numberOfElements;
