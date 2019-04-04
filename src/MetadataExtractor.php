@@ -11,6 +11,14 @@ class MetadataExtractor
     /** @var array[] */
     private $data = [];
 
+    /** @var int */
+    private $maximumRecordsPerPage;
+
+    public function __construct(int $maximumRcordsPerPage)
+    {
+        $this->maximumRecordsPerPage = $maximumRcordsPerPage;
+    }
+
     public function getData(): array
     {
         return $this->data;
@@ -33,7 +41,7 @@ class MetadataExtractor
 
         $numberOfElements = $filteredElements->count();
 
-        if ($numberOfElements < 500) {
+        if ($numberOfElements < $this->maximumRecordsPerPage) {
             $filteredElements->each(
                 function (Crawler $node): void {
                     $tds = $node->filter('td[style="WORD-BREAK:BREAK-ALL;"]');

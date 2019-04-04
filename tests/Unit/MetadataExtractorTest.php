@@ -12,7 +12,7 @@ class MetadataExtractorTest extends TestCase
     public function testUsingFakeInputWithTenUuids(): void
     {
         $sample = $this->fileContentPath('fake-to-extract-metadata-ten-cfdi.html');
-        $extractor = new MetadataExtractor();
+        $extractor = new MetadataExtractor(500);
         $this->assertSame(10, $extractor->extract($sample));
         $list = $extractor->getData();
         $this->assertCount(10, $list);
@@ -26,7 +26,7 @@ class MetadataExtractorTest extends TestCase
     public function testUsingFakeInputWithZeroUuids(): void
     {
         $sample = $this->fileContentPath('fake-to-extract-metadata-zero-cfdi.html');
-        $extractor = new MetadataExtractor();
+        $extractor = new MetadataExtractor(500);
         $this->assertSame(0, $extractor->extract($sample));
         $this->assertSame([], $extractor->getData());
     }
@@ -34,7 +34,7 @@ class MetadataExtractorTest extends TestCase
     public function testUsingFakeInput(): void
     {
         $sample = $this->fileContentPath('fake-to-extract-metadata-one-cfdi.html');
-        $extractor = new MetadataExtractor();
+        $extractor = new MetadataExtractor(500);
         $this->assertSame(1, $extractor->extract($sample));
         $expectedUuid = 'B97262E5-704C-4BF7-AE26-9174FEF04D63';
         $this->assertArrayHasKey($expectedUuid, $extractor->getData());
@@ -45,7 +45,7 @@ class MetadataExtractorTest extends TestCase
         // this sample file contains 1 UUID only
         $sample = $this->fileContentPath('sample-to-extract-metadata.html');
 
-        $extractor = new MetadataExtractor();
+        $extractor = new MetadataExtractor(500);
         $this->assertSame(1, $extractor->extract($sample));
 
         $expectedUuid = 'B97262E5-704C-4BF7-AE26-9174FEF04D63';
@@ -93,7 +93,7 @@ class MetadataExtractorTest extends TestCase
     public function testExtractUsingSampleWithZeroUuid(): void
     {
         $sample = $this->fileContentPath('sample-to-extract-metadata-zero-cfdi.html');
-        $extractor = new MetadataExtractor();
+        $extractor = new MetadataExtractor(500);
         $this->assertSame(0, $extractor->extract($sample));
         $this->assertSame([], $extractor->getData());
     }
