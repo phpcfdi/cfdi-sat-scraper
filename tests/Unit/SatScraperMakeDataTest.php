@@ -64,8 +64,6 @@ class SatScraperMakeDataTest extends TestCase
         $data = $scraper->getData();
         $this->assertArrayHasKey($expectedUuid, $data);
 
-        echo $expectedData[$expectedUuid]['urlXml'];
-
         $document = $data[$expectedUuid];
         foreach ($expectedData[$expectedUuid] as $key => $value) {
             $this->assertArrayHasKey($key, $document);
