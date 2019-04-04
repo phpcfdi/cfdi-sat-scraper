@@ -9,6 +9,14 @@ use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
 class MetadataExtractorTest extends TestCase
 {
+    public function testUsingFakeInputWithZeroUuids(): void
+    {
+        $sample = $this->fileContentPath('fake-to-extract-metadata-zero-cfdi.html');
+        $extractor = new MetadataExtractor();
+        $this->assertSame(0, $extractor->extract($sample));
+        $this->assertSame([], $extractor->getData());
+    }
+
     public function testUsingFakeInput(): void
     {
         $sample = $this->fileContentPath('fake-to-extract-metadata-one-cfdi.html');
