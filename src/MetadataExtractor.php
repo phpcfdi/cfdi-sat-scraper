@@ -62,17 +62,20 @@ class MetadataExtractor
     public function obtainUrlXml(Crawler $row): ?string
     {
         $spansBtnDownload = $row->filter('span#BtnDescarga');
-        $onClickAttribute = $spansBtnDownload->count() > 0 ? $spansBtnDownload->first()->attr('onclick') : null;
-
-        $urlXml = null;
-        if (! is_null($onClickAttribute)) {
-            $urlXml = str_replace(
-                ["return AccionCfdi('", "','Recuperacion');"],
-                [URLS::SAT_URL_PORTAL_CFDI, ''],
-                $onClickAttribute
-            );
+        if (0 === $spansBtnDownload->count()) { // button not found
+            return null;
         }
 
-        return $urlXml;
+        $onClickAttribute = $spansBtnDownload->first()->attr('onclick') ?? '';
+        if ('' === $onClickAttribute) { // button without text
+            return null;
+        }
+
+        // change javascript call and replace it with complete url
+        return str_replace(
+            ["return AccionCfdi('", "','Recuperacion');"],
+            [URLS::SAT_URL_PORTAL_CFDI, ''],
+            $onClickAttribute
+        );
     }
 }
