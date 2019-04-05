@@ -12,7 +12,7 @@ class MetadataExtractorTest extends TestCase
 {
     public function testObtainMetadataValuesWithEmptyRow(): void
     {
-        $row = new Crawler('<tr></tr>');
+        $row = (new Crawler('<tr></tr>'))->filter('tr')->first();
         $extractor = new MetadataExtractor();
         $values = $extractor->obtainMetadataValues($row);
         $this->assertArrayHasKey('uuid', $values);
@@ -21,7 +21,7 @@ class MetadataExtractorTest extends TestCase
 
     public function testObtainUrlWithoutButton(): void
     {
-        $row = new Crawler('<tr></tr>');
+        $row = (new Crawler('<tr></tr>'))->filter('tr')->first();
         $extractor = new MetadataExtractor();
         $this->assertNull($extractor->obtainUrlXml($row));
     }
