@@ -61,7 +61,7 @@ class MetadataExtractorTest extends TestCase
     public function testExtractUsingSampleWithOneUuid(): void
     {
         // this sample file contains 1 UUID only
-        $sample = $this->fileContentPath('sample-to-extract-metadata.html');
+        $sample = $this->fileContentPath('sample-to-extract-metadata-one-cfdi.html');
 
         $extractor = new MetadataExtractor();
         $data = $extractor->extract($sample);

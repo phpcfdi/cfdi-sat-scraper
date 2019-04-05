@@ -15,7 +15,7 @@ class SatScraperMakeDataTest extends TestCase
     public function testRetrieve(): void
     {
         // this sample file contains 1 UUID only
-        $sample = $this->fileContentPath('sample-to-extract-metadata.html');
+        $sample = $this->fileContentPath('sample-to-extract-metadata-one-cfdi.html');
 
         $options = $this->createMock(Options::class);
         $client = $this->createMock(Client::class);
