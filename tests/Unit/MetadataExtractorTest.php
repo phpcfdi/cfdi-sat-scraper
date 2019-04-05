@@ -10,6 +10,15 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class MetadataExtractorTest extends TestCase
 {
+    public function testObtainMetadataValuesWithEmptyRow(): void
+    {
+        $row = new Crawler('<tr></tr>');
+        $extractor = new MetadataExtractor();
+        $values = $extractor->obtainMetadataValues($row);
+        $this->assertArrayHasKey('uuid', $values);
+        $this->assertSame('', $values['uuid']);
+    }
+
     public function testObtainUrlWithoutButton(): void
     {
         $row = new Crawler('<tr></tr>');
