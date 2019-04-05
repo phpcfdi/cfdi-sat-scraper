@@ -10,11 +10,54 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class MetadataExtractorTest extends TestCase
 {
+    public function testLocateHeaderFieldsInRow(): void
+    {
+        $fieldsCaptions = [
+            'uuid' => 'Folio Fiscal',
+            'foo' => 'Foo Foo Foo',
+            'rfcEmisor' => 'RFC Emisor',
+        ];
+
+        $firstRow = (new Crawler(
+            '<tr><th>Alpha</th><th>Folio Fiscal</th><th>RFC Emisor</th></tr>'
+        ))->filter('tr')->first();
+        $extractor = new MetadataExtractor();
+        $fieldsPositions = $extractor->locateFieldsPositions($firstRow, $fieldsCaptions);
+
+        $expectedFieldsPositions = [
+            'uuid' => 1,
+            'rfcEmisor' => 2,
+        ];
+
+        $this->assertSame($expectedFieldsPositions, $fieldsPositions);
+    }
+
+    public function testObtainMetadataValuesPredefined(): void
+    {
+        $fieldsPositions = [
+            'foo' => 3, // delta
+            'bar' => 1, // bravo
+        ];
+
+        $row = (new Crawler(
+            '<tr><td>Alpha</td><td>Bravo</td><td>Charlie</td><td>Delta</td><td>Echo</td></tr>'
+        ))->filter('tr')->first();
+        $extractor = new MetadataExtractor();
+        $values = $extractor->obtainMetadataValues($row, $fieldsPositions);
+
+        $expectedValues = [
+            'foo' => 'Delta',
+            'bar' => 'Bravo',
+        ];
+
+        $this->assertSame($expectedValues, $values);
+    }
+
     public function testObtainMetadataValuesWithEmptyRow(): void
     {
         $row = (new Crawler('<tr></tr>'))->filter('tr')->first();
         $extractor = new MetadataExtractor();
-        $values = $extractor->obtainMetadataValues($row);
+        $values = $extractor->obtainMetadataValues($row, ['uuid' => 1]);
         $this->assertArrayHasKey('uuid', $values);
         $this->assertSame('', $values['uuid']);
     }

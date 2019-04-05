@@ -8,29 +8,26 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class MetadataExtractor
 {
-    /**
-     * @param string $html
-     * @return array
-     */
-    public function extract(string $html): array
+    public function extract(string $html, ?array $fieldsCaptions = null): array
     {
-        $crawler = new Crawler($html);
+        if (null === $fieldsCaptions) {
+            $fieldsCaptions = $this->defaultFieldsCaptions();
+        }
 
-        // build data array as a collection of metadata
-        $data = $crawler
-            ->filter('table#ctl00_MainContent_tblResult > tr')
-            ->reduce(
-                function (Crawler $row) {
-                    return ('td' === $row->children()->first()->nodeName());
-                }
-            )->each(
-                function (Crawler $row): array {
-                    $metadata = $this->obtainMetadataValues($row);
-                    $metadata['fechaCancelacion'] = $metadata['fechaProcesoCancelacion'];
-                    $metadata['urlXml'] = $this->obtainUrlXml($row);
-                    return $metadata;
-                }
-            );
+        $rows = (new Crawler($html))->filter('table#ctl00_MainContent_tblResult > tr');
+
+        // first tr is the only expected to have the th elements
+        $fieldsPositions = $this->locateFieldsPositions($rows->first(), $fieldsCaptions);
+
+        // slice first row (headers), build data array as a collection of metadata
+        $data = $rows->slice(1)->each(
+            function (Crawler $row) use ($fieldsPositions): array {
+                $metadata = $this->obtainMetadataValues($row, $fieldsPositions);
+                $metadata['fechaCancelacion'] = $metadata['fechaProcesoCancelacion'];
+                $metadata['urlXml'] = $this->obtainUrlXml($row);
+                return $metadata;
+            }
+        );
 
         // build metadata using uuid as key
         $data = array_combine(array_column($data, 'uuid'), $data);
@@ -38,26 +35,53 @@ class MetadataExtractor
         return $data;
     }
 
-    public function obtainMetadataValues(Crawler $row): array
+    public function defaultFieldsCaptions(): array
     {
-        $cells = $row->filter('td[style="WORD-BREAK:BREAK-ALL;"]');
-
         return [
-            'uuid' => trim($cells->getNode(0)->textContent ?? ''),
-            'rfcEmisor' => trim($cells->getNode(1)->textContent ?? ''),
-            'nombreEmisor' => trim($cells->getNode(2)->textContent ?? ''),
-            'rfcReceptor' => trim($cells->getNode(3)->textContent ?? ''),
-            'nombreReceptor' => trim($cells->getNode(4)->textContent ?? ''),
-            'fechaEmision' => trim($cells->getNode(5)->textContent ?? ''),
-            'fechaCertificacion' => trim($cells->getNode(6)->textContent ?? ''),
-            'pacCertifico' => trim($cells->getNode(7)->textContent ?? ''),
-            'total' => trim($cells->getNode(8)->textContent ?? ''),
-            'efectoComprobante' => trim($cells->getNode(9)->textContent ?? ''),
-            'estatusCancelacion' => trim($cells->getNode(10)->textContent ?? ''),
-            'estadoComprobante' => trim($cells->getNode(11)->textContent ?? ''),
-            'estatusProcesoCancelacion' => trim($cells->getNode(12)->textContent ?? ''),
-            'fechaProcesoCancelacion' => trim($cells->getNode(13)->textContent ?? ''),
+            'uuid' => 'Folio Fiscal',
+            'rfcEmisor' => 'RFC Emisor',
+            'nombreEmisor' => 'Nombre o Razón Social del Emisor',
+            'rfcReceptor' => 'RFC Receptor',
+            'nombreReceptor' => 'Nombre o Razón Social del Receptor',
+            'fechaEmision' => 'Fecha de Emisión',
+            'fechaCertificacion' => 'Fecha de Certificación',
+            'pacCertifico' => 'PAC que Certificó',
+            'total' => 'Total',
+            'efectoComprobante' => 'Efecto del Comprobante',
+            'estatusCancelacion' => 'Estatus de cancelación',
+            'estadoComprobante' => 'Estado del Comprobante',
+            'estatusProcesoCancelacion' => 'Estatus de Proceso de Cancelación',
+            'fechaProcesoCancelacion' => 'Fecha de Proceso de Cancelación',
         ];
+    }
+
+    public function locateFieldsPositions(Crawler $headersRow, array $fieldsCaptions): array
+    {
+        $headerCells = $headersRow->children()->each(
+            function (Crawler $cell) {
+                return trim($cell->text());
+            }
+        );
+
+        $headerPositions = $fieldsCaptions;
+        foreach ($headerPositions as $field => $label) {
+            $headerPositions[$field] = array_search($label, $headerCells);
+            if (false === $headerPositions[$field]) {
+                unset($headerPositions[$field]);
+            }
+        }
+
+        return $headerPositions;
+    }
+
+    public function obtainMetadataValues(Crawler $row, array $fieldsPositions): array
+    {
+        $values = [];
+        $cells = $row->children();
+        foreach ($fieldsPositions as $field => $position) {
+            $values[$field] = trim($cells->getNode($position)->textContent ?? '');
+        }
+        return $values;
     }
 
     public function obtainUrlXml(Crawler $row): ?string
