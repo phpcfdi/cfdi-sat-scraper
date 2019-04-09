@@ -6,6 +6,7 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
+use PhpCfdi\CfdiSatScraper\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Options;
 use PhpCfdi\CfdiSatScraper\SATScraper;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
@@ -17,10 +18,11 @@ class SatScraperMakeDataTest extends TestCase
         // this sample file contains 1 UUID only
         $sample = $this->fileContentPath('sample-to-extract-metadata-one-cfdi.html');
 
-        $options = $this->createMock(Options::class);
         $client = $this->createMock(Client::class);
         $cookie = $this->createMock(CookieJar::class);
-        $scraper = new class($options, $client, $cookie) extends SATScraper {
+        $captchaResolver = $this->createMock(DeCaptcherCaptchaResolver::class);
+
+        $scraper = new class('rfc', 'ciec', $client, $cookie, $captchaResolver) extends SATScraper {
             public function exposeMakeData($html): int
             {
                 return $this->makeData($html);
