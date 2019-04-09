@@ -12,8 +12,8 @@ use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Contracts\Filters;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATCredentialsException;
-use PhpCfdi\CfdiSatScraper\Exceptions\SATException;
-use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
+use PhpCfdi\CfdiSatScraper\Filters\FiltersReceived;
+USE PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
 
 /**
  * Class SATScraper.
@@ -31,16 +31,6 @@ class SATScraper
      * @var string
      */
     protected $ciec;
-
-    /**
-     * @var
-     */
-    protected $downloadType;
-
-    /**
-     * @var
-     */
-    protected $stateVoucher;
 
     /**
      * @var Client
@@ -61,6 +51,11 @@ class SATScraper
      * @var array
      */
     protected $requests = [];
+
+    /**
+     * @var Query
+     */
+    protected $query;
 
     /**
      * @var null
@@ -99,18 +94,48 @@ class SATScraper
 
     /**
      * SATScraper constructor.
-     *
-     * @param Options $options
+     * @param string $rfc
+     * @param string $ciec
      * @param Client $client
      * @param CookieJar $cookie
+     * @param CaptchaResolverInterface $captchaResolver
      */
-    public function __construct(Options $options, Client $client, CookieJar $cookie)
-    {
-        $this->rfc = $options->getOption('rfc');
-        $this->ciec = $options->getOption('ciec');
-        $this->loginUrl = $options->getOption('loginUrl', URLS::SAT_URL_LOGIN);
+    public function __construct(
+        string $rfc,
+        string $ciec,
+        Client $client,
+        CookieJar $cookie,
+        CaptchaResolverInterface $captchaResolver
+    ) {
+        if (empty($rfc)) {
+            throw new \InvalidArgumentException("The parameter rfc is invalid");
+        }
+
+        if (empty($ciec)) {
+            throw new \InvalidArgumentException("The parameter ciec is invalid");
+        }
+
+        $this->rfc = $rfc;
+        $this->ciec = $ciec;
+        $this->loginUrl = URLS::SAT_URL_LOGIN;
         $this->client = $client;
         $this->cookie = $cookie;
+        $this->captchaResolver = $captchaResolver;
+    }
+
+    /**
+     * @param string $loginUrl
+     * @return SATScraper
+     */
+    public function setLoginUrl(string $loginUrl): self
+    {
+        if (!filter_var($loginUrl, FILTER_VALIDATE_URL)) {
+            throw new \InvalidArgumentException("The provided url is invalid");
+        }
+
+        $this->loginUrl = $loginUrl;
+
+        return $this;
     }
 
     /**
@@ -121,29 +146,6 @@ class SATScraper
     public function setCaptchaResolver(CaptchaResolverInterface $captchaResolver): self
     {
         $this->captchaResolver = $captchaResolver;
-
-        return $this;
-    }
-
-    /**
-     * @param string $downloadType
-     *
-     * @return SATScraper
-     */
-    public function setDownloadType(string $downloadType = DownloadType::RECEIVED): self
-    {
-        $this->downloadType = $downloadType;
-
-        return $this;
-    }
-
-    /**
-     * @param  string $stateVoucher
-     * @return SATScraper
-     */
-    public function setStateVoucher(string $stateVoucher): self
-    {
-        $this->stateVoucher = $stateVoucher;
 
         return $this;
     }
@@ -170,6 +172,25 @@ class SATScraper
         $this->maxTriesLogin = $maxTriesLogin;
 
         return $this;
+    }
+
+    /**
+     * @param Query $query
+     *
+     * @return SATScraper
+     */
+    public function setQuery(Query $query): self
+    {
+        $this->query = $query;
+        return $this;
+    }
+
+    /**
+     * @return Query
+     */
+    public function getQuery(): Query
+    {
+        return $this->query;
     }
 
     /**
@@ -329,7 +350,7 @@ class SATScraper
     protected function selectType(array $inputs): string
     {
         $data = [
-            'ctl00$MainContent$TipoBusqueda' => $this->downloadType,
+            'ctl00$MainContent$TipoBusqueda' => $this->query->getDownloadType()->value(),
             '__ASYNCPOST' => 'true',
             '__EVENTTARGET' => '',
             '__EVENTARGUMENT' => '',
@@ -356,54 +377,42 @@ class SATScraper
     }
 
     /**
-     * @param array $uuids
+     * @param Query $query
      */
-    public function downloadListUUID(array $uuids = []): void
+    public function downloadListUUID(Query $query): void
     {
         $this->data = [];
-        foreach ($uuids as $uuid) {
-            $filters = new FiltersReceived();
-            if ('emitidos' == $this->downloadType) {
-                $filters = new FiltersIssued();
-            }
+        if (empty($query->getUuid())) {
+            throw new \LogicException("It is necessary to provide a list of uuid");
+        }
 
-            $filters->taxId = $uuid;
+        $filters = $this->query->getDownloadType()->isEmitidos()
+            ? new FiltersIssued($query)
+            : new FiltersReceived($query);
 
-            $filters->stateVoucher = $this->stateVoucher;
-
+        foreach ($query->getUuid() as $uuid) {
+            $filters->setUuid($uuid);
             $html = $this->runQueryDate($filters);
             $this->makeData($html);
         }
     }
 
     /**
-     * @param  \DateTime $start
-     * @param  \DateTime $end
+     * @param Query $query
      * @throws SATAuthenticatedException
      * @throws SATCredentialsException
-     * @throws SATException
      */
-    public function downloadPeriod(\DateTime $start, \DateTime $end): void
+    public function downloadPeriod(Query $query): void
     {
+        $this->setQuery($query);
         $this->initScraper();
-        $startParseDate = $start->format('Y-m-d');
-        $endParseDate = $end->format('Y-m-d');
+        $start = (clone $query->getStartDate())->setTime(0, 0, 0);
+        $end = (clone $query->getEndDate())->setTime(0, 0, 0);
 
-        if ($startParseDate <= $endParseDate) {
-            $dateCurrent = strtotime($start->format('d') . '-' . $start->format('m') . '-' . $start->format('Y') . '00:00:00');
-            $endDate = strtotime($end->format('d') . '-' . $end->format('m') . '-' . $end->format('Y') . '00:00:00');
-            $this->data = [];
+        $this->data = [];
 
-            while ($dateCurrent <= $endDate) {
-                $day = new \DateTime(date('Y-m-d', $dateCurrent));
-                $this->downloadDay($day);
-
-                $dateCurrent1 = date('Y-m-d', $dateCurrent);
-                $dateNow = strtotime('+1 day', strtotime($dateCurrent1));
-                $dateCurrent = strtotime(date('Y-m-d', $dateNow));
-            }
-        } else {
-            throw new SATException('Las fechas finales no pueden ser menores a las iniciales');
+        for ($current = $start; $current <= $end; $current->modify('+1 day')) {
+            $this->downloadDay($current);
         }
     }
 
@@ -414,13 +423,14 @@ class SATScraper
     {
         $secondInitial = 1;
         $secondEnd = 86400;
-        $queryStop = false;
         $totalRecords = 0;
 
-        while (false === $queryStop) {
-            $result = $this->downloadSeconds($day, (int)$secondInitial, (int)$secondEnd);
+        $hasCallable = is_callable($this->onFiveHundred);
 
-            if ($result >= 500 && ! is_null($this->onFiveHundred) && is_callable($this->onFiveHundred)) {
+        while (true) {
+            $result = $this->downloadSeconds($day, $secondInitial, $secondEnd);
+
+            if ($hasCallable && $result >= 500) {
                 $params = [
                     'count' => $result,
                     'year' => $day->format('Y'),
@@ -432,28 +442,18 @@ class SATScraper
                 call_user_func($this->onFiveHundred, $params);
             }
 
-            if ($result < 500 && '-1' !== $result) {
-                $totalRecords = (int)$totalRecords + $result;
-                if (86400 == $secondEnd) {
-                    $queryStop = true;
-                }
-                if ($secondEnd < 86400) {
-                    $secondInitial = (int)$secondEnd + 1;
-                    $secondEnd = 86400;
-                }
-            } else {
-                if ($secondEnd > $secondInitial) {
-                    $secondEnd = floor($secondInitial + (($secondEnd - $secondInitial) / 2));
-                } elseif ($secondEnd <= $secondInitial) {
-                    $totalRecords = (int)$totalRecords + $result;
-                    if (86400 == $secondEnd) {
-                        $queryStop = true;
-                    } elseif ($secondEnd < 86400) {
-                        $secondInitial = $secondEnd + 1;
-                        $secondEnd = 86400;
-                    }
-                }
+            if ($result >= 500 && $secondEnd > $secondInitial) {
+                $secondEnd = (int)floor($secondInitial + (($secondEnd - $secondInitial) / 2));
+                continue;
             }
+
+            $totalRecords = $totalRecords + $result;
+            if ($secondEnd >= 86400) {
+                break;
+            }
+
+            $secondInitial = $secondEnd + 1;
+            $secondEnd = 86400;
         }
     }
 
@@ -464,32 +464,34 @@ class SATScraper
      *
      * @return int
      */
-    protected function downloadSeconds(\DateTime $day, $startSec, $endSec): int
+    protected function downloadSeconds(\DateTime $day, int $startSec, int $endSec): int
     {
-        $filters = new FiltersReceived();
-        if ('emitidos' == $this->downloadType) {
-            $filters = new FiltersIssued();
+        $query = clone $this->getQuery();
+
+        $startDate = $query->getStartDate()
+            ->setDate(
+                (int)$day->format('Y'),
+                (int)$day->format('m'),
+                (int)$day->format('d')
+            );
+
+        if (0 !== $startSec) {
+            $time = Helpers::converterSecondsToHours($startSec);
+            [$startHour, $startMinute, $startSecond] = explode(':', $time);
+            $startDate->setTime((int)$startHour, (int)$startMinute, (int)$startSecond);
         }
 
-        $filters->year = $day->format('Y');
-        $filters->month = $day->format('m');
-        $filters->day = $day->format('d');
+        $query->setStartDate($startDate);
 
-        if ('0' != $startSec) {
-            $time = $filters->converterSecondsToHours($startSec);
-            $time_start = explode(':', $time);
-            $filters->hour_start = $time_start[0];
-            $filters->minute_start = $time_start[1];
-            $filters->second_start = $time_start[2];
-        }
+        $filters = $this->getQuery()->getDownloadType()->isEmitidos()
+            ? new FiltersIssued($query)
+            : new FiltersReceived($query);
 
-        $time = $filters->converterSecondsToHours($endSec);
+        $time = Helpers::converterSecondsToHours($endSec);
 
-        $time_end = explode(':', $time);
-        $filters->hour_end = $time_end[0];
-        $filters->minute_end = $time_end[1];
-        $filters->second_end = $time_end[2];
-        $filters->stateVoucher = $this->stateVoucher;
+        [$endHour, $endMinute, $endSecond] = explode(':', $time);
+        $endDate = $query->getEndDate()->setTime((int)$endHour, (int)$endMinute, (int)$endSecond);
+        $query->setEndDate($endDate);
 
         $html = $this->runQueryDate($filters);
         $elements = $this->makeData($html);
@@ -504,7 +506,7 @@ class SATScraper
      */
     protected function runQueryDate(Filters $filters): string
     {
-        if ('emitidos' == $this->downloadType) {
+        if ($this->getQuery()->getDownloadType()->isEmitidos()) {
             $url = URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR;
             $result = $this->enterQueryTransmitter($filters);
         } else {
@@ -553,7 +555,7 @@ class SATScraper
         $html = $response->getBody()->getContents();
 
         $inputs = $this->parseInputs($html);
-        $post = array_merge($inputs, $filters->getFormPostDates());
+        $post = array_merge($inputs, $filters->getInitialFilters());
 
         $response = $this->client->post(
             URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR,
@@ -594,7 +596,7 @@ class SATScraper
         $html = $response->getBody()->getContents();
 
         $inputs = $this->parseInputs($html);
-        $post = array_merge($inputs, $filters->getFormPostDates());
+        $post = array_merge($inputs, $filters->getInitialFilters());
 
         $response = $this->client->post(
             URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR,
@@ -627,7 +629,7 @@ class SATScraper
     {
         $parser = new ParserFormatSAT($html);
         $valuesChange = $parser->getFormValues();
-        $temporary = array_merge($inputs, $filters->getPost());
+        $temporary = array_merge($inputs, $filters->getRequestFilters());
         $temp = array_merge($temporary, $valuesChange);
 
         return $temp;

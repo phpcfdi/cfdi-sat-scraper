@@ -116,7 +116,7 @@ class DownloadXML
         $this->download(
             function ($content, $name) use ($path): void {
                 $f = new \SplFileObject($path . DIRECTORY_SEPARATOR . $name, 'w');
-                $f->fwrite($content);
+                $f->fwrite((string)$content);
                 $f = null;
             }
         );

@@ -9,24 +9,15 @@ interface Filters
     /**
      * @return mixed
      */
-    public function getPost();
+    public function getFilters(): array;
 
     /**
      * @return mixed
      */
-    public function getFormPostDates();
+    public function getInitialFilters(): array;
 
     /**
-     * @param int $hour
-     *
      * @return mixed
      */
-    public function converterHoursToSeconds($hour);
-
-    /**
-     * @param int $pSecStart
-     *
-     * @return mixed
-     */
-    public function converterSecondsToHours($pSecStart);
+    public function getRequestFilters(): array;
 }
