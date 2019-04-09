@@ -29,7 +29,7 @@ class StatesVoucher extends Enum implements FilterOption
         return [
             'todos' => '-1',
             'cancelados' => '0',
-            'vigentes' => '1'
+            'vigentes' => '1',
         ];
     }
 

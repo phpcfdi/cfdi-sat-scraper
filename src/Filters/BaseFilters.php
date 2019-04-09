@@ -54,7 +54,7 @@ abstract class BaseFilters
             $this->query->getComplement(),
             $this->query->getStateVoucher(),
             $this->query->getRfc(),
-            $this->query->getUuid()
+            $this->query->getUuid(),
         ];
 
         foreach ($filters as $filter) {
@@ -93,12 +93,10 @@ abstract class BaseFilters
      */
     protected function getCentralFilter()
     {
-        if (!empty($this->uuid)) {
+        if (! empty($this->uuid)) {
             return 'RdoFolioFiscal';
         }
 
         return 'RdoFechas';
     }
-
-
 }

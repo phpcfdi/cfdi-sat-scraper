@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSATScraper;
@@ -7,7 +8,6 @@ use Eclipxe\Enum\Enum;
 use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
 use PhpCfdi\CfdiSatScraper\Filters\Complements;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadTypes;
-use PhpCfdi\CfdiSatScraper\Filters\RfcReceptor;
 use PhpCfdi\CfdiSatScraper\Filters\StatesVoucher;
 
 class Query

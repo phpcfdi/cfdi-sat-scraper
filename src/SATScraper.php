@@ -12,8 +12,8 @@ use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Contracts\Filters;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATCredentialsException;
+use PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersReceived;
-USE PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
 
 /**
  * Class SATScraper.
@@ -108,11 +108,11 @@ class SATScraper
         CaptchaResolverInterface $captchaResolver
     ) {
         if (empty($rfc)) {
-            throw new \InvalidArgumentException("The parameter rfc is invalid");
+            throw new \InvalidArgumentException('The parameter rfc is invalid');
         }
 
         if (empty($ciec)) {
-            throw new \InvalidArgumentException("The parameter ciec is invalid");
+            throw new \InvalidArgumentException('The parameter ciec is invalid');
         }
 
         $this->rfc = $rfc;
@@ -129,8 +129,8 @@ class SATScraper
      */
     public function setLoginUrl(string $loginUrl): self
     {
-        if (!filter_var($loginUrl, FILTER_VALIDATE_URL)) {
-            throw new \InvalidArgumentException("The provided url is invalid");
+        if (! filter_var($loginUrl, FILTER_VALIDATE_URL)) {
+            throw new \InvalidArgumentException('The provided url is invalid');
         }
 
         $this->loginUrl = $loginUrl;
@@ -383,12 +383,10 @@ class SATScraper
     {
         $this->data = [];
         if (empty($query->getUuid())) {
-            throw new \LogicException("It is necessary to provide a list of uuid");
+            throw new \LogicException('It is necessary to provide a list of uuid');
         }
 
-        $filters = $this->query->getDownloadType()->isEmitidos()
-            ? new FiltersIssued($query)
-            : new FiltersReceived($query);
+        $filters = $this->query->getDownloadType()->isEmitidos() ? new FiltersIssued($query) : new FiltersReceived($query);
 
         foreach ($query->getUuid() as $uuid) {
             $filters->setUuid($uuid);
@@ -483,9 +481,7 @@ class SATScraper
 
         $query->setStartDate($startDate);
 
-        $filters = $this->getQuery()->getDownloadType()->isEmitidos()
-            ? new FiltersIssued($query)
-            : new FiltersReceived($query);
+        $filters = $this->getQuery()->getDownloadType()->isEmitidos() ? new FiltersIssued($query) : new FiltersReceived($query);
 
         $time = Helpers::converterSecondsToHours($endSec);
 
