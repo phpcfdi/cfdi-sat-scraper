@@ -7,7 +7,6 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use PhpCfdi\CfdiSatScraper\DeCaptcherCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\Options;
 use PhpCfdi\CfdiSatScraper\SATScraper;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
