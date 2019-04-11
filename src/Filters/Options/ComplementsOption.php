@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Filters;
+namespace PhpCfdi\CfdiSatScraper\Filters\Options;
 
 use Eclipxe\Enum\Enum;
 use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
@@ -93,7 +93,7 @@ use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
  * @method bool isVehiculoUsado()
  * @method bool isVentaVehiculos()
  */
-class Complements extends Enum implements FilterOption
+class ComplementsOption extends Enum implements FilterOption
 {
     /**
      * @return array

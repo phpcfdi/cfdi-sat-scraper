@@ -18,9 +18,9 @@ use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATException;
 use PhpCfdi\CfdiSatScraper\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\SATScraper;
-use PhpCfdi\CfdiSatScraper\Filters\StatesVoucher;
-use PhpCfdi\CfdiSatScraper\Filters\DownloadTypes;
-use PhpCfdi\CfdiSatScraper\Filters\Complements;
+use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use GuzzleHttp\Cookie\CookieJar;
 use PhpCfdi\CfdiSatScraper\Query;
 use GuzzleHttp\Client;
@@ -33,9 +33,9 @@ $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&opti
 $query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
 
 $query//->setRfc(new RfcReceptor('XAXX010101000'))
-    ->setComplement(Complements::todos())
-    ->setStateVoucher(StatesVoucher::vigentes())
-    ->setDownloadType(DownloadTypes::recibidos());
+    ->setComplement(ComplementsOption::todos())
+    ->setStateVoucher(StatesVoucherOption::vigentes())
+    ->setDownloadType(DownloadTypesOption::recibidos());
 
 $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
     //$satScraper->setLoginUrl($loginUrl);
@@ -54,9 +54,9 @@ use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATException;
 use PhpCfdi\CfdiSatScraper\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\SATScraper;
-use PhpCfdi\CfdiSatScraper\Filters\StatesVoucher;
-use PhpCfdi\CfdiSatScraper\Filters\DownloadTypes;
-use PhpCfdi\CfdiSatScraper\Filters\Complements;
+use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use GuzzleHttp\Cookie\CookieJar;
 use PhpCfdi\CfdiSatScraper\Query;
 use GuzzleHttp\Client;
@@ -69,9 +69,9 @@ $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&opti
 $query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
 
 $query//->setRfc(new RfcReceptor('XAXX010101000'))
-    ->setComplement(Complements::todos())
-    ->setStateVoucher(StatesVoucher::vigentes())
-    ->setDownloadType(DownloadTypes::recibidos())
+    ->setComplement(ComplementsOption::todos())
+    ->setStateVoucher(StatesVoucherOption::vigentes())
+    ->setDownloadType(DownloadTypesOption::recibidos())
     ->setUuid([
       '5cc88a1a-8672-11e6-ae22-56b6b6499611',
       '5cc88c4a-8672-11e6-ae22-56b6b6499611',
@@ -93,9 +93,9 @@ use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATException;
 use PhpCfdi\CfdiSatScraper\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\SATScraper;
-use PhpCfdi\CfdiSatScraper\Filters\StatesVoucher;
-use PhpCfdi\CfdiSatScraper\Filters\DownloadTypes;
-use PhpCfdi\CfdiSatScraper\Filters\Complements;
+use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use GuzzleHttp\Cookie\CookieJar;
 use PhpCfdi\CfdiSatScraper\Query;
 use GuzzleHttp\Client;
@@ -109,9 +109,9 @@ try {
     $query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
     
     $query//->setRfc(new RfcReceptor('XAXX010101000'))
-        ->setComplement(Complements::todos())
-        ->setStateVoucher(StatesVoucher::vigentes())
-        ->setDownloadType(DownloadTypes::recibidos());
+        ->setComplement(ComplementsOption::todos())
+        ->setStateVoucher(StatesVoucherOption::vigentes())
+        ->setDownloadType(DownloadTypesOption::recibidos());
     
     $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
     $satScraper->downloadPeriod($query);
@@ -134,9 +134,9 @@ use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATException;
 use PhpCfdi\CfdiSatScraper\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\SATScraper;
-use PhpCfdi\CfdiSatScraper\Filters\StatesVoucher;
-use PhpCfdi\CfdiSatScraper\Filters\DownloadTypes;
-use PhpCfdi\CfdiSatScraper\Filters\Complements;
+use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use GuzzleHttp\Cookie\CookieJar;
 use PhpCfdi\CfdiSatScraper\Query;
 use GuzzleHttp\Client;
@@ -149,9 +149,9 @@ $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&opti
 $query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
 
 $query//->setRfc(new RfcReceptor('XAXX010101000'))
-->setComplement(Complements::todos())
-    ->setStateVoucher(StatesVoucher::vigentes())
-    ->setDownloadType(DownloadTypes::recibidos());
+->setComplement(ComplementsOption::todos())
+    ->setStateVoucher(StatesVoucherOption::vigentes())
+    ->setDownloadType(DownloadTypesOption::recibidos());
 
 $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
 $satScraper->downloadPeriod($query);
@@ -185,9 +185,9 @@ use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATException;
 use PhpCfdi\CfdiSatScraper\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\SATScraper;
-use PhpCfdi\CfdiSatScraper\Filters\StatesVoucher;
-use PhpCfdi\CfdiSatScraper\Filters\DownloadTypes;
-use PhpCfdi\CfdiSatScraper\Filters\Complements;
+use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use GuzzleHttp\Cookie\CookieJar;
 use PhpCfdi\CfdiSatScraper\Query;
 use GuzzleHttp\Client;
@@ -200,9 +200,9 @@ $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&opti
 $query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
 
 $query//->setRfc(new RfcReceptor('XAXX010101000'))
-    ->setComplement(Complements::todos())
-    ->setStateVoucher(StatesVoucher::vigentes())
-    ->setDownloadType(DownloadTypes::recibidos());
+    ->setComplement(ComplementsOption::todos())
+    ->setStateVoucher(StatesVoucherOption::vigentes())
+    ->setDownloadType(DownloadTypesOption::recibidos());
 
 $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
 $satScraper->downloadPeriod($query);
@@ -225,9 +225,9 @@ use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATException;
 use PhpCfdi\CfdiSatScraper\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\SATScraper;
-use PhpCfdi\CfdiSatScraper\Filters\StatesVoucher;
-use PhpCfdi\CfdiSatScraper\Filters\DownloadTypes;
-use PhpCfdi\CfdiSatScraper\Filters\Complements;
+use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use GuzzleHttp\Cookie\CookieJar;
 use PhpCfdi\CfdiSatScraper\Query;
 use GuzzleHttp\Client;
@@ -240,9 +240,9 @@ $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&opti
 $query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
 
 $query//->setRfc(new RfcReceptor('XAXX010101000'))
-    ->setComplement(Complements::todos())
-    ->setStateVoucher(StatesVoucher::vigentes())
-    ->setDownloadType(DownloadTypes::recibidos());
+    ->setComplement(ComplementsOption::todos())
+    ->setStateVoucher(StatesVoucherOption::vigentes())
+    ->setDownloadType(DownloadTypesOption::recibidos());
 
 $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
 $satScraper->downloadPeriod($query);

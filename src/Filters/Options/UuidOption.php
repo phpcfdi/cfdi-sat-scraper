@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Filters;
+namespace PhpCfdi\CfdiSatScraper\Filters\Options;
 
 use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
 
-class RfcReceptor implements FilterOption
+class UuidOption implements FilterOption
 {
     /**
      * @var string
@@ -14,12 +14,12 @@ class RfcReceptor implements FilterOption
     protected $value;
 
     /**
-     * Rfc constructor.
-     * @param string $rfc
+     * RfcReceptor constructor.
+     * @param string $uuid
      */
-    public function __construct(string $rfc)
+    public function __construct(string $uuid)
     {
-        $this->value = $rfc;
+        $this->value = $uuid;
     }
 
     /**
@@ -27,7 +27,7 @@ class RfcReceptor implements FilterOption
      */
     public function nameIndex(): string
     {
-        return 'ctl00$MainContent$TxtRfcReceptor';
+        return 'ctl00$MainContent$TxtUUID';
     }
 
     /**

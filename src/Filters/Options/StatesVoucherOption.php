@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Filters;
+namespace PhpCfdi\CfdiSatScraper\Filters\Options;
 
 use Eclipxe\Enum\Enum;
 use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
@@ -19,7 +19,7 @@ use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
  * @method bool isCancelados()
  * @method bool isVigentes()
  */
-class StatesVoucher extends Enum implements FilterOption
+class StatesVoucherOption extends Enum implements FilterOption
 {
     /**
      * @return array
