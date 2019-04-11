@@ -7,18 +7,13 @@ namespace PhpCfdi\CfdiSatScraper;
 class Helpers
 {
     /**
-     * @param int $pSecStart
+     * @param int $seconds
      *
      * @return string
      */
-    public static function converterSecondsToHours(int $pSecStart): string
+    public static function converterSecondsToHours(int $seconds): string
     {
-        $segStart = $pSecStart - 1;
-        $hours = (int)floor($segStart / 3600);
-        $minutes = (int)floor(($segStart - ($hours * 3600)) / 60);
-        $seconds = (int)$segStart - ($hours * 3600) - ($minutes * 60);
-
-        return self::formatNumber($hours) . ':' . self::formatNumber($minutes) . ':' . self::formatNumber($seconds);
+        return gmdate('H:i:s', $seconds);
     }
 
     /**

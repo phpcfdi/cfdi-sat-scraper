@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSATScraper;
+namespace PhpCfdi\CfdiSatScraper;
 
 use Eclipxe\Enum\Enum;
 use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
-use PhpCfdi\CfdiSatScraper\Filters\Complements;
-use PhpCfdi\CfdiSatScraper\Filters\DownloadTypes;
-use PhpCfdi\CfdiSatScraper\Filters\StatesVoucher;
+use PhpCfdi\CfdiSatScraper\Contracts\Filters\Options\RfcOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 
 class Query
 {
@@ -23,7 +24,7 @@ class Query
     protected $endDate;
 
     /**
-     * @var FilterOption
+     * @var RfcOption
      */
     protected $rfc;
 
@@ -49,10 +50,10 @@ class Query
 
     /**
      * Query constructor.
-     * @param \DateTime $startDate
-     * @param \DateTime $endDate
+     * @param \DateTimeImmutable $startDate
+     * @param \DateTimeImmutable $endDate
      */
-    public function __construct(\DateTime $startDate, \DateTime $endDate)
+    public function __construct(\DateTimeImmutable $startDate, \DateTimeImmutable $endDate)
     {
         if ($endDate < $startDate) {
             throw new \InvalidArgumentException('La fecha final no puede ser menor a la inicial');
@@ -60,42 +61,43 @@ class Query
 
         $this->startDate = $startDate;
         $this->endDate = $endDate;
-        $this->downloadType = DownloadTypes::recibidos();
-        $this->complement = Complements::todos();
-        $this->stateVoucher = StatesVoucher::todos();
+        $this->downloadType = DownloadTypesOption::recibidos();
+        $this->complement = ComplementsOption::todos();
+        $this->stateVoucher = StatesVoucherOption::todos();
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
-    public function getStartDate(): \DateTime
+    public function getStartDate(): \DateTimeImmutable
     {
         return $this->startDate;
     }
 
     /**
-     * @param \DateTime $startDate
+     * @param \DateTimeImmutable $startDate
      * @return Query
      */
-    public function setStartDate(\DateTime $startDate): self
+    public function setStartDate(\DateTimeImmutable $startDate): self
     {
         $this->startDate = $startDate;
+
         return $this;
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
-    public function getEndDate(): \DateTime
+    public function getEndDate(): \DateTimeImmutable
     {
         return $this->endDate;
     }
 
     /**
-     * @param \DateTime $endDate
+     * @param \DateTimeImmutable $endDate
      * @return Query
      */
-    public function setEndDate(\DateTime $endDate): self
+    public function setEndDate(\DateTimeImmutable $endDate): self
     {
         $this->endDate = $endDate;
 
@@ -103,9 +105,9 @@ class Query
     }
 
     /**
-     * @return FilterOption|null
+     * @return RfcOption|null
      */
-    public function getRfc(): ?FilterOption
+    public function getRfc(): ?RfcOption
     {
         return $this->rfc;
     }
@@ -130,11 +132,11 @@ class Query
     }
 
     /**
-     * @param FilterOption $rfc
+     * @param RfcOption $rfc
      *
      * @return Query
      */
-    public function setRfc(FilterOption $rfc): self
+    public function setRfc(RfcOption $rfc): self
     {
         $this->rfc = $rfc;
 
@@ -142,18 +144,18 @@ class Query
     }
 
     /**
-     * @return Complements
+     * @return ComplementsOption
      */
-    public function getComplement(): Complements
+    public function getComplement(): ComplementsOption
     {
         return $this->complement;
     }
 
     /**
-     * @param Complements $complement
+     * @param ComplementsOption $complement
      * @return Query
      */
-    public function setComplement(Complements $complement): self
+    public function setComplement(ComplementsOption $complement): self
     {
         $this->complement = $complement;
 
@@ -161,18 +163,18 @@ class Query
     }
 
     /**
-     * @return StatesVoucher
+     * @return StatesVoucherOption
      */
-    public function getStateVoucher(): StatesVoucher
+    public function getStateVoucher(): StatesVoucherOption
     {
         return $this->stateVoucher;
     }
 
     /**
-     * @param StatesVoucher $stateVoucher
+     * @param StatesVoucherOption $stateVoucher
      * @return Query
      */
-    public function setStateVoucher(StatesVoucher $stateVoucher): self
+    public function setStateVoucher(StatesVoucherOption $stateVoucher): self
     {
         $this->stateVoucher = $stateVoucher;
 
@@ -180,18 +182,18 @@ class Query
     }
 
     /**
-     * @return DownloadTypes
+     * @return DownloadTypesOption
      */
-    public function getDownloadType(): DownloadTypes
+    public function getDownloadType(): DownloadTypesOption
     {
         return $this->downloadType;
     }
 
     /**
-     * @param DownloadTypes $downloadType
+     * @param DownloadTypesOption $downloadType
      * @return Query
      */
-    public function setDownloadType(DownloadTypes $downloadType): self
+    public function setDownloadType(DownloadTypesOption $downloadType): self
     {
         $this->downloadType = $downloadType;
 

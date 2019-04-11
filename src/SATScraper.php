@@ -14,7 +14,7 @@ use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATCredentialsException;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersReceived;
-USE PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
+use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -380,16 +380,13 @@ class SATScraper
     }
 
     /**
-     * @param Query $query
+     * @param array $uuids
+     * @param DownloadTypesOption $downloadType
      */
-    public function downloadListUUID(Query $query): void
+    public function downloadListUUID(array $uuids, DownloadTypesOption $downloadType): void
     {
         $this->data = [];
-        if (empty($query->getUuid())) {
-            throw new \LogicException('It is necessary to provide a list of uuid');
-        }
-
-        $filters = $this->query->getDownloadType()->isEmitidos() ? new FiltersIssued($query) : new FiltersReceived($query);
+        $filters = $downloadType->isEmitidos() ? new FiltersIssued($query) : new FiltersReceived($query);
 
         foreach ($query->getUuid() as $uuid) {
             $filters->setUuid($uuid);
@@ -407,23 +404,23 @@ class SATScraper
     {
         $this->setQuery($query);
         $this->initScraper();
-        $start = (clone $query->getStartDate())->setTime(0, 0, 0);
-        $end = (clone $query->getEndDate())->setTime(0, 0, 0);
+        $start = $query->getStartDate()->setTime(0, 0, 0);
+        $end = $query->getEndDate()->setTime(0, 0, 0);
 
         $this->data = [];
 
-        for ($current = $start; $current <= $end; $current->modify('+1 day')) {
+        for ($current = $start; $current <= $end; $current = $current->modify('+1 day')) {
             $this->downloadDay($current);
         }
     }
 
     /**
-     * @param \DateTime $day
+     * @param \DateTimeImmutable $day
      */
-    protected function downloadDay(\DateTime $day): void
+    protected function downloadDay(\DateTimeImmutable $day): void
     {
-        $secondInitial = 1;
-        $secondEnd = 86400;
+        $secondInitial = 0;
+        $secondEnd = 86399;
         $totalRecords = 0;
 
         $hasCallable = is_callable($this->onFiveHundred);
@@ -449,23 +446,23 @@ class SATScraper
             }
 
             $totalRecords = $totalRecords + $result;
-            if ($secondEnd >= 86400) {
+            if ($secondEnd >= 86399) {
                 break;
             }
 
             $secondInitial = $secondEnd + 1;
-            $secondEnd = 86400;
+            $secondEnd = 86399;
         }
     }
 
     /**
-     * @param \DateTime $day
+     * @param \DateTimeImmutable $day
      * @param $startSec
      * @param $endSec
      *
      * @return int
      */
-    protected function downloadSeconds(\DateTime $day, int $startSec, int $endSec): int
+    protected function downloadSeconds(\DateTimeImmutable $day, int $startSec, int $endSec): int
     {
         $query = clone $this->getQuery();
 
@@ -479,18 +476,18 @@ class SATScraper
         if (0 !== $startSec) {
             $time = Helpers::converterSecondsToHours($startSec);
             [$startHour, $startMinute, $startSecond] = explode(':', $time);
-            $startDate->setTime((int)$startHour, (int)$startMinute, (int)$startSecond);
+            $startDate = $startDate->setTime((int)$startHour, (int)$startMinute, (int)$startSecond);
         }
 
         $query->setStartDate($startDate);
-
-        $filters = $this->getQuery()->getDownloadType()->isEmitidos() ? new FiltersIssued($query) : new FiltersReceived($query);
 
         $time = Helpers::converterSecondsToHours($endSec);
 
         [$endHour, $endMinute, $endSecond] = explode(':', $time);
         $endDate = $query->getEndDate()->setTime((int)$endHour, (int)$endMinute, (int)$endSecond);
         $query->setEndDate($endDate);
+
+        $filters = $this->getQuery()->getDownloadType()->isEmitidos() ? new FiltersIssued($query) : new FiltersReceived($query);
 
         $html = $this->runQueryDate($filters);
         $elements = $this->makeData($html);
@@ -630,6 +627,7 @@ class SATScraper
         $valuesChange = $parser->getFormValues();
         $temporary = array_merge($inputs, $filters->getRequestFilters());
         $temp = array_merge($temporary, $valuesChange);
+        print_r($temp);
 
         return $temp;
     }

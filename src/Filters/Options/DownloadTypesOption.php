@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Filters;
+namespace PhpCfdi\CfdiSatScraper\Filters\Options;
 
 use Eclipxe\Enum\Enum;
 use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
@@ -15,7 +15,7 @@ use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
  * @method bool isEmitidos()
  * @method bool isRecibidos()
  */
-class DownloadTypes extends Enum implements FilterOption
+class DownloadTypesOption extends Enum implements FilterOption
 {
     /**
      * @return array

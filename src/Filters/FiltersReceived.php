@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Filters;
 
 use PhpCfdi\CfdiSatScraper\Contracts\Filters;
-use PhpCfdi\CfdiSatScraper\Helpers;
 
 /**
  * Class FiltersReceived.
@@ -24,14 +23,14 @@ class FiltersReceived extends BaseFilters implements Filters
             '__LASTFOCUS' => '',
             'ctl00$MainContent$BtnBusqueda' => 'Buscar CFDI',
             'ctl00$MainContent$CldFecha$DdlAnio' => $this->query->getStartDate()->format('Y'),
-            'ctl00$MainContent$CldFecha$DdlMes' => (int)$this->query->getStartDate()->format('m'),
-            'ctl00$MainContent$CldFecha$DdlDia' => Helpers::formatNumber((int)$this->query->getStartDate()->format('d')),
-            'ctl00$MainContent$CldFecha$DdlHora' => (int)$this->query->getStartDate()->format('H'),
-            'ctl00$MainContent$CldFecha$DdlMinuto' => (int)$this->query->getStartDate()->format('i'),
-            'ctl00$MainContent$CldFecha$DdlSegundo' => (int)$this->query->getStartDate()->format('s'),
-            'ctl00$MainContent$CldFecha$DdlHoraFin' => (int)$this->query->getEndDate()->format('H'),
-            'ctl00$MainContent$CldFecha$DdlMinutoFin' => (int)$this->query->getEndDate()->format('i'),
-            'ctl00$MainContent$CldFecha$DdlSegundoFin' => (int)$this->query->getEndDate()->format('s'),
+            'ctl00$MainContent$CldFecha$DdlMes' => $this->query->getStartDate()->format('n'),
+            'ctl00$MainContent$CldFecha$DdlDia' => $this->query->getStartDate()->format('d'),
+            'ctl00$MainContent$CldFecha$DdlHora' => $this->query->getStartDate()->format('H'),
+            'ctl00$MainContent$CldFecha$DdlMinuto' => $this->query->getStartDate()->format('i'),
+            'ctl00$MainContent$CldFecha$DdlSegundo' => $this->query->getStartDate()->format('s'),
+            'ctl00$MainContent$CldFecha$DdlHoraFin' => $this->query->getEndDate()->format('H'),
+            'ctl00$MainContent$CldFecha$DdlMinutoFin' => $this->query->getEndDate()->format('i'),
+            'ctl00$MainContent$CldFecha$DdlSegundoFin' => $this->query->getEndDate()->format('s'),
             'ctl00$MainContent$DdlEstadoComprobante' => '1',
             'ctl00$MainContent$FiltroCentral' => $this->getCentralFilter(),
             'ctl00$MainContent$TxtRfcReceptor' => '',

@@ -17,7 +17,7 @@ class FiltersIssued extends BaseFilters implements Filters
     public function getFilters(): array
     {
         $startYear = $this->query->getStartDate()->format('Y');
-        $startMonth = $this->query->getStartDate()->format('m');
+        $startMonth = $this->query->getStartDate()->format('n');
         $startDay = $this->query->getStartDate()->format('d');
 
         return [
@@ -27,13 +27,13 @@ class FiltersIssued extends BaseFilters implements Filters
             '__LASTFOCUS' => '',
             'ctl00$MainContent$BtnBusqueda' => 'Buscar CFDI',
             'ctl00$MainContent$CldFechaInicial2$Calendario_text' => $startDay . '/' . $startMonth . '/' . $startYear,
-            'ctl00$MainContent$CldFechaInicial2$DdlHora' => (int)$this->query->getStartDate()->format('H'),
-            'ctl00$MainContent$CldFechaInicial2$DdlMinuto' => (int)$this->query->getStartDate()->format('i'),
-            'ctl00$MainContent$CldFechaInicial2$DdlSegundo' => (int)$this->query->getStartDate()->format('s'),
+            'ctl00$MainContent$CldFechaInicial2$DdlHora' => $this->query->getStartDate()->format('H'),
+            'ctl00$MainContent$CldFechaInicial2$DdlMinuto' => $this->query->getStartDate()->format('i'),
+            'ctl00$MainContent$CldFechaInicial2$DdlSegundo' => $this->query->getStartDate()->format('s'),
             'ctl00$MainContent$CldFechaFinal2$Calendario_text' => $startDay . '/' . $startMonth . '/' . $startYear,
-            'ctl00$MainContent$CldFechaFinal2$DdlHora' => (int)$this->query->getEndDate()->format('H'),
-            'ctl00$MainContent$CldFechaFinal2$DdlMinuto' => (int)$this->query->getEndDate()->format('i'),
-            'ctl00$MainContent$CldFechaFinal2$DdlSegundo' => (int)$this->query->getEndDate()->format('s'),
+            'ctl00$MainContent$CldFechaFinal2$DdlHora' => $this->query->getEndDate()->format('H'),
+            'ctl00$MainContent$CldFechaFinal2$DdlMinuto' => $this->query->getEndDate()->format('i'),
+            'ctl00$MainContent$CldFechaFinal2$DdlSegundo' => $this->query->getEndDate()->format('s'),
             'ctl00$MainContent$DdlEstadoComprobante' => '1',
             'ctl00$MainContent$FiltroCentral' => $this->getCentralFilter(),
             'ctl00$MainContent$TxtRfcReceptor' => '',
