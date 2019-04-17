@@ -627,7 +627,6 @@ class SATScraper
         $valuesChange = $parser->getFormValues();
         $temporary = array_merge($inputs, $filters->getRequestFilters());
         $temp = array_merge($temporary, $valuesChange);
-        print_r($temp);
 
         return $temp;
     }
