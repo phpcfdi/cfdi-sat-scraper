@@ -29,7 +29,7 @@ class SatScraperDownloadPeriodTest extends TestCase
         $dates = [];
         foreach ($spy->getInvocations() as $invocation) {
             /** @var \DateTimeImmutable $date */
-            $date = $invocation->getParameters()[0];
+            $date = $invocation->getParameters()[1];
             $dates[] = $date->format('Y-m-d H:i:s');
         }
 
