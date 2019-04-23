@@ -45,7 +45,8 @@
     },
     "scripts": {
         "dev:build": [
-            "@dev:fix-style"
+            "@dev:fix-style",
+            "@dev:tests"
         ],
         "dev:check-style": [
             "vendor/bin/php-cs-fixer fix --dry-run --verbose",
