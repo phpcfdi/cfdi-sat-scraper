@@ -7,6 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use PhpCfdi\CfdiSatScraper\DeCaptcherCaptchaResolver;
+use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\SATScraper;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
@@ -22,13 +23,13 @@ class SatScraperMakeDataTest extends TestCase
         $captchaResolver = $this->createMock(DeCaptcherCaptchaResolver::class);
 
         $scraper = new class('rfc', 'ciec', $client, $cookie, $captchaResolver) extends SATScraper {
-            public function exposeMakeData($html): int
+            public function exposeMakeData($html): MetadataList
             {
                 return $this->makeData($html);
             }
         };
 
-        $this->assertSame(1, $scraper->exposeMakeData($sample));
+        $this->assertCount(1, $scraper->exposeMakeData($sample));
 
         $expectedUuid = 'B97262E5-704C-4BF7-AE26-9174FEF04D63';
 
@@ -63,9 +64,9 @@ class SatScraperMakeDataTest extends TestCase
         ];
 
         $data = $scraper->getData();
-        $this->assertArrayHasKey($expectedUuid, $data);
+        $this->assertTrue($data->has($expectedUuid));
 
-        $document = $data[$expectedUuid];
+        $document = $data->get($expectedUuid);
         foreach ($expectedData[$expectedUuid] as $key => $value) {
             $this->assertArrayHasKey($key, $document);
             $this->assertSame($value, $document[$key]);
