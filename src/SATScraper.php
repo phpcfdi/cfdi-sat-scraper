@@ -177,36 +177,18 @@ class SATScraper
     }
 
     /**
-     * @param Query $query
-     *
-     * @return SATScraper
-     */
-    public function setQuery(Query $query): self
-    {
-        $this->query = $query;
-        return $this;
-    }
-
-    /**
-     * @return Query
-     */
-    public function getQuery(): Query
-    {
-        return $this->query;
-    }
-
-    /**
+     * @param DownloadTypesOption $downloadType
      * @return SATScraper
      * @throws SATAuthenticatedException
      * @throws SATCredentialsException
      */
-    public function initScraper(): self
+    public function initScraper(DownloadTypesOption $downloadType): self
     {
         $this->login();
         $data = $this->dataAuth();
         $data = $this->postDataAuth($data);
         $data = $this->start($data);
-        $this->selectType($data);
+        $this->selectType($downloadType, $data);
 
         return $this;
     }
@@ -346,14 +328,15 @@ class SATScraper
     }
 
     /**
+     * @param DownloadTypesOption $downloadType
      * @param array $inputs
      *
      * @return string
      */
-    protected function selectType(array $inputs): string
+    protected function selectType(DownloadTypesOption $downloadType, array $inputs): string
     {
         $data = [
-            'ctl00$MainContent$TipoBusqueda' => $this->query->getDownloadType()->value(),
+            'ctl00$MainContent$TipoBusqueda' => $downloadType->value(),
             '__ASYNCPOST' => 'true',
             '__EVENTTARGET' => '',
             '__EVENTARGUMENT' => '',
@@ -382,15 +365,17 @@ class SATScraper
     /**
      * @param array $uuids
      * @param DownloadTypesOption $downloadType
+     * @throws \Exception
      */
     public function downloadListUUID(array $uuids, DownloadTypesOption $downloadType): void
     {
+        $query = new Query(new \DateTimeImmutable(), new \DateTimeImmutable());
         $this->data = [];
         $filters = $downloadType->isEmitidos() ? new FiltersIssued($query) : new FiltersReceived($query);
 
-        foreach ($query->getUuid() as $uuid) {
+        foreach ($uuids as $uuid) {
             $filters->setUuid($uuid);
-            $html = $this->runQueryDate($filters);
+            $html = $this->runQueryDate($query, $filters);
             $this->makeData($html);
         }
     }
@@ -402,22 +387,22 @@ class SATScraper
      */
     public function downloadPeriod(Query $query): void
     {
-        $this->setQuery($query);
-        $this->initScraper();
+        $this->initScraper($query->getDownloadType());
         $start = $query->getStartDate()->setTime(0, 0, 0);
         $end = $query->getEndDate()->setTime(0, 0, 0);
 
         $this->data = [];
 
         for ($current = $start; $current <= $end; $current = $current->modify('+1 day')) {
-            $this->downloadDay($current);
+            $this->downloadDay($query, $current);
         }
     }
 
     /**
+     * @param Query $query
      * @param \DateTimeImmutable $day
      */
-    protected function downloadDay(\DateTimeImmutable $day): void
+    protected function downloadDay(Query $query, \DateTimeImmutable $day): void
     {
         $secondInitial = 0;
         $secondEnd = 86399;
@@ -426,7 +411,7 @@ class SATScraper
         $hasCallable = is_callable($this->onFiveHundred);
 
         while (true) {
-            $result = $this->downloadSeconds($day, $secondInitial, $secondEnd);
+            $result = $this->downloadSeconds($query, $day, $secondInitial, $secondEnd);
 
             if ($hasCallable && $result >= 500) {
                 $params = [
@@ -456,15 +441,16 @@ class SATScraper
     }
 
     /**
+     * @param Query $baseQuery
      * @param \DateTimeImmutable $day
      * @param $startSec
      * @param $endSec
      *
      * @return int
      */
-    protected function downloadSeconds(\DateTimeImmutable $day, int $startSec, int $endSec): int
+    protected function downloadSeconds(Query $baseQuery, \DateTimeImmutable $day, int $startSec, int $endSec): int
     {
-        $query = clone $this->getQuery();
+        $query = clone $baseQuery;
 
         $startDate = $query->getStartDate()
             ->setDate(
@@ -487,22 +473,23 @@ class SATScraper
         $endDate = $query->getEndDate()->setTime((int)$endHour, (int)$endMinute, (int)$endSecond);
         $query->setEndDate($endDate);
 
-        $filters = $this->getQuery()->getDownloadType()->isEmitidos() ? new FiltersIssued($query) : new FiltersReceived($query);
+        $filters = $baseQuery->getDownloadType()->isEmitidos() ? new FiltersIssued($query) : new FiltersReceived($query);
 
-        $html = $this->runQueryDate($filters);
+        $html = $this->runQueryDate($query, $filters);
         $elements = $this->makeData($html);
 
         return $elements;
     }
 
     /**
+     * @param Query $query
      * @param Filters $filters
      *
      * @return string
      */
-    protected function runQueryDate(Filters $filters): string
+    protected function runQueryDate(Query $query, Filters $filters): string
     {
-        if ($this->getQuery()->getDownloadType()->isEmitidos()) {
+        if ($query->getDownloadType()->isEmitidos()) {
             $url = URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR;
             $result = $this->enterQueryTransmitter($filters);
         } else {
