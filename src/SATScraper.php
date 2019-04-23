@@ -694,9 +694,4 @@ class SATScraper
         return (new DownloadXML())
             ->setSatScraper($this);
     }
-
-    public function __destruct()
-    {
-        $this->data = [];
-    }
 }
