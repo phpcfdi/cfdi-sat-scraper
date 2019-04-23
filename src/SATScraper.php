@@ -411,7 +411,8 @@ class SATScraper
         $hasCallable = is_callable($this->onFiveHundred);
 
         while (true) {
-            $result = $this->downloadSeconds($query, $day, $secondInitial, $secondEnd);
+            $list = $this->downloadSeconds($query, $day, $secondInitial, $secondEnd);
+            $result = $list->count();
 
             if ($hasCallable && $result >= 500) {
                 $params = [
@@ -446,9 +447,9 @@ class SATScraper
      * @param $startSec
      * @param $endSec
      *
-     * @return int
+     * @return MetadataList
      */
-    protected function downloadSeconds(Query $baseQuery, \DateTimeImmutable $day, int $startSec, int $endSec): int
+    protected function downloadSeconds(Query $baseQuery, \DateTimeImmutable $day, int $startSec, int $endSec): MetadataList
     {
         $query = clone $baseQuery;
 
@@ -476,9 +477,9 @@ class SATScraper
         $filters = $baseQuery->getDownloadType()->isEmitidos() ? new FiltersIssued($query) : new FiltersReceived($query);
 
         $html = $this->runQueryDate($query, $filters);
-        $elements = $this->makeData($html);
+        $list = $this->makeData($html);
 
-        return $elements;
+        return $list;
     }
 
     /**
@@ -634,14 +635,14 @@ class SATScraper
     /**
      * @param string $html
      *
-     * @return int
+     * @return MetadataList
      */
-    protected function makeData($html): int
+    protected function makeData($html): MetadataList
     {
         $extractor = new MetadataExtractor();
         $data = $extractor->extract($html);
         $this->data = array_merge($this->data, $data);
-        return count($data);
+        return new MetadataList($data);
     }
 
     /**
@@ -674,12 +675,9 @@ class SATScraper
         }
     }
 
-    /**
-     * @return array
-     */
-    public function getData(): array
+    public function getData(): MetadataList
     {
-        return $this->data;
+        return new MetadataList($this->data);
     }
 
     /**
