@@ -209,9 +209,10 @@ $list = $satScraper->downloadPeriod($query);
 
 print_r($list);
     
-$satScraper->downloader($list)
-        ->setConcurrency(50)
-        ->saveTo('downloads', true, 0777);
+$satScraper->downloader()
+    ->setMetadataList($list)
+    ->setConcurrency(50)
+    ->saveTo('downloads', true, 0777);
  
 ```
 
@@ -248,8 +249,9 @@ $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
 $list = $satScraper->downloadPeriod($query);
 
 print_r($list);
-    
-$satScraper->downloader($list)
+
+$satScraper->downloader()
+    ->setMetadataList($list)
     ->setConcurrency(50)
     ->download(function (string $content, string $name) use ($path) {
       /**
@@ -257,5 +259,4 @@ $satScraper->downloader($list)
       * @var string $name name of file
       */
     });
- 
 ```

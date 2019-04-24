@@ -694,7 +694,6 @@ class SATScraper
      */
     public function downloader(): DownloadXML
     {
-        return (new DownloadXML())
-            ->setSatScraper($this);
+        return new DownloadXML($this->getClient(), $this->getCookie());
     }
 }
