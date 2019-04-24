@@ -29,7 +29,8 @@ class SatScraperMakeDataTest extends TestCase
             }
         };
 
-        $this->assertCount(1, $scraper->exposeMakeData($sample));
+        $data = $scraper->exposeMakeData($sample);
+        $this->assertCount(1, $data);
 
         $expectedUuid = 'B97262E5-704C-4BF7-AE26-9174FEF04D63';
 
@@ -63,7 +64,6 @@ class SatScraperMakeDataTest extends TestCase
             ],
         ];
 
-        $data = $scraper->getData();
         $this->assertTrue($data->has($expectedUuid));
 
         $document = $data->get($expectedUuid);

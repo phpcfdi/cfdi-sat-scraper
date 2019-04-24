@@ -363,48 +363,52 @@ class SATScraper
     /**
      * @param array $uuids
      * @param DownloadTypesOption $downloadType
+     * @return MetadataList
      * @throws \Exception
      */
-    public function downloadListUUID(array $uuids, DownloadTypesOption $downloadType): void
+    public function downloadListUUID(array $uuids, DownloadTypesOption $downloadType): MetadataList
     {
         $query = new Query(new \DateTimeImmutable(), new \DateTimeImmutable());
-        $this->data = [];
         $filters = $downloadType->isEmitidos() ? new FiltersIssued($query) : new FiltersReceived($query);
 
+        $result = new MetadataList([]);
         foreach ($uuids as $uuid) {
             $filters->setUuid($uuid);
             $html = $this->runQueryDate($query, $filters);
-            $this->makeData($html);
+            $result = $result->merge($this->makeData($html));
         }
+        return $result;
     }
 
     /**
      * @param Query $query
+     * @return MetadataList
      * @throws SATAuthenticatedException
      * @throws SATCredentialsException
      */
-    public function downloadPeriod(Query $query): void
+    public function downloadPeriod(Query $query): MetadataList
     {
         $this->initScraper($query->getDownloadType());
         $start = $query->getStartDate()->setTime(0, 0, 0);
         $end = $query->getEndDate()->setTime(0, 0, 0);
 
-        $this->data = [];
-
+        $result = new MetadataList([]);
         for ($current = $start; $current <= $end; $current = $current->modify('+1 day')) {
-            $this->downloadDay($query, $current);
+            $result = $result->merge($this->downloadDay($query, $current));
         }
+        return $result;
     }
 
     /**
      * @param Query $query
      * @param \DateTimeImmutable $day
+     * @return MetadataList
      */
-    protected function downloadDay(Query $query, \DateTimeImmutable $day): void
+    protected function downloadDay(Query $query, \DateTimeImmutable $day): MetadataList
     {
+        $finalList = new MetadataList([]);
         $secondInitial = 0;
         $secondEnd = 86399;
-        $totalRecords = 0;
 
         $hasCallable = is_callable($this->onFiveHundred);
 
@@ -429,7 +433,7 @@ class SATScraper
                 continue;
             }
 
-            $totalRecords = $totalRecords + $result;
+            $finalList = $finalList->merge($list);
             if ($secondEnd >= 86399) {
                 break;
             }
@@ -437,6 +441,8 @@ class SATScraper
             $secondInitial = $secondEnd + 1;
             $secondEnd = 86399;
         }
+
+        return $finalList;
     }
 
     /**
@@ -639,7 +645,6 @@ class SATScraper
     {
         $extractor = new MetadataExtractor();
         $data = $extractor->extract($html);
-        $this->data = array_merge($this->data, $data);
         return new MetadataList($data);
     }
 
@@ -660,22 +665,18 @@ class SATScraper
     }
 
     /**
+     * @param MetadataList $list
      * @return \Generator
      */
-    public function getUrls(): \Generator
+    public function getUrls(MetadataList $list): \Generator
     {
-        foreach ($this->getData() as $uuid => $data) {
-            if (is_null($data['urlXml'])) {
+        foreach ($list as $uuid => $data) {
+            if ('' === strval($data['urlXml'] ?? '')) {
                 continue;
             }
 
             yield $data['urlXml'];
         }
-    }
-
-    public function getData(): MetadataList
-    {
-        return new MetadataList($this->data);
     }
 
     /**
