@@ -59,7 +59,7 @@ class SATScraper
     protected $query;
 
     /**
-     * @var null
+     * @var callable|null
      */
     protected $onFiveHundred = null;
 
