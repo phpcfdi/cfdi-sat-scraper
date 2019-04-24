@@ -19,9 +19,9 @@ class MetadataList implements \Countable, \IteratorAggregate
         $this->list = $list;
     }
 
-    public function merge(MetadataList $list): MetadataList
+    public function merge(self $list): self
     {
-        return new MetadataList(array_merge($this->list, $list->list));
+        return new self(array_merge($this->list, $list->list));
     }
 
     public function has(string $uuid): bool
