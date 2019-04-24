@@ -665,21 +665,6 @@ class SATScraper
     }
 
     /**
-     * @param MetadataList $list
-     * @return \Generator
-     */
-    public function getUrls(MetadataList $list): \Generator
-    {
-        foreach ($list as $uuid => $data) {
-            if ('' === strval($data['urlXml'] ?? '')) {
-                continue;
-            }
-
-            yield $data['urlXml'];
-        }
-    }
-
-    /**
      * @param callable $callback
      */
     public function setOnFiveHundred(callable $callback): void
