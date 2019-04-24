@@ -44,21 +44,6 @@ class SATScraper
     protected $cookie;
 
     /**
-     * @var array
-     */
-    protected $data = [];
-
-    /**
-     * @var array
-     */
-    protected $requests = [];
-
-    /**
-     * @var Query
-     */
-    protected $query;
-
-    /**
      * @var callable|null
      */
     protected $onFiveHundred = null;
