@@ -30,7 +30,7 @@ $cookie = new CookieJar();
 $captchaResolver = new DeCaptcherCaptchaResolver($client, 'user', 'password');
 $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&option=credential&sid=0';
 
-$query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
+$query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
 $query//->setRfc(new RfcReceptor('XAXX010101000'))
     ->setComplement(ComplementsOption::todos())
@@ -39,9 +39,9 @@ $query//->setRfc(new RfcReceptor('XAXX010101000'))
 
 $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
     //$satScraper->setLoginUrl($loginUrl);
-    $satScraper->downloadPeriod($query);
+    $list = $satScraper->downloadPeriod($query);
 
-print_r($satScraper->getData());
+print_r($list);
 ```
 
 ## Ejemplo de descarga por lista de uuids
@@ -66,9 +66,9 @@ $cookie = new CookieJar();
 $captchaResolver = new DeCaptcherCaptchaResolver($client, 'user', 'password');
 $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&option=credential&sid=0';
 
-$query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
+$query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
-$query//->setRfc(new RfcReceptor('XAXX010101000'))
+$query
     ->setComplement(ComplementsOption::todos())
     ->setStateVoucher(StatesVoucherOption::vigentes())
     ->setDownloadType(DownloadTypesOption::recibidos())
@@ -79,9 +79,9 @@ $query//->setRfc(new RfcReceptor('XAXX010101000'))
     ]);
 
 $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
-$satScraper->downloadListUUID($query);
+$list = $satScraper->downloadListUUID($query);
 
-print_r($satScraper->getData());
+print_r($list);
 ```
 
 ## Excepciones
@@ -106,7 +106,7 @@ $captchaResolver = new DeCaptcherCaptchaResolver($client, 'user', 'password');
 $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&option=credential&sid=0';
 
 try {
-    $query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
+    $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
     
     $query//->setRfc(new RfcReceptor('XAXX010101000'))
         ->setComplement(ComplementsOption::todos())
@@ -114,9 +114,9 @@ try {
         ->setDownloadType(DownloadTypesOption::recibidos());
     
     $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
-    $satScraper->downloadPeriod($query);
+    $list = $satScraper->downloadPeriod($query);
     
-    print_r($satScraper->getData());
+    print_r($list);
 } catch (SATCredentialsException | SATAuthenticatedException $e) {
     print_r($e->getMessage());
 } catch (SATException $e) {
@@ -146,7 +146,7 @@ $cookie = new CookieJar();
 $captchaResolver = new DeCaptcherCaptchaResolver($client, 'user', 'password');
 $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&option=credential&sid=0';
 
-$query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
+$query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
 $query//->setRfc(new RfcReceptor('XAXX010101000'))
 ->setComplement(ComplementsOption::todos())
@@ -154,7 +154,7 @@ $query//->setRfc(new RfcReceptor('XAXX010101000'))
     ->setDownloadType(DownloadTypesOption::recibidos());
 
 $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
-$satScraper->downloadPeriod($query);
+$list = $satScraper->downloadPeriod($query);
 $satScraper->setOnFiveHundred(function ($data) {
     /*
     * @var $data contains:
@@ -171,7 +171,7 @@ $satScraper->setOnFiveHundred(function ($data) {
     print_r($data); // Esta función se ejecutara cada que detecte 500 o mas comprobantes en el mismo segundo
 });
 
-print_r($satScraper->getData());
+print_r($list);
 
 ```
 
@@ -197,7 +197,7 @@ $cookie = new CookieJar();
 $captchaResolver = new DeCaptcherCaptchaResolver($client, 'user', 'password');
 $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&option=credential&sid=0';
 
-$query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
+$query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
 $query//->setRfc(new RfcReceptor('XAXX010101000'))
     ->setComplement(ComplementsOption::todos())
@@ -205,13 +205,13 @@ $query//->setRfc(new RfcReceptor('XAXX010101000'))
     ->setDownloadType(DownloadTypesOption::recibidos());
 
 $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
-$satScraper->downloadPeriod($query);
+$list = $satScraper->downloadPeriod($query);
 
-print_r($satScraper->getData());
+print_r($list);
     
-    $satScraper->downloader()
-            ->setConcurrency(50)
-            ->saveTo('downloads', true, 0777);
+$satScraper->downloader($list)
+        ->setConcurrency(50)
+        ->saveTo('downloads', true, 0777);
  
 ```
 
@@ -237,7 +237,7 @@ $cookie = new CookieJar();
 $captchaResolver = new DeCaptcherCaptchaResolver($client, 'user', 'password');
 $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&option=credential&sid=0';
 
-$query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
+$query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
 $query//->setRfc(new RfcReceptor('XAXX010101000'))
     ->setComplement(ComplementsOption::todos())
@@ -245,17 +245,17 @@ $query//->setRfc(new RfcReceptor('XAXX010101000'))
     ->setDownloadType(DownloadTypesOption::recibidos());
 
 $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
-$satScraper->downloadPeriod($query);
+$list = $satScraper->downloadPeriod($query);
 
-print_r($satScraper->getData());
+print_r($list);
     
-$satScraper->downloader()
-        ->setConcurrency(50)
-        ->download(function ($content, $name) use ($path) {
-          /**
-          * @var $content XML string
-          * @var $name name of file
-          */
-        });
+$satScraper->downloader($list)
+    ->setConcurrency(50)
+    ->download(function (string $content, string $name) use ($path) {
+      /**
+      * @var string $content XML string
+      * @var string $name name of file
+      */
+    });
  
 ```
