@@ -9,11 +9,8 @@ use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
-use PhpCfdi\CfdiSatScraper\Contracts\Filters;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATCredentialsException;
-use PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
-use PhpCfdi\CfdiSatScraper\Filters\FiltersReceived;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -477,49 +474,8 @@ class SATScraper
      */
     protected function runQueryDate(Query $query): MetadataList
     {
-        if ($query->getDownloadType()->isEmitidos()) {
-            $url = URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR;
-            $filters = new FiltersIssued($query);
-        } else {
-            $url = URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR;
-            $filters = new FiltersReceived($query);
-        }
-
-        $html = $this->runQueryDateConsumeFormPage($url);
-        $inputs = $this->parseInputs($html);
-
-        $post = array_merge($inputs, $filters->getInitialFilters());
-        $html = $this->runQueryDateConsumeSearch($url, $post);
-
-        $values = array_merge($inputs, $filters->getRequestFilters(), (new ParserFormatSAT($html))->getFormValues());
-        $html = $this->runQueryDateConsumeSearch($url, $values);
-
-        $extractor = new MetadataExtractor();
-        $data = $extractor->extract($html);
-        return new MetadataList($data);
-    }
-
-    protected function runQueryDateConsumeFormPage(string $url): string
-    {
-        $response = $this->getClient()->get($url, [
-            'future' => true,
-            'cookies' => $this->getCookie(),
-            'verify' => false,
-        ]);
-
-        return $response->getBody()->getContents();
-    }
-
-    protected function runQueryDateConsumeSearch(string $url, array $post): string
-    {
-        $response = $this->getClient()->post($url, [
-            'form_params' => $post,
-            'headers' => Headers::postAjax(URLS::SAT_HOST_PORTAL_CFDI, $url),
-            'future' => true,
-            'verify' => false,
-            'cookies' => $this->getCookie(),
-        ]);
-        return $response->getBody()->getContents();
+        return (new QueryResolver($this->getClient(), $this->getCookie()))
+            ->resolve($query);
     }
 
     /**
