@@ -512,20 +512,13 @@ class SATScraper
     protected function enterQuery(string $url, Filters $filters): array
     {
         $html = $this->enterQueryConsumeMainForm($url);
-
         $inputs = $this->parseInputs($html);
-        $post = array_merge($inputs, $filters->getInitialFilters());
 
-        $response = $this->client->post($url, [
-            'form_params' => $post,
-            'headers' => Headers::postAjax(URLS::SAT_HOST_PORTAL_CFDI, $url),
-            'future' => true,
-            'verify' => false,
-            'cookies' => $this->cookie,
-        ]);
+        $post = array_merge($inputs, $filters->getInitialFilters());
+        $html = $this->enterQueryConsumeInitialSearch($url, $post);
 
         return [
-            'html' => $response->getBody()->getContents(),
+            'html' => $html,
             'inputs' => $inputs,
         ];
     }
@@ -538,6 +531,18 @@ class SATScraper
             'verify' => false,
         ]);
 
+        return $response->getBody()->getContents();
+    }
+
+    protected function enterQueryConsumeInitialSearch(string $url, array $post): string
+    {
+        $response = $this->client->post($url, [
+            'form_params' => $post,
+            'headers' => Headers::postAjax(URLS::SAT_HOST_PORTAL_CFDI, $url),
+            'future' => true,
+            'verify' => false,
+            'cookies' => $this->cookie,
+        ]);
         return $response->getBody()->getContents();
     }
 
