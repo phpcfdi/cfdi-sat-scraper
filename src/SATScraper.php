@@ -487,7 +487,7 @@ class SATScraper
         $html = $result['html'];
         $inputs = $result['inputs'];
 
-        $values = $this->getSearchValues($html, $inputs, $filters);
+        $values = array_merge($inputs, $filters->getRequestFilters(), (new ParserFormatSAT($html))->getFormValues());
 
         $response = $this->client->post($url, [
             'form_params' => $values,
@@ -532,18 +532,6 @@ class SATScraper
             'html' => $response->getBody()->getContents(),
             'inputs' => $inputs,
         ];
-    }
-
-    /**
-     * @param string $html
-     * @param array $inputs
-     * @param Filters $filters
-     *
-     * @return array
-     */
-    protected function getSearchValues($html, array $inputs, Filters $filters): array
-    {
-        return array_merge($inputs, $filters->getRequestFilters(), (new ParserFormatSAT($html))->getFormValues());
     }
 
     /**
