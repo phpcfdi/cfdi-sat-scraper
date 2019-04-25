@@ -482,30 +482,26 @@ class SATScraper
     {
         if ($query->getDownloadType()->isEmitidos()) {
             $url = URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR;
-            $result = $this->enterQueryTransmitter($filters);
         } else {
             $url = URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR;
-            $result = $this->enterQueryReceiver($filters);
         }
 
+        $result = $this->enterQuery($url, $filters);
         $html = $result['html'];
         $inputs = $result['inputs'];
 
         $values = $this->getSearchValues($html, $inputs, $filters);
 
-        $response = $this->client->post(
-            $url,
-            [
-                'form_params' => $values,
-                'headers' => Headers::postAjax(
-                    URLS::SAT_HOST_PORTAL_CFDI,
-                    $url
-                ),
-                'cookies' => $this->cookie,
-                'future' => true,
-                'verify' => false,
-            ]
-        );
+        $response = $this->client->post($url, [
+            'form_params' => $values,
+            'headers' => Headers::postAjax(
+                URLS::SAT_HOST_PORTAL_CFDI,
+                $url
+            ),
+            'cookies' => $this->cookie,
+            'future' => true,
+            'verify' => false,
+        ]);
 
         $html = $response->getBody()->getContents();
 
@@ -514,81 +510,26 @@ class SATScraper
         return new MetadataList($data);
     }
 
-    /**
-     * @param Filters $filters
-     *
-     * @return array
-     */
-    protected function enterQueryReceiver(Filters $filters): array
+    protected function enterQuery(string $url, Filters $filters): array
     {
-        $response = $this->client->get(
-            URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR,
-            [
-                'future' => true,
-                'cookies' => $this->cookie,
-                'verify' => false,
-            ]
-        );
+        $response = $this->client->get($url, [
+            'future' => true,
+            'cookies' => $this->cookie,
+            'verify' => false,
+        ]);
 
         $html = $response->getBody()->getContents();
 
         $inputs = $this->parseInputs($html);
         $post = array_merge($inputs, $filters->getInitialFilters());
 
-        $response = $this->client->post(
-            URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR,
-            [
-                'form_params' => $post,
-                'headers' => Headers::postAjax(
-                    URLS::SAT_HOST_PORTAL_CFDI,
-                    URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR
-                ),
-                'future' => true,
-                'verify' => false,
-                'cookies' => $this->cookie,
-            ]
-        );
-
-        return [
-            'html' => $response->getBody()->getContents(),
-            'inputs' => $inputs,
-        ];
-    }
-
-    /**
-     * @param Filters $filters
-     *
-     * @return array
-     */
-    protected function enterQueryTransmitter(Filters $filters): array
-    {
-        $response = $this->client->get(
-            URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR,
-            [
-                'future' => true,
-                'cookies' => $this->cookie,
-                'verify' => false,
-            ]
-        );
-
-        $html = $response->getBody()->getContents();
-
-        $inputs = $this->parseInputs($html);
-        $post = array_merge($inputs, $filters->getInitialFilters());
-
-        $response = $this->client->post(
-            URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR,
-            [
-                'form_params' => $post,
-                'headers' => Headers::postAjax(
-                    URLS::SAT_HOST_PORTAL_CFDI,
-                    URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR
-                ),
-                'future' => true,
-                'verify' => false,
-                'cookies' => $this->cookie,
-            ]
-        );
+        $response = $this->client->post($url, [
+            'form_params' => $post,
+            'headers' => Headers::postAjax(URLS::SAT_HOST_PORTAL_CFDI, $url),
+            'future' => true,
+            'verify' => false,
+            'cookies' => $this->cookie,
+        ]);
 
         return [
             'html' => $response->getBody()->getContents(),
