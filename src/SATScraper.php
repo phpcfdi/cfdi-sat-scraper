@@ -509,13 +509,7 @@ class SATScraper
 
     protected function enterQuery(string $url, Filters $filters): array
     {
-        $response = $this->client->get($url, [
-            'future' => true,
-            'cookies' => $this->cookie,
-            'verify' => false,
-        ]);
-
-        $html = $response->getBody()->getContents();
+        $html = $this->enterQueryConsumeMainForm($url);
 
         $inputs = $this->parseInputs($html);
         $post = array_merge($inputs, $filters->getInitialFilters());
@@ -532,6 +526,17 @@ class SATScraper
             'html' => $response->getBody()->getContents(),
             'inputs' => $inputs,
         ];
+    }
+
+    protected function enterQueryConsumeMainForm(string $url): string
+    {
+        $response = $this->getClient()->get($url, [
+            'future' => true,
+            'cookies' => $this->getCookie(),
+            'verify' => false,
+        ]);
+
+        return $response->getBody()->getContents();
     }
 
     /**
