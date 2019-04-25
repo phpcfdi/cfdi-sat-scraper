@@ -354,12 +354,12 @@ class SATScraper
     public function downloadListUUID(array $uuids, DownloadTypesOption $downloadType): MetadataList
     {
         $query = new Query(new \DateTimeImmutable(), new \DateTimeImmutable());
-        $filters = $downloadType->isEmitidos() ? new FiltersIssued($query) : new FiltersReceived($query);
+        $query->setDownloadType($downloadType);
 
         $result = new MetadataList([]);
         foreach ($uuids as $uuid) {
-            $filters->setUuid($uuid);
-            $uuidResult = $this->runQueryDate($query, $filters);
+            $query->setUuid([$uuid]);
+            $uuidResult = $this->runQueryDate($query);
             $result = $result->merge($uuidResult);
         }
         return $result;
@@ -463,25 +463,24 @@ class SATScraper
         $endDate = $query->getEndDate()->setTime((int)$endHour, (int)$endMinute, (int)$endSecond);
         $query->setEndDate($endDate);
 
-        $filters = $query->getDownloadType()->isEmitidos() ? new FiltersIssued($query) : new FiltersReceived($query);
-
-        $list = $this->runQueryDate($query, $filters);
+        $list = $this->runQueryDate($query);
 
         return $list;
     }
 
     /**
      * @param Query $query
-     * @param Filters $filters
      *
      * @return MetadataList
      */
-    protected function runQueryDate(Query $query, Filters $filters): MetadataList
+    protected function runQueryDate(Query $query): MetadataList
     {
         if ($query->getDownloadType()->isEmitidos()) {
             $url = URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR;
+            $filters = new FiltersIssued($query);
         } else {
             $url = URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR;
+            $filters = new FiltersReceived($query);
         }
 
         $result = $this->enterQuery($url, $filters);
