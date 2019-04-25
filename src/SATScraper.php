@@ -463,7 +463,7 @@ class SATScraper
         $endDate = $query->getEndDate()->setTime((int)$endHour, (int)$endMinute, (int)$endSecond);
         $query->setEndDate($endDate);
 
-        $filters = $baseQuery->getDownloadType()->isEmitidos() ? new FiltersIssued($query) : new FiltersReceived($query);
+        $filters = $query->getDownloadType()->isEmitidos() ? new FiltersIssued($query) : new FiltersReceived($query);
 
         $html = $this->runQueryDate($query, $filters);
         $list = $this->makeData($html);
