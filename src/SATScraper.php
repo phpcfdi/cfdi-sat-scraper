@@ -358,7 +358,7 @@ class SATScraper
         $result = new MetadataList([]);
         foreach ($uuids as $uuid) {
             $query->setUuid([$uuid]);
-            $uuidResult = $this->runQueryDate($query);
+            $uuidResult = $this->resolveQuery($query);
             $result = $result->merge($uuidResult);
         }
         return $result;
@@ -462,7 +462,7 @@ class SATScraper
         $endDate = $query->getEndDate()->setTime((int)$endHour, (int)$endMinute, (int)$endSecond);
         $query->setEndDate($endDate);
 
-        $list = $this->runQueryDate($query);
+        $list = $this->resolveQuery($query);
 
         return $list;
     }
@@ -472,7 +472,7 @@ class SATScraper
      *
      * @return MetadataList
      */
-    protected function runQueryDate(Query $query): MetadataList
+    protected function resolveQuery(Query $query): MetadataList
     {
         return (new QueryResolver($this->getClient(), $this->getCookie()))
             ->resolve($query);
