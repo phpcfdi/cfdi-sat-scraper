@@ -361,8 +361,8 @@ class SATScraper
         $result = new MetadataList([]);
         foreach ($uuids as $uuid) {
             $filters->setUuid($uuid);
-            $html = $this->runQueryDate($query, $filters);
-            $result = $result->merge($this->makeData($html));
+            $uuidResult = $this->runQueryDate($query, $filters);
+            $result = $result->merge($uuidResult);
         }
         return $result;
     }
@@ -467,8 +467,7 @@ class SATScraper
 
         $filters = $query->getDownloadType()->isEmitidos() ? new FiltersIssued($query) : new FiltersReceived($query);
 
-        $html = $this->runQueryDate($query, $filters);
-        $list = $this->makeData($html);
+        $list = $this->runQueryDate($query, $filters);
 
         return $list;
     }
@@ -477,9 +476,9 @@ class SATScraper
      * @param Query $query
      * @param Filters $filters
      *
-     * @return string
+     * @return MetadataList
      */
-    protected function runQueryDate(Query $query, Filters $filters): string
+    protected function runQueryDate(Query $query, Filters $filters): MetadataList
     {
         if ($query->getDownloadType()->isEmitidos()) {
             $url = URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR;
@@ -508,7 +507,11 @@ class SATScraper
             ]
         );
 
-        return $response->getBody()->getContents();
+        $html = $response->getBody()->getContents();
+
+        $extractor = new MetadataExtractor();
+        $data = $extractor->extract($html);
+        return new MetadataList($data);
     }
 
     /**
@@ -621,18 +624,6 @@ class SATScraper
         $inputs = $htmlForm->getFormValues();
 
         return $inputs;
-    }
-
-    /**
-     * @param string $html
-     *
-     * @return MetadataList
-     */
-    protected function makeData($html): MetadataList
-    {
-        $extractor = new MetadataExtractor();
-        $data = $extractor->extract($html);
-        return new MetadataList($data);
     }
 
     /**
