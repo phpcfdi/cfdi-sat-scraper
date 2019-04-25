@@ -522,12 +522,12 @@ class SATScraper
 
     protected function enterQueryConsumeInitialSearch(string $url, array $post): string
     {
-        $response = $this->client->post($url, [
+        $response = $this->getClient()->post($url, [
             'form_params' => $post,
             'headers' => Headers::postAjax(URLS::SAT_HOST_PORTAL_CFDI, $url),
             'future' => true,
             'verify' => false,
-            'cookies' => $this->cookie,
+            'cookies' => $this->getCookie(),
         ]);
         return $response->getBody()->getContents();
     }
