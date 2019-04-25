@@ -483,9 +483,11 @@ class SATScraper
             $filters = new FiltersReceived($query);
         }
 
-        $result = $this->enterQuery($url, $filters);
-        $html = $result['html'];
-        $inputs = $result['inputs'];
+        $html = $this->enterQueryConsumeMainForm($url);
+        $inputs = $this->parseInputs($html);
+
+        $post = array_merge($inputs, $filters->getInitialFilters());
+        $html = $this->enterQueryConsumeInitialSearch($url, $post);
 
         $values = array_merge($inputs, $filters->getRequestFilters(), (new ParserFormatSAT($html))->getFormValues());
 
@@ -505,20 +507,6 @@ class SATScraper
         $extractor = new MetadataExtractor();
         $data = $extractor->extract($html);
         return new MetadataList($data);
-    }
-
-    protected function enterQuery(string $url, Filters $filters): array
-    {
-        $html = $this->enterQueryConsumeMainForm($url);
-        $inputs = $this->parseInputs($html);
-
-        $post = array_merge($inputs, $filters->getInitialFilters());
-        $html = $this->enterQueryConsumeInitialSearch($url, $post);
-
-        return [
-            'html' => $html,
-            'inputs' => $inputs,
-        ];
     }
 
     protected function enterQueryConsumeMainForm(string $url): string
