@@ -492,19 +492,7 @@ class SATScraper
         $html = $this->runQueryDateConsumeSearch($url, $post);
 
         $values = array_merge($inputs, $filters->getRequestFilters(), (new ParserFormatSAT($html))->getFormValues());
-
-        $response = $this->client->post($url, [
-            'form_params' => $values,
-            'headers' => Headers::postAjax(
-                URLS::SAT_HOST_PORTAL_CFDI,
-                $url
-            ),
-            'cookies' => $this->cookie,
-            'future' => true,
-            'verify' => false,
-        ]);
-
-        $html = $response->getBody()->getContents();
+        $html = $this->runQueryDateConsumeSearch($url, $values);
 
         $extractor = new MetadataExtractor();
         $data = $extractor->extract($html);
