@@ -545,12 +545,7 @@ class SATScraper
      */
     protected function getSearchValues($html, array $inputs, Filters $filters): array
     {
-        $parser = new ParserFormatSAT($html);
-        $valuesChange = $parser->getFormValues();
-        $temporary = array_merge($inputs, $filters->getRequestFilters());
-        $temp = array_merge($temporary, $valuesChange);
-
-        return $temp;
+        return array_merge($inputs, $filters->getRequestFilters(), (new ParserFormatSAT($html))->getFormValues());
     }
 
     /**
