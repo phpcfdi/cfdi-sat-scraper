@@ -399,15 +399,7 @@ class SATScraper
             $result = $list->count();
 
             if ($result >= 500 && $secondEnd === $secondInitial && $hasCallable) {
-                $params = [
-                    'count' => $result,
-                    'year' => $day->format('Y'),
-                    'month' => $day->format('m'),
-                    'day' => $day->format('d'),
-                    'secondIni' => $secondInitial,
-                    'secondFin' => $secondEnd,
-                ];
-                call_user_func($this->onFiveHundred, $params);
+                call_user_func($this->onFiveHundred, $this->buildDateWithDayAndSeconds($day, $secondInitial));
             }
 
             if ($result >= 500 && $secondEnd > $secondInitial) {
