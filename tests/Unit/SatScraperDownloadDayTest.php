@@ -1,0 +1,67 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
+
+use PhpCfdi\CfdiSatScraper\MetadataList;
+use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\SATScraper;
+use PhpCfdi\CfdiSatScraper\Tests\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
+
+class SatScraperDownloadDayTest extends TestCase
+{
+    public function test_download_day_splits_queries_correctly(): void
+    {
+        $fakes = $this->fakes();
+        $dates = [];
+
+        /** @var SATScraper&MockObject $scrapper */
+        $scrapper = $this
+            ->getMockBuilder(SATScraper::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['initScraper', 'resolveQuery'])
+            ->getMock();
+        $scrapper->method('resolveQuery')->willReturnCallback(
+            function (Query $query) use ($fakes, &$dates): MetadataList {
+                // simulate that every 00:30:00, 06:30:00, 12:30:00 & 18:30:00 has 250 records each
+                $howMany = 0;
+                $date = $query->getStartDate()->setTime(0, 30, 0);
+                while ($date < $query->getEndDate()) {
+                    if ($date > $query->getStartDate()) {
+                        $howMany = $howMany + 1;
+                    }
+                    $date = $date->modify('+ 6 hour');
+                }
+                $list = $fakes->doMetadataList(250 * $howMany);
+                $dates[] = [
+                    'start' => $query->getStartDate()->format('Y-m-d H:i:s'),
+                    'end' => $query->getEndDate()->format('Y-m-d H:i:s'),
+                    'count' => $list->count(),
+                ];
+                return $list;
+            }
+        );
+
+        // anyhow, this will download the hole day
+        $start = new \DateTimeImmutable('2019-01-15 14:15:16');
+        $end = new \DateTimeImmutable('2019-01-15 14:15:16');
+        $query = new Query($start, $end);
+        $scrapper->downloadPeriod($query);
+
+        $expectedDates = [
+            ['start' => '2019-01-15 00:00:00', 'end' => '2019-01-15 23:59:59', 'count' => 1000],
+            ['start' => '2019-01-15 00:00:00', 'end' => '2019-01-15 11:59:59', 'count' => 500],
+            ['start' => '2019-01-15 00:00:00', 'end' => '2019-01-15 05:59:59', 'count' => 250],
+            ['start' => '2019-01-15 06:00:00', 'end' => '2019-01-15 23:59:59', 'count' => 750],
+            ['start' => '2019-01-15 06:00:00', 'end' => '2019-01-15 14:59:59', 'count' => 500],
+            ['start' => '2019-01-15 06:00:00', 'end' => '2019-01-15 10:29:59', 'count' => 250],
+            ['start' => '2019-01-15 10:30:00', 'end' => '2019-01-15 23:59:59', 'count' => 500],
+            ['start' => '2019-01-15 10:30:00', 'end' => '2019-01-15 17:14:59', 'count' => 250],
+            ['start' => '2019-01-15 17:15:00', 'end' => '2019-01-15 23:59:59', 'count' => 250],
+        ];
+
+        $this->assertSame($expectedDates, $dates);
+    }
+}
