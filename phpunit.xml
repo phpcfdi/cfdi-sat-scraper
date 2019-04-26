@@ -2,8 +2,7 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.0/phpunit.xsd"
          bootstrap="tests/bootstrap.php"
-         colors="true"
-         processIsolation="true">
+         colors="true">
     <testsuites>
         <testsuite name="Package Test Suite">
             <directory>./tests/</directory>
