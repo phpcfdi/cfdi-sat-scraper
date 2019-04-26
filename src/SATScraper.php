@@ -447,7 +447,7 @@ class SATScraper
 
     protected function buildDateWithDayAndSeconds(\DateTimeImmutable $day, int $seconds): \DateTimeImmutable
     {
-        $timeAsString = Helpers::converterSecondsToHours($seconds);
+        $timeAsString = gmdate('H:i:s', $seconds);
         [$hour, $minute, $second] = explode(':', $timeAsString);
         $date = $day->setTime((int) $hour, (int) $minute, (int) $second);
         return $date;
