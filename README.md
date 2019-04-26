@@ -155,20 +155,8 @@ $query//->setRfc(new RfcReceptor('XAXX010101000'))
 
 $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
 $list = $satScraper->downloadPeriod($query);
-$satScraper->setOnFiveHundred(function ($data) {
-    /*
-    * @var $data contains:
-    * [
-    *      'count' => 500,
-    *      'year' => 2019,
-    *      'month' => '03',
-    *      'day' => 1,
-    *      'secondIni' => 1,
-    *      'secondFin' => 86400,
-    * ]
-    *
-    */
-    print_r($data); // Esta función se ejecutara cada que detecte 500 o mas comprobantes en el mismo segundo
+$satScraper->setOnFiveHundred(function (\DateTimeImmutable $date) {
+    // $date contains the moment where limit is reached
 });
 
 print_r($list);

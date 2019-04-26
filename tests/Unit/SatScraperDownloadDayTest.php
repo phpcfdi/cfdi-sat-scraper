@@ -47,7 +47,7 @@ class SatScraperDownloadDayTest extends TestCase
         // setup on five hundred event
         $onFiveHundredEvents = [];
         $scrapper->setOnFiveHundred(
-            function (array $values) use (&$onFiveHundredEvents): void {
+            function (\DateTimeImmutable $values) use (&$onFiveHundredEvents): void {
                 $onFiveHundredEvents[] = $values;
             }
         );
@@ -100,7 +100,7 @@ class SatScraperDownloadDayTest extends TestCase
         // setup on five hundred event
         $onFiveHundredEvents = [];
         $scrapper->setOnFiveHundred(
-            function (array $values) use (&$onFiveHundredEvents): void {
+            function (\DateTimeImmutable $values) use (&$onFiveHundredEvents): void {
                 $onFiveHundredEvents[] = $values;
             }
         );
@@ -112,10 +112,10 @@ class SatScraperDownloadDayTest extends TestCase
         $scrapper->downloadPeriod($query);
 
         $expectedCalls = [
-            ['count' => 500, 'year' => '2019', 'month' => '01', 'day' => '15', 'secondIni' => 3723, 'secondFin' => 3723],
-            ['count' => 500, 'year' => '2019', 'month' => '01', 'day' => '15', 'secondIni' => 58638, 'secondFin' => 58638],
+            $start->modify('midnight + 3723 seconds'),
+            $start->modify('midnight + 58638 seconds'),
         ];
 
-        $this->assertSame($expectedCalls, $onFiveHundredEvents);
+        $this->assertEquals($expectedCalls, $onFiveHundredEvents);
     }
 }
