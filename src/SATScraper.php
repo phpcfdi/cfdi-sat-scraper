@@ -398,7 +398,7 @@ class SATScraper
             $list = $this->downloadSeconds($query, $day, $secondInitial, $secondEnd);
             $result = $list->count();
 
-            if ($hasCallable && $result >= 500) {
+            if ($result >= 500 && $secondEnd === $secondInitial && $hasCallable) {
                 $params = [
                     'count' => $result,
                     'year' => $day->format('Y'),
