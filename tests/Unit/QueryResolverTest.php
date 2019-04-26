@@ -66,7 +66,7 @@ class QueryResolverTest extends TestCase
     public function testResolveQuery(): void
     {
         // prepare resolver mocking responses from SAT
-        /** @var QueryResolver&MockObject */
+        /** @var QueryResolver&MockObject $resolver */
         $resolver = $this->getMockBuilder(QueryResolver::class)
             ->disableOriginalConstructor()
             ->setMethods(['consumeFormPage', 'consumeSearch'])
