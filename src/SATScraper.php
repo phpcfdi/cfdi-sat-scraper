@@ -440,18 +440,17 @@ class SATScraper
     protected function downloadSeconds(Query $query, \DateTimeImmutable $day, int $startSec, int $endSec): MetadataList
     {
         $query = clone $query;
-
-        $time = Helpers::converterSecondsToHours($startSec);
-        [$startHour, $startMinute, $startSecond] = explode(':', $time);
-        $startDate = $day->setTime((int)$startHour, (int)$startMinute, (int)$startSecond);
-        $query->setStartDate($startDate);
-
-        $time = Helpers::converterSecondsToHours($endSec);
-        [$endHour, $endMinute, $endSecond] = explode(':', $time);
-        $endDate = $day->setTime((int)$endHour, (int)$endMinute, (int)$endSecond);
-        $query->setEndDate($endDate);
-
+        $query->setStartDate($this->buildDateWithDayAndSeconds($day, $startSec));
+        $query->setEndDate($this->buildDateWithDayAndSeconds($day, $endSec));
         return $this->resolveQuery($query);
+    }
+
+    protected function buildDateWithDayAndSeconds(\DateTimeImmutable $day, int $seconds): \DateTimeImmutable
+    {
+        $timeAsString = Helpers::converterSecondsToHours($seconds);
+        [$hour, $minute, $second] = explode(':', $timeAsString);
+        $date = $day->setTime((int) $hour, (int) $minute, (int) $second);
+        return $date;
     }
 
     /**
