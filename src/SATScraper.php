@@ -430,10 +430,10 @@ class SATScraper
     /**
      * Download seconds must obtain the metadata list for one specific day with seconds interval
      *
-     * @param Query $query Base query, all properties will be used but startDate and endDate
-     * @param \DateTimeImmutable $day date to obtain, relevant parts are only year, month
-     * @param int $startSec second of the day to start (min 0)
-     * @param int $endSec second of the day to end (max 86399)
+     * @param Query $query Base query, all properties will be used except startDate and endDate
+     * @param \DateTimeImmutable $day date to obtain, relevant parts are only year, month and day
+     * @param int $startSec second of the day to start
+     * @param int $endSec second of the day to end
      *
      * @return MetadataList
      */
