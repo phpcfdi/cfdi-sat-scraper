@@ -430,41 +430,30 @@ class SATScraper
     }
 
     /**
-     * @param Query $baseQuery
-     * @param \DateTimeImmutable $day
-     * @param $startSec
-     * @param $endSec
+     * Download seconds must obtain the metadata list for one specific day with seconds interval
+     *
+     * @param Query $query Base query, all properties will be used but startDate and endDate
+     * @param \DateTimeImmutable $day date to obtain, relevant parts are only year, month
+     * @param int $startSec second of the day to start (min 0)
+     * @param int $endSec second of the day to end (max 86399)
      *
      * @return MetadataList
      */
-    protected function downloadSeconds(Query $baseQuery, \DateTimeImmutable $day, int $startSec, int $endSec): MetadataList
+    protected function downloadSeconds(Query $query, \DateTimeImmutable $day, int $startSec, int $endSec): MetadataList
     {
-        $query = clone $baseQuery;
+        $query = clone $query;
 
-        $startDate = $query->getStartDate()
-            ->setDate(
-                (int)$day->format('Y'),
-                (int)$day->format('m'),
-                (int)$day->format('d')
-            );
-
-        if (0 !== $startSec) {
-            $time = Helpers::converterSecondsToHours($startSec);
-            [$startHour, $startMinute, $startSecond] = explode(':', $time);
-            $startDate = $startDate->setTime((int)$startHour, (int)$startMinute, (int)$startSecond);
-        }
-
+        $time = Helpers::converterSecondsToHours($startSec);
+        [$startHour, $startMinute, $startSecond] = explode(':', $time);
+        $startDate = $day->setTime((int)$startHour, (int)$startMinute, (int)$startSecond);
         $query->setStartDate($startDate);
 
         $time = Helpers::converterSecondsToHours($endSec);
-
         [$endHour, $endMinute, $endSecond] = explode(':', $time);
-        $endDate = $query->getEndDate()->setTime((int)$endHour, (int)$endMinute, (int)$endSecond);
+        $endDate = $day->setTime((int)$endHour, (int)$endMinute, (int)$endSecond);
         $query->setEndDate($endDate);
 
-        $list = $this->resolveQuery($query);
-
-        return $list;
+        return $this->resolveQuery($query);
     }
 
     /**
