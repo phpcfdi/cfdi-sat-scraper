@@ -1,0 +1,804 @@
+1|#||4|46|updatePanel|ctl00_UpnlNombre|
+                      
+                    |28576|updatePanel|ctl00_MainContent_UpnlBusqueda|
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <span class="radio-inline"><input id="ctl00_MainContent_RdoFolioFiscal" type="radio" name="ctl00$MainContent$FiltroCentral" value="RdoFolioFiscal" onclick="javascript:setTimeout(&#39;__doPostBack(\&#39;ctl00$MainContent$RdoFolioFiscal\&#39;,\&#39;\&#39;)&#39;, 0)" /><label for="ctl00_MainContent_RdoFolioFiscal">Folio Fiscal *</label></span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input name="ctl00$MainContent$TxtUUID" type="text" maxlength="36" id="ctl00_MainContent_TxtUUID" disabled="disabled" class="aspNetDisabled form-control" placeholder="Folio fiscal" style="text-transform: uppercase;" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <span class="radio-inline"><input id="ctl00_MainContent_RdoFechas" type="radio" name="ctl00$MainContent$FiltroCentral" value="RdoFechas" checked="checked" /><label for="ctl00_MainContent_RdoFechas">Fecha de Emisión *</label></span>
+                    </div>
+                    <div class="form-group">
+                        
+<script>
+    function ValidateYear() {
+        
+        var ddlAnio = document.getElementById("DdlAnio");
+        var anio = ddlAnio.options[ddlAnio.selectedIndex].value;
+        var ddl = document.getElementById("ddlComplementos");
+        if (anio < 2014) {
+            var hfInicialBool = document.getElementById("hfInicialBool");
+            hfInicialBool.value = "true";
+
+            ddl.selectedIndex = 0;
+            ddl.disabled = true;
+        }
+        if (anio >= 2014) {
+            var hfInicialBool = document.getElementById("hfInicialBool");
+            hfInicialBool.value = "false";
+
+            ddl.disabled = false;
+        }
+
+        asignaDia();
+
+    }
+</script>
+<div id="ctl00_MainContent_CldFecha_UpnlSeleccionFecha">
+	
+        <span id="ctl00_MainContent_CldFecha_LblFecha" style="display:inline-block;width:150px;"></span>
+        <div class="form-group">
+            <div class="col-sm-4">
+                <span id="ctl00_MainContent_CldFecha_LblAnio" class="control-label">Año*:</span>
+            </div>
+            <div class="col-sm-4">
+                <span id="ctl00_MainContent_CldFecha_LblMes" class="col-sm-1 control-label">Mes*:</span>
+            </div>
+            <div class="col-sm-4">
+                <span id="ctl00_MainContent_CldFecha_lblDia" class="col-sm-1  control-label">Día:</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-4">
+                <select name="ctl00$MainContent$CldFecha$DdlAnio" id="DdlAnio" class="form-control" onChange="ValidateYear();">
+		<option value="2011">2011</option>
+		<option value="2012">2012</option>
+		<option value="2013">2013</option>
+		<option value="2014">2014</option>
+		<option value="2015">2015</option>
+		<option value="2016">2016</option>
+		<option value="2017">2017</option>
+		<option value="2018">2018</option>
+		<option selected="selected" value="2019">2019</option>
+
+	</select>
+            </div>
+
+            <div class="col-md-4">
+                <select name="ctl00$MainContent$CldFecha$DdlMes" id="ctl00_MainContent_CldFecha_DdlMes" class="form-control" onchange="asignaDia();">
+		<option selected="selected" value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+
+	</select>
+            </div>
+
+            <div class="col-md-4">
+                <select name="ctl00$MainContent$CldFecha$DdlDia" id="ctl00_MainContent_CldFecha_DdlDia" class="form-control">
+		<option selected="selected" value="0"> </option>
+		<option value="01">01</option>
+		<option value="02">02</option>
+		<option value="03">03</option>
+		<option value="04">04</option>
+		<option value="05">05</option>
+		<option value="06">06</option>
+		<option value="07">07</option>
+		<option value="08">08</option>
+		<option value="09">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+
+	</select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-6">
+                <span id="ctl00_MainContent_CldFecha_Label1" class="control-label">Hora Inicial:</span>
+            </div>
+            <div class="col-md-6">
+                <span id="ctl00_MainContent_CldFecha_Label2" class="control-label">Hora Final:</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-6">
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlHora" id="ctl00_MainContent_CldFecha_DdlHora" class="form-control" onchange="validaHora();">
+		<option selected="selected" value="0">00</option>
+		<option value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+
+	</select>
+
+                    <div style="position: relative; top: -33px; left: 168px;">:</div>
+                </div>
+
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlMinuto" id="ctl00_MainContent_CldFecha_DdlMinuto" class="form-control" onchange="validaHora();">
+		<option selected="selected" value="0">00</option>
+		<option value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+		<option value="32">32</option>
+		<option value="33">33</option>
+		<option value="34">34</option>
+		<option value="35">35</option>
+		<option value="36">36</option>
+		<option value="37">37</option>
+		<option value="38">38</option>
+		<option value="39">39</option>
+		<option value="40">40</option>
+		<option value="41">41</option>
+		<option value="42">42</option>
+		<option value="43">43</option>
+		<option value="44">44</option>
+		<option value="45">45</option>
+		<option value="46">46</option>
+		<option value="47">47</option>
+		<option value="48">48</option>
+		<option value="49">49</option>
+		<option value="50">50</option>
+		<option value="51">51</option>
+		<option value="52">52</option>
+		<option value="53">53</option>
+		<option value="54">54</option>
+		<option value="55">55</option>
+		<option value="56">56</option>
+		<option value="57">57</option>
+		<option value="58">58</option>
+		<option value="59">59</option>
+
+	</select>
+
+                    <div style="position: relative; top: -33px; left: 168px;">:</div>
+                </div>
+
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlSegundo" id="ctl00_MainContent_CldFecha_DdlSegundo" class="form-control" onchange="validaHora();">
+		<option selected="selected" value="0">00</option>
+		<option value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+		<option value="32">32</option>
+		<option value="33">33</option>
+		<option value="34">34</option>
+		<option value="35">35</option>
+		<option value="36">36</option>
+		<option value="37">37</option>
+		<option value="38">38</option>
+		<option value="39">39</option>
+		<option value="40">40</option>
+		<option value="41">41</option>
+		<option value="42">42</option>
+		<option value="43">43</option>
+		<option value="44">44</option>
+		<option value="45">45</option>
+		<option value="46">46</option>
+		<option value="47">47</option>
+		<option value="48">48</option>
+		<option value="49">49</option>
+		<option value="50">50</option>
+		<option value="51">51</option>
+		<option value="52">52</option>
+		<option value="53">53</option>
+		<option value="54">54</option>
+		<option value="55">55</option>
+		<option value="56">56</option>
+		<option value="57">57</option>
+		<option value="58">58</option>
+		<option value="59">59</option>
+
+	</select>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlHoraFin" id="ctl00_MainContent_CldFecha_DdlHoraFin" class="form-control" onchange="validaHora();">
+		<option value="0">00</option>
+		<option value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option selected="selected" value="23">23</option>
+
+	</select>
+
+                    <div style="position: relative; top: -33px; left: 168px;">:</div>
+                </div>
+
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlMinutoFin" id="ctl00_MainContent_CldFecha_DdlMinutoFin" class="form-control" onchange="validaHora();">
+		<option value="0">00</option>
+		<option value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+		<option value="32">32</option>
+		<option value="33">33</option>
+		<option value="34">34</option>
+		<option value="35">35</option>
+		<option value="36">36</option>
+		<option value="37">37</option>
+		<option value="38">38</option>
+		<option value="39">39</option>
+		<option value="40">40</option>
+		<option value="41">41</option>
+		<option value="42">42</option>
+		<option value="43">43</option>
+		<option value="44">44</option>
+		<option value="45">45</option>
+		<option value="46">46</option>
+		<option value="47">47</option>
+		<option value="48">48</option>
+		<option value="49">49</option>
+		<option value="50">50</option>
+		<option value="51">51</option>
+		<option value="52">52</option>
+		<option value="53">53</option>
+		<option value="54">54</option>
+		<option value="55">55</option>
+		<option value="56">56</option>
+		<option value="57">57</option>
+		<option value="58">58</option>
+		<option selected="selected" value="59">59</option>
+
+	</select>
+
+                    <div style="position: relative; top: -33px; left: 168px;">:</div>
+                </div>
+
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlSegundoFin" id="ctl00_MainContent_CldFecha_DdlSegundoFin" class="form-control" onchange="validaHora();">
+		<option value="0">00</option>
+		<option value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+		<option value="32">32</option>
+		<option value="33">33</option>
+		<option value="34">34</option>
+		<option value="35">35</option>
+		<option value="36">36</option>
+		<option value="37">37</option>
+		<option value="38">38</option>
+		<option value="39">39</option>
+		<option value="40">40</option>
+		<option value="41">41</option>
+		<option value="42">42</option>
+		<option value="43">43</option>
+		<option value="44">44</option>
+		<option value="45">45</option>
+		<option value="46">46</option>
+		<option value="47">47</option>
+		<option value="48">48</option>
+		<option value="49">49</option>
+		<option value="50">50</option>
+		<option value="51">51</option>
+		<option value="52">52</option>
+		<option value="53">53</option>
+		<option value="54">54</option>
+		<option value="55">55</option>
+		<option value="56">56</option>
+		<option value="57">57</option>
+		<option value="58">58</option>
+		<option selected="selected" value="59">59</option>
+
+	</select>
+                </div>
+            </div>
+        </div>
+    
+</div>
+<script type="text/javascript" language="javascript">
+    function daysInMonth(month, year) {
+        var dd = new Date(year, month, 0);
+        return dd.getDate();
+    }
+    function asignaDiaFecha(anioObj, mesObj, diaObj) {
+        var year = anioObj.options[anioObj.selectedIndex].value;
+        var month = mesObj.options[mesObj.selectedIndex].value;
+
+            var days = (year == ' ' || month == ' ')
+               ? 31 : daysInMonth(month, year);
+            diaObj.options.length = 0;
+            diaObj.options[diaObj.options.length] = new Option(' ', '0');
+            for (var i = 1; i <= days; i++) {
+                if (i < 10) {
+                    diaObj.options[diaObj.options.length] = new Option('0' + i.toString(), i);
+                } else {
+                    diaObj.options[diaObj.options.length] = new Option(i, i);
+                }
+            }
+
+            var opHora = $(diaObj).find("option[value=0]");
+            $(diaObj).selectbox("change", opHora.attr('value'), opHora.html());
+
+    }
+
+    function ConfiguraCombosMac() {
+        var isMac = navigator.userAgent.indexOf("Macintosh");
+
+        if (isMac != -1) {
+            $(document.getElementsByClassName("calendarCombo")).css("width", "45px");
+            $(document.getElementsByClassName("calendarCombo2")).css("width", "60px");
+        }
+    }
+
+    function asignaDia() {
+        
+        var anioJsObj = document.getElementById('DdlAnio');
+        var mesJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlMes');
+        var diaJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlDia');
+        asignaDiaFecha(anioJsObj, mesJsObj, diaJsObj);
+    }
+
+    function validaHora() {
+        var horaJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlHora');
+        var minutoJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlMinuto');
+        var segundoJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlSegundo');
+        var horaFinJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlHoraFin');
+        var minutoFinJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlMinutoFin');
+        var segundoFinJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlSegundoFin');
+
+        var horaJs = horaJsObj.options[horaJsObj.selectedIndex].value;
+        var minutoJs = minutoJsObj.options[minutoJsObj.selectedIndex].value;
+        var segundoJs = segundoJsObj.options[segundoJsObj.selectedIndex].value;
+        var horaFinJs = horaFinJsObj.options[horaFinJsObj.selectedIndex].value;
+        var minutoFinJs = minutoFinJsObj.options[minutoFinJsObj.selectedIndex].value;
+        var segundoFinJs = segundoFinJsObj.options[segundoFinJsObj.selectedIndex].value;
+
+        var segIni = timeToSeconds(horaJs, minutoJs, segundoJs);
+        var segFin = timeToSeconds(horaFinJs, minutoFinJs, segundoFinJs);
+        if (segIni > segFin)
+        {
+            horaFinJsObj.selectedIndex = horaJsObj.selectedIndex;
+            minutoFinJsObj.selectedIndex = minutoJsObj.selectedIndex+1;
+            segundoFinJsObj.selectedIndex = segundoJsObj.selectedIndex;
+        }
+    }
+    
+    function timeToSeconds(horas,minutos,segundos) {
+        return parseInt(parseInt(horas * 3600) + parseInt(minutos * 60) + parseInt(segundos));
+    }
+
+    function DefinePosicionInicial() {
+       
+    }
+
+</script>
+
+                    </div>
+                </div>
+
+                
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <span id="ctl00_MainContent_LblRfcReceptor" class="control-label">RFC Emisor</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <span id="ctl00_MainContent_LblEstado" class="control-label">Estado del Comprobante</span>
+                        </div>
+                    </div>
+                
+
+                
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <input name="ctl00$MainContent$TxtRfcReceptor" type="text" maxlength="13" id="ctl00_MainContent_TxtRfcReceptor" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <select name="ctl00$MainContent$DdlEstadoComprobante" id="ctl00_MainContent_DdlEstadoComprobante" class="form-control" onchange="EstadoComprobante(this);">
+	<option value="-1">Seleccione un valor...</option>
+	<option value="0">Cancelado</option>
+	<option value="1">Vigente</option>
+
+</select>
+                        </div>
+                    </div>
+                
+
+               
+                        <div class="form-group">
+                        <div class="col-sm-6">
+                            <span id="ctl00_MainContent_Label5" class="control-label">Tipo de Comprobante (Complemento)</span>
+                            <input type="hidden" name="ctl00$MainContent$hfInicialBool" id="hfInicialBool" value="false" />
+                            <input type="hidden" name="ctl00$MainContent$hfDescarga" id="hfDescarga" />
+                        </div>
+
+                        <div id="DivlblEstatusCancelacion" style="display: none;" class="col-sm-6">
+                            <span id="ctl00_MainContent_lblEstatusCancelacion" class="control-label">Estatus Cancelación</span>
+                    </div>
+                </div>
+               
+
+
+                
+                        <div class="form-group">
+                        <div class="col-sm-6">
+                            <select name="ctl00$MainContent$ddlComplementos" id="ddlComplementos" class="form-control" style="width:100%;">
+	<option selected="selected" value="-1">Seleccione un valor...</option>
+	<option value="8">Est&#225;ndar (sin complemento)</option>
+	<option value="4294967296">Acreditamiento de IEPS</option>
+	<option value="8388608">Aerol&#237;neas</option>
+	<option value="1073741824">Certificado de Destrucci&#243;n</option>
+	<option value="17179869184">Comercio Exterior</option>
+	<option value="274877906944">Comercio Exterior 1.1</option>
+	<option value="4">Compra Venta de Divisas</option>
+	<option value="16777216">Consumo de Combustibles</option>
+	<option value="8796093022208">Consumo De Combustibles 1.1</option>
+	<option value="64">Donatarias</option>
+	<option value="256">Estado De Cuenta Bancario</option>
+	<option value="4398046511104">Estado de Cuenta Combustibles 1.2</option>
+	<option value="8589934592">Estado de cuenta de combustibles de monederos electr&#243;nicos.</option>
+	<option value="17592186044416">Gastos de Hidrocarburos</option>
+	<option value="68719476736">INE 1.1</option>
+	<option value="35184372088832">Ingresos de Hidrocarburos</option>
+	<option value="1024">Instituciones Educativas Privadas (Pago de colegiatura)</option>
+	<option value="4096">Leyendas Fiscales</option>
+	<option value="524288">Mis Cuentas</option>
+	<option value="67108864">Notarios P&#250;blicos</option>
+	<option value="536870912">Obras de artes y antig&#252;edades</option>
+	<option value="2048">Otros Derechos e Impuestos</option>
+	<option value="4194304">Pago en Especie</option>
+	<option value="8192">Persona F&#237;sica Integrante de Coordinado</option>
+	<option value="549755813888">Recepci&#243;n de Pagos</option>
+	<option value="128">Recibo de donativo</option>
+	<option value="1048576">Recibo de Pago de Salarios</option>
+	<option value="137438953472">Recibo de Pago de Salarios 1.2</option>
+	<option value="32">Sector de Ventas al Detalle (Detallista)</option>
+	<option value="268435456">Servicios de construcci&#243;n</option>
+	<option value="16384">SPEI de Tercero a Tercero</option>
+	<option value="2147483648">Sustituci&#243;n y renovaci&#243;n vehicular</option>
+	<option value="32768">Terceros</option>
+	<option value="65536">Terceros</option>
+	<option value="2199023255552">Timbre Fiscal Digital</option>
+	<option value="16">Turista o Pasajero Extranjero</option>
+	<option value="33554432">Vales de Despensa</option>
+	<option value="134217728">Veh&#237;culo Usado</option>
+	<option value="2097152">Venta de Vehiculos</option>
+
+</select>
+                            <small class="form-text">(Criterio de búsqueda aplicable a CFDI emitidas a partir del 01/01/2014)</small>
+                        </div>
+
+                        <div id="DivddlVigente" style="display: none;" class="col-sm-6">
+                            <select name="ctl00$MainContent$ddlVigente" id="ddlVigente" class="form-control" align="left" style="width:100%;">
+	<option selected="selected" value="0">Seleccione un valor...</option>
+	<option value="1">En Proceso</option>
+	<option value="4">Rechazada</option>
+	<option value="5">Plazo vencido</option>
+	<option value="-1">Sin proceso</option>
+
+</select>
+                        </div>
+
+                        <div id="DivddlCancelado" style="display: none;" class="col-sm-6">
+                            <select name="ctl00$MainContent$ddlCancelado" id="ddlCancelado" class="form-control" align="left" style="width:100%;">
+	<option selected="selected" value="0">Seleccione un valor...</option>
+	<option value="2">Cancelado con aceptaci&#243;n</option>
+	<option value="3">Cancelado sin aceptaci&#243;n</option>
+	<option value="5">Plazo vencido</option>
+
+</select>
+                    </div>
+                </div>
+                
+
+                <div class="col-md-12">
+                    <div class="clearfix">
+                        <div class="pull-left text-muted text-vertical-align-button">
+                            * Campos obligatorios
+                        </div>
+                        <div class="pull-right">
+                            <input type="submit" name="ctl00$MainContent$BtnBusqueda" value="Buscar CFDI" onclick="ocultaResultados();WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$MainContent$BtnBusqueda&quot;, &quot;&quot;, true, &quot;Fechas&quot;, &quot;&quot;, false, false))" id="ctl00_MainContent_BtnBusqueda" class="btn btn-primary" style="margin-right: 20px" />
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <div style="vertical-align: top" class="erroruuid">
+                        
+                    </div>
+                    <br />
+                    <div>
+                        <div id="ctl00_MainContent_ValidationSummary1" class="errores" style="display:none;">
+
+</div>
+                        <div id="ctl00_MainContent_PnlErrores" class="erroruuid" style="width:390px;">
+	
+                            <div style="vertical-align: top">
+                                
+                            </div>
+                        
+</div>
+                    </div>
+                </div>
+            |5027|updatePanel|ctl00_MainContent_UpnlResultados|
+                <div id="ctl00_MainContent_PnlResultados" style="display:none;">
+	
+                    
+                    <div class="form-group col-sm-12" id="DivContenedor">
+                        <div class="col-sm-12" id="ContenedorDinamico" style="overflow: auto;">
+                            <table id="ctl00_MainContent_tblResult" class="table table-responsive">
+		<tr>
+			<th>
+                                        <span style="width: 160px;">
+                                        <input type="checkbox" id="seleccionador" name="seleccionador" onclick="manejaseleccion();"
+                                            title="Seleccionar todos" />&nbsp;
+                                        Acciones</span>
+                                    </th>
+			<th>
+                                        <span style="width: 385px;">Folio Fiscal</span>
+                                    </th>
+			<th>
+                                        <span style="width: 150px;">RFC Emisor</span>
+                                    </th>
+			<th>
+                                        <span style="width: 350px;">Nombre o Razón Social del Emisor</span>
+                                    </th>
+			<th>
+                                        <span style="width: 150px;">RFC Receptor</span>
+                                    </th>
+			<th>
+                                        <span style="width: 350px;">Nombre o Razón Social del Receptor</span>
+                                    </th>
+			<th>
+                                        <span style="width: 200px;">Fecha de Emisión</span>
+                                    </th>
+			<th>
+                                        <span style="width: 200px;">Fecha de Certificación</span>
+                                    </th>
+			<th>
+                                        <span style="width: 150px;">PAC que Certificó</span>
+                                    </th>
+			<th>
+                                        <span style="width: 150px;">Total</span>
+                                    </th>
+			<th>
+                                        <span style="width: 200px;">Efecto del Comprobante</span>
+                                    </th>
+			<th>
+                                        <span style="width: 200px;">Estatus de cancelación</span>
+                                    </th>
+			<th>
+                                        <span style="width: 200px;">Estado del Comprobante</span>
+                                    </th>
+			<th>
+                                        <span style="width: 200px;">Estatus de Proceso de Cancelación</span>
+                                    </th>
+			<th>
+                                        <span style="width: 200px;">Fecha de Proceso de Cancelación</span>
+                                    </th>
+		</tr>
+	</table>
+	
+                        </div>
+                    </div>
+                    <div id="ctl00_MainContent_pageNavPosition" class="form-group"></div>
+                    <br />
+                    <br />
+                    <div class="form-group">
+                        <div class="btn-group" style="padding-right: 25px; float: right">
+                            <input type="submit" name="ctl00$MainContent$BtnDescargar" value="Descargar Seleccionados" onclick="return validarSeleccionDescarga();" id="ctl00_MainContent_BtnDescargar" class="btn btn-primary" />
+                            <input type="submit" name="ctl00$MainContent$BtnMetadata" value="Descargar Metadata" onclick="return MetadataDescarga();" id="ctl00_MainContent_BtnMetadata" class="btn btn-primary" />
+                            <input type="submit" name="ctl00$MainContent$BtnImprimir" value="Exportar Resultados a PDF" id="ctl00_MainContent_BtnImprimir" class="btn btn-primary" />
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                    <div id="ctl00_MainContent_pnlLeyenda" style="height: auto; display: block; padding-right: 25px; float: right; padding-left: 35px;">
+		
+                        <span>Importante: Para cualquier aclaración sobre el contenido o estado de  los comprobantes listados, favor de verificar directamente con su emisor.</span>
+                    
+	</div>
+                    <br />
+                    <br />
+                    <div class="form-group" id="dvAlert"></div>
+                
+</div>
+                <br />
+                <br />
+                <div id="ctl00_MainContent_PnlNoResultados" style="text-align:center;display:none;">
+	
+                    <h2 class="subtitle" style="text-align: center;">No existen registros que cumplan con los criterios de b&uacute;squeda ingresados,
+                        intentar nuevamente.</h2>
+                
+</div>                 
+                <input type="hidden" name="ctl00$MainContent$hfParametrosMetadata" id="hfParametrosMetadata" />
+            |0|hiddenField|__EVENTTARGET||0|hiddenField|__EVENTARGUMENT||0|hiddenField|__LASTFOCUS||4160|hiddenField|__VIEWSTATE|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|8|hiddenField|__VIEWSTATEGENERATOR|FE9DB3F4|0|hiddenField|__VIEWSTATEENCRYPTED||0|asyncPostBackControlIDs|||93|postBackControlIDs||ctl00$MainContent$BtnDescargar,,ctl00$MainContent$BtnMetadata,,ctl00$MainContent$BtnImprimir,|134|updatePanelIDs||fctl00$UpnlNombre,,tctl00$MainContent$UpnlBusqueda,,tctl00$MainContent$CldFecha$UpnlSeleccionFecha,,tctl00$MainContent$UpnlResultados,|45|childUpdatePanelIDs||ctl00$MainContent$CldFecha$UpnlSeleccionFecha|83|panelsToRefreshIDs||ctl00$UpnlNombre,,ctl00$MainContent$UpnlBusqueda,,ctl00$MainContent$UpnlResultados,|8|asyncPostBackTimeout||18000000|23|formAction||./ConsultaReceptor.aspx|40|pageTitle||Portal Contribuyentes CFDI | Buscar CFDI|63|arrayDeclaration|Page_ValidationSummaries|document.getElementById("ctl00_MainContent_ValidationSummary1")|97|scriptStartupBlock|ScriptContentNoTags|$("#ctl00_MainContent_TxtUUID").mask("hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh");validarCaracteres();|26|scriptStartupBlock|ScriptContentNoTags| Estado_Comprobante('-1');|22|scriptStartupBlock|ScriptContentNoTags| ConfiguraCombosMac();|26|scriptStartupBlock|ScriptContentNoTags| Estado_Comprobante('-1');|273|scriptStartupBlock|ScriptContentNoTags|
+(function(id) {
+    var e = document.getElementById(id);
+    if (e) {
+        e.dispose = function() {
+            Array.remove(Page_ValidationSummaries, document.getElementById(id));
+        }
+        e = null;
+    }
+})('ctl00_MainContent_ValidationSummary1');
+|8|expando|document.getElementById('ctl00_MainContent_ValidationSummary1')['validationGroup']|"Fechas"|
