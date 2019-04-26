@@ -44,6 +44,14 @@ class SatScraperDownloadDayTest extends TestCase
             }
         );
 
+        // setup on five hundred event
+        $onFiveHundredEvents = [];
+        $scrapper->setOnFiveHundred(
+            function (array $values) use (&$onFiveHundredEvents): void {
+                $onFiveHundredEvents[] = $values;
+            }
+        );
+
         // anyhow, this will download the hole day
         $start = new \DateTimeImmutable('2019-01-15 14:15:16');
         $end = new \DateTimeImmutable('2019-01-15 14:15:16');
@@ -63,5 +71,50 @@ class SatScraperDownloadDayTest extends TestCase
         ];
 
         $this->assertSame($expectedDates, $dates);
+        $this->assertCount(0, $onFiveHundredEvents, 'downloadPeriod raised onFiveHundred without relevance');
+    }
+
+    public function test_download_day_calls_on_five_hundred(): void
+    {
+        $fakes = $this->fakes();
+
+        /** @var SATScraper&MockObject $scrapper */
+        $scrapper = $this
+            ->getMockBuilder(SATScraper::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['initScraper', 'resolveQuery'])
+            ->getMock();
+        $scrapper->method('resolveQuery')->willReturnCallback(
+            function (Query $query) use ($fakes): MetadataList {
+                $dateA = $query->getStartDate()->setTime(1, 2, 3); // 3723
+                $dateB = $query->getStartDate()->setTime(16, 17, 18); // 58638
+                if (($dateA >= $query->getStartDate() && $dateA <= $query->getEndDate())
+                    || ($dateB >= $query->getStartDate() && $dateB <= $query->getEndDate())) {
+                    return $fakes->doMetadataList(500);
+                }
+                return $fakes->doMetadataList(0);
+            }
+        );
+
+        // setup on five hundred event
+        $onFiveHundredEvents = [];
+        $scrapper->setOnFiveHundred(
+            function (array $values) use (&$onFiveHundredEvents): void {
+                $onFiveHundredEvents[] = $values;
+            }
+        );
+
+        // anyhow, this will download the hole day
+        $start = new \DateTimeImmutable('2019-01-15 14:15:16');
+        $end = new \DateTimeImmutable('2019-01-15 14:15:16');
+        $query = new Query($start, $end);
+        $scrapper->downloadPeriod($query);
+
+        $expectedCalls = [
+            ['count' => 500, 'year' => '2019', 'month' => '01', 'day' => '15', 'secondIni' => 3723, 'secondFin' => 3723],
+            ['count' => 500, 'year' => '2019', 'month' => '01', 'day' => '15', 'secondIni' => 58638, 'secondFin' => 58638],
+        ];
+
+        $this->assertSame($expectedCalls, $onFiveHundredEvents);
     }
 }
