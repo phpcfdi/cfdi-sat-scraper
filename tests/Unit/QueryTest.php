@@ -73,4 +73,26 @@ class QueryTest extends TestCase
 
         $this->assertEquals($query->getRfc()->value(), $rfc);
     }
+
+    public function testSplitByDays(): void
+    {
+        $lowerBound = new \DateTimeImmutable('2019-01-13 14:15:16');
+        $upperBound = new \DateTimeImmutable('2019-01-15 18:19:20');
+        $query = new Query($lowerBound, $upperBound);
+        $splitted = [];
+        foreach ($query->splitByDays() as $current) {
+            $splitted[] = [
+                'begin' => $current->getStartDate(),
+                'end' => $current->getEndDate(),
+            ];
+        }
+
+        $expected = [
+            ['begin' => $lowerBound, 'end' => new \DateTimeImmutable('2019-01-13 23:59:59')],
+            ['begin' => new \DateTimeImmutable('2019-01-14 00:00:00'), 'end' => new \DateTimeImmutable('2019-01-14 23:59:59')],
+            ['begin' => new \DateTimeImmutable('2019-01-15 00:00:00'), 'end' => $upperBound],
+        ];
+
+        $this->assertEquals($expected, $splitted);
+    }
 }
