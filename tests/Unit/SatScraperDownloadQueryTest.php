@@ -10,7 +10,7 @@ use PhpCfdi\CfdiSatScraper\SATScraper;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class SatScraperDownloadDayTest extends TestCase
+class SatScraperDownloadQueryTest extends TestCase
 {
     public function test_download_day_splits_queries_correctly(): void
     {

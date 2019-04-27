@@ -370,27 +370,40 @@ class SATScraper
      */
     public function downloadPeriod(Query $query): MetadataList
     {
-        $this->initScraper($query->getDownloadType());
-        $start = $query->getStartDate()->setTime(0, 0, 0);
-        $end = $query->getEndDate()->setTime(0, 0, 0);
+        $query = clone $query;
+        $query->setStartDate($query->getStartDate()->setTime(0, 0, 0));
+        $query->setEndDate($query->getEndDate()->setTime(23, 59, 59));
+        return $this->downloadByDateTime($query);
+    }
 
+    /**
+     * @param Query $query
+     * @return MetadataList
+     * @throws SATAuthenticatedException
+     * @throws SATCredentialsException
+     */
+    public function downloadByDateTime(Query $query): MetadataList
+    {
+        $this->initScraper($query->getDownloadType());
         $result = new MetadataList([]);
-        for ($current = $start; $current <= $end; $current = $current->modify('+1 day')) {
-            $result = $result->merge($this->downloadDay($query, $current));
+        foreach ($query->splitByDays() as $current) {
+            $result = $result->merge($this->downloadQuery($current));
         }
         return $result;
     }
 
     /**
      * @param Query $query
-     * @param \DateTimeImmutable $day
      * @return MetadataList
      */
-    protected function downloadDay(Query $query, \DateTimeImmutable $day): MetadataList
+    protected function downloadQuery(Query $query): MetadataList
     {
         $finalList = new MetadataList([]);
-        $secondInitial = 0;
-        $secondEnd = 86399;
+        $day = $query->getStartDate()->modify('midnight');
+        $lowerBound = intval($query->getStartDate()->format('U')) - intval($day->format('U'));
+        $upperBound = intval($query->getEndDate()->format('U')) - intval($day->format('U'));
+        $secondInitial = $lowerBound;
+        $secondEnd = $upperBound;
 
         $hasCallable = is_callable($this->onFiveHundred);
 
@@ -408,12 +421,12 @@ class SATScraper
             }
 
             $finalList = $finalList->merge($list);
-            if ($secondEnd >= 86399) {
+            if ($secondEnd >= $upperBound) {
                 break;
             }
 
             $secondInitial = $secondEnd + 1;
-            $secondEnd = 86399;
+            $secondEnd = $upperBound;
         }
 
         return $finalList;
