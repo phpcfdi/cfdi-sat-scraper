@@ -112,10 +112,7 @@ class MetadataDownloader
 
     public function buildDateWithDayAndSeconds(\DateTimeImmutable $day, int $seconds): \DateTimeImmutable
     {
-        $timeAsString = gmdate('H:i:s', $seconds);
-        [$hour, $minute, $second] = explode(':', $timeAsString);
-        $date = $day->setTime((int) $hour, (int) $minute, (int) $second);
-        return $date;
+        return $day->modify(sprintf('midnight + %d seconds', $seconds));
     }
 
     public function raiseOnLimit(\DateTimeImmutable $date): void
