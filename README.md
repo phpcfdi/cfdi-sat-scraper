@@ -54,9 +54,7 @@ use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATException;
 use PhpCfdi\CfdiSatScraper\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\SATScraper;
-use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
-use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use GuzzleHttp\Cookie\CookieJar;
 use PhpCfdi\CfdiSatScraper\Query;
 use GuzzleHttp\Client;
@@ -68,18 +66,14 @@ $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&opti
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
-$query
-    ->setComplement(ComplementsOption::todos())
-    ->setStateVoucher(StatesVoucherOption::vigentes())
-    ->setDownloadType(DownloadTypesOption::recibidos())
-    ->setUuid([
-      '5cc88a1a-8672-11e6-ae22-56b6b6499611',
-      '5cc88c4a-8672-11e6-ae22-56b6b6499611',
-      '5cc88d4e-8672-11e6-ae22-56b6b6499611'
-    ]);
+$uuids = [
+    '5cc88a1a-8672-11e6-ae22-56b6b6499611',
+    '5cc88c4a-8672-11e6-ae22-56b6b6499612',
+    '5cc88d4e-8672-11e6-ae22-56b6b6499613'
+];
 
 $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
-$list = $satScraper->downloadListUUID($query);
+$list = $satScraper->downloadListUUID($uuids, DownloadTypesOption::recibidos());
 
 print_r($list);
 ```
