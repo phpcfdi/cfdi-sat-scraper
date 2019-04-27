@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
+use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\MetadataDownloader;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\QueryResolver;
@@ -66,7 +67,7 @@ class MetadataDownloaderTest extends TestCase
         $downloader = new MetadataDownloader($resolver, null);
         $downloader->resolveQuery($query);
         $expected = [
-            ['start' => '2012-11-16 00:00:00', 'end' => '2012-11-16 23:59:59', 'count' => 0]
+            ['start' => '2012-11-16 00:00:00', 'end' => '2012-11-16 23:59:59', 'count' => 0],
         ];
         $this->assertSame($expected, $resolver->resolveCalls);
     }
@@ -165,5 +166,54 @@ class MetadataDownloaderTest extends TestCase
             '2019-01-13 00:00:00',
             '2019-01-13 00:00:04',
         ], $reachedLimits);
+    }
+
+    public function testDownloadByDateTime(): void
+    {
+        $resolver = new FakeQueryResolver();
+        $downloader = new MetadataDownloader($resolver, null);
+
+        $start = new \DateTimeImmutable('2019-01-13 14:15:16');
+        $end = new \DateTimeImmutable('2019-01-15 16:17:18');
+        $query = new Query($start, $end);
+
+        $downloader->downloadByDateTime($query);
+        $this->assertSame([
+            ['start' => '2019-01-13 14:15:16', 'end' => '2019-01-13 23:59:59', 'count' => 0],
+            ['start' => '2019-01-14 00:00:00', 'end' => '2019-01-14 23:59:59', 'count' => 0],
+            ['start' => '2019-01-15 00:00:00', 'end' => '2019-01-15 16:17:18', 'count' => 0],
+        ], $resolver->resolveCalls);
+    }
+
+    public function testDownloadByDate(): void
+    {
+        $resolver = new FakeQueryResolver();
+        $downloader = new MetadataDownloader($resolver, null);
+
+        $start = new \DateTimeImmutable('2019-01-13 14:15:16');
+        $end = new \DateTimeImmutable('2019-01-15 16:17:18');
+        $query = new Query($start, $end);
+
+        $downloader->downloadByDate($query);
+        $this->assertSame([
+            ['start' => '2019-01-13 00:00:00', 'end' => '2019-01-13 23:59:59', 'count' => 0],
+            ['start' => '2019-01-14 00:00:00', 'end' => '2019-01-14 23:59:59', 'count' => 0],
+            ['start' => '2019-01-15 00:00:00', 'end' => '2019-01-15 23:59:59', 'count' => 0],
+        ], $resolver->resolveCalls);
+    }
+
+    public function testDownloadByUuids(): void
+    {
+        $fakes = $this->fakes();
+        $resolver = new FakeQueryResolver();
+        $downloader = new MetadataDownloader($resolver, null);
+
+        $downloader->downloadByUuids([
+            $fakes->faker()->uuid,
+            $fakes->faker()->uuid,
+            $fakes->faker()->uuid,
+        ], DownloadTypesOption::recibidos());
+
+        $this->assertCount(3, $resolver->resolveCalls);
     }
 }
