@@ -342,131 +342,30 @@ class SATScraper
         return $response;
     }
 
-    /**
-     * @param array $uuids
-     * @param DownloadTypesOption $downloadType
-     * @return MetadataList
-     * @throws \Exception
-     */
+    public function createMetadataDownloader(): MetadataDownloader
+    {
+        return new MetadataDownloader(
+            new QueryResolver($this->getClient(), $this->getCookie()),
+            $this->onFiveHundred
+        );
+    }
+
     public function downloadListUUID(array $uuids, DownloadTypesOption $downloadType): MetadataList
     {
-        $query = new Query(new \DateTimeImmutable(), new \DateTimeImmutable());
-        $query->setDownloadType($downloadType);
-
-        $result = new MetadataList([]);
-        foreach ($uuids as $uuid) {
-            $query->setUuid([$uuid]);
-            $uuidResult = $this->resolveQuery($query);
-            $result = $result->merge($uuidResult);
-        }
-        return $result;
+        $this->initScraper($downloadType);
+        return $this->createMetadataDownloader()->downloadByUuids($uuids, $downloadType);
     }
 
-    /**
-     * @param Query $query
-     * @return MetadataList
-     * @throws SATAuthenticatedException
-     * @throws SATCredentialsException
-     */
     public function downloadPeriod(Query $query): MetadataList
     {
-        $query = clone $query;
-        $query->setStartDate($query->getStartDate()->setTime(0, 0, 0));
-        $query->setEndDate($query->getEndDate()->setTime(23, 59, 59));
-        return $this->downloadByDateTime($query);
+        $this->initScraper($query->getDownloadType());
+        return $this->createMetadataDownloader()->downloadByDate($query);
     }
 
-    /**
-     * @param Query $query
-     * @return MetadataList
-     * @throws SATAuthenticatedException
-     * @throws SATCredentialsException
-     */
     public function downloadByDateTime(Query $query): MetadataList
     {
         $this->initScraper($query->getDownloadType());
-        $result = new MetadataList([]);
-        foreach ($query->splitByDays() as $current) {
-            $result = $result->merge($this->downloadQuery($current));
-        }
-        return $result;
-    }
-
-    /**
-     * @param Query $query
-     * @return MetadataList
-     */
-    protected function downloadQuery(Query $query): MetadataList
-    {
-        $finalList = new MetadataList([]);
-        $day = $query->getStartDate()->modify('midnight');
-        $lowerBound = intval($query->getStartDate()->format('U')) - intval($day->format('U'));
-        $upperBound = intval($query->getEndDate()->format('U')) - intval($day->format('U'));
-        $secondInitial = $lowerBound;
-        $secondEnd = $upperBound;
-
-        $hasCallable = is_callable($this->onFiveHundred);
-
-        while (true) {
-            $list = $this->downloadSeconds($query, $day, $secondInitial, $secondEnd);
-            $result = $list->count();
-
-            if ($result >= 500 && $secondEnd === $secondInitial && $hasCallable) {
-                call_user_func($this->onFiveHundred, $this->buildDateWithDayAndSeconds($day, $secondInitial));
-            }
-
-            if ($result >= 500 && $secondEnd > $secondInitial) {
-                $secondEnd = (int)floor($secondInitial + (($secondEnd - $secondInitial) / 2));
-                continue;
-            }
-
-            $finalList = $finalList->merge($list);
-            if ($secondEnd >= $upperBound) {
-                break;
-            }
-
-            $secondInitial = $secondEnd + 1;
-            $secondEnd = $upperBound;
-        }
-
-        return $finalList;
-    }
-
-    /**
-     * Download seconds must obtain the metadata list for one specific day with seconds interval
-     *
-     * @param Query $query Base query, all properties will be used except startDate and endDate
-     * @param \DateTimeImmutable $day date to obtain, relevant parts are only year, month and day
-     * @param int $startSec second of the day to start
-     * @param int $endSec second of the day to end
-     *
-     * @return MetadataList
-     */
-    protected function downloadSeconds(Query $query, \DateTimeImmutable $day, int $startSec, int $endSec): MetadataList
-    {
-        $query = clone $query;
-        $query->setStartDate($this->buildDateWithDayAndSeconds($day, $startSec));
-        $query->setEndDate($this->buildDateWithDayAndSeconds($day, $endSec));
-        return $this->resolveQuery($query);
-    }
-
-    protected function buildDateWithDayAndSeconds(\DateTimeImmutable $day, int $seconds): \DateTimeImmutable
-    {
-        $timeAsString = gmdate('H:i:s', $seconds);
-        [$hour, $minute, $second] = explode(':', $timeAsString);
-        $date = $day->setTime((int) $hour, (int) $minute, (int) $second);
-        return $date;
-    }
-
-    /**
-     * @param Query $query
-     *
-     * @return MetadataList
-     */
-    protected function resolveQuery(Query $query): MetadataList
-    {
-        return (new QueryResolver($this->getClient(), $this->getCookie()))
-            ->resolve($query);
+        return $this->createMetadataDownloader()->downloadByDateTime($query);
     }
 
     /**
