@@ -199,4 +199,20 @@ class Query
 
         return $this;
     }
+
+    /**
+     * Generates a clone of this query splitted by day
+     *
+     * @return \Generator|Query[]
+     */
+    public function splitByDays()
+    {
+        $endDate = $this->getEndDate();
+        for ($date = $this->getStartDate(); $date <= $endDate; $date = $date->modify('midnight +1 day')) {
+            $partial = clone $this;
+            $partial->setStartDate($date);
+            $partial->setEndDate(min($date->setTime(23, 59, 59), $endDate));
+            yield $partial;
+        }
+    }
 }

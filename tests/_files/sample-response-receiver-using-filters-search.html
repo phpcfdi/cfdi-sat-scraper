@@ -1,0 +1,1021 @@
+1|#||4|46|updatePanel|ctl00_UpnlNombre|
+
+                    |28596|updatePanel|ctl00_MainContent_UpnlBusqueda|
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <span class="radio-inline"><input id="ctl00_MainContent_RdoFolioFiscal" type="radio" name="ctl00$MainContent$FiltroCentral" value="RdoFolioFiscal" onclick="javascript:setTimeout(&#39;__doPostBack(\&#39;ctl00$MainContent$RdoFolioFiscal\&#39;,\&#39;\&#39;)&#39;, 0)" /><label for="ctl00_MainContent_RdoFolioFiscal">Folio Fiscal *</label></span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input name="ctl00$MainContent$TxtUUID" type="text" maxlength="36" id="ctl00_MainContent_TxtUUID" disabled="disabled" class="aspNetDisabled form-control" placeholder="Folio fiscal" style="text-transform: uppercase;" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <span class="radio-inline"><input id="ctl00_MainContent_RdoFechas" type="radio" name="ctl00$MainContent$FiltroCentral" value="RdoFechas" checked="checked" /><label for="ctl00_MainContent_RdoFechas">Fecha de Emisión *</label></span>
+                    </div>
+                    <div class="form-group">
+
+<script>
+    function ValidateYear() {
+
+        var ddlAnio = document.getElementById("DdlAnio");
+        var anio = ddlAnio.options[ddlAnio.selectedIndex].value;
+        var ddl = document.getElementById("ddlComplementos");
+        if (anio < 2014) {
+            var hfInicialBool = document.getElementById("hfInicialBool");
+            hfInicialBool.value = "true";
+
+            ddl.selectedIndex = 0;
+            ddl.disabled = true;
+        }
+        if (anio >= 2014) {
+            var hfInicialBool = document.getElementById("hfInicialBool");
+            hfInicialBool.value = "false";
+
+            ddl.disabled = false;
+        }
+
+        asignaDia();
+
+    }
+</script>
+<div id="ctl00_MainContent_CldFecha_UpnlSeleccionFecha">
+
+        <span id="ctl00_MainContent_CldFecha_LblFecha" style="display:inline-block;width:150px;"></span>
+        <div class="form-group">
+            <div class="col-sm-4">
+                <span id="ctl00_MainContent_CldFecha_LblAnio" class="control-label">Año*:</span>
+            </div>
+            <div class="col-sm-4">
+                <span id="ctl00_MainContent_CldFecha_LblMes" class="col-sm-1 control-label">Mes*:</span>
+            </div>
+            <div class="col-sm-4">
+                <span id="ctl00_MainContent_CldFecha_lblDia" class="col-sm-1  control-label">Día:</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-4">
+                <select name="ctl00$MainContent$CldFecha$DdlAnio" id="DdlAnio" class="form-control" onChange="ValidateYear();">
+		<option value="2011">2011</option>
+		<option value="2012">2012</option>
+		<option value="2013">2013</option>
+		<option value="2014">2014</option>
+		<option value="2015">2015</option>
+		<option value="2016">2016</option>
+		<option value="2017">2017</option>
+		<option value="2018">2018</option>
+		<option selected="selected" value="2019">2019</option>
+
+	</select>
+            </div>
+
+            <div class="col-md-4">
+                <select name="ctl00$MainContent$CldFecha$DdlMes" id="ctl00_MainContent_CldFecha_DdlMes" class="form-control" onchange="asignaDia();">
+		<option selected="selected" value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+
+	</select>
+            </div>
+
+            <div class="col-md-4">
+                <select name="ctl00$MainContent$CldFecha$DdlDia" id="ctl00_MainContent_CldFecha_DdlDia" class="form-control">
+		<option selected="selected" value="0"> </option>
+		<option value="01">01</option>
+		<option value="02">02</option>
+		<option value="03">03</option>
+		<option value="04">04</option>
+		<option value="05">05</option>
+		<option value="06">06</option>
+		<option value="07">07</option>
+		<option value="08">08</option>
+		<option value="09">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+
+	</select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-6">
+                <span id="ctl00_MainContent_CldFecha_Label1" class="control-label">Hora Inicial:</span>
+            </div>
+            <div class="col-md-6">
+                <span id="ctl00_MainContent_CldFecha_Label2" class="control-label">Hora Final:</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-6">
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlHora" id="ctl00_MainContent_CldFecha_DdlHora" class="form-control" onchange="validaHora();">
+		<option selected="selected" value="0">00</option>
+		<option value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+
+	</select>
+
+                    <div style="position: relative; top: -33px; left: 168px;">:</div>
+                </div>
+
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlMinuto" id="ctl00_MainContent_CldFecha_DdlMinuto" class="form-control" onchange="validaHora();">
+		<option selected="selected" value="0">00</option>
+		<option value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+		<option value="32">32</option>
+		<option value="33">33</option>
+		<option value="34">34</option>
+		<option value="35">35</option>
+		<option value="36">36</option>
+		<option value="37">37</option>
+		<option value="38">38</option>
+		<option value="39">39</option>
+		<option value="40">40</option>
+		<option value="41">41</option>
+		<option value="42">42</option>
+		<option value="43">43</option>
+		<option value="44">44</option>
+		<option value="45">45</option>
+		<option value="46">46</option>
+		<option value="47">47</option>
+		<option value="48">48</option>
+		<option value="49">49</option>
+		<option value="50">50</option>
+		<option value="51">51</option>
+		<option value="52">52</option>
+		<option value="53">53</option>
+		<option value="54">54</option>
+		<option value="55">55</option>
+		<option value="56">56</option>
+		<option value="57">57</option>
+		<option value="58">58</option>
+		<option value="59">59</option>
+
+	</select>
+
+                    <div style="position: relative; top: -33px; left: 168px;">:</div>
+                </div>
+
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlSegundo" id="ctl00_MainContent_CldFecha_DdlSegundo" class="form-control" onchange="validaHora();">
+		<option selected="selected" value="0">00</option>
+		<option value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+		<option value="32">32</option>
+		<option value="33">33</option>
+		<option value="34">34</option>
+		<option value="35">35</option>
+		<option value="36">36</option>
+		<option value="37">37</option>
+		<option value="38">38</option>
+		<option value="39">39</option>
+		<option value="40">40</option>
+		<option value="41">41</option>
+		<option value="42">42</option>
+		<option value="43">43</option>
+		<option value="44">44</option>
+		<option value="45">45</option>
+		<option value="46">46</option>
+		<option value="47">47</option>
+		<option value="48">48</option>
+		<option value="49">49</option>
+		<option value="50">50</option>
+		<option value="51">51</option>
+		<option value="52">52</option>
+		<option value="53">53</option>
+		<option value="54">54</option>
+		<option value="55">55</option>
+		<option value="56">56</option>
+		<option value="57">57</option>
+		<option value="58">58</option>
+		<option value="59">59</option>
+
+	</select>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlHoraFin" id="ctl00_MainContent_CldFecha_DdlHoraFin" class="form-control" onchange="validaHora();">
+		<option value="0">00</option>
+		<option value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option selected="selected" value="23">23</option>
+
+	</select>
+
+                    <div style="position: relative; top: -33px; left: 168px;">:</div>
+                </div>
+
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlMinutoFin" id="ctl00_MainContent_CldFecha_DdlMinutoFin" class="form-control" onchange="validaHora();">
+		<option value="0">00</option>
+		<option value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+		<option value="32">32</option>
+		<option value="33">33</option>
+		<option value="34">34</option>
+		<option value="35">35</option>
+		<option value="36">36</option>
+		<option value="37">37</option>
+		<option value="38">38</option>
+		<option value="39">39</option>
+		<option value="40">40</option>
+		<option value="41">41</option>
+		<option value="42">42</option>
+		<option value="43">43</option>
+		<option value="44">44</option>
+		<option value="45">45</option>
+		<option value="46">46</option>
+		<option value="47">47</option>
+		<option value="48">48</option>
+		<option value="49">49</option>
+		<option value="50">50</option>
+		<option value="51">51</option>
+		<option value="52">52</option>
+		<option value="53">53</option>
+		<option value="54">54</option>
+		<option value="55">55</option>
+		<option value="56">56</option>
+		<option value="57">57</option>
+		<option value="58">58</option>
+		<option selected="selected" value="59">59</option>
+
+	</select>
+
+                    <div style="position: relative; top: -33px; left: 168px;">:</div>
+                </div>
+
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlSegundoFin" id="ctl00_MainContent_CldFecha_DdlSegundoFin" class="form-control" onchange="validaHora();">
+		<option value="0">00</option>
+		<option value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+		<option value="32">32</option>
+		<option value="33">33</option>
+		<option value="34">34</option>
+		<option value="35">35</option>
+		<option value="36">36</option>
+		<option value="37">37</option>
+		<option value="38">38</option>
+		<option value="39">39</option>
+		<option value="40">40</option>
+		<option value="41">41</option>
+		<option value="42">42</option>
+		<option value="43">43</option>
+		<option value="44">44</option>
+		<option value="45">45</option>
+		<option value="46">46</option>
+		<option value="47">47</option>
+		<option value="48">48</option>
+		<option value="49">49</option>
+		<option value="50">50</option>
+		<option value="51">51</option>
+		<option value="52">52</option>
+		<option value="53">53</option>
+		<option value="54">54</option>
+		<option value="55">55</option>
+		<option value="56">56</option>
+		<option value="57">57</option>
+		<option value="58">58</option>
+		<option selected="selected" value="59">59</option>
+
+	</select>
+                </div>
+            </div>
+        </div>
+
+</div>
+<script type="text/javascript" language="javascript">
+    function daysInMonth(month, year) {
+        var dd = new Date(year, month, 0);
+        return dd.getDate();
+    }
+    function asignaDiaFecha(anioObj, mesObj, diaObj) {
+        var year = anioObj.options[anioObj.selectedIndex].value;
+        var month = mesObj.options[mesObj.selectedIndex].value;
+
+            var days = (year == ' ' || month == ' ')
+               ? 31 : daysInMonth(month, year);
+            diaObj.options.length = 0;
+            diaObj.options[diaObj.options.length] = new Option(' ', '0');
+            for (var i = 1; i <= days; i++) {
+                if (i < 10) {
+                    diaObj.options[diaObj.options.length] = new Option('0' + i.toString(), i);
+                } else {
+                    diaObj.options[diaObj.options.length] = new Option(i, i);
+                }
+            }
+
+            var opHora = $(diaObj).find("option[value=0]");
+            $(diaObj).selectbox("change", opHora.attr('value'), opHora.html());
+
+    }
+
+    function ConfiguraCombosMac() {
+        var isMac = navigator.userAgent.indexOf("Macintosh");
+
+        if (isMac != -1) {
+            $(document.getElementsByClassName("calendarCombo")).css("width", "45px");
+            $(document.getElementsByClassName("calendarCombo2")).css("width", "60px");
+        }
+    }
+
+    function asignaDia() {
+
+        var anioJsObj = document.getElementById('DdlAnio');
+        var mesJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlMes');
+        var diaJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlDia');
+        asignaDiaFecha(anioJsObj, mesJsObj, diaJsObj);
+    }
+
+    function validaHora() {
+        var horaJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlHora');
+        var minutoJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlMinuto');
+        var segundoJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlSegundo');
+        var horaFinJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlHoraFin');
+        var minutoFinJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlMinutoFin');
+        var segundoFinJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlSegundoFin');
+
+        var horaJs = horaJsObj.options[horaJsObj.selectedIndex].value;
+        var minutoJs = minutoJsObj.options[minutoJsObj.selectedIndex].value;
+        var segundoJs = segundoJsObj.options[segundoJsObj.selectedIndex].value;
+        var horaFinJs = horaFinJsObj.options[horaFinJsObj.selectedIndex].value;
+        var minutoFinJs = minutoFinJsObj.options[minutoFinJsObj.selectedIndex].value;
+        var segundoFinJs = segundoFinJsObj.options[segundoFinJsObj.selectedIndex].value;
+
+        var segIni = timeToSeconds(horaJs, minutoJs, segundoJs);
+        var segFin = timeToSeconds(horaFinJs, minutoFinJs, segundoFinJs);
+        if (segIni > segFin)
+        {
+            horaFinJsObj.selectedIndex = horaJsObj.selectedIndex;
+            minutoFinJsObj.selectedIndex = minutoJsObj.selectedIndex+1;
+            segundoFinJsObj.selectedIndex = segundoJsObj.selectedIndex;
+        }
+    }
+
+    function timeToSeconds(horas,minutos,segundos) {
+        return parseInt(parseInt(horas * 3600) + parseInt(minutos * 60) + parseInt(segundos));
+    }
+
+    function DefinePosicionInicial() {
+
+    }
+
+</script>
+
+                    </div>
+                </div>
+
+
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <span id="ctl00_MainContent_LblRfcReceptor" class="control-label">RFC Emisor</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <span id="ctl00_MainContent_LblEstado" class="control-label">Estado del Comprobante</span>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <input name="ctl00$MainContent$TxtRfcReceptor" type="text" maxlength="13" id="ctl00_MainContent_TxtRfcReceptor" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <select name="ctl00$MainContent$DdlEstadoComprobante" id="ctl00_MainContent_DdlEstadoComprobante" class="form-control" onchange="EstadoComprobante(this);">
+	<option selected="selected" value="-1">Seleccione un valor...</option>
+	<option value="0">Cancelado</option>
+	<option value="1">Vigente</option>
+
+</select>
+                        </div>
+                    </div>
+
+
+
+                        <div class="form-group">
+                        <div class="col-sm-6">
+                            <span id="ctl00_MainContent_Label5" class="control-label">Tipo de Comprobante (Complemento)</span>
+                            <input type="hidden" name="ctl00$MainContent$hfInicialBool" id="hfInicialBool" value="false" />
+                            <input type="hidden" name="ctl00$MainContent$hfDescarga" id="hfDescarga" />
+                        </div>
+
+                        <div id="DivlblEstatusCancelacion" style="display: none;" class="col-sm-6">
+                            <span id="ctl00_MainContent_lblEstatusCancelacion" class="control-label">Estatus Cancelación</span>
+                    </div>
+                </div>
+
+
+
+
+                        <div class="form-group">
+                        <div class="col-sm-6">
+                            <select name="ctl00$MainContent$ddlComplementos" id="ddlComplementos" class="form-control" style="width:100%;">
+	<option selected="selected" value="-1">Seleccione un valor...</option>
+	<option value="8">Est&#225;ndar (sin complemento)</option>
+	<option value="4294967296">Acreditamiento de IEPS</option>
+	<option value="8388608">Aerol&#237;neas</option>
+	<option value="1073741824">Certificado de Destrucci&#243;n</option>
+	<option value="17179869184">Comercio Exterior</option>
+	<option value="274877906944">Comercio Exterior 1.1</option>
+	<option value="4">Compra Venta de Divisas</option>
+	<option value="16777216">Consumo de Combustibles</option>
+	<option value="8796093022208">Consumo De Combustibles 1.1</option>
+	<option value="64">Donatarias</option>
+	<option value="256">Estado De Cuenta Bancario</option>
+	<option value="4398046511104">Estado de Cuenta Combustibles 1.2</option>
+	<option value="8589934592">Estado de cuenta de combustibles de monederos electr&#243;nicos.</option>
+	<option value="17592186044416">Gastos de Hidrocarburos</option>
+	<option value="68719476736">INE 1.1</option>
+	<option value="35184372088832">Ingresos de Hidrocarburos</option>
+	<option value="1024">Instituciones Educativas Privadas (Pago de colegiatura)</option>
+	<option value="4096">Leyendas Fiscales</option>
+	<option value="524288">Mis Cuentas</option>
+	<option value="67108864">Notarios P&#250;blicos</option>
+	<option value="536870912">Obras de artes y antig&#252;edades</option>
+	<option value="2048">Otros Derechos e Impuestos</option>
+	<option value="4194304">Pago en Especie</option>
+	<option value="8192">Persona F&#237;sica Integrante de Coordinado</option>
+	<option value="549755813888">Recepci&#243;n de Pagos</option>
+	<option value="128">Recibo de donativo</option>
+	<option value="1048576">Recibo de Pago de Salarios</option>
+	<option value="137438953472">Recibo de Pago de Salarios 1.2</option>
+	<option value="32">Sector de Ventas al Detalle (Detallista)</option>
+	<option value="268435456">Servicios de construcci&#243;n</option>
+	<option value="16384">SPEI de Tercero a Tercero</option>
+	<option value="2147483648">Sustituci&#243;n y renovaci&#243;n vehicular</option>
+	<option value="32768">Terceros</option>
+	<option value="65536">Terceros</option>
+	<option value="2199023255552">Timbre Fiscal Digital</option>
+	<option value="16">Turista o Pasajero Extranjero</option>
+	<option value="33554432">Vales de Despensa</option>
+	<option value="134217728">Veh&#237;culo Usado</option>
+	<option value="2097152">Venta de Vehiculos</option>
+
+</select>
+                            <small class="form-text">(Criterio de búsqueda aplicable a CFDI emitidas a partir del 01/01/2014)</small>
+                        </div>
+
+                        <div id="DivddlVigente" style="display: none;" class="col-sm-6">
+                            <select name="ctl00$MainContent$ddlVigente" id="ddlVigente" class="form-control" align="left" style="width:100%;">
+	<option selected="selected" value="0">Seleccione un valor...</option>
+	<option value="1">En Proceso</option>
+	<option value="4">Rechazada</option>
+	<option value="5">Plazo vencido</option>
+	<option value="-1">Sin proceso</option>
+
+</select>
+                        </div>
+
+                        <div id="DivddlCancelado" style="display: none;" class="col-sm-6">
+                            <select name="ctl00$MainContent$ddlCancelado" id="ddlCancelado" class="form-control" align="left" style="width:100%;">
+	<option selected="selected" value="0">Seleccione un valor...</option>
+	<option value="2">Cancelado con aceptaci&#243;n</option>
+	<option value="3">Cancelado sin aceptaci&#243;n</option>
+	<option value="5">Plazo vencido</option>
+
+</select>
+                    </div>
+                </div>
+
+
+                <div class="col-md-12">
+                    <div class="clearfix">
+                        <div class="pull-left text-muted text-vertical-align-button">
+                            * Campos obligatorios
+                        </div>
+                        <div class="pull-right">
+                            <input type="submit" name="ctl00$MainContent$BtnBusqueda" value="Buscar CFDI" onclick="ocultaResultados();WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$MainContent$BtnBusqueda&quot;, &quot;&quot;, true, &quot;Fechas&quot;, &quot;&quot;, false, false))" id="ctl00_MainContent_BtnBusqueda" class="btn btn-primary" style="margin-right: 20px" />
+                        </div>
+                    </div>
+
+
+
+                    <div style="vertical-align: top" class="erroruuid">
+
+                    </div>
+                    <br />
+                    <div>
+                        <div id="ctl00_MainContent_ValidationSummary1" class="errores" style="display:none;">
+
+</div>
+                        <div id="ctl00_MainContent_PnlErrores" class="erroruuid" style="width:390px;">
+
+                            <div style="vertical-align: top">
+
+                            </div>
+
+</div>
+                    </div>
+                </div>
+            |101946|updatePanel|ctl00_MainContent_UpnlResultados|
+                <div id="ctl00_MainContent_PnlResultados" style="display:inline;">
+
+
+                    <div class="form-group col-sm-12" id="DivContenedor">
+                        <div class="col-sm-12" id="ContenedorDinamico" style="overflow: auto;">
+                            <table id="ctl00_MainContent_tblResult" class="table table-responsive">
+		<tr>
+			<th>
+                                        <span style="width: 160px;">
+                                        <input type="checkbox" id="seleccionador" name="seleccionador" onclick="manejaseleccion();"
+                                            title="Seleccionar todos" />&nbsp;
+                                        Acciones</span>
+                                    </th>
+			<th>
+                                        <span style="width: 385px;">Folio Fiscal</span>
+                                    </th>
+			<th>
+                                        <span style="width: 150px;">RFC Emisor</span>
+                                    </th>
+			<th>
+                                        <span style="width: 350px;">Nombre o Razón Social del Emisor</span>
+                                    </th>
+			<th>
+                                        <span style="width: 150px;">RFC Receptor</span>
+                                    </th>
+			<th>
+                                        <span style="width: 350px;">Nombre o Razón Social del Receptor</span>
+                                    </th>
+			<th>
+                                        <span style="width: 200px;">Fecha de Emisión</span>
+                                    </th>
+			<th>
+                                        <span style="width: 200px;">Fecha de Certificación</span>
+                                    </th>
+			<th>
+                                        <span style="width: 150px;">PAC que Certificó</span>
+                                    </th>
+			<th>
+                                        <span style="width: 150px;">Total</span>
+                                    </th>
+			<th>
+                                        <span style="width: 200px;">Efecto del Comprobante</span>
+                                    </th>
+			<th>
+                                        <span style="width: 200px;">Estatus de cancelación</span>
+                                    </th>
+			<th>
+                                        <span style="width: 200px;">Estado del Comprobante</span>
+                                    </th>
+			<th>
+                                        <span style="width: 200px;">Estatus de Proceso de Cancelación</span>
+                                    </th>
+			<th>
+                                        <span style="width: 200px;">Fecha de Proceso de Cancelación</span>
+                                    </th>
+		</tr>
+		<tr>
+			<td><div style="width:150px; display:block;text-align:center;vertical-align:middle; position: relative;"><table>
+				<tr>
+					<td style="width:14.2%;"><input id="ListaFolios" title="Seleccionar" name ="ListaFolios" type="checkbox" value=70A17DCA-B359-4483-8B50-854F9433E42D class ="ListaFolios" onclick = "validaseleccion();" /><input type='hidden' id='ListaFoliosUrl' name='ListaFoliosUrl' value='l4Y/Tt/v0rSnY7ZtUySHtJhXbuTpZzrEd/a8eE1enULRu5aZP4wk9QZEQnw/EE+YeVso64jwIGHz+s4V5j8Db1MKdHqAyKQfQOzZ8dcvWUzrRK0QX/qfscQfbaURvqSDDJT7PZeIzyETQY761slgqAVWsi/lGJCxygazmJe6OzGA+xrDwYXM3AwH8nzjwT+T5lSXzkezrDkrmvNRjLiUgmTiNL5oBmzf69kYMOnXRNxYjKzQ1XKE0AKUjJI7acDbnSpHi4Ko8p8WpzC3jUxuQa+X2/4ZP/zxYO9tlb+DP+BOmKyPR7IEsyhHCHezapNlZoGTohl3N1dLjqudfGwxjPU7Od+rCwl8WF3JBuDOezoeXNoNUd7+mDs5Ss0DFJ+LhzMYXt6hQNX+RtcVZe6sDneBlZIzkWqAmm8eJCHKE8g=' /></td><td style="width:14.2%;">&nbsp;</td><td style="width:14.2%;"><span id="BtnVerDetalle" name="BtnVerDetalle"
+                                       height="25" width="25"  class="glyphicon glyphicon-zoom-in Interactivo"
+                                       onclick="AccionCfdi('Detalle.aspx?Datos=Us2XUWigeRqovmCvbOQAPagDUbVDV7Z3fMvTqmvXRmQa85dBZd7dgzmHZ3pLj+CvCxilsIulnuDHp0C138NRriaFn03xyBH1UQTBqjvWESncaUp7CoTHhHwK5HrRTtrOtk0ZCiwfmbwkZtc+LrFk7GVmBGKgsp/Ym5JFSWXvlO/LOUhqOE7FxSho/TEMrsTl2u92atYEbl+Va1LCCpXqhVHlehOHDBZkWbSGRinTxAK1ooaXhVm9Ldr+tBIxYLFQpwGJ8V2z8unYmLeXcNoyR0yOL+SD42TyPtequ31df9WGjVyAdy9q+pFyHfubvzGeKJz9JAexTdwKk0Zmx0OfM3qUkLGfoqKii0rHCnG3wZ6vmNBZkN4tQRrN1NNl+xZd1hO9PGKlbgIMbOoX6GKm9okbocAhjcRluNWVedpYJYg/Qomf4bO2imQuz93PoyR+J3w1x6Qt64OGJIzBbftFxMAnBVyhkdXOhh2YgcDq/zUuGEXyHhudeP95XYJeJtc1s33oXqkxrLTI1Eh1oxWI4GCbzVmJvzFbBmRRzh39mffspSlxkaByCyqzc4Khg7ZJ7oYqMlyDbpocm5r8eV1g84MWgzD1NyBxBAeocztXk/nhrQBFzNn+hnEX9CSJ5AGuIOxxThr+wr0UjkK56uU5HA==','Detalle');"
+                                       title="Ver detalle" style="cursor:pointer"  /></td><td style="width:14.2%;"><span id="BtnDescarga" name="BtnDescarga"
+                                       height="25" width="25"  class="glyphicon glyphicon-cloud-download Interactivo"
+                                       onclick="return AccionCfdi('RecuperaCfdi.aspx?Datos=lN9DJiIMplxOgtY5H8TmA3n1uJGU4PTq8sLNEHgBh/Q/PX4Hol9b8saZYy0+8OwT5A+eq/QUceX58f8CRDgWXLZKT4ie7WGPVQVxtXxgU81PdgGnzNwC4MSro/S+MKgdWAMXu6Wui0ASlOfAphDcYl10L7Lo6zMnn5KisJurjYi15pxxB4UDJ5gVA/0UuHt7b8Q9XRITXYMpC8NDyS7F2/9cnccMic/w2cy0cLAKCfHi7SvwEAty0N9FGU5tghz5QXncNEdrAGXyQZI5bMNW9DsHqdbpCgwJYkTz1ddlDg3Psft7GKwoTFnh6xscnQMH14tQanA0X97NrxdSl2A3wqz7jeashaafSFodlEyZW/CqI7IDdYLl4BrXryTfDrECRiSk+uRqeK/RcuURBMhTpWaDKxrFUEDCL9e2k7nkPOxSWtjzcAi1zWj+jUjJoZJPzMnWBTffdedoiRS/VH3K9QXyaLx99luNd6dnMOHsXbh2mBIYy6rz7EH4k7B+Kf9egkzjCgd9jneALPiZy8XZiSI37cdcWgcx8lX6XwpLLojputn+oKVtQqVDWVXFRGOb6h/mWom9UK2pZhn243XO2+AoVFUhJjVzcdmx0hayegU=','Recuperacion');"
+                                       title="Descargar" ></span></td><td style="width:14.2%;"><span id="BtnRI" name="BtnRI"
+                                          src="Images/RI.png"
+                                          height="25" width="25" class="glyphicon glyphicon-file Interactivo"
+                                          onclick="recuperaRepresentacionImpresa('klRxGZa26fdyWX4cJz4cunpHHeRENiU4XLLPe9CNHAcxdf/yf0EMzaxZenY8bKNix+1PuoIUvgh4+4jif+YZZ6x0S2CYWvN5d2NZfBS5ePpL7fOr7YwAgjwPBjDXJzcoeFd6rcB2V19C3KyAUdIM6a1AW9320lzsm3a7n+HfEv4aIffsBEjYCd4/ZYS8dbplvuIhZU6KTrlRVvJ07bGu5rO+cbe+Br2iCl7jw0rPhApm7CAeaw86Bi/w5QRz4Fz23ZCvuJTGWFefysnwLyGh2ZHVmm3yyK3u02YdyAda6/CuMgYmymClASx4U6UUqBSb/jAIpZvKw7J/mwKjld2+sHRixsMV6UiiMAl24XcKWZn9+hYafHhkTloJz/XUMYHTpL0hGUD8olb3V22f/nVaCgWWZBKOz9W1zCLsLs/C8rAPW5Xbh3c5zX/JFOuiXmQQpS+wpmM5g0GrBuWUyP5Viasjmg2cpPp9LkKg+eIhwNyJgKijVedn2EGUZd3PWEU5xgTZlMh+SgpNGgEFkeSF9hkrkktrWUbPNfBflHRQSsgceDAHPpgBdqONIWuib3tSg2HUv4KRod+/15nXOPLagu++EbFZ/+N66ParPqMU004=');"
+                                          title="Recuperar Representación Impresa" style="cursor:pointer" /></td><td style="width:14.2%;">&nbsp;</td><td style="width:14.2%;"></td>
+				</tr>
+			</table></div></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:385px;">70A17DCA-B359-4483-8B50-854F9433E42D</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">BSM970519DU8</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:350px;">BANCO SANTANDER MEXICO, SA INSTITUCION DE BANCA MULTIPLE, GRUPO FINANCIERO SANTANDER MEXICO</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">AUAC920422D38</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:350px;">CESAR RENE AGUILERA ARREOLA</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">2019-01-02T04:37:21</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">2019-01-02T04:30:27</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">INT020124V62</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">$0.00</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">Ingreso</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:240px;">Cancelable sin aceptación</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">Vigente</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:240px;"></span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;"> </span></td>
+		</tr>
+		<tr>
+			<td><div style="width:150px; display:block;text-align:center;vertical-align:middle; position: relative;"><table>
+				<tr>
+					<td style="width:14.2%;"><input id="ListaFolios" title="Seleccionar" name ="ListaFolios" type="checkbox" value=3D53CA16-FB8A-46D4-9494-C1F32F401E60 class ="ListaFolios" onclick = "validaseleccion();" /><input type='hidden' id='ListaFoliosUrl' name='ListaFoliosUrl' value='KPC3RiATA44llcGV3dKwu4XlFKIxRzjhBMajOgOxfpgsKDJFRMdUnc+e5bRNvUa06uNaJM6tEXQCGamZi9GRMuzYaAeGpbICQKBa+NtR8aLJkfnTs18yk6Lv1xY7CAsVYB5jevlDH8hMUR/8tmkYl3eUsQIjPFd1IQPROiffdAgXLF9Y8xSjJXHdi7krYomDbVACEoJvrNIM/vKrqmaDbsq9JgJY9+sLo9CYkHYiD0olZQUItTF9KWGOa9FcVZ2VJak8+c7bWqz1qwt6jHS9jnEmlnadGDmnK/i2KIC32xA8BSm99kkonWOFSxIMvSW3Miw63nE+nEpTfRpY/eq6f9ruOmjvXLdBOImaCHq84D0Y1bBE4m90mTbvdFbjnGB/rlVoaAGP43yPMVx23+ZbGxDJBISKT6o7zTaBzQ4dByA=' /></td><td style="width:14.2%;">&nbsp;</td><td style="width:14.2%;"><span id="BtnVerDetalle" name="BtnVerDetalle"
+                                       height="25" width="25"  class="glyphicon glyphicon-zoom-in Interactivo"
+                                       onclick="AccionCfdi('Detalle.aspx?Datos=MVQ8HHNNFZW7B4WDhReK5VEzzchIDvrRIGeCQvQ9DIIEaRpTOyFs2HYyeBclDfgl8DXrYTbo9WUpzjYuYxqdEfmdoZbn56dm5seHkLvjvCX+r8gk0D+AHATiyIL6O9qcj3fpWx3c6ONY0bptBZ8kfd6y0dNanEoT+Ty1/fhaUD32oWRnFNgYuFcbPuLLhUvKNUCcJtVjtLNE7q1Amf3AgRoAABEiuacPC3GG7cmnzX8j2esL/xWjhDIpEv1Td1qUti7sVQ0W/NHGHRtLUIFTX/Mk9BbMeo5myOlXUTVtKx+LaKUe3S68O2OXaV+401e0dggjQCqir+lf/4POPJXgdEV8q+zz8F0d9jVpW8w62GgBmFByJl2v69lqAA/NazU6O6+LiTtxY69Yh3i1B/Q38EqniAAPrrrGCu1Syrf9k3kmdFe623aK3N2Xe9qkeNOnL6pHeMHMK/BgTEUguG6CFyR2sTcEtvn4+3nGeNR9kuwdZMBCK9Cvpl/0ToK7ExeqKHzS4o0Gmc53NI3h+wjAXmXHuZ0KfT7KeXpPFlr4/edl0AadvozRZ5ZUmQ2HxLaZLWrmu+pQrMoQqQPiYiooO6UWFlQxkTTqfPyZZPrSemYoIApbcP3jYKeO7qGRw9Bg','Detalle');"
+                                       title="Ver detalle" style="cursor:pointer"  /></td><td style="width:14.2%;"><span id="BtnDescarga" name="BtnDescarga"
+                                       height="25" width="25"  class="glyphicon glyphicon-cloud-download Interactivo"
+                                       onclick="return AccionCfdi('RecuperaCfdi.aspx?Datos=xnQp9XGZb6EE/dqJDv22UfqyxOl8zdtlwPTDzinZ17GC90IYEd3j/DcWD8zB649GT1tPKFTyuLYVeD9dWhgiAasbmjfdJuhnTQiMloc9pvM9EjfKUQbv6eGWbH5D9g3uvSN6OxKZw6UAlakEvvSGz8roqor6SVdJvf0Rr+Wjdy+Jlb0I9B/L7w82AWff2YqDNyE1hiyJ6/726D5cK8t85B12YryMlnMShz2YYOlZmhWXxLjTUOO6Q34Bms4Q3aiI+P0AuPOa34DErrLII7XYrjZ8eG91uvMcjdZQLO/jmHge5o+UW3e5Qs49sD8Sp0pxr6A7EnGJ27x/NBArkyRQVM2Ci7/PjQo6pNBznp+YzhBDqm13xoHQieef/oKVvl7MGuBbrl+H3QKZptL5g/gTagzCDpBAD7talEwXEuZrg9S6+AO9agNtV3128RHA399xsO3BszJDFNjfJFjmm1M334ibKgh21ImfKiOBm0zR/a0F728wInSqArQRrxEWVVrI/JNqzR6Fb6nWQpM32yBP5IMaWfTWm2KYtbWCM80tca/OJBB7OV/07KITEpAuGdAogmyBZGYcTpAReFrsKhqIMAy0p/5pBtDFKxsiyk7I++c=','Recuperacion');"
+                                       title="Descargar" ></span></td><td style="width:14.2%;"><span id="BtnRI" name="BtnRI"
+                                          src="Images/RI.png"
+                                          height="25" width="25" class="glyphicon glyphicon-file Interactivo"
+                                          onclick="recuperaRepresentacionImpresa('xHKtgT0deVXmWDh+cxVrP3zcG69Ry9u1PPXxD3jVF+7lmiZX9thpGIMnOCbGEXH5mNZxp/VVNZ2tc5UWJ3GqB6Qoc6YnXd+LfYiCf7uS9wAuaVLkJ64YDi3f+8dnCqRPIMZfqSP5VKzS5zYahyAjDEDXmrBNZi3YMhWu3QiiKdGjXOxlsTl9LA5cqMBRojWsIRAY98fZI9XDf5pYtKssO9nzljOtrIHU47zbwbP+xHI0pN3e0Yx8uF5lAGycbEXzHI/ej+flaB9TVs02TtmO69e0hLS4VwPrDLraDdsVfRppTwKnqDhmEyudPDw6wMbrLXFU5wgBIlerUolsOrf13VrJEx3xCx9diFeqIgo62ZTUEKtUgJtqpFrLhWwyuVI6FPc8ojgwsBiIz04BmJLUHAaEqO0I489teyKj9zKLX6UHq2aCUO3KFzUMXTqc/fEDDdIOmQhvCrmCjpexvsajq5CEB90AgP6qA9bSmMiv9+LL04RXTd2of5dR2Iz9QsepQT4z7pEzWDJ5XkcbTfldKOJWcrXdIlzYHA5FlyP1JXd/qj5UX3UiOR4voKCWAQY28PWcgAKikODIZ36IvJIiev1sdh5dx0KfynFGKLdA/pk=');"
+                                          title="Recuperar Representación Impresa" style="cursor:pointer" /></td><td style="width:14.2%;">&nbsp;</td><td style="width:14.2%;"></td>
+				</tr>
+			</table></div></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:385px;">3D53CA16-FB8A-46D4-9494-C1F32F401E60</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">BBA830831LJ2</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:350px;">BBVA BANCOMER, S A</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">AUAC920422D38</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:350px;">CESAR RENE AGUILERA ARREOLA</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">2019-01-02T17:38:14</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">2019-01-02T22:07:36</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">BBA830831LJ2</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">$0.00</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">Ingreso</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:240px;">Cancelable sin aceptación</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">Vigente</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:240px;"></span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;"> </span></td>
+		</tr>
+		<tr>
+			<td><div style="width:150px; display:block;text-align:center;vertical-align:middle; position: relative;"><table>
+				<tr>
+					<td style="width:14.2%;"><input id="ListaFolios" title="Seleccionar" name ="ListaFolios" type="checkbox" value=4D9BAA24-281B-4DC3-B315-1B04371E911A class ="ListaFolios" onclick = "validaseleccion();" /><input type='hidden' id='ListaFoliosUrl' name='ListaFoliosUrl' value='OxSxdiaJdDWW4S6koBn4KRxBnxQgXp+HM/BKy3hOSLSYyxdXeokBG+4yVLVGH6eXnb1MfqDDHNuitCnUNJr7IFx8kQkY8KbUAH1gTIodKS1+bfoEZhWAbQtVL/Fk+LVXL3W4qSsrnkhXoP0qsYageh13aw6cRE1bv789m5btQUwgU6l8MB2ujx/HqtaDDn2Ur06QxXkLHL4egB1ijQ34EZvq5XNTMwrlaLYXEXXnTi/oriho6+Hi1pAhcKiDUIgkv+SlPSjFvtXd10nRw4e7tLrwNoH64j5NGlKEs7JbGDvsM4LDV+ybJY86mQ24DKjDVsSnAe0tG86OknNtfG1fipIwHziK9utNCDyMeF7aJcrC4XqhHppMvrBgapaiYtN9QxlPt0fyORRHfp4WJKg0LqUxvT9MIoSzfYqG+OTEESk=' /></td><td style="width:14.2%;">&nbsp;</td><td style="width:14.2%;"><span id="BtnVerDetalle" name="BtnVerDetalle"
+                                       height="25" width="25"  class="glyphicon glyphicon-zoom-in Interactivo"
+                                       onclick="AccionCfdi('Detalle.aspx?Datos=M5GxdvP9uoZY6f8gPMXe29X8HZexZz9SiCs67HAq71nW+GPayfHH/N4t6UuZYosGSADirQqiXEUbgmgUbV1kRtKMDAO8f6DmoQQkzryx9pmpXWnjn9EcV8KRDo5MzPp2Bn63nBuVbXd7zs3TMrgWRVxRxJdCZAMWD4XSEI/br+Cce/2k6tW50CblYSGQ0n6Lu3W9v34leTtJNtWUM/jfMRMkFBK2WQnJUfP78VX6SnA3tRK9k+E/w3bRioz7AL6vwApFqGb73P3KyprhkzKT0r3NVujmoXd0VKPguED8yBvGH88ASEQvZXFGBsK+mrRE6OunaLU/m24d9CGYt0tIb/zQwAcZI4+VGtb9ZTNWle0t0KJzRxISYhruyTVchP4cY56Y7ZS2DLuR44Ze2vQ1vxbH6pbx8rpUsTcmJkd37sADdpxhJ6wj8mmqZGGVL8W4DPewCxVCwMUUU0Xvv+BMj5a8TpxESkw0j6H1kNbArFfai4N+EiJtMgC3OIcf3a3UWB09MJH6VmbO1Iqep8j/w/jBhX1dtKOxD1OT7ut2enISKynNm8or8D8WryqsRWLCyWIQrSfMd4UI++WzegDTDcIXyznDVZjautYlTfIlhC0x1BsJtunw9aeE1FFZX1o8cCZr4Q4aPpR0iurzU6EM5A==','Detalle');"
+                                       title="Ver detalle" style="cursor:pointer"  /></td><td style="width:14.2%;"><span id="BtnDescarga" name="BtnDescarga"
+                                       height="25" width="25"  class="glyphicon glyphicon-cloud-download Interactivo"
+                                       onclick="return AccionCfdi('RecuperaCfdi.aspx?Datos=NDmIBQ+rI0fycc8Ptma5KvmfIYpZRTaJ4S6f7bmnwWiCyFHTVxbGashZqYDVyKcmL33Gd49dIs36Us/hFpZolFDaXUWoknWQvCR4orC6/aBVkK3TmCXppcLKJamOtq/C9oCotx8dqdtXepL6OP179ZXxgVj2f85ebv5jwTrFBZDhphWdGtrqeiwLtpFpx7HoQqPGjjlr7SvoXqcFfLeuIZGt5La33tM4w0fNKiGnxJCPkxvdpWWld4Zlt14oLPypbrWPtFtaOgJPzl2j1ozcv81Sz+we0xWyvVhypxkJp5h7iXC7culQENnHv8e20OljfV5V6yzzO9fAiPUNW2bFO6rynput8iSWMpfP+VZX3sibN+j+m+j7fKcLO6vs20PntKQPcVHry85p+7CS54itaVLRKkcifs/973SMCWoK5hdkNW3uz7zej8gNJxQN7XqkmuM8LXSBeeqbhsVaDWsq2NwJAO2pAF9I+kurSgnULovYqQl1C/2T3+ZP02YXCnO1qTbc2omR+NQM/mo6dH7/dUTVrpCP5uSaDpiRy2vNlO7N4arCvZbeTNVZIfNsIHtW9x1yOGU/AjDJU94fuwI8Pjyn0GQgs3ZPlzlqhjprEZQ=','Recuperacion');"
+                                       title="Descargar" ></span></td><td style="width:14.2%;"><span id="BtnRI" name="BtnRI"
+                                          src="Images/RI.png"
+                                          height="25" width="25" class="glyphicon glyphicon-file Interactivo"
+                                          onclick="recuperaRepresentacionImpresa('Ter/c+E1i1Vc3vNPYYbRwbYjGoTsYWVIYOGuU8iG68zx/2R6fIOufsfYrY9NtgKPgR/zBP10XraWpaVwKVn4rnsfHX59A3BZmTkrMRj3T6ElEPMkEbdbT/N+qLrM0Dz+c77JLuZqmCf8XIEbu9dEF7KDyKgbD3VKcqdPurl/blpP2ZoowZL7frOBvQ+k5UT3UQDCCBJkY6EgAULgbWDotypgmv5tzffudp9vdW86WeChz2A6XDnaw/v7ygofyGJ6w7gfiXIKXtBpt5q1EzY8SwlRDqany2XTxS6Mqc4W3AwgjFINwmpogE6tfVNry6YJLVlYhRfowhpuQsEC4MZyO+8wC75avaHSaa/mpNhVnRpjNp9QIzFs2RsA2oZawWT0by40v3WnxSS9FYONmr6qiX0U/lP/46iQsSiky0mNW9bQ7ruxyZZOWlOgdKFFFdYmPhf+J87Dzu4DkN1Wh8I0tii5UdioToxp/nCk20qJzCjFdrTZbrCmy694Z5gjLbEvwYUPuisGoCR8MOcCJkqCCudRkXEewHJ5UTnKJHgINdLp1JF9J5qnfrZBvBop/s2cxHf5nbd0kuSoD+S/dzwcGYkDrotGTEGNUdcxhe0UDKk=');"
+                                          title="Recuperar Representación Impresa" style="cursor:pointer" /></td><td style="width:14.2%;">&nbsp;</td><td style="width:14.2%;"></td>
+				</tr>
+			</table></div></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:385px;">4D9BAA24-281B-4DC3-B315-1B04371E911A</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">ANA9509086E3</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:350px;">A.N.A. COMPAÑIA DE SEGUROS SA DE CV</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">AUAC920422D38</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:350px;">CESAR RENE AGUILERA ARREOLA</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">2019-01-08T16:01:37</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">2019-01-08T16:01:38</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">ASE0201179X0</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">$0.00</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">Pago</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:240px;">Cancelable sin aceptación</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">Vigente</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:240px;"></span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;"> </span></td>
+		</tr>
+		<tr>
+			<td><div style="width:150px; display:block;text-align:center;vertical-align:middle; position: relative;"><table>
+				<tr>
+					<td style="width:14.2%;"><input id="ListaFolios" title="Seleccionar" name ="ListaFolios" type="checkbox" value=8E0FD63F-F17C-404F-9A24-BEBD88AF166A class ="ListaFolios" onclick = "validaseleccion();" /><input type='hidden' id='ListaFoliosUrl' name='ListaFoliosUrl' value='P7JunMjKCQV3tS18K/WMdxMDgdl/59YlGTEZLYSgzuJTUGd7s6Adn1aiK5P2qRSec88dk6OJtpcgX9dJRUtGdqWfBTyKlSs7qGXe2GLHCDP3suL4li9vswDzUIZgnxsO/HI1EQ7dtf1ME/kqqGgYJ4FNgNsJp9Wsnz8ACIeuYyrHjTsKDFzlrskXSskhAKCU2qzVUTRqk8XUZqw+lZBSS7c7mk4oUCUL3im3skPC+KcQmDGe7CyKVhIbrVwU/VEeVa29iQmE68YTlrOzSMbPRRFxsNcdWHEJLuH2zccfEK4432abgoF/oQR9L0yg/9tWAdmkeKdbLhJE+LGmtP3rbk4qA8QtVpU/9hip4/snY9AMTa5xeGm0sQ7YOi3FbLsJsxieFqQwoYU+zrRt1Pew/OPcAwMZov3zGgrktrNV4lU=' /></td><td style="width:14.2%;">&nbsp;</td><td style="width:14.2%;"><span id="BtnVerDetalle" name="BtnVerDetalle"
+                                       height="25" width="25"  class="glyphicon glyphicon-zoom-in Interactivo"
+                                       onclick="AccionCfdi('Detalle.aspx?Datos=xAZ8KtiFsqlIV6jNOTuBtb68qWx2zfFyWbL2DtSZkdrfs7b8Y1JgDVx1fojSNmRxMk6i8CLa653fkAkn2PbXyIgph3UZTWoZuWHdpIN1XbhQbEue6nLyyaFB4pbNZR88fUPxQCPS0Ae8kiaSnMWZlixQbbMtOUR1ttjVuPrOBfizlsR9qJsHZb/URbTwlxGXuu+ZIoFWEIiWd5hLMOHPWKVinXl8FeSMQOR3jDpT7jvtcCWdeVCx5TBlu64wZI5dCip5qmRqD/6prZF+F27Hx0yt3clwlqbx2ESrhOYWAQLMSWyAL5uAK47GTjPDfcpjZ4iQ2zpwsUjiuvJKKoM+kYHo5F/N80S7aVnRb3ziPkU6Lb+iC0m/rQGKnzJwKMZIsmIT2vAKqj4lWqm+ggli7Ak0aLa/3kW0uehIhhe5yzPNrG3n1Fi6BeceKSqpqdWk1rBhS4MSsTirRfrwdqHpCiCEyuw7/YG2ddtuigG44uLFl4VxLck5UxuYK06QLNBd3iJB194Plf85EDlVbe9P20wcRdh+cGKpwwJhWIcruBFjLSWmVWVvFwXG1YWqrorrbowXE5vRN9Ej0N595fvkTTeoFykMk2s+FdpfqOAC/LsBxdHyLX5HT3MTZkp3PgGf/aVDYQjcsUQD/I6aeIj5lg==','Detalle');"
+                                       title="Ver detalle" style="cursor:pointer"  /></td><td style="width:14.2%;"><span id="BtnDescarga" name="BtnDescarga"
+                                       height="25" width="25"  class="glyphicon glyphicon-cloud-download Interactivo"
+                                       onclick="return AccionCfdi('RecuperaCfdi.aspx?Datos=1erqElBsh9LOORfRgT8d5gRNVl5MGhoGiyeh7lU5INQNo8P351YedqZjABsKaDUOnm3gGvsy3qQy6wy7OEkwVW6wfn8K6Cs1Twr+lM51mr2A0AarbYoKFGSzyEnPyoR6FVgI1xIgcJ40Dz95H0LywV9CqCvxBdUK5Lp3KXwBjwn5m4pot61SX9uFHLL58e9J4NjzZwYRUke2paoc2JZ0ZWMuY1uHZgLoVYu71RIMfv0dojHY1iYpp4vWUSTt53FdrhGjxTL30EEQ6wkoVog4ma1KM5mnfSqheIaNq+L46Hhrekp3FNM3NNKOBddFslK8I1wMqWS8Cyo1xfXOn+LYkQWTv1Q9pYh/jryCnwSXXRU0C1nVv381RNGeoP9ANeFxMUa23I9H3mRAW2waM35FIsG9gqywcTQrKqGsv3CobwY+mrfV439Ts3MFoAZiKfG5hGOrPmv6sPaD3EAYR8qTXLCCL6bH6dV4MvknMI1562awg7f4ITxzGutYR/vmkNP4FrS6YGqSRRSD5ht2xrm9aFMlCNsz4jhXl96u2AWoXLELgZjjm1MaEjBDpIoYTtURO8eiU14X2p2B2yhpeQ0Ev8xFHjPgKCp9/yKBQsx/48E=','Recuperacion');"
+                                       title="Descargar" ></span></td><td style="width:14.2%;"><span id="BtnRI" name="BtnRI"
+                                          src="Images/RI.png"
+                                          height="25" width="25" class="glyphicon glyphicon-file Interactivo"
+                                          onclick="recuperaRepresentacionImpresa('x5yN235mkQWLAp4XCBtsnyNBxjw/dccPjQAFMJSqHgThdpqTcO6/uknu+TMvWLH4lcIHNxoV2LL8Hal3FvGkK5/0bk2TJv9FBd+t/OSLnwrEVBxBU8F2yP2J/IaGwvKrjVTLblY+qDgdy3kpS/sdzWJ8pTD62S2fhoWsz8rluFU46okKJ/G0aBgwv8m5wWm8QQzGK+1QMmV5/AwGGZvhHwVPebemp95Hl4wY6WqnKnZfMR+mfURbkJCYhPIuMQdY8l1SChyHrDZtNw9YRFVt6ejHkzDvn0QxVS9qEA4VZnBeWRKMaHoi0xxSRRn1mm2Mp1TdXesGBO88T2mJC5vTfPQ63nyJkJuYZhFPo6uCEE5HfP5d8QhpGueOjbsDQCXELFAHT9/6cZLZAdmM0rMGOKf1o9U6MIvKuh1S56TArEiPQNtIdQnkeCao7cz4rUmd2Qa2fsil8Lma927mKOEQtG37SvFGvbEFHrCRkMEEXqjl5pnh+wiqTm3otQ6kQbu1cARtJNCNVSAX2WA9srjjafM+Zui7+Pd7RAR88iclYeQ5jw3cfzHBiU/uS42rxuSVMVEs1gbzQv9PMHTrcuuQPGXupMr1O6q+NOwKzGs/JH0=');"
+                                          title="Recuperar Representación Impresa" style="cursor:pointer" /></td><td style="width:14.2%;">&nbsp;</td><td style="width:14.2%;"></td>
+				</tr>
+			</table></div></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:385px;">8E0FD63F-F17C-404F-9A24-BEBD88AF166A</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">ANA9509086E3</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:350px;">A.N.A. COMPAÑIA DE SEGUROS SA DE CV</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">AUAC920422D38</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:350px;">CESAR RENE AGUILERA ARREOLA</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">2019-01-08T16:01:38</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">2019-01-08T16:01:39</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">ASE0201179X0</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">$0.00</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">Pago</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:240px;">Cancelable sin aceptación</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">Vigente</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:240px;"></span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;"> </span></td>
+		</tr>
+		<tr>
+			<td><div style="width:150px; display:block;text-align:center;vertical-align:middle; position: relative;"><table>
+				<tr>
+					<td style="width:14.2%;"><input id="ListaFolios" title="Seleccionar" name ="ListaFolios" type="checkbox" value=DBCCE88F-0091-4317-8B00-A3F32ED2330F class ="ListaFolios" onclick = "validaseleccion();" /><input type='hidden' id='ListaFoliosUrl' name='ListaFoliosUrl' value='sJqRFOleF4MhUN9staCTiGIPYV5JemCFKpjALrB4zwxZGdhHYC7zKrzJVUIyQKS+VAO7RAJYq73hDPU+O36VQfzrkAxbCPNrPnnu4vPZ0uY8qkC3vjRuxX7E+8gTdxhBYruqpzmrQKzg+MCEzOfEDs7gMMYo3F78pnZYFXJaDFc03ErFBOmBqFeB0btbtWX/eofypaUXVA1BwayKwI1bFOnANqp4iIkX4CQY/00EReivYeI9M6vu3FscjtGKiM9glKwXV3i4XkOMt020yZ7JZ719LAQGM/zS51qfakI9TyWbmBqZNvoAr9REvbo1beqJMIGphohiIFg11nuIgar4q/o4WlJHBSk8H2cPyaLuD7gtdezBit40f3hm23vti8d8GChqPxbN92RbcLBAr4x65rIM9Kb5pELmXP1xdWqF854=' /></td><td style="width:14.2%;">&nbsp;</td><td style="width:14.2%;"><span id="BtnVerDetalle" name="BtnVerDetalle"
+                                       height="25" width="25"  class="glyphicon glyphicon-zoom-in Interactivo"
+                                       onclick="AccionCfdi('Detalle.aspx?Datos=PJo08jQI08lXoZq6Zdzr38J5VyQRDNvBiXDB6Ch77kptLQXa0OtbxNH5UTXR3r+9zYoDkt/QnZMeJtm1uGqIFhP9X0JyV9GpFC0wnXT3t+t2ryqYwvQqMDgi8RhxDzeAwt6G3/RzaVbQqpG/zwmL8JGqweedJh66E5eN/m76eBBDULg9CZRwX/DKU6nGHDKfB/goC7zGpJ5SyyP0YWBRhCUksdM+Y7aS7EJDvjCF9I9QxLTombu4E3BMViVkbHwHRCZCdGabNsUEgYyQyT8OX/fDuRFFtk+UTManvamp0ZOZr09XpqckyIzdC6Rbz+EbIUdI4GttWZytclnA7iOdn7ruNZ0xC/pyaRWADHPp+MDXbEQiQLNeHd2OoUp8PF9Q8nId7wCJe69t2LviTFLwl0oD1PsF5kTllk+RJLSs5lmcB1BiYjUcwYxwn4ZN7CZyehUS/Z/9guB3H4pQtLzVsZeF2RkFdu6htknVyTvv47ruVSvD+cfcyirRvLtnViiybHtWrQsaDWkVIEkri3nkIHTRZbM1t8F/YIercI2CXxXw43XLr5QZu3sgF6jY/KD3ajehAPn6DBpyQp16x/u/F+mtzgSvL0wUIjBnyCX7jNMGDlY5Aeyrysf2uBcLrJFzOXCB1Nry6rqpsjI0E6AQmg==','Detalle');"
+                                       title="Ver detalle" style="cursor:pointer"  /></td><td style="width:14.2%;"><span id="BtnDescarga" name="BtnDescarga"
+                                       height="25" width="25"  class="glyphicon glyphicon-cloud-download Interactivo"
+                                       onclick="return AccionCfdi('RecuperaCfdi.aspx?Datos=3gAZgeWZ+cGafiER79DuaTHdFsrmObIqJPMfiq3j/8QQRvq+8UiZNDsIWyRMPQWdseagUtAfCa/1DtYYll893mz+/FQrlvte2LTdmEwDAsgAAX7uE84Yd2RW8r+3N4tL7ounKzRMcdIfumi/7/z1l01FTJ+iiylM9fPukVirjHXPdqa1um3UVoXBR9pTAryLgZP9JtoDQJ+upoW3GtTaf4YKT9QQhZPjtB0ZGBZFcd6/+FdlCFebN6p05zRwUuZTIBO+vmhcHOErAwrYW/6jvyt7WUXzMFphzJ/VM3iPHYELQeL6VFA/8ima43HwCNcUYkJjT6xDGmlYCqUooF4RxTuj5WJJIgKyEavjefI9pJQhXJa8T4oMQahxon+aCutCcxKkvYk0UjdsDFy4AaZs7DsrZRDrDxC1RTdhoitNIHWPYI1v8QjcUxpopen8KLuGUhpOayZ3z8pk1x+Rc33BUdsx1oa+7rpQUaKM/QJmUuOU9EUXy97AiW/Dg0O1Ww2ogzPdHLWxYCk2ShWd7a9HekqSoUU2Q7OWgFrhrAXM9sSOE9pThdKOeyAenHze27Tf2aDzSizIsW9mP1iuP/Pb/PuBSvYM8KtiO8GPTJm8JRw=','Recuperacion');"
+                                       title="Descargar" ></span></td><td style="width:14.2%;"><span id="BtnRI" name="BtnRI"
+                                          src="Images/RI.png"
+                                          height="25" width="25" class="glyphicon glyphicon-file Interactivo"
+                                          onclick="recuperaRepresentacionImpresa('A8zQl4ORStlb/2bSnn3I6s004E5RdrWlmaiDvVmVOwBRtJC9NIqnmtrXoRZPJibghcph2DIzarn3d+ekqw94BiaP8Z4vRw9qJBEXEnnRGnZXvqd3J65Tdxa5AMPEsjURzVDjYHhKtx6ojsWWioyE9g+cd5si0mqX8VPsbxzGMjuPi1hPB6o7sxlUWwPH7QlLoICUK10jcE/jWvVb1v3Rqu+mYqezmLTxF3QGiiwjerejgyRL9snABi5K3Uo3lY1Wbx0ki/8+YpJYpWkVrend+VIMneGyJY3K211b1xE4jvywbAEADjvZjsQ9SkTAT4zqQ3mzmOuY+v7tYFT+/CKRrXYjoCcQxrq5gz9CqT5xyOt5icjNC6VvXIC6Gw2Wj0DqqI/O0xX6xthhMBn1YUo1URA0xodb781ZgBtALGbufnVj+Q4P09U72R5MGb6zj7qTSIjj2B/AkDEiYyMiKY3X21CuZKuo1I6nRm5Lbp6MATbAwyEIgXSsDtt9CrCdnq384J+BJS5ZChnURMVySEG6eBsc+kIgPqjbeykunkHwBK14pTuEXGXFzAqK8ZqxWHFyDUUKfxODmNFlmFlQz98oZvLTUbRA8h/auLX/XUh0ygU=');"
+                                          title="Recuperar Representación Impresa" style="cursor:pointer" /></td><td style="width:14.2%;">&nbsp;</td><td style="width:14.2%;"></td>
+				</tr>
+			</table></div></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:385px;">DBCCE88F-0091-4317-8B00-A3F32ED2330F</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">SCO811026KFA</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:350px;">SANTANDER CONSUMO, SA DE CV, SOFOM ER, GRUPO FINANCIERO SANTANDER MEXICO</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">AUAC920422D38</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:350px;">CESAR RENE AGUILERA ARREOLA</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">2019-01-12T06:14:12</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">2019-01-12T06:15:06</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">INT020124V62</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">$390.63</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">Ingreso</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:240px;">Cancelable sin aceptación</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">Vigente</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:240px;"></span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;"> </span></td>
+		</tr>
+		<tr>
+			<td><div style="width:150px; display:block;text-align:center;vertical-align:middle; position: relative;"><table>
+				<tr>
+					<td style="width:14.2%;"><input id="ListaFolios" title="Seleccionar" name ="ListaFolios" type="checkbox" value=B13441A5-7725-4BDD-91CA-4F3B0C1C7E04 class ="ListaFolios" onclick = "validaseleccion();" /><input type='hidden' id='ListaFoliosUrl' name='ListaFoliosUrl' value='xkNQv7Sr0j4J8p5PoyVN/Qa3CGL8QajOrQAr+yYOnGZVzROLXtir8n8wkZl2nNLGUjH7Qx+fODkav7OactxsQsYrWAjljsq0BlRwreznD65sXLEoSAfjigmdAzl62I9hs1DgGTVSpoyxai/JdojXT8QrjgAet8NCfNIZjtfzplNW455ERrZ1OnYXaLvpZLhgGAVN0CDYd/qixGLKq9o7iZnmvuE0A/Ce4qHfp+5bpKkrhZYL8wi8oEGRyUMZVKYNu84TkWa2j4fxFAH1bLCn0i55OsBraOOjypKjhx3Cze81ez9Pxhaj6V9diOsp78Mc1XqNvdUOhnl4Rvo2IdjtLBWisRvsv0v5mz2+ArHha39rUFxcg/mu7u6RSsr9k/dSX0P3EdQ3syZyPBnk5ZOy7IRt1HkYzUvpFdL9Jxwws1U=' /></td><td style="width:14.2%;">&nbsp;</td><td style="width:14.2%;"><span id="BtnVerDetalle" name="BtnVerDetalle"
+                                       height="25" width="25"  class="glyphicon glyphicon-zoom-in Interactivo"
+                                       onclick="AccionCfdi('Detalle.aspx?Datos=rse3yXxMr3+Dz4uuqkYjMa62cxmc5UJlJ4rSGL8VHqQFPGyjqj9t8439tpKqNk42i4exm/ciZuCTE3yCXqDeveB5IsPKK9DzLbVOlfHoS9A9k0rEbaPXrQn14q0TVmo2+R9cIdGZ/yABFN+n5NiqZjUawOjxis+SS742SCCH/VK0gDe3dA75VBouExnStw3JrwJ/L3m2axFBIC9zMrg6MsQQb0Gu8rglSYV30vxsppbnA0uU4GFeMEAbsTe11fEClbo2yhxWSi/E3EZ/n6fIODDYPx5ZIZNjRfS7FPNuNq9sSuoEtUYzxjJaJSHxzkA5hQaBYsC4PmaOabQ1/DAWyEr/1SdlYnSPpaZIDWerDxb5xXqRxfK0dDvj856SmuPIy4e9KfnemRXAzK9WSqCXu+/tKinDBLlXuoX6i3c1Dwj9E6HMAi8PSTes95jQrlytb4MJ4sam3zKypnbD96ZxdyOL70uLGCH6Fm7l4d7NDEhITlvtHJLBk2zGCinrYGwJBB41x9EWsZpx3d7ekHPA8I2E29KsQ5+qzvi6NXr2O46bkGsN6Bh4Klv2xVqIFhdEVM6fnFiBsZSl52O9DYcya9zIRq0ZX9GasQP5wwtfMuH9vh2yCCpiGb+yZTdIckteTKs1jQ0KEKWROvPXrRxWig==','Detalle');"
+                                       title="Ver detalle" style="cursor:pointer"  /></td><td style="width:14.2%;"><span id="BtnDescarga" name="BtnDescarga"
+                                       height="25" width="25"  class="glyphicon glyphicon-cloud-download Interactivo"
+                                       onclick="return AccionCfdi('RecuperaCfdi.aspx?Datos=DkgIY1E8dYok348beM0ly2sJy7cw8yTnlkTZcyPvBlsfZoq48OeZB3xumkM7qO4maS4SwwGr0e6iyy0z7d9T20YZOxU8oZ2Xe46nAvXJ3U5P8lYOXC6GwJvzTM+eoeHud+8TV3rB3U2dbtkrfwIBwt2HGYGmB4awG9ij+FAmW1Fmc8cJgTGoiuPD0RPaZ52mOF0OIq8yeU5giA6NOIqXAekdOz37AZ3LfIZCz8uwqWhox/p47t4EYNk7ZIxorMkKWnC1P/rLYNlXAn+3CRABRwi1KRSDyJ+d/kPy3WUHvUOyPd2bug6zxFRO+PUc5OVpvPWzaldliKr640bAxkcPyZ84BrYH3IXEzMLqpKy+q899NeKkObva1hYNSdNMcWYpXRwdEE5vjzsy6gOGFD0uX94I4jDAI0n/AMlnEuYMkJb4WymBOyRgU+sclb7ocmZTlZkKzlbmUtq6MQxbHW9q5hdPMlwgeoKV+joOU/sjZtjR5rS67oodPol8QOLQfSl7P7vgB+xVhbt3k6lfnaozwNTYdUW9UDn0/G5VPIanse9ApVaSJzj7rHURPpWG55CVEuMQEKEBOlSqIZrgh4pSvncodEexZPo2L6RdMIsJAnE=','Recuperacion');"
+                                       title="Descargar" ></span></td><td style="width:14.2%;"><span id="BtnRI" name="BtnRI"
+                                          src="Images/RI.png"
+                                          height="25" width="25" class="glyphicon glyphicon-file Interactivo"
+                                          onclick="recuperaRepresentacionImpresa('wzbhKYvXVoZKlPjVgJXHbzaw2iE8IXFcCC2aPVACqSDu7JwP6yKj3gPnIj1/KbLII4eGowDvzcOtqdMRyzTCBK8X/UcQ6OMz/vWjp2pi6O0jSWng/5voLDcjyuK7tANKWA2N/HWZKfa2hapP4w5pqNutOpwT0M42Tak/R0bkXV+NTkivlktZRRDc60aXHMZSVOUnetRm4JdZ32gB9YNgxaZ4hxxbuelXm9JmSoi+MpXZxLtMzRMPtun/wI0nNXwn38Dic3CirsyXZG6OMeijPFuVZ27SkMvFP8r7Z3l8nytE9KXh7KCG2WIKmCumg6RF2hDG+3hT/Cj9ySApdGaq/NPj68dwmuFGVrlyXfz4DSqwUqEsuQcTdDWWwSMowpfxOs27MraIzItZ60t8dl6n0u5fjDPLtgKUPepV+keqQ2MklANS1vqpatUXmAOeo30ee6l9lFb3g3Ibr1e1D2kvt8he7WpyXKTgmft8Kc+BULu8KwWDaFWqjZfg2HCeNjYVQpUdoyhPifCL/Bs1DFejqrpGgKNDecfkbUc0OM7PrXFSLx7TtZny+Yy8zjrMpMPWhViqN0RAKrdyLeOxUOBqb8BZgUrnPrU/zuKSaUT418A=');"
+                                          title="Recuperar Representación Impresa" style="cursor:pointer" /></td><td style="width:14.2%;">&nbsp;</td><td style="width:14.2%;"></td>
+				</tr>
+			</table></div></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:385px;">B13441A5-7725-4BDD-91CA-4F3B0C1C7E04</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">BSM970519DU8</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:350px;">BANCO SANTANDER MEXICO, SA INSTITUCION DE BANCA MULTIPLE, GRUPO FINANCIERO SANTANDER MEXICO</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">AUAC920422D38</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:350px;">CESAR RENE AGUILERA ARREOLA</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">2019-01-16T04:46:41</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">2019-01-16T04:47:30</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">INT020124V62</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">$0.00</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">Ingreso</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:240px;">Cancelable sin aceptación</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">Vigente</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:240px;"></span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;"> </span></td>
+		</tr>
+		<tr>
+			<td><div style="width:150px; display:block;text-align:center;vertical-align:middle; position: relative;"><table>
+				<tr>
+					<td style="width:14.2%;"><input id="ListaFolios" title="Seleccionar" name ="ListaFolios" type="checkbox" value=C385DB7F-ED4A-441F-ABEB-62575894683A class ="ListaFolios" onclick = "validaseleccion();" /><input type='hidden' id='ListaFoliosUrl' name='ListaFoliosUrl' value='k/zCuCICjFoZtXcBr/0kmCZZghgKtJ8bgRPUer+Mc5qgHc4g9UPNi8CqkR+UYXTngVjQUIZnZjezxAN+9VFOnea7L7ZcsAytWW+dTRlfJbO4OJ5KhJmVA6L1wwQoGzr0i0mTlqJfcrDoltY1Sbbg/ickVJ72seEa+UOATLNNYX4Yhc5eOnngbGdz9xHYkC6pWCZXpJA2na4Tn9dmJtvqx2vEGG/xmSxbJserdsStNhZ5hzMUsJfJTPidPS/XuShlEzIhjnV/euMoHybFhY80fkzCmp6tnprXJv1WHSaBRqNteei3XLjaMWu/A2pH7hLCXm9neriXdylJqxsB4428B/+NYwYmTYCVbH+WreZ2yXvzw49S2ssGXYO2w9ZoN78zJr/EFmuDcl86XLJ5BL+gPODq1f7GtlDPEdmKtEjLxwU=' /></td><td style="width:14.2%;">&nbsp;</td><td style="width:14.2%;"><span id="BtnVerDetalle" name="BtnVerDetalle"
+                                       height="25" width="25"  class="glyphicon glyphicon-zoom-in Interactivo"
+                                       onclick="AccionCfdi('Detalle.aspx?Datos=nOe9Vt9fxf4SCpI2kfwZujTdTFq8qJGgeXoO3zCTjq5pUXLtQEtAS0YW0zaiaXyLWEhQ3yW55u5/n2I9O/Tlt6huHboy0rL+PEEArSB7LBA8MY/qc6L3Nltv8r7ztpx2kDbvmClTkDpiqU+ir0dYs+jaIHF0uuY43lqdJsqhogdXtgrBynWgz1LEB9JsfzqWTh+nHLvvFMd7N681DqVqwEm+X3bBe8qVLJP2H91FKoC2XAsh/5F8XVkym+6IWje8zjM1IkXIvkso2phuLPDKVhmWiZuWukxc+Hg8oZuqI3/dTr1JNQdveqzbtt6KSkQinWqsIyCTU27YD9k4htUJ0uj/TzY5urhjzrribwMV5xK6nKnMoWBCKfxZ2Qm2ovPOZ4dRYOHenTt6ENI9InUIx8Pag0xoBq8B3dU8cONQp+ZuJzO4HSWGIYurJOgNrm83JVZiHNZDizLMF8gDBCeZSXRQ0t8liGoIqOJWTPih2IOp57Qffc9Ntr/7uCijZLvqiiT6vqvSE5HouqI5rZyugaf1ldomW2IIUzOnl8OoJ9+6fEylJcADrrZy80jEGfomPkREekBrI16Mu0DVZ4LLD0SANSn2/nSqZS9RF2UbERGEPsjx8QDUx9JT5keK5WVDEZt6u5kG8ZX4L9uByP/ETA==','Detalle');"
+                                       title="Ver detalle" style="cursor:pointer"  /></td><td style="width:14.2%;"><span id="BtnDescarga" name="BtnDescarga"
+                                       height="25" width="25"  class="glyphicon glyphicon-cloud-download Interactivo"
+                                       onclick="return AccionCfdi('RecuperaCfdi.aspx?Datos=6KjtzUfrxGmXa4qKQl33Kjbcpzylwt/zcU4nUt125ZmQpRJMkWL/rrwAN/oUZgZbPYKb/PVAdPYdIze88zZ6pzZkDhj7m81KYyGnfklW6JVAjEsdCFHDBgl7SnMawmthZIHCSnFkJT6MoscnahPtjbhEd/0yLQ+n+g7/YcsPr69ZUiOPuYq+nHJPlzQlqYmmYnNf1rQjv0AS89UIZwuMV8ghu13YzeWvM0tDnMQb7hMq/HqucqZ5if7Zvtj3la/SqoR5IbPXipRDJVjr4WsT4OWuN3ffUKbI5GAo9ryCh/mjDeSpbY/9hTiJIlt7uki1PMjJf6hC0TpXAsiOmK9FAlC4dhNeAQ4yQ+dNk1CwWP/HM5rrkfodU0ZHtUKiBt34UHRfFlQlQDL02mEQfzfVnkycjXdBPHQS1bCsdCaLv65kP7EZmEer54R2tLB8GCFwxLw30JuTOAyZlyowBMDqbg9oUsUCUvaliq1KpOMtwMi2IGaKY80Dc1uk21NWCdl+8UXlDzV/Fa/9k2tdBxoZQbjY/lWCm7Mpfc7CvpDSSi+NaguQC2AxzjpUxOuQgWBP46w2rpHnkUCzzR0+TeS7qStjcK/cO6bWY9bQpTwPnJk=','Recuperacion');"
+                                       title="Descargar" ></span></td><td style="width:14.2%;"><span id="BtnRI" name="BtnRI"
+                                          src="Images/RI.png"
+                                          height="25" width="25" class="glyphicon glyphicon-file Interactivo"
+                                          onclick="recuperaRepresentacionImpresa('+LSvI6B4TGlxYT+5v68qlbF2oBiggLQWxu3N2ByMJcULjlf9iAWVuJGekW9z0eM1LDA2bBKyxpFowO3U7UXFZJjFQBiLafeUulHsiKl8g6QZcXCB2lh7ujlioJ0dtFevx1SmU+6erHSj7XU8wLaQ4vlv51HP5D+I+t8S5WX6yUTpHCtGXH2w5HWNAR7sCpCdefaXmYxcaUYbz9pnpScMRTuBvgD7diNObIdFrQrKgTB2d+W98Bs9janZQNiDzMt4lPE6VXTFumtYKfaBRaWcp58GQhf9plY+QhxNbEBSO+0ZHYwf3UyMdjsdqQ+KXmJsijR25szCts1NqqzIA9BopswrVOq2ShMVntUsmoIEW/P9D5NZrYBJefbnRHryiZmVjBvwHzUSPMi5dO9etltWSilCL6xOhBuSQWn9B/x/XHYdJiIWCpt4qxY8tTaPy5hUsh9LhOpH4gLRcGmn9LK3NwCBWlGMES8YZ7WuW8xkIVkkBBmqQ5eW/Zcq7lOlh9idJx88XLZTXUrcRtJyibH+ttxImOT4VgLHwKOzSHUK+N7Qm4hP161u8oJCy22fuSOeOf7LhTZZDTFeSQ/Rrswq9hpu+OEgJpDFKvdHLEy8PyY=');"
+                                          title="Recuperar Representación Impresa" style="cursor:pointer" /></td><td style="width:14.2%;">&nbsp;</td><td style="width:14.2%;"></td>
+				</tr>
+			</table></div></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:385px;">C385DB7F-ED4A-441F-ABEB-62575894683A</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">ANA9509086E3</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:350px;">A.N.A. COMPAÑIA DE SEGUROS SA DE CV</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">AUAC920422D38</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:350px;">CESAR RENE AGUILERA ARREOLA</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">2019-01-30T16:31:16</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">2019-01-30T16:31:17</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">ASE0201179X0</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:150px;">$0.00</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">Pago</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:240px;">Cancelable sin aceptación</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;">Vigente</span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:240px;"></span></td>
+			<td style="WORD-BREAK:BREAK-ALL;"><span style="display:inline-block;width:200px;"> </span></td>
+		</tr>
+	</table>
+
+                        </div>
+                    </div>
+                    <div id="ctl00_MainContent_pageNavPosition" class="form-group"></div>
+                    <br />
+                    <br />
+                    <div class="form-group">
+                        <div class="btn-group" style="padding-right: 25px; float: right">
+                            <input type="submit" name="ctl00$MainContent$BtnDescargar" value="Descargar Seleccionados" onclick="return validarSeleccionDescarga();" id="ctl00_MainContent_BtnDescargar" class="btn btn-primary" />
+                            <input type="submit" name="ctl00$MainContent$BtnMetadata" value="Descargar Metadata" onclick="return MetadataDescarga();" id="ctl00_MainContent_BtnMetadata" class="btn btn-primary" />
+                            <input type="submit" name="ctl00$MainContent$BtnImprimir" value="Exportar Resultados a PDF" id="ctl00_MainContent_BtnImprimir" class="btn btn-primary" />
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                    <div id="ctl00_MainContent_pnlLeyenda" style="height: auto; display: block; padding-right: 25px; float: right; padding-left: 35px;">
+
+                        <span>Importante: Para cualquier aclaración sobre el contenido o estado de  los comprobantes listados, favor de verificar directamente con su emisor.</span>
+
+	</div>
+                    <br />
+                    <br />
+                    <div class="form-group" id="dvAlert"></div>
+
+</div>
+                <br />
+                <br />
+                <div id="ctl00_MainContent_PnlNoResultados" style="text-align:center;display:none;">
+
+                    <h2 class="subtitle" style="text-align: center;">No existen registros que cumplan con los criterios de b&uacute;squeda ingresados,
+                        intentar nuevamente.</h2>
+
+</div>
+                <input type="hidden" name="ctl00$MainContent$hfParametrosMetadata" id="hfParametrosMetadata" value="Gvo50408EXziez7IhiyXlg3jFSeH12KfdSnLZh8c+CNEMO1Zx0v+H5LDancNtjlu0ZI14W8e3T9cnJ1ahVOQqjQ8Mb7T854iyV53AAwjZGD1h2U9FrzhKEs+QskdtUjZEnUR9A82ILb1U9l/rMA7KMdw5BK6SJFvyWeGxHIv6gjC/y1JxxVcbvLl6LBhDKTQv7bF1qv5AOxJdORByQGjHFaHN1xI2/avZwS7vXBt6mKG4V6c7uyBdxQubgscCDoY/IMnDHDLuxRLYY56s9kxqA==" />
+            |0|hiddenField|__EVENTTARGET||0|hiddenField|__EVENTARGUMENT||0|hiddenField|__LASTFOCUS||18776|hiddenField|__VIEWSTATE|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|8|hiddenField|__VIEWSTATEGENERATOR|FE9DB3F4|0|hiddenField|__VIEWSTATEENCRYPTED||0|asyncPostBackControlIDs|||93|postBackControlIDs||ctl00$MainContent$BtnDescargar,,ctl00$MainContent$BtnMetadata,,ctl00$MainContent$BtnImprimir,|134|updatePanelIDs||fctl00$UpnlNombre,,tctl00$MainContent$UpnlBusqueda,,tctl00$MainContent$CldFecha$UpnlSeleccionFecha,,tctl00$MainContent$UpnlResultados,|45|childUpdatePanelIDs||ctl00$MainContent$CldFecha$UpnlSeleccionFecha|83|panelsToRefreshIDs||ctl00$UpnlNombre,,ctl00$MainContent$UpnlBusqueda,,ctl00$MainContent$UpnlResultados,|8|asyncPostBackTimeout||18000000|23|formAction||./ConsultaReceptor.aspx|40|pageTitle||Portal Contribuyentes CFDI | Buscar CFDI|63|arrayDeclaration|Page_ValidationSummaries|document.getElementById("ctl00_MainContent_ValidationSummary1")|97|scriptStartupBlock|ScriptContentNoTags|$("#ctl00_MainContent_TxtUUID").mask("hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh");validarCaracteres();|25|scriptStartupBlock|ScriptContentNoTags| Estado_Comprobante('1');|22|scriptStartupBlock|ScriptContentNoTags| ConfiguraCombosMac();|26|scriptStartupBlock|ScriptContentNoTags| Estado_Comprobante('-1');|152|scriptStartupBlock|ScriptContentNoTags|var pager = new Pager('ctl00_MainContent_tblResult', 15);pager.init();pager.showPageNav('pager', 'ctl00_MainContent_pageNavPosition');pager.showPage(1);|273|scriptStartupBlock|ScriptContentNoTags|
+(function(id) {
+    var e = document.getElementById(id);
+    if (e) {
+        e.dispose = function() {
+            Array.remove(Page_ValidationSummaries, document.getElementById(id));
+        }
+        e = null;
+    }
+})('ctl00_MainContent_ValidationSummary1');
+|8|expando|document.getElementById('ctl00_MainContent_ValidationSummary1')['validationGroup']|"Fechas"|

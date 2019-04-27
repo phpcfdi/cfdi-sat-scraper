@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Promise\EachPromise;
+use Prophecy\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -13,21 +16,76 @@ use Psr\Http\Message\ResponseInterface;
 class DownloadXML
 {
     /**
-     * @var SATScraper
+     * @var MetadataList|null
      */
-    protected $satScraper;
+    protected $list;
+
+    /**
+     * @var Client
+     */
+    protected $client;
+
+    /**
+     * @var CookieJar
+     */
+    protected $cookie;
 
     /**
      * @var int
      */
     protected $concurrency;
 
-    /**
-     * DownloadXML constructor.
-     */
-    public function __construct()
+    public function __construct(Client $client, CookieJar $cookie)
     {
+        $this->client = $client;
+        $this->cookie = $cookie;
         $this->concurrency = 10;
+        $this->list = null;
+    }
+
+    public function hasMetatadaList(): bool
+    {
+        return $this->list instanceof MetadataList;
+    }
+
+    public function getMetadataList(): MetadataList
+    {
+        if (null === $this->list) {
+            throw new \LogicException('The metadata list has not been set');
+        }
+        return $this->list;
+    }
+
+    public function setMetadataList(MetadataList $list): self
+    {
+        $this->list = $list;
+        return $this;
+    }
+
+    public function getClient(): Client
+    {
+        return $this->client;
+    }
+
+    public function getCookie(): CookieJar
+    {
+        return $this->cookie;
+    }
+
+    public function getConcurrency(): int
+    {
+        return $this->concurrency;
+    }
+
+    /**
+     * @param int $concurrency
+     *
+     * @return DownloadXML
+     */
+    public function setConcurrency(int $concurrency)
+    {
+        $this->concurrency = $concurrency;
+        return $this;
     }
 
     /**
@@ -38,7 +96,7 @@ class DownloadXML
         $promises = $this->makePromises();
 
         (new EachPromise($promises, [
-            'concurrency' => $this->concurrency,
+            'concurrency' => $this->getConcurrency(),
             'fulfilled' => function (ResponseInterface $response) use ($callback): void {
                 $callback($response->getBody(), $this->getFileName($response));
             },
@@ -47,15 +105,19 @@ class DownloadXML
     }
 
     /**
-     * @return \Generator
+     * @return \Generator|PromiseInterface[]
      */
     protected function makePromises()
     {
-        foreach ($this->satScraper->getUrls() as $link) {
-            yield $this->satScraper->getClient()->requestAsync('GET', $link, [
+        foreach ($this->getMetadataList() as $data) {
+            $link = strval($data['urlXml'] ?? '');
+            if ('' === $link) {
+                continue;
+            }
+            yield $this->getClient()->requestAsync('GET', $link, [
                 'future' => true,
                 'verify' => false,
-                'cookies' => $this->satScraper->getCookie(),
+                'cookies' => $this->getCookie(),
             ]);
         }
     }
@@ -72,30 +134,6 @@ class DownloadXML
         $fileName = str_replace('filename=', '', $partsOfContentDisposition[1] ?? '');
 
         return ! empty($fileName) ? $fileName : uniqid() . '.xml';
-    }
-
-    /**
-     * @param SATScraper $satScraper
-     *
-     * @return DownloadXML
-     */
-    public function setSatScraper(SATScraper $satScraper)
-    {
-        $this->satScraper = $satScraper;
-
-        return $this;
-    }
-
-    /**
-     * @param int $concurrency
-     *
-     * @return DownloadXML
-     */
-    public function setConcurrency(int $concurrency)
-    {
-        $this->concurrency = $concurrency;
-
-        return $this;
     }
 
     /**

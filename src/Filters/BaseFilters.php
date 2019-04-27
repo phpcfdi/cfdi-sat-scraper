@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Filters;
 
-use PhpCfdi\CfdiSATScraper\Query;
+use PhpCfdi\CfdiSatScraper\Query;
 
 /**
  * Class BaseFilters.

@@ -30,7 +30,7 @@ $cookie = new CookieJar();
 $captchaResolver = new DeCaptcherCaptchaResolver($client, 'user', 'password');
 $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&option=credential&sid=0';
 
-$query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
+$query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
 $query//->setRfc(new RfcReceptor('XAXX010101000'))
     ->setComplement(ComplementsOption::todos())
@@ -39,9 +39,9 @@ $query//->setRfc(new RfcReceptor('XAXX010101000'))
 
 $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
     //$satScraper->setLoginUrl($loginUrl);
-    $satScraper->downloadPeriod($query);
+    $list = $satScraper->downloadPeriod($query);
 
-print_r($satScraper->getData());
+print_r($list);
 ```
 
 ## Ejemplo de descarga por lista de uuids
@@ -54,9 +54,7 @@ use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATException;
 use PhpCfdi\CfdiSatScraper\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\SATScraper;
-use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
-use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use GuzzleHttp\Cookie\CookieJar;
 use PhpCfdi\CfdiSatScraper\Query;
 use GuzzleHttp\Client;
@@ -66,22 +64,18 @@ $cookie = new CookieJar();
 $captchaResolver = new DeCaptcherCaptchaResolver($client, 'user', 'password');
 $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&option=credential&sid=0';
 
-$query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
+$query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
-$query//->setRfc(new RfcReceptor('XAXX010101000'))
-    ->setComplement(ComplementsOption::todos())
-    ->setStateVoucher(StatesVoucherOption::vigentes())
-    ->setDownloadType(DownloadTypesOption::recibidos())
-    ->setUuid([
-      '5cc88a1a-8672-11e6-ae22-56b6b6499611',
-      '5cc88c4a-8672-11e6-ae22-56b6b6499611',
-      '5cc88d4e-8672-11e6-ae22-56b6b6499611'
-    ]);
+$uuids = [
+    '5cc88a1a-8672-11e6-ae22-56b6b6499611',
+    '5cc88c4a-8672-11e6-ae22-56b6b6499612',
+    '5cc88d4e-8672-11e6-ae22-56b6b6499613'
+];
 
 $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
-$satScraper->downloadListUUID($query);
+$list = $satScraper->downloadListUUID($uuids, DownloadTypesOption::recibidos());
 
-print_r($satScraper->getData());
+print_r($list);
 ```
 
 ## Excepciones
@@ -106,7 +100,7 @@ $captchaResolver = new DeCaptcherCaptchaResolver($client, 'user', 'password');
 $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&option=credential&sid=0';
 
 try {
-    $query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
+    $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
     
     $query//->setRfc(new RfcReceptor('XAXX010101000'))
         ->setComplement(ComplementsOption::todos())
@@ -114,9 +108,9 @@ try {
         ->setDownloadType(DownloadTypesOption::recibidos());
     
     $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
-    $satScraper->downloadPeriod($query);
+    $list = $satScraper->downloadPeriod($query);
     
-    print_r($satScraper->getData());
+    print_r($list);
 } catch (SATCredentialsException | SATAuthenticatedException $e) {
     print_r($e->getMessage());
 } catch (SATException $e) {
@@ -146,7 +140,7 @@ $cookie = new CookieJar();
 $captchaResolver = new DeCaptcherCaptchaResolver($client, 'user', 'password');
 $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&option=credential&sid=0';
 
-$query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
+$query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
 $query//->setRfc(new RfcReceptor('XAXX010101000'))
 ->setComplement(ComplementsOption::todos())
@@ -154,24 +148,12 @@ $query//->setRfc(new RfcReceptor('XAXX010101000'))
     ->setDownloadType(DownloadTypesOption::recibidos());
 
 $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
-$satScraper->downloadPeriod($query);
-$satScraper->setOnFiveHundred(function ($data) {
-    /*
-    * @var $data contains:
-    * [
-    *      'count' => 500,
-    *      'year' => 2019,
-    *      'month' => '03',
-    *      'day' => 1,
-    *      'secondIni' => 1,
-    *      'secondFin' => 86400,
-    * ]
-    *
-    */
-    print_r($data); // Esta función se ejecutara cada que detecte 500 o mas comprobantes en el mismo segundo
+$list = $satScraper->downloadPeriod($query);
+$satScraper->setOnFiveHundred(function (\DateTimeImmutable $date) {
+    // $date contains the moment where limit is reached
 });
 
-print_r($satScraper->getData());
+print_r($list);
 
 ```
 
@@ -197,7 +179,7 @@ $cookie = new CookieJar();
 $captchaResolver = new DeCaptcherCaptchaResolver($client, 'user', 'password');
 $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&option=credential&sid=0';
 
-$query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
+$query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
 $query//->setRfc(new RfcReceptor('XAXX010101000'))
     ->setComplement(ComplementsOption::todos())
@@ -205,13 +187,14 @@ $query//->setRfc(new RfcReceptor('XAXX010101000'))
     ->setDownloadType(DownloadTypesOption::recibidos());
 
 $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
-$satScraper->downloadPeriod($query);
+$list = $satScraper->downloadPeriod($query);
 
-print_r($satScraper->getData());
+print_r($list);
     
-    $satScraper->downloader()
-            ->setConcurrency(50)
-            ->saveTo('downloads', true, 0777);
+$satScraper->downloader()
+    ->setMetadataList($list)
+    ->setConcurrency(50)
+    ->saveTo('downloads', true, 0777);
  
 ```
 
@@ -237,7 +220,7 @@ $cookie = new CookieJar();
 $captchaResolver = new DeCaptcherCaptchaResolver($client, 'user', 'password');
 $loginUrl = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&option=credential&sid=0';
 
-$query = new Query(new DateTime('2019-03-01'), new DateTime('2019-03-31'));
+$query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
 $query//->setRfc(new RfcReceptor('XAXX010101000'))
     ->setComplement(ComplementsOption::todos())
@@ -245,17 +228,17 @@ $query//->setRfc(new RfcReceptor('XAXX010101000'))
     ->setDownloadType(DownloadTypesOption::recibidos());
 
 $satScraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captchaResolver);
-$satScraper->downloadPeriod($query);
+$list = $satScraper->downloadPeriod($query);
 
-print_r($satScraper->getData());
-    
+print_r($list);
+
 $satScraper->downloader()
-        ->setConcurrency(50)
-        ->download(function ($content, $name) use ($path) {
-          /**
-          * @var $content XML string
-          * @var $name name of file
-          */
-        });
- 
+    ->setMetadataList($list)
+    ->setConcurrency(50)
+    ->download(function (string $content, string $name) use ($path) {
+      /**
+      * @var string $content XML string
+      * @var string $name name of file
+      */
+    });
 ```

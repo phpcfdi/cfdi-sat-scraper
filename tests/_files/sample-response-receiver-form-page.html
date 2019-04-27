@@ -1,0 +1,1616 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head id="ctl00_Head1"><title>
+	Portal Contribuyentes CFDI | Buscar CFDI
+</title><meta http-equiv="Content-Type" content="text/html; charset=utf-16" /><meta http-equiv="CACHE-CONTROL" content="NO-CACHE" /><meta http-equiv="PRAGMA" content="NO-CACHE" /><meta http-equiv="X-UA-Compatible" content="IE=edge" /><meta http-equiv="X-UA-Compatible" content="IE=8; IE=9;" /><link rel="shortcut icon" href="Content/images/favicon.ico" type="image/vnd.microsoft.icon" /><link rel="icon" href="Content/images/favicon.ico" type="image/vnd.microsoft.icon" /><link href="Content/satMain.css" rel="stylesheet" /><link href="Styles/SatNomina.css" rel="stylesheet" />
+    <script src="../Scripts/Jquery/jquery-1.4.1.js" type="text/javascript"></script>
+
+    <script src="../Scripts/Jquery/SessionValidation.js" type="text/javascript"></script>
+    <script src="../Scripts/Jquery/CuadriculaSat.js" type="text/javascript"></script>
+    <script src="../Scripts/Jquery/FuncionesComunes.js" type="text/javascript"></script>
+    
+    <script src="../Scripts/CustomAlert.js" type="text/javascript"></script>
+
+    <script src="../Scripts/gobmx.js" type="text/javascript"></script>
+    <script src="../Scripts/Jquery/jquery.base64.js" type="text/javascript"></script>
+    <script src="../Scripts/utilfirma/crypto/core.js" type="text/javascript"></script>
+    <script src="../Scripts/utilfirma/crypto/sha256.js" type="text/javascript"></script>
+    
+    
+    
+    -
+     
+    <style type="text/css">
+        .Interactivo {
+            color: #545454;
+            cursor: pointer;
+            margin:3px;
+        }
+    </style>
+    <script type="text/javascript">      
+
+        $(document).ready(function () {
+            var parUrl = "?oculta=1";
+            var parUrl1 = "<a href='#'>Generación de CFDI</a>";
+           
+           
+            //mainmenu();
+            
+            //Llamada a función para validar el tiempo de sesión
+            window.setInterval("VerificaSesion()", 90000);
+        });      
+
+        function mainmenu() {
+            $(" #nav ul ").css({ display: "none" });
+            $(" #nav li").hover(function () {
+                $(this).find('ul:first:hidden').css({ visibility: "visible", display: "none" }).slideDown(400);
+            }, function () {
+                $(this).find('ul:first').slideUp(400);
+            });
+        }
+
+    </script>
+    <!--[if IE]>
+    <link rel="stylesheet" href="Styles/IeFix.css" type="text/css" />
+    <![endif]-->
+    <!--[if IE 7]>
+    <link href="Styles/satIE7.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+    
+    <script src="Scripts/json2.min.js" type="text/javascript"></script>
+    <script src="../Scripts/Jquery/jquery.maskedinput-1.2.2.min.js" type="text/javascript"></script>
+    <script src="../Scripts/jquery.plugin.selectbox.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        function EstadoComprobante(EstadoCFDI) {
+
+            var selectedValue = EstadoCFDI.value;
+
+            document.getElementById('DivlblEstatusCancelacion').style.display = "none";
+            document.getElementById('DivddlVigente').style.display = "none";
+            document.getElementById('DivddlCancelado').style.display = "none";
+
+            if (selectedValue == 0) {
+                document.getElementById('DivlblEstatusCancelacion').style.display = "block";
+                document.getElementById('DivddlCancelado').style.display = "block";
+                document.getElementById('ddlCancelado').selectedIndex = 0;
+
+            }
+
+            if (selectedValue == 1) {
+                document.getElementById('DivlblEstatusCancelacion').style.display = "block";
+                document.getElementById('DivddlVigente').style.display = "block";
+                document.getElementById('ddlVigente').selectedIndex = 0;
+
+            }
+
+        }
+
+        function Estado_Comprobante(EstadoCFDI) {
+
+            var selectedValue = EstadoCFDI;
+
+            document.getElementById('DivlblEstatusCancelacion').style.display = "none";
+            document.getElementById('DivddlVigente').style.display = "none";
+            document.getElementById('DivddlCancelado').style.display = "none";
+
+            if (selectedValue == 0) {
+                document.getElementById('DivlblEstatusCancelacion').style.display = "block";
+                document.getElementById('DivddlCancelado').style.display = "block";
+            }
+
+            if (selectedValue == 1) {
+                document.getElementById('DivlblEstatusCancelacion').style.display = "block";
+                document.getElementById('DivddlVigente').style.display = "block";
+            }
+
+        }
+    </script>
+</head>
+<body onload="deshabilitaHistoria();" onunload="deshabilitaHistoria();">
+    <form method="post" action="./ConsultaReceptor.aspx" id="aspnetForm" class="form-horizontal" role="form">
+<input type="hidden" name="__CSRFTOKEN" id="__CSRFTOKEN" value="/wEFJGE3MGQ4OGFjLWMwODYtNGI1ZC1hMmNiLTE2ZTQwZDEzNzhkNQ==" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="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" />
+
+
+<script src="/ScriptResource.axd?d=fUSNZpZWr3oEQsh7o_pB0cxtQ8t7Xg7sUVIb0SVluqyOYTaCu2puglOIbRxS2ztS9Co8bwK6sDouisInN4Z9u7qHMToUsRUyWHqloyl71ebI-QrTczwmyqGf0F4E9F2Kxl3xLmmVeQFH2DR-nJrp0b380B0nBSmEDxi1CK0wUac1&amp;t=ffffffff999c3159" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+var PageMethods = function() {
+PageMethods.initializeBase(this);
+this._timeout = 0;
+this._userContext = null;
+this._succeeded = null;
+this._failed = null;
+}
+PageMethods.prototype = {
+_get_path:function() {
+ var p = this.get_path();
+ if (p) return p;
+ else return PageMethods._staticInstance.get_path();},
+RecuperaAcuse:function(datos,succeededCallback, failedCallback, userContext) {
+return this._invoke(this._get_path(), 'RecuperaAcuse',false,{datos:datos},succeededCallback,failedCallback,userContext); },
+RecuperaRepresentacionImpresa:function(datos,succeededCallback, failedCallback, userContext) {
+return this._invoke(this._get_path(), 'RecuperaRepresentacionImpresa',false,{datos:datos},succeededCallback,failedCallback,userContext); },
+ValidarDescarga:function(id,succeededCallback, failedCallback, userContext) {
+return this._invoke(this._get_path(), 'ValidarDescarga',false,{id:id},succeededCallback,failedCallback,userContext); },
+Descargar:function(param,succeededCallback, failedCallback, userContext) {
+return this._invoke(this._get_path(), 'Descargar',false,{param:param},succeededCallback,failedCallback,userContext); },
+DescargaMetadatos:function(Parametros,succeededCallback, failedCallback, userContext) {
+return this._invoke(this._get_path(), 'DescargaMetadatos',false,{Parametros:Parametros},succeededCallback,failedCallback,userContext); },
+ObtieneUsuario:function(succeededCallback, failedCallback, userContext) {
+return this._invoke(this._get_path(), 'ObtieneUsuario',false,{},succeededCallback,failedCallback,userContext); }}
+PageMethods.registerClass('PageMethods',Sys.Net.WebServiceProxy);
+PageMethods._staticInstance = new PageMethods();
+PageMethods.set_path = function(value) { PageMethods._staticInstance.set_path(value); }
+PageMethods.get_path = function() { return PageMethods._staticInstance.get_path(); }
+PageMethods.set_timeout = function(value) { PageMethods._staticInstance.set_timeout(value); }
+PageMethods.get_timeout = function() { return PageMethods._staticInstance.get_timeout(); }
+PageMethods.set_defaultUserContext = function(value) { PageMethods._staticInstance.set_defaultUserContext(value); }
+PageMethods.get_defaultUserContext = function() { return PageMethods._staticInstance.get_defaultUserContext(); }
+PageMethods.set_defaultSucceededCallback = function(value) { PageMethods._staticInstance.set_defaultSucceededCallback(value); }
+PageMethods.get_defaultSucceededCallback = function() { return PageMethods._staticInstance.get_defaultSucceededCallback(); }
+PageMethods.set_defaultFailedCallback = function(value) { PageMethods._staticInstance.set_defaultFailedCallback(value); }
+PageMethods.get_defaultFailedCallback = function() { return PageMethods._staticInstance.get_defaultFailedCallback(); }
+PageMethods.set_enableJsonp = function(value) { PageMethods._staticInstance.set_enableJsonp(value); }
+PageMethods.get_enableJsonp = function() { return PageMethods._staticInstance.get_enableJsonp(); }
+PageMethods.set_jsonpCallbackParameter = function(value) { PageMethods._staticInstance.set_jsonpCallbackParameter(value); }
+PageMethods.get_jsonpCallbackParameter = function() { return PageMethods._staticInstance.get_jsonpCallbackParameter(); }
+PageMethods.set_path("ConsultaReceptor.aspx");
+PageMethods.RecuperaAcuse= function(datos,onSuccess,onFailed,userContext) {PageMethods._staticInstance.RecuperaAcuse(datos,onSuccess,onFailed,userContext); }
+PageMethods.RecuperaRepresentacionImpresa= function(datos,onSuccess,onFailed,userContext) {PageMethods._staticInstance.RecuperaRepresentacionImpresa(datos,onSuccess,onFailed,userContext); }
+PageMethods.ValidarDescarga= function(id,onSuccess,onFailed,userContext) {PageMethods._staticInstance.ValidarDescarga(id,onSuccess,onFailed,userContext); }
+PageMethods.Descargar= function(param,onSuccess,onFailed,userContext) {PageMethods._staticInstance.Descargar(param,onSuccess,onFailed,userContext); }
+PageMethods.DescargaMetadatos= function(Parametros,onSuccess,onFailed,userContext) {PageMethods._staticInstance.DescargaMetadatos(Parametros,onSuccess,onFailed,userContext); }
+PageMethods.ObtieneUsuario= function(onSuccess,onFailed,userContext) {PageMethods._staticInstance.ObtieneUsuario(onSuccess,onFailed,userContext); }
+var gtc = Sys.Net.WebServiceProxy._generateTypedConstructor;
+Type.registerNamespace('Sat.Cfdi.Iu.Contribuyente.Portal');
+if (typeof(Sat.Cfdi.Iu.Contribuyente.Portal.RespuestaValidaDescarga) === 'undefined') {
+Sat.Cfdi.Iu.Contribuyente.Portal.RespuestaValidaDescarga=gtc("Sat.Cfdi.Iu.Contribuyente.Portal.RespuestaValidaDescarga");
+Sat.Cfdi.Iu.Contribuyente.Portal.RespuestaValidaDescarga.registerClass('Sat.Cfdi.Iu.Contribuyente.Portal.RespuestaValidaDescarga');
+}
+//]]>
+</script>
+
+<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="FE9DB3F4" />
+<input type="hidden" name="__VIEWSTATEENCRYPTED" id="__VIEWSTATEENCRYPTED" value="" />
+        
+        <input type="hidden" id="hdnAut" value="" />
+        <main role="main">
+             <nav class="navbar navbar-inverse sub-navbar navbar-fixed-top">
+            <div class="container">
+              <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#subenlaces">
+                  <span class="sr-only">Interruptor de Navegación</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Factura electrónica</a>
+              </div>
+                <div class="collapse navbar-collapse" id="subenlaces">
+                    <ul class="nav navbar-nav navbar-right">
+                      <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" href="#">Consulta CFDI <span class="caret"></span> </a>                          
+                         <ul class="dropdown-menu" role="menu">
+                          <li>
+                            <a href='Consulta.aspx?oculta=1'>Factura Electrónica</a>
+                          </li>
+                          <li>
+                            <a href='https://prodretencioncontribuyente.clouda.sat.gob.mx/?oculta=1'>Retenciones e Inf. de Pagos</a>
+                          </li>                        
+                        </ul>
+                      </li>
+                        
+                      <li class="dropdown">
+                        <a href='https://pacsat.facturaelectronica.sat.gob.mx/Comprobante/CapturarComprobante' class="dropdown-toggle" data-toggle=''  role="button" aria-expanded="false" id="menuDesplegable">
+                         Generación de CFDI </a>
+                          
+                      </li>
+                        
+                    </ul>
+              </div>
+            </div>
+          </nav>
+        <div id="cuerpo_principal" class="container top-buffer-submenu">
+            <div id="encabezado" class="row">
+                <div id="ctl00_UpnlNombre">
+	
+                      
+                    
+</div>
+                <div id="encabezadoImagen" class="row">
+                  <div class="col-md-8">
+                    <ol class="breadcrumb">
+                      <li>
+                        
+                          <a href="../Consulta.aspx"><i class="icon icon-home"></i></a>
+                      </li>
+                      <li>
+                        
+                          <a href="../Consulta.aspx">Inicio</a>
+                          </li>
+                        <li class="active"><span id="ctl00_lblPaginaActual">Consultar Facturas Recibidas</span></li>
+                    </ol>
+                  </div>
+              <div class="col-sm-4">
+                <div class="user-credencials">
+                  <ul class="list-unstyled">
+                    <li>
+                      <span id="ctl00_LblRfcAutenticado" class="signin">RFC Autenticado: AUAC920422D38</span>
+                      <a class="pull-right" type="button" href="/logout.aspx?salir=y" id="anchorClose">Salir</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+                                 </div>
+            
+                <div id="encabezadoPortal">
+                </div>
+            </div>
+        
+            <div id="cuerpo" style="margin-top: 30px">
+                
+    <h2>Consultar Facturas Recibidas
+    </h2>
+    
+    <div id="ctl00_MainContent_PnlConsulta">
+	
+        <div id="ctl00_MainContent_UpnlBusqueda">
+		
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <span class="radio-inline"><input id="ctl00_MainContent_RdoFolioFiscal" type="radio" name="ctl00$MainContent$FiltroCentral" value="RdoFolioFiscal" checked="checked" /><label for="ctl00_MainContent_RdoFolioFiscal">Folio Fiscal *</label></span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input name="ctl00$MainContent$TxtUUID" type="text" maxlength="36" id="ctl00_MainContent_TxtUUID" class="form-control" placeholder="Folio fiscal" style="text-transform: uppercase;" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <span class="radio-inline"><input id="ctl00_MainContent_RdoFechas" type="radio" name="ctl00$MainContent$FiltroCentral" value="RdoFechas" onclick="javascript:setTimeout(&#39;__doPostBack(\&#39;ctl00$MainContent$RdoFechas\&#39;,\&#39;\&#39;)&#39;, 0)" /><label for="ctl00_MainContent_RdoFechas">Fecha de Emisión *</label></span>
+                    </div>
+                    <div class="form-group">
+                        
+<script>
+    function ValidateYear() {
+        
+        var ddlAnio = document.getElementById("DdlAnio");
+        var anio = ddlAnio.options[ddlAnio.selectedIndex].value;
+        var ddl = document.getElementById("ddlComplementos");
+        if (anio < 2014) {
+            var hfInicialBool = document.getElementById("hfInicialBool");
+            hfInicialBool.value = "true";
+
+            ddl.selectedIndex = 0;
+            ddl.disabled = true;
+        }
+        if (anio >= 2014) {
+            var hfInicialBool = document.getElementById("hfInicialBool");
+            hfInicialBool.value = "false";
+
+            ddl.disabled = false;
+        }
+
+        asignaDia();
+
+    }
+</script>
+<div id="ctl00_MainContent_CldFecha_UpnlSeleccionFecha">
+			
+        <span id="ctl00_MainContent_CldFecha_LblFecha" style="display:inline-block;"></span>
+        <div class="form-group">
+            <div class="col-sm-4">
+                <span id="ctl00_MainContent_CldFecha_LblAnio" class="control-label">Año*:</span>
+            </div>
+            <div class="col-sm-4">
+                <span id="ctl00_MainContent_CldFecha_LblMes" class="col-sm-1 control-label">Mes*:</span>
+            </div>
+            <div class="col-sm-4">
+                <span id="ctl00_MainContent_CldFecha_lblDia" class="col-sm-1  control-label">Día:</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-4">
+                <select name="ctl00$MainContent$CldFecha$DdlAnio" id="DdlAnio" disabled="disabled" class="aspNetDisabled form-control" onChange="ValidateYear();">
+				<option value="2011">2011</option>
+				<option value="2012">2012</option>
+				<option value="2013">2013</option>
+				<option value="2014">2014</option>
+				<option value="2015">2015</option>
+				<option value="2016">2016</option>
+				<option value="2017">2017</option>
+				<option value="2018">2018</option>
+				<option selected="selected" value="2019">2019</option>
+
+			</select>
+            </div>
+
+            <div class="col-md-4">
+                <select name="ctl00$MainContent$CldFecha$DdlMes" id="ctl00_MainContent_CldFecha_DdlMes" disabled="disabled" class="aspNetDisabled form-control" onchange="asignaDia();">
+				<option selected="selected" value="1">01</option>
+				<option value="2">02</option>
+				<option value="3">03</option>
+				<option value="4">04</option>
+				<option value="5">05</option>
+				<option value="6">06</option>
+				<option value="7">07</option>
+				<option value="8">08</option>
+				<option value="9">09</option>
+				<option value="10">10</option>
+				<option value="11">11</option>
+				<option value="12">12</option>
+
+			</select>
+            </div>
+
+            <div class="col-md-4">
+                <select name="ctl00$MainContent$CldFecha$DdlDia" id="ctl00_MainContent_CldFecha_DdlDia" disabled="disabled" class="aspNetDisabled form-control">
+				<option selected="selected" value="0"> </option>
+				<option value="01">01</option>
+				<option value="02">02</option>
+				<option value="03">03</option>
+				<option value="04">04</option>
+				<option value="05">05</option>
+				<option value="06">06</option>
+				<option value="07">07</option>
+				<option value="08">08</option>
+				<option value="09">09</option>
+				<option value="10">10</option>
+				<option value="11">11</option>
+				<option value="12">12</option>
+				<option value="13">13</option>
+				<option value="14">14</option>
+				<option value="15">15</option>
+				<option value="16">16</option>
+				<option value="17">17</option>
+				<option value="18">18</option>
+				<option value="19">19</option>
+				<option value="20">20</option>
+				<option value="21">21</option>
+				<option value="22">22</option>
+				<option value="23">23</option>
+				<option value="24">24</option>
+				<option value="25">25</option>
+				<option value="26">26</option>
+				<option value="27">27</option>
+				<option value="28">28</option>
+				<option value="29">29</option>
+				<option value="30">30</option>
+				<option value="31">31</option>
+
+			</select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-6">
+                <span id="ctl00_MainContent_CldFecha_Label1" class="control-label">Hora Inicial:</span>
+            </div>
+            <div class="col-md-6">
+                <span id="ctl00_MainContent_CldFecha_Label2" class="control-label">Hora Final:</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-6">
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlHora" id="ctl00_MainContent_CldFecha_DdlHora" disabled="disabled" class="aspNetDisabled form-control" onchange="validaHora();">
+				<option selected="selected" value="0">00</option>
+				<option value="1">01</option>
+				<option value="2">02</option>
+				<option value="3">03</option>
+				<option value="4">04</option>
+				<option value="5">05</option>
+				<option value="6">06</option>
+				<option value="7">07</option>
+				<option value="8">08</option>
+				<option value="9">09</option>
+				<option value="10">10</option>
+				<option value="11">11</option>
+				<option value="12">12</option>
+				<option value="13">13</option>
+				<option value="14">14</option>
+				<option value="15">15</option>
+				<option value="16">16</option>
+				<option value="17">17</option>
+				<option value="18">18</option>
+				<option value="19">19</option>
+				<option value="20">20</option>
+				<option value="21">21</option>
+				<option value="22">22</option>
+				<option value="23">23</option>
+
+			</select>
+
+                    <div style="position: relative; top: -33px; left: 168px;">:</div>
+                </div>
+
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlMinuto" id="ctl00_MainContent_CldFecha_DdlMinuto" disabled="disabled" class="aspNetDisabled form-control" onchange="validaHora();">
+				<option selected="selected" value="0">00</option>
+				<option value="1">01</option>
+				<option value="2">02</option>
+				<option value="3">03</option>
+				<option value="4">04</option>
+				<option value="5">05</option>
+				<option value="6">06</option>
+				<option value="7">07</option>
+				<option value="8">08</option>
+				<option value="9">09</option>
+				<option value="10">10</option>
+				<option value="11">11</option>
+				<option value="12">12</option>
+				<option value="13">13</option>
+				<option value="14">14</option>
+				<option value="15">15</option>
+				<option value="16">16</option>
+				<option value="17">17</option>
+				<option value="18">18</option>
+				<option value="19">19</option>
+				<option value="20">20</option>
+				<option value="21">21</option>
+				<option value="22">22</option>
+				<option value="23">23</option>
+				<option value="24">24</option>
+				<option value="25">25</option>
+				<option value="26">26</option>
+				<option value="27">27</option>
+				<option value="28">28</option>
+				<option value="29">29</option>
+				<option value="30">30</option>
+				<option value="31">31</option>
+				<option value="32">32</option>
+				<option value="33">33</option>
+				<option value="34">34</option>
+				<option value="35">35</option>
+				<option value="36">36</option>
+				<option value="37">37</option>
+				<option value="38">38</option>
+				<option value="39">39</option>
+				<option value="40">40</option>
+				<option value="41">41</option>
+				<option value="42">42</option>
+				<option value="43">43</option>
+				<option value="44">44</option>
+				<option value="45">45</option>
+				<option value="46">46</option>
+				<option value="47">47</option>
+				<option value="48">48</option>
+				<option value="49">49</option>
+				<option value="50">50</option>
+				<option value="51">51</option>
+				<option value="52">52</option>
+				<option value="53">53</option>
+				<option value="54">54</option>
+				<option value="55">55</option>
+				<option value="56">56</option>
+				<option value="57">57</option>
+				<option value="58">58</option>
+				<option value="59">59</option>
+
+			</select>
+
+                    <div style="position: relative; top: -33px; left: 168px;">:</div>
+                </div>
+
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlSegundo" id="ctl00_MainContent_CldFecha_DdlSegundo" disabled="disabled" class="aspNetDisabled form-control" onchange="validaHora();">
+				<option selected="selected" value="0">00</option>
+				<option value="1">01</option>
+				<option value="2">02</option>
+				<option value="3">03</option>
+				<option value="4">04</option>
+				<option value="5">05</option>
+				<option value="6">06</option>
+				<option value="7">07</option>
+				<option value="8">08</option>
+				<option value="9">09</option>
+				<option value="10">10</option>
+				<option value="11">11</option>
+				<option value="12">12</option>
+				<option value="13">13</option>
+				<option value="14">14</option>
+				<option value="15">15</option>
+				<option value="16">16</option>
+				<option value="17">17</option>
+				<option value="18">18</option>
+				<option value="19">19</option>
+				<option value="20">20</option>
+				<option value="21">21</option>
+				<option value="22">22</option>
+				<option value="23">23</option>
+				<option value="24">24</option>
+				<option value="25">25</option>
+				<option value="26">26</option>
+				<option value="27">27</option>
+				<option value="28">28</option>
+				<option value="29">29</option>
+				<option value="30">30</option>
+				<option value="31">31</option>
+				<option value="32">32</option>
+				<option value="33">33</option>
+				<option value="34">34</option>
+				<option value="35">35</option>
+				<option value="36">36</option>
+				<option value="37">37</option>
+				<option value="38">38</option>
+				<option value="39">39</option>
+				<option value="40">40</option>
+				<option value="41">41</option>
+				<option value="42">42</option>
+				<option value="43">43</option>
+				<option value="44">44</option>
+				<option value="45">45</option>
+				<option value="46">46</option>
+				<option value="47">47</option>
+				<option value="48">48</option>
+				<option value="49">49</option>
+				<option value="50">50</option>
+				<option value="51">51</option>
+				<option value="52">52</option>
+				<option value="53">53</option>
+				<option value="54">54</option>
+				<option value="55">55</option>
+				<option value="56">56</option>
+				<option value="57">57</option>
+				<option value="58">58</option>
+				<option value="59">59</option>
+
+			</select>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlHoraFin" id="ctl00_MainContent_CldFecha_DdlHoraFin" disabled="disabled" class="aspNetDisabled form-control" onchange="validaHora();">
+				<option value="0">00</option>
+				<option value="1">01</option>
+				<option value="2">02</option>
+				<option value="3">03</option>
+				<option value="4">04</option>
+				<option value="5">05</option>
+				<option value="6">06</option>
+				<option value="7">07</option>
+				<option value="8">08</option>
+				<option value="9">09</option>
+				<option value="10">10</option>
+				<option value="11">11</option>
+				<option value="12">12</option>
+				<option value="13">13</option>
+				<option value="14">14</option>
+				<option value="15">15</option>
+				<option value="16">16</option>
+				<option value="17">17</option>
+				<option value="18">18</option>
+				<option value="19">19</option>
+				<option value="20">20</option>
+				<option value="21">21</option>
+				<option value="22">22</option>
+				<option selected="selected" value="23">23</option>
+
+			</select>
+
+                    <div style="position: relative; top: -33px; left: 168px;">:</div>
+                </div>
+
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlMinutoFin" id="ctl00_MainContent_CldFecha_DdlMinutoFin" disabled="disabled" class="aspNetDisabled form-control" onchange="validaHora();">
+				<option value="0">00</option>
+				<option value="1">01</option>
+				<option value="2">02</option>
+				<option value="3">03</option>
+				<option value="4">04</option>
+				<option value="5">05</option>
+				<option value="6">06</option>
+				<option value="7">07</option>
+				<option value="8">08</option>
+				<option value="9">09</option>
+				<option value="10">10</option>
+				<option value="11">11</option>
+				<option value="12">12</option>
+				<option value="13">13</option>
+				<option value="14">14</option>
+				<option value="15">15</option>
+				<option value="16">16</option>
+				<option value="17">17</option>
+				<option value="18">18</option>
+				<option value="19">19</option>
+				<option value="20">20</option>
+				<option value="21">21</option>
+				<option value="22">22</option>
+				<option value="23">23</option>
+				<option value="24">24</option>
+				<option value="25">25</option>
+				<option value="26">26</option>
+				<option value="27">27</option>
+				<option value="28">28</option>
+				<option value="29">29</option>
+				<option value="30">30</option>
+				<option value="31">31</option>
+				<option value="32">32</option>
+				<option value="33">33</option>
+				<option value="34">34</option>
+				<option value="35">35</option>
+				<option value="36">36</option>
+				<option value="37">37</option>
+				<option value="38">38</option>
+				<option value="39">39</option>
+				<option value="40">40</option>
+				<option value="41">41</option>
+				<option value="42">42</option>
+				<option value="43">43</option>
+				<option value="44">44</option>
+				<option value="45">45</option>
+				<option value="46">46</option>
+				<option value="47">47</option>
+				<option value="48">48</option>
+				<option value="49">49</option>
+				<option value="50">50</option>
+				<option value="51">51</option>
+				<option value="52">52</option>
+				<option value="53">53</option>
+				<option value="54">54</option>
+				<option value="55">55</option>
+				<option value="56">56</option>
+				<option value="57">57</option>
+				<option value="58">58</option>
+				<option selected="selected" value="59">59</option>
+
+			</select>
+
+                    <div style="position: relative; top: -33px; left: 168px;">:</div>
+                </div>
+
+                <div class="col-md-4">
+                    <select name="ctl00$MainContent$CldFecha$DdlSegundoFin" id="ctl00_MainContent_CldFecha_DdlSegundoFin" disabled="disabled" class="aspNetDisabled form-control" onchange="validaHora();">
+				<option value="0">00</option>
+				<option value="1">01</option>
+				<option value="2">02</option>
+				<option value="3">03</option>
+				<option value="4">04</option>
+				<option value="5">05</option>
+				<option value="6">06</option>
+				<option value="7">07</option>
+				<option value="8">08</option>
+				<option value="9">09</option>
+				<option value="10">10</option>
+				<option value="11">11</option>
+				<option value="12">12</option>
+				<option value="13">13</option>
+				<option value="14">14</option>
+				<option value="15">15</option>
+				<option value="16">16</option>
+				<option value="17">17</option>
+				<option value="18">18</option>
+				<option value="19">19</option>
+				<option value="20">20</option>
+				<option value="21">21</option>
+				<option value="22">22</option>
+				<option value="23">23</option>
+				<option value="24">24</option>
+				<option value="25">25</option>
+				<option value="26">26</option>
+				<option value="27">27</option>
+				<option value="28">28</option>
+				<option value="29">29</option>
+				<option value="30">30</option>
+				<option value="31">31</option>
+				<option value="32">32</option>
+				<option value="33">33</option>
+				<option value="34">34</option>
+				<option value="35">35</option>
+				<option value="36">36</option>
+				<option value="37">37</option>
+				<option value="38">38</option>
+				<option value="39">39</option>
+				<option value="40">40</option>
+				<option value="41">41</option>
+				<option value="42">42</option>
+				<option value="43">43</option>
+				<option value="44">44</option>
+				<option value="45">45</option>
+				<option value="46">46</option>
+				<option value="47">47</option>
+				<option value="48">48</option>
+				<option value="49">49</option>
+				<option value="50">50</option>
+				<option value="51">51</option>
+				<option value="52">52</option>
+				<option value="53">53</option>
+				<option value="54">54</option>
+				<option value="55">55</option>
+				<option value="56">56</option>
+				<option value="57">57</option>
+				<option value="58">58</option>
+				<option selected="selected" value="59">59</option>
+
+			</select>
+                </div>
+            </div>
+        </div>
+    
+		</div>
+<script type="text/javascript" language="javascript">
+    function daysInMonth(month, year) {
+        var dd = new Date(year, month, 0);
+        return dd.getDate();
+    }
+    function asignaDiaFecha(anioObj, mesObj, diaObj) {
+        var year = anioObj.options[anioObj.selectedIndex].value;
+        var month = mesObj.options[mesObj.selectedIndex].value;
+
+            var days = (year == ' ' || month == ' ')
+               ? 31 : daysInMonth(month, year);
+            diaObj.options.length = 0;
+            diaObj.options[diaObj.options.length] = new Option(' ', '0');
+            for (var i = 1; i <= days; i++) {
+                if (i < 10) {
+                    diaObj.options[diaObj.options.length] = new Option('0' + i.toString(), i);
+                } else {
+                    diaObj.options[diaObj.options.length] = new Option(i, i);
+                }
+            }
+
+            var opHora = $(diaObj).find("option[value=0]");
+            $(diaObj).selectbox("change", opHora.attr('value'), opHora.html());
+
+    }
+
+    function ConfiguraCombosMac() {
+        var isMac = navigator.userAgent.indexOf("Macintosh");
+
+        if (isMac != -1) {
+            $(document.getElementsByClassName("calendarCombo")).css("width", "45px");
+            $(document.getElementsByClassName("calendarCombo2")).css("width", "60px");
+        }
+    }
+
+    function asignaDia() {
+        
+        var anioJsObj = document.getElementById('DdlAnio');
+        var mesJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlMes');
+        var diaJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlDia');
+        asignaDiaFecha(anioJsObj, mesJsObj, diaJsObj);
+    }
+
+    function validaHora() {
+        var horaJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlHora');
+        var minutoJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlMinuto');
+        var segundoJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlSegundo');
+        var horaFinJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlHoraFin');
+        var minutoFinJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlMinutoFin');
+        var segundoFinJsObj = document.getElementById('ctl00_MainContent_CldFecha_DdlSegundoFin');
+
+        var horaJs = horaJsObj.options[horaJsObj.selectedIndex].value;
+        var minutoJs = minutoJsObj.options[minutoJsObj.selectedIndex].value;
+        var segundoJs = segundoJsObj.options[segundoJsObj.selectedIndex].value;
+        var horaFinJs = horaFinJsObj.options[horaFinJsObj.selectedIndex].value;
+        var minutoFinJs = minutoFinJsObj.options[minutoFinJsObj.selectedIndex].value;
+        var segundoFinJs = segundoFinJsObj.options[segundoFinJsObj.selectedIndex].value;
+
+        var segIni = timeToSeconds(horaJs, minutoJs, segundoJs);
+        var segFin = timeToSeconds(horaFinJs, minutoFinJs, segundoFinJs);
+        if (segIni > segFin)
+        {
+            horaFinJsObj.selectedIndex = horaJsObj.selectedIndex;
+            minutoFinJsObj.selectedIndex = minutoJsObj.selectedIndex+1;
+            segundoFinJsObj.selectedIndex = segundoJsObj.selectedIndex;
+        }
+    }
+    
+    function timeToSeconds(horas,minutos,segundos) {
+        return parseInt(parseInt(horas * 3600) + parseInt(minutos * 60) + parseInt(segundos));
+    }
+
+    function DefinePosicionInicial() {
+       
+    }
+
+</script>
+
+                    </div>
+                </div>
+
+                
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <span id="ctl00_MainContent_LblRfcReceptor" class="control-label">RFC Emisor</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <span id="ctl00_MainContent_LblEstado" class="control-label">Estado del Comprobante</span>
+                        </div>
+                    </div>
+                
+
+                
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <input name="ctl00$MainContent$TxtRfcReceptor" type="text" maxlength="13" id="ctl00_MainContent_TxtRfcReceptor" disabled="disabled" class="aspNetDisabled form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <select name="ctl00$MainContent$DdlEstadoComprobante" id="ctl00_MainContent_DdlEstadoComprobante" disabled="disabled" class="aspNetDisabled form-control" onchange="EstadoComprobante(this);">
+			<option selected="selected" value="-1">Seleccione un valor...</option>
+			<option value="0">Cancelado</option>
+			<option value="1">Vigente</option>
+
+		</select>
+                        </div>
+                    </div>
+                
+
+               
+                        <div class="form-group">
+                        <div class="col-sm-6">
+                            <span id="ctl00_MainContent_Label5" class="control-label">Tipo de Comprobante (Complemento)</span>
+                            <input type="hidden" name="ctl00$MainContent$hfInicialBool" id="hfInicialBool" value="true" />
+                            <input type="hidden" name="ctl00$MainContent$hfDescarga" id="hfDescarga" />
+                        </div>
+
+                        <div id="DivlblEstatusCancelacion" style="display: none;" class="col-sm-6">
+                            <span id="ctl00_MainContent_lblEstatusCancelacion" class="control-label">Estatus Cancelación</span>
+                    </div>
+                </div>
+               
+
+
+                
+                        <div class="form-group">
+                        <div class="col-sm-6">
+                            <select name="ctl00$MainContent$ddlComplementos" id="ddlComplementos" disabled="disabled" class="aspNetDisabled form-control">
+			<option selected="selected" value="-1">Seleccione un valor...</option>
+			<option value="8">Est&#225;ndar (sin complemento)</option>
+			<option value="4294967296">Acreditamiento de IEPS</option>
+			<option value="8388608">Aerol&#237;neas</option>
+			<option value="1073741824">Certificado de Destrucci&#243;n</option>
+			<option value="17179869184">Comercio Exterior</option>
+			<option value="274877906944">Comercio Exterior 1.1</option>
+			<option value="4">Compra Venta de Divisas</option>
+			<option value="16777216">Consumo de Combustibles</option>
+			<option value="8796093022208">Consumo De Combustibles 1.1</option>
+			<option value="64">Donatarias</option>
+			<option value="256">Estado De Cuenta Bancario</option>
+			<option value="4398046511104">Estado de Cuenta Combustibles 1.2</option>
+			<option value="8589934592">Estado de cuenta de combustibles de monederos electr&#243;nicos.</option>
+			<option value="17592186044416">Gastos de Hidrocarburos</option>
+			<option value="68719476736">INE 1.1</option>
+			<option value="35184372088832">Ingresos de Hidrocarburos</option>
+			<option value="1024">Instituciones Educativas Privadas (Pago de colegiatura)</option>
+			<option value="4096">Leyendas Fiscales</option>
+			<option value="524288">Mis Cuentas</option>
+			<option value="67108864">Notarios P&#250;blicos</option>
+			<option value="536870912">Obras de artes y antig&#252;edades</option>
+			<option value="2048">Otros Derechos e Impuestos</option>
+			<option value="4194304">Pago en Especie</option>
+			<option value="8192">Persona F&#237;sica Integrante de Coordinado</option>
+			<option value="549755813888">Recepci&#243;n de Pagos</option>
+			<option value="128">Recibo de donativo</option>
+			<option value="1048576">Recibo de Pago de Salarios</option>
+			<option value="137438953472">Recibo de Pago de Salarios 1.2</option>
+			<option value="32">Sector de Ventas al Detalle (Detallista)</option>
+			<option value="268435456">Servicios de construcci&#243;n</option>
+			<option value="16384">SPEI de Tercero a Tercero</option>
+			<option value="2147483648">Sustituci&#243;n y renovaci&#243;n vehicular</option>
+			<option value="32768">Terceros</option>
+			<option value="65536">Terceros</option>
+			<option value="2199023255552">Timbre Fiscal Digital</option>
+			<option value="16">Turista o Pasajero Extranjero</option>
+			<option value="33554432">Vales de Despensa</option>
+			<option value="134217728">Veh&#237;culo Usado</option>
+			<option value="2097152">Venta de Vehiculos</option>
+
+		</select>
+                            <small class="form-text">(Criterio de búsqueda aplicable a CFDI emitidas a partir del 01/01/2014)</small>
+                        </div>
+
+                        <div id="DivddlVigente" style="display: none;" class="col-sm-6">
+                            <select name="ctl00$MainContent$ddlVigente" id="ddlVigente" class="form-control" align="left">
+			<option selected="selected" value="0">Seleccione un valor...</option>
+			<option value="1">En Proceso</option>
+			<option value="4">Rechazada</option>
+			<option value="5">Plazo vencido</option>
+			<option value="-1">Sin proceso</option>
+
+		</select>
+                        </div>
+
+                        <div id="DivddlCancelado" style="display: none;" class="col-sm-6">
+                            <select name="ctl00$MainContent$ddlCancelado" id="ddlCancelado" class="form-control" align="left">
+			<option selected="selected" value="0">Seleccione un valor...</option>
+			<option value="2">Cancelado con aceptaci&#243;n</option>
+			<option value="3">Cancelado sin aceptaci&#243;n</option>
+			<option value="5">Plazo vencido</option>
+
+		</select>
+                    </div>
+                </div>
+                
+
+                <div class="col-md-12">
+                    <div class="clearfix">
+                        <div class="pull-left text-muted text-vertical-align-button">
+                            * Campos obligatorios
+                        </div>
+                        <div class="pull-right">
+                            <input type="submit" name="ctl00$MainContent$BtnBusqueda" value="Buscar CFDI" onclick="ocultaResultados();WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$MainContent$BtnBusqueda&quot;, &quot;&quot;, true, &quot;FolioFiscal&quot;, &quot;&quot;, false, false))" id="ctl00_MainContent_BtnBusqueda" class="btn btn-primary" style="margin-right: 20px" />
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <div style="vertical-align: top" class="erroruuid">
+                        
+                    </div>
+                    <br />
+                    <div>
+                        
+                        <div id="ctl00_MainContent_PnlErrores" class="erroruuid">
+			
+                            <div style="vertical-align: top">
+                                
+                            </div>
+                        
+		</div>
+                    </div>
+                </div>
+            
+	</div>
+        <div id="ctl00_MainContent_UpnlResultados">
+		
+                <div id="ctl00_MainContent_PnlResultados" style="display:none;">
+			
+                    
+                    <div class="form-group col-sm-12" id="DivContenedor">
+                        <div class="col-sm-12" id="ContenedorDinamico" style="overflow: auto;">
+                            <table id="ctl00_MainContent_tblResult" class="table table-responsive">
+				<tr>
+					<th>
+                                        <span style="width: 160px;">
+                                        <input type="checkbox" id="seleccionador" name="seleccionador" onclick="manejaseleccion();"
+                                            title="Seleccionar todos" />&nbsp;
+                                        Acciones</span>
+                                    </th>
+					<th>
+                                        <span style="width: 385px;">Folio Fiscal</span>
+                                    </th>
+					<th>
+                                        <span style="width: 150px;">RFC Emisor</span>
+                                    </th>
+					<th>
+                                        <span style="width: 350px;">Nombre o Razón Social del Emisor</span>
+                                    </th>
+					<th>
+                                        <span style="width: 150px;">RFC Receptor</span>
+                                    </th>
+					<th>
+                                        <span style="width: 350px;">Nombre o Razón Social del Receptor</span>
+                                    </th>
+					<th>
+                                        <span style="width: 200px;">Fecha de Emisión</span>
+                                    </th>
+					<th>
+                                        <span style="width: 200px;">Fecha de Certificación</span>
+                                    </th>
+					<th>
+                                        <span style="width: 150px;">PAC que Certificó</span>
+                                    </th>
+					<th>
+                                        <span style="width: 150px;">Total</span>
+                                    </th>
+					<th>
+                                        <span style="width: 200px;">Efecto del Comprobante</span>
+                                    </th>
+					<th>
+                                        <span style="width: 200px;">Estatus de cancelación</span>
+                                    </th>
+					<th>
+                                        <span style="width: 200px;">Estado del Comprobante</span>
+                                    </th>
+					<th>
+                                        <span style="width: 200px;">Estatus de Proceso de Cancelación</span>
+                                    </th>
+					<th>
+                                        <span style="width: 200px;">Fecha de Proceso de Cancelación</span>
+                                    </th>
+				</tr>
+			</table>
+			
+                        </div>
+                    </div>
+                    <div id="ctl00_MainContent_pageNavPosition" class="form-group"></div>
+                    <br />
+                    <br />
+                    <div class="form-group">
+                        <div class="btn-group" style="padding-right: 25px; float: right">
+                            <input type="submit" name="ctl00$MainContent$BtnDescargar" value="Descargar Seleccionados" onclick="return validarSeleccionDescarga();" id="ctl00_MainContent_BtnDescargar" class="btn btn-primary" />
+                            <input type="submit" name="ctl00$MainContent$BtnMetadata" value="Descargar Metadata" onclick="return MetadataDescarga();" id="ctl00_MainContent_BtnMetadata" class="btn btn-primary" />
+                            <input type="submit" name="ctl00$MainContent$BtnImprimir" value="Exportar Resultados a PDF" id="ctl00_MainContent_BtnImprimir" class="btn btn-primary" />
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                    <div id="ctl00_MainContent_pnlLeyenda" style="height: auto; display: block; padding-right: 25px; float: right; padding-left: 35px;">
+				
+                        <span>Importante: Para cualquier aclaración sobre el contenido o estado de  los comprobantes listados, favor de verificar directamente con su emisor.</span>
+                    
+			</div>
+                    <br />
+                    <br />
+                    <div class="form-group" id="dvAlert"></div>
+                
+		</div>
+                <br />
+                <br />
+                <div id="ctl00_MainContent_PnlNoResultados" style="text-align:center;display:none;">
+			
+                    <h2 class="subtitle" style="text-align: center;">No existen registros que cumplan con los criterios de b&uacute;squeda ingresados,
+                        intentar nuevamente.</h2>
+                
+		</div>                 
+                <input type="hidden" name="ctl00$MainContent$hfParametrosMetadata" id="hfParametrosMetadata" />
+            
+	</div>
+    
+</div>
+    <input type="hidden" id="hdnValAccion" clientidmode="Static" />
+    <div id="ctl00_MainContent_UpdateProgress1" style="display:none;">
+	
+            <div class="progresofondo">
+            </div>
+            <div class="progreso">
+                <img src="Images/ajax-loader.gif" style="float: left; margin-top: 5px;" />
+                <h2 style="width: 250px; float: left; font-size: 12pt">Espere un momento...</h2>
+            </div>
+        
+</div>
+     <script type="text/javascript" src="Scripts/Jquery/jquery.cookie.js"></script>
+    <script type="text/javascript">
+        /// Variables
+        var validCookieInterval;
+        var validSesionInterval;
+        var downloadCookie = 'DownloadedFile'
+
+        /**
+        * Función que muestra el update progress y crea 2 Intervals uno para validar que la descarga del archivo 
+        * se haya realizado y el otro mantiene la sesión.
+        */
+        function ShowProgress() {
+            validSesionInterval = setInterval(function () {
+                MantieneSesion();
+            }, 60000);
+            $get('ctl00_MainContent_UpdateProgress1').style.display = 'block';
+            validCookieInterval = setInterval(function () {
+                if ($.cookie(downloadCookie) != null && $.cookie(downloadCookie) == "OK") {
+                    $.cookie(downloadCookie, null);
+                    $get('ctl00_MainContent_UpdateProgress1').style.display = "none";
+                    clearInterval(validCookieInterval);//delete interval
+                    clearInterval(validSesionInterval);
+                }
+
+            }, 2000);
+        }
+
+        /**
+        * Función valida que al menos este seleccionado un registro. 
+        * Se toman los valores de los registros seleccionados (blobUri) y los guarda en un hidden
+        **/
+        function validarSeleccionDescarga() {
+            if ($('.ListaFolios').filter(':checked').length == 0) {
+                var newDivSuccess = document.createElement('div');
+                newDivSuccess.className = "alert alert-info alert-dismissible";
+                newDivSuccess.innerHTML = "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>¡Atención! <br/></strong> Favor de seleccionar registro(s)";
+                document.getElementById('dvAlert').appendChild(newDivSuccess);
+                $('html, body').animate({ scrollTop: $('#dvAlert').offset().top }, 'slow');
+                //alert("Favor de seleccionar registro(s)")
+                return false;
+            } else {
+                ShowProgress();
+                validarDescargaMasiva();
+                return false;
+            }
+        }
+
+
+        function MetadataDescarga() {
+            $('#hdnValAccion').attr('value', 'DescargaMetadata');
+            //ValidaCaptcha();  // Se habilita cuando este captcha
+            AccionCaptcha();  // Se quita cuando este captcha
+            return false;
+        }
+
+        function DescargaMetadata() {
+
+            document.getElementById('dvAlert').innerHTML = '';
+            ShowProgress();
+            Metadatos();
+            return false;
+        }
+
+        function Metadatos() {
+            var urlValidaDescarga = "ConsultaReceptor.aspx/DescargaMetadatos";
+            var Parametros = document.getElementById('hfParametrosMetadata').value;
+            var data = encodeURIComponent($.base64.encode(Parametros));
+
+            $.ajax({
+                url: urlValidaDescarga,
+                type: "POST",
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                data: "{'Parametros':'" + data + "'}",
+                cache: false,
+                async: true,
+                success: function (respuestaValidacion) {
+
+                    $get('ctl00_MainContent_UpdateProgress1').style.display = "none";
+
+                    document.getElementById('dvAlert').innerHTML = '';
+                    var newDivSuccess = document.createElement('div');
+                    if (respuestaValidacion.d.startsWith("Error:")) {
+                        newDivSuccess.className = "alert alert-danger alert-dismissible";
+                        newDivSuccess.innerHTML = "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>¡Error! <br/></strong>" + respuestaValidacion.d.replace("Error:", "");
+                    }
+                    else {
+                        newDivSuccess.className = "alert alert-success alert-dismissible";
+                        newDivSuccess.innerHTML = "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>¡Descarga realizada con éxito! <br/></strong>" + respuestaValidacion.d;
+                    }
+                    document.getElementById('dvAlert').appendChild(newDivSuccess);
+                    $('html, body').animate({ scrollTop: $('#dvAlert').offset().top }, 'slow');
+
+                },
+                error: function (errorDetail) {
+                    $get('ctl00_MainContent_UpdateProgress1').style.display = "none";
+
+                     document.getElementById('dvAlert').innerHTML = '';
+                     var newDivSuccess = document.createElement('div');
+                     newDivSuccess.className = "alert alert-danger alert-dismissible";
+                     newDivSuccess.innerHTML = "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>¡Error! <br/></strong> Ocurrio un error al procesar su solicitud. Por favor intentelo más tarde";
+                     document.getElementById('dvAlert').appendChild(newDivSuccess);
+                     $('html, body').animate({ scrollTop: $('#dvAlert').offset().top }, 'slow');
+                 },
+            });
+             }
+
+             function ValidaCaptcha() {
+                 $("#ventanaModalCaptcha").modal("show");
+             }
+             function AccionCaptcha() {
+                 //$("#ventanaModalCaptcha").modal("hide"); // Se habilita cuando este captcha
+                 var accion = $("#hdnValAccion").val();
+                 if (accion.split('¬')[0] == "DescargaMasiva") {
+                     validarDescargaMasiva();
+                 } else if (accion.split('¬')[0] == "DescargaMetadata") {
+                     DescargaMetadata();
+                 }
+                 else {
+                     var uriblob1 = accion.split('¬')[1];
+                     validarDescargaUnitaria(uriblob1);
+                 }
+
+
+             }
+
+
+        function validarDescargaMasiva() {
+            var urlValidaDescarga = "ConsultaReceptor.aspx/ValidarDescarga"
+            $.ajax({
+                url: urlValidaDescarga,
+                type: "POST",
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                data: "{ id: " + $('.ListaFolios').filter(':checked').length + " }",
+                cache: false,
+                async: true,
+                success: function (respuestaValidacion) {
+                    if (respuestaValidacion.d) {
+                        respuestaValidacion = respuestaValidacion.d;
+                    }
+                    if (respuestaValidacion.Codigo == 0) {
+
+                        var folioUriDescaga = [];
+                        var descargaMasivaUrisModel = {};
+                        var indiceFolio = 0;
+                        $("input.ListaFolios:checked").each(function () {
+                            var folioDescarga = $(this).val();
+                            var uriDescarga = $(this).parent().find("#ListaFoliosUrl").val();
+
+                            folioUriDescaga[indiceFolio] = { Folio: folioDescarga, Uri: uriDescarga };
+                            indiceFolio = indiceFolio + 1;
+                        });
+
+                        descargaMasivaUrisModel.FolioUriList = folioUriDescaga;
+                             var data = encodeURIComponent($.base64.encode(JSON.stringify(descargaMasivaUrisModel)));
+
+                        $.ajax({
+                            url: "ConsultaReceptor.aspx/Descargar",
+                            type: "POST",
+                            dataType: "json",
+                            contentType: 'application/json; charset=utf-8',
+                            cache: false,
+                            async: true,
+                                 data: "{'param':'" + data + "'}",
+                            success: function (respuestaDescarga) {
+
+                                $get('ctl00_MainContent_UpdateProgress1').style.display = "none";
+
+                                document.getElementById('dvAlert').innerHTML = '';
+                                var newDivSuccess = document.createElement('div');
+
+                                if (respuestaDescarga.d.startsWith("Error:")) {
+                                    newDivSuccess.className = "alert alert-danger alert-dismissible";
+                                    newDivSuccess.innerHTML = "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>¡Ocurrió un Error en la Descarga! <br/></strong>" + respuestaDescarga.d.replace("Error:", "");
+                                }
+                                else {
+                                newDivSuccess.className = "alert alert-success alert-dismissible";
+                                newDivSuccess.innerHTML = "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>¡Descarga realizada con éxito! <br/></strong>" + respuestaDescarga.d;
+                                }
+
+                                document.getElementById('dvAlert').appendChild(newDivSuccess);
+                                $('html, body').animate({ scrollTop: $('#dvAlert').offset().top }, 'slow');
+                                //alert(respuestaDescarga.d);
+                            },
+                            error: function (errorDetail) {
+                                document.getElementById('dvAlert').innerHTML = '';
+                                var newDivSuccess = document.createElement('div');
+                                newDivSuccess.className = "alert alert-danger alert-dismissible";
+                                newDivSuccess.innerHTML = "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>¡Ocurrió un Error en la Descarga! <br/></strong> Ocurrio un error al procesar su solicitud. Por favor intentelo más tarde.";
+                                document.getElementById('dvAlert').appendChild(newDivSuccess);
+                                $('html, body').animate({ scrollTop: $('#dvAlert').offset().top }, 'slow');
+                                //alert('Ocurrio un error al procesar su solicitud. Por favor intentelo más tarde');
+                            }
+                        });
+                        } else {
+                        $get('ctl00_MainContent_UpdateProgress1').style.display = "none";
+
+                        document.getElementById('dvAlert').innerHTML = '';
+                        var newDivSuccess = document.createElement('div');
+                        newDivSuccess.className = "alert alert-warning alert-dismissible";
+                        newDivSuccess.innerHTML = "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>¡Precaución! <br/></strong>" + respuestaValidacion.Mensaje;
+                        document.getElementById('dvAlert').appendChild(newDivSuccess);
+                        $('html, body').animate({ scrollTop: $('#dvAlert').offset().top }, 'slow');
+                        //alert(respuestaValidacion.Mensaje);
+                    }
+                },
+                error: function (errorDetail) {
+                    document.getElementById('dvAlert').innerHTML = '';
+                    var newDivSuccess = document.createElement('div');
+                    newDivSuccess.className = "alert alert-danger alert-dismissible";
+                    newDivSuccess.innerHTML = "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>¡Ocurrió un Error! <br/></strong>" + errorDetail.responseJSON;
+                    document.getElementById('dvAlert').appendChild(newDivSuccess);
+                    $('html, body').animate({ scrollTop: $('#dvAlert').offset().top }, 'slow');
+                    //alert('error occured');
+                    //alert(errorDetail.responseJSON);
+
+                },
+            });
+        }
+
+        function validarDescargaUnitaria(blobUri) {
+            var urlValidaDescargaUnitaria = "ConsultaReceptor.aspx/ValidarDescarga";
+            var dataParam = 1;
+            $.ajax({
+                url: urlValidaDescargaUnitaria,
+                type: "POST",
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                data: "{ id:1 }",
+                cache: false,
+                async: true,
+                success: function (respuestaValidacion) {
+                    if (respuestaValidacion.d) {
+                        respuestaValidacion = respuestaValidacion.d;
+                    }
+                    if (respuestaValidacion.Codigo == 0) {
+
+                        var opcionesUnitaria = "width=5,height=5,scrollbars=yes,menubar=no,status=no,directories=no,location=no,toolbar=no,resizable=yes,titlebar=no";
+                        window.open(blobUri, "RecuperacionCFDI", opcionesUnitaria);
+                    } else {
+                        $get('ctl00_MainContent_UpdateProgress1').style.display = "none";
+
+                        document.getElementById('dvAlert').innerHTML = '';
+                        var newDivSuccess = document.createElement('div');
+                        newDivSuccess.className = "alert alert-warning alert-dismissible";
+                        newDivSuccess.innerHTML = "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>¡Precaución! <br/></strong>" + respuestaValidacion.Mensaje;
+                        document.getElementById('dvAlert').appendChild(newDivSuccess);
+                        $('html, body').animate({ scrollTop: $('#dvAlert').offset().top }, 'slow');
+                    }
+                }
+            });
+        }
+
+      
+        //Se agrega manejador de evento para cuando se termine la llamda del UpdatePanel
+        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(endQueryRequest);
+
+        //Funcicón que Forza la corrección del renderizado de tablas en IE9
+        function endQueryRequest(sender, e) {
+            var hfInicialBool = document.getElementById("hfInicialBool");
+
+            if (hfInicialBool.value == "true") {
+                var ddl = document.getElementById("ddlComplementos");
+                ddl.selectedIndex = 0;
+                ddl.disabled = true;
+            }
+            if (hfInicialBool.value == "false") {
+                var ddl = document.getElementById("ddlComplementos");
+                ddl.disabled = false;
+            }
+
+            CorregirTablaResultados(document.getElementById("ctl00_MainContent_PnlResultados"));
+        }
+
+        var rfcetiqueta;
+        var rfcvalido;
+
+        $(document).ready(function () {
+
+            var hfDescarga = document.getElementById('hfDescarga');
+            if (hfDescarga.value == "CuotaParcial") {
+
+                document.getElementById('dvAlert').innerHTML = '';
+                var newDivSuccess = document.createElement('div');
+                newDivSuccess.className = "alert alert-warning alert-dismissible";
+                newDivSuccess.innerHTML = "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>¡Atención! <br/></strong> Estás intentando descargas más documentos de los permitidos.";
+                document.getElementById('dvAlert').appendChild(newDivSuccess);
+                $('html, body').animate({ scrollTop: $('#dvAlert').offset().top }, 'slow');
+
+                //alert("Estás intentando descargas más documentos de los permitidos.");
+            }
+            if (hfDescarga.value == "CuotaCompleta") {
+                document.getElementById('dvAlert').innerHTML = '';
+                var newDivSuccess = document.createElement('div');
+                newDivSuccess.className = "alert alert-warning alert-dismissible";
+                newDivSuccess.innerHTML = "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>¡Atención! <br/></strong> Ya no puedes descargar más documentos, espera hasta mañana.";
+                document.getElementById('dvAlert').appendChild(newDivSuccess);
+                $('html, body').animate({ scrollTop: $('#dvAlert').offset().top }, 'slow');
+                //alert("Ya no puedes descargar más documentos, espera hasta mañana.");
+            }
+
+
+            $('#ctl00_MainContent_BtnBusqueda').live('click', function () {
+
+                $("#ctl00_MainContent_PnlErrores").empty();
+                $("#ctl00_MainContent_PnlErrores").css('display', 'none');
+
+            });
+
+
+            $("#ctl00_MainContent_RdoFolioFiscal").live('click', function () {
+                validaRfcAutenticado();
+            });
+
+            $("#ctl00_MainContent_BtnBusqueda").live('mouseover', function (event) {
+                validaRfcAutenticado();
+            });
+
+            $("#BtnImprimirVisible").live('click', function (event) {
+                validaRfcAutenticado();
+            });
+
+            $("#ctl00_MainContent_BtnImprimir").live('mouseover', function (event) {
+                validaRfcAutenticado();
+            });
+
+            $("#ctl00_MainContent_BtnMetadata").live('mouseover', function (event) {
+                validaRfcAutenticado();
+            });
+
+            $("#ctl00_MainContent_RdoFechas").live('click', function () {
+                validaRfcAutenticado();
+            });
+        });
+
+        function AccionCfdi(blobUri, argumento) {
+            //if (rfcvalido) {
+                MantieneSesion();
+
+                var event = window.event;
+                var opciones = "";
+                if (argumento == "Detalle") {
+                    opciones = "width=5,height=5,scrollbars=yes,menubar=no,status=no,directories=no,location=no,toolbar=no,resizable=yes,titlebar=no";
+                    window.open(blobUri, "DetalleCfdi", opciones);
+                }
+                else if (argumento == "Recuperacion") {
+                    validarDescargaUnitaria(blobUri);
+                }
+                else if (argumento == "Acuse") {
+                    opciones = "width=5,height=5,scrollbars=yes,menubar=no,status=no,directories=no,location=no,toolbar=no,resizable=yes,titlebar=no";
+                    window.open(blobUri, "AcuseCancelacion", opciones);
+                }
+                if (event.stopstopPropagation) {
+                    event.stopPropagation();
+                }
+                else {
+                    event.cancelBubble = true;
+                }
+           // }
+        }
+
+        ////Función que maneja la seleccion y deseleccion multiple global para cancelación
+        function manejaseleccion() {
+            var s = document.getElementById("seleccionador");
+            var estado = s.checked;
+            $('.ListaFolios').each(function (i, obj) {
+                obj.checked = estado;
+            });
+        }
+        ////Función que maneja la seleccion y deseleccion multiple por elemento para cancelación
+        function validaseleccion() {
+            var estado = true;
+            $('.ListaFolios').each(function (i, obj) {
+                if (!(obj.checked)) estado = false;
+            });
+            var s = document.getElementById("seleccionador");
+            s.checked = estado;
+        }
+
+        ////Función que oculta los panelers de resultados 
+        function ocultaResultados() {
+            $("#ctl00_MainContent_PnlResultados").css('display', 'none');
+            $("#ctl00_MainContent_PnlNoResultados").css('display', 'none');
+
+        }
+
+        ////Función que invoca al metodo de recuperación de acuse.
+        function recuperaAcuse(datos) {
+            if (rfcvalido) {
+                MantieneSesion();
+
+                PageMethods.RecuperaAcuse(datos, onRecuperaAcuseSucceed, onRecuperaAcuseFailed);
+            }
+        }
+
+        function validarCaracteres() {
+            supressUpdatePanelRequestErrorCharacters("#ctl00_MainContent_TxtRfcReceptor");
+        }
+
+        function recuperaRepresentacionImpresa(datos) {
+            PageMethods.RecuperaRepresentacionImpresa(datos, onRecuperaRISucceed, onRecuperaRIFailed);
+        }
+
+        function onRecuperaRISucceed(result, userContext, methodName) {
+            opciones = "width=5,height=5,scrollbars=no,menubar=no,status=no,directories=no,location=no,toolbar=no,resizable=no,titlebar=no";
+            window.open(result, "RecuperacionRepresentacionImpresa", opciones);
+        }
+
+        function onRecuperaRIFailed(result, userContext, methodName) {
+            document.getElementById('dvAlert').innerHTML = '';
+            var newDivSuccess = document.createElement('div');
+            newDivSuccess.className = "alert alert-danger alert-dismissible";
+            newDivSuccess.innerHTML = "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>¡Ocurrió un Error! <br/></strong> No se ha podido recuperar la representación Impresa, por favor intentelo más tarde.";
+            document.getElementById('dvAlert').appendChild(newDivSuccess);
+            $('html, body').animate({ scrollTop: $('#dvAlert').offset().top }, 'slow');
+            //alert("No se ha podido recuperar la representación Impresa, por favor intentelo más tarde.");
+        }
+
+        function onRecuperaAcuseSucceed(result, userContext, methodName) {
+            opciones = "width=5,height=5,scrollbars=yes,menubar=no,status=no,directories=no,location=no,toolbar=no,resizable=yes,titlebar=no";
+            window.open(result, "RecuperacionAcuseCancelacion", opciones);
+        }
+
+        function onRecuperaAcuseFailed(result, userContext, methodName) {
+            document.getElementById('dvAlert').innerHTML = '';
+            var newDivSuccess = document.createElement('div');
+            newDivSuccess.className = "alert alert-danger alert-dismissible";
+            newDivSuccess.innerHTML = "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>¡Ocurrió un Error! <br/></strong> No se ha podido recuperar el acuse de cancelación, por favor intentelo más tarde.";
+            document.getElementById('dvAlert').appendChild(newDivSuccess);
+            $('html, body').animate({ scrollTop: $('#dvAlert').offset().top }, 'slow');
+            //alert("No se ha podido recuperar el acuse de cancelación, por favor intentelo más tarde.");
+        }
+
+        function Pager(tableName, itemsPerPage) {
+            this.tableName = tableName;
+            this.itemsPerPage = itemsPerPage;
+            this.currentPage = 1;
+            this.pages = 0;
+            this.inited = false;
+
+            this.showRecords = function (from, to) {
+                var rows = document.getElementById(tableName).rows;
+                // i starts from 1 to skip table header row
+                for (var i = 1; i < rows.length; i++) {
+                    if (i < from || i > to)
+                        rows[i].style.display = 'none';
+                    else
+                        rows[i].style.display = '';
+                }
+            }
+
+            this.showPage = function (pageNumber) {
+                if (!this.inited) {
+                    alert("not inited");
+                    return;
+                }
+
+                var oldPageAnchor = document.getElementById('pg' + this.currentPage);
+                oldPageAnchor.className = 'pg-normal';
+
+                this.currentPage = pageNumber;
+                var newPageAnchor = document.getElementById('pg' + this.currentPage);
+                newPageAnchor.className = 'pg-selected';
+
+                var from = (pageNumber - 1) * itemsPerPage + 1;
+                var to = from + itemsPerPage - 1;
+                this.showRecords(from, to);
+            }
+
+            this.prev = function () {
+                if (this.currentPage > 1)
+                    this.showPage(this.currentPage - 1);
+            }
+
+            this.next = function () {
+                if (this.currentPage < this.pages) {
+                    this.showPage(this.currentPage + 1);
+                }
+            }
+
+            this.init = function () {
+                var rows = document.getElementById(tableName).rows;
+                var records = (rows.length - 1);
+                this.pages = Math.ceil(records / itemsPerPage);
+                this.inited = true;
+            }
+
+            this.showPageNav = function (pagerName, positionId) {
+                if (!this.inited) {
+                    alert("not inited");
+                    return;
+                }
+                var element = document.getElementById(positionId);
+
+                var pagerHtml = '<ul class="pagination">';
+                pagerHtml += '<li onclick="' + pagerName + '.prev();"><a>&laquo;</a></li>';
+                for (var page = 1; page <= this.pages; page++)
+                    pagerHtml += '<li id="pg' + page + '" class="pg-normal" onclick="' + pagerName + '.showPage(' + page + ');"><a>' + page + '</a></li>';
+                pagerHtml += '<li onclick="' + pagerName + '.next();"><a>&raquo;</a></li>';
+                element.innerHTML = pagerHtml;
+            }
+        }
+
+    </script>
+     
+                <div id="dvAlertMaster"></div>            
+            </div>
+        </div>
+        <div class="footer">
+            
+        </div>
+        </main>
+    
+
+<script type="text/javascript">
+//<![CDATA[
+$("#ctl00_MainContent_TxtUUID").mask("hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh");validarCaracteres(); DefinePosicionInicial(); Estado_Comprobante('-1'); Estado_Comprobante('-1'); ConfiguraCombosMac();//]]>
+</script>
+</form>
+    
+    <script type="text/javascript">
+         $(document).ready(function () {
+            var aut = "AUAC920422D38";
+            $("#hdnAut").val($.base64.encode(aut));
+         });
+
+        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(endRequest);
+
+        function endRequest(sender, e) {
+            if (e.get_error()) {
+
+                var newDivSuccess = document.createElement('div');
+                newDivSuccess.className = "alert alert-warning alert-dismissible";
+                newDivSuccess.innerHTML = "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>¡Atención! <br/></strong> En estos momentos el servicio de red presenta lentitud, favor de intentar nuevamente.";
+                document.getElementById('dvAlertMaster').appendChild(newDivSuccess);
+                $('html, body').animate({ scrollTop: $('#dvAlertMaster').offset().top }, 'slow');
+                //alert('En estos momentos el servicio de red presenta lentitud, favor de intentar nuevamente.');
+
+                e.set_errorHandled(true);
+            }
+        }
+
+        function deshabilitaHistoria() {
+            window.history.forward();
+        }
+    </script>
+</body>
+</html>
