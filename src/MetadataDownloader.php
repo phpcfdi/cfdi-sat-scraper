@@ -6,6 +6,14 @@ namespace PhpCfdi\CfdiSatScraper;
 
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 
+/**
+ * Class MetadataDownloader contains the logic to manipulate queries to obtain metadata
+ * Depends on QueryResolver to retrieve the contents
+ * Has a copy of callable to raise when limit is reached
+ *
+ * @see QueryResolver
+ * @internal
+ */
 class MetadataDownloader
 {
     /** @var QueryResolver */
