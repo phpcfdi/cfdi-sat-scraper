@@ -99,10 +99,9 @@ class MetadataDownloader
 
     public function newQueryWithSeconds(Query $query, int $startSec, int $endSec): Query
     {
-        $query = clone $query;
-        $query->setStartDate($this->buildDateWithDayAndSeconds($query->getStartDate(), $startSec));
-        $query->setEndDate($this->buildDateWithDayAndSeconds($query->getEndDate(), $endSec));
-        return $query;
+        return (clone $query)
+            ->setStartDate($this->buildDateWithDayAndSeconds($query->getStartDate(), $startSec))
+            ->setEndDate($this->buildDateWithDayAndSeconds($query->getEndDate(), $endSec));
     }
 
     public function resolveQuery(Query $query): MetadataList
