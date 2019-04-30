@@ -56,9 +56,7 @@ class QueryResolver
         $htmlSearch = $this->consumeSearch($url, $post);
 
         // extract data from resolved search
-        $extractor = new MetadataExtractor();
-        $data = $extractor->extract($htmlSearch);
-        return new MetadataList($data);
+        return (new MetadataExtractor())->extract($htmlSearch);
     }
 
     protected function consumeFormPage(string $url): string
