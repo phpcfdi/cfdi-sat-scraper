@@ -6,9 +6,7 @@ namespace PhpCfdi\CfdiSatScraper;
 
 class MetadataList implements \Countable, \IteratorAggregate
 {
-    /**
-     * @var array<string, Metadata>
-     */
+    /** @var Metadata[] */
     private $list = [];
 
     /** @param Metadata[] $list */
@@ -50,7 +48,7 @@ class MetadataList implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @return \Traversable|array<string, Metadata>
+     * @return \Traversable|Metadata[]
      */
     public function getIterator()
     {
