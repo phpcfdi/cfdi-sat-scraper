@@ -78,7 +78,7 @@ class MetadataExtractorTest extends TestCase
 
         foreach (range(1, 10) as $i) {
             $uuid = sprintf('B97262E5-704C-4BF7-AE26-%012d', $i);
-            $this->assertArrayHasKey($uuid, $list);
+            $this->assertTrue($list->has($uuid));
         }
     }
 
@@ -88,7 +88,6 @@ class MetadataExtractorTest extends TestCase
         $extractor = new MetadataExtractor();
         $list = $extractor->extract($sample);
         $this->assertCount(0, $list);
-        $this->assertSame([], $list);
     }
 
     public function testUsingFakeInput(): void
@@ -98,7 +97,7 @@ class MetadataExtractorTest extends TestCase
         $list = $extractor->extract($sample);
         $this->assertCount(1, $list);
         $expectedUuid = 'B97262E5-704C-4BF7-AE26-9174FEF04D63';
-        $this->assertArrayHasKey($expectedUuid, $list);
+        $this->assertTrue($list->has($expectedUuid));
     }
 
     public function testExtractUsingSampleWithOneUuid(): void
@@ -142,12 +141,12 @@ class MetadataExtractorTest extends TestCase
             ],
         ];
 
-        $this->assertArrayHasKey($expectedUuid, $data);
+        $this->assertTrue($data->has($expectedUuid));
 
-        $document = $data[$expectedUuid];
+        $document = $data->get($expectedUuid);
         foreach ($expectedData[$expectedUuid] as $key => $value) {
-            $this->assertArrayHasKey($key, $document);
-            $this->assertSame($value, $document[$key]);
+            $this->assertTrue($document->has($key));
+            $this->assertSame($value, $document->get($key));
         }
     }
 
@@ -157,6 +156,5 @@ class MetadataExtractorTest extends TestCase
         $extractor = new MetadataExtractor();
         $list = $extractor->extract($sample);
         $this->assertCount(0, $list);
-        $this->assertSame([], $list);
     }
 }

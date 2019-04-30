@@ -8,7 +8,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class MetadataExtractor
 {
-    public function extract(string $html, ?array $fieldsCaptions = null): array
+    public function extract(string $html, ?array $fieldsCaptions = null): MetadataList
     {
         if (null === $fieldsCaptions) {
             $fieldsCaptions = $this->defaultFieldsCaptions();
@@ -21,18 +21,19 @@ class MetadataExtractor
 
         // slice first row (headers), build data array as a collection of metadata
         $data = $rows->slice(1)->each(
-            function (Crawler $row) use ($fieldsPositions): array {
+            function (Crawler $row) use ($fieldsPositions): ?Metadata {
                 $metadata = $this->obtainMetadataValues($row, $fieldsPositions);
+                if ('' === ($metadata['uuid'] ?? '')) {
+                    return null;
+                }
                 $metadata['fechaCancelacion'] = $metadata['fechaProcesoCancelacion'];
                 $metadata['urlXml'] = $this->obtainUrlXml($row);
-                return $metadata;
+                return new Metadata($metadata['uuid'], $metadata);
             }
         );
 
         // build metadata using uuid as key
-        $data = array_combine(array_column($data, 'uuid'), $data);
-
-        return $data;
+        return new MetadataList($data);
     }
 
     public function defaultFieldsCaptions(): array
