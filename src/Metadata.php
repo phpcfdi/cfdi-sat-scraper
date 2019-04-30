@@ -11,8 +11,7 @@ class Metadata
 
     public function __construct(string $uuid, array $data = [])
     {
-        $this->data = $data;
-        $this->data['uuid'] = $uuid;
+        $this->data = ['uuid' => $uuid] + $data;
     }
 
     public function uuid(): string
