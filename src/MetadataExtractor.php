@@ -26,7 +26,6 @@ class MetadataExtractor
                 if ('' === ($metadata['uuid'] ?? '')) {
                     return null;
                 }
-                $metadata['fechaCancelacion'] = $metadata['fechaProcesoCancelacion'];
                 $metadata['urlXml'] = $this->obtainUrlXml($row);
                 return new Metadata($metadata['uuid'], $metadata);
             }
