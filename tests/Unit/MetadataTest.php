@@ -33,4 +33,11 @@ class MetadataTest extends TestCase
         $this->assertSame($uuid, $item->get('uuid'));
         $this->assertTrue($item->has('uuid'));
     }
+
+    public function testCreatingWithEmptyUuidThrowsInvalidArgumentException(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('UUID cannot be empty');
+        new Metadata('');
+    }
 }
