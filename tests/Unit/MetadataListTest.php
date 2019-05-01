@@ -94,6 +94,17 @@ class MetadataListTest extends TestCase
         $this->assertCount(0, $list);
     }
 
+    public function testCloningPreserveContentsAndUsesSameContentObjects(): void
+    {
+        $base = $this->fakes()->doMetadataList(10);
+        $clon = clone $base;
+        $this->assertEquals($base, $clon);
+        $this->assertNotSame($base, $clon);
+        foreach ($base as $baseItem) {
+            $this->assertSame($baseItem, $clon->get($baseItem->uuid()));
+        }
+    }
+
     private function createMetadataArrayUsingUuids(string ...$uuids): array
     {
         $contents = array_map(function (string $uuid): Metadata {

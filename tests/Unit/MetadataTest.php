@@ -40,4 +40,12 @@ class MetadataTest extends TestCase
         $this->expectExceptionMessage('UUID cannot be empty');
         new Metadata('');
     }
+
+    public function testCloningPreserveContents(): void
+    {
+        $base = new Metadata($this->fakes()->faker()->uuid, ['foo' => 'x-foo', 'bar' => 'x-bar']);
+        $clon = clone $base;
+        $this->assertEquals($base, $clon);
+        $this->assertNotSame($base, $clon);
+    }
 }
