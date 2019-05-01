@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
+use InvalidArgumentException;
+
 class Metadata
 {
     /** @var array */
@@ -11,6 +13,9 @@ class Metadata
 
     public function __construct(string $uuid, array $data = [])
     {
+        if ('' === $uuid) {
+            throw new InvalidArgumentException('UUID cannot be empty');
+        }
         $this->data = ['uuid' => $uuid] + $data;
     }
 
