@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
+use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
@@ -17,25 +18,29 @@ class MetadataListTest extends TestCase
 
     public function testHasMethod(): Void
     {
-        $list = new MetadataList(['x-foo' => ['uuid' => 'x-foo']]);
+        $fakes = $this->fakes();
+        $item = $fakes->doMetadata();
+        $list = new MetadataList([$item]);
         $this->assertCount(1, $list);
-        $this->assertTrue($list->has('x-foo'));
-        $this->assertFalse($list->has('x-bar'));
+        $this->assertTrue($list->has($item->uuid()));
+        $this->assertFalse($list->has($fakes->faker()->uuid));
     }
 
     public function testFindMethod(): Void
     {
-        $metadata = ['uuid' => 'x-foo'];
-        $list = new MetadataList(['x-foo' => $metadata]);
-        $this->assertSame($metadata, $list->find('x-foo'));
-        $this->assertNull($list->find('x-bar'));
+        $fakes = $this->fakes();
+        $item = $fakes->doMetadata();
+        $list = new MetadataList([$item]);
+        $this->assertSame($item, $list->find($item->uuid()));
+        $this->assertNull($list->find($fakes->faker()->uuid));
     }
 
     public function testGetMethod(): Void
     {
-        $metadata = ['uuid' => 'x-foo'];
-        $list = new MetadataList(['x-foo' => $metadata]);
-        $this->assertSame($metadata, $list->get('x-foo'));
+        $item = $this->fakes()->doMetadata();
+        $list = new MetadataList([$item]);
+
+        $this->assertSame($item, $list->get($item->uuid()));
     }
 
     public function testGetMethodWithoutUuid(): Void
@@ -48,11 +53,12 @@ class MetadataListTest extends TestCase
 
     public function testIterateCollection(): void
     {
-        $contents = [
-            'x-1' => ['uuid' => 'x-1'],
-            'x-2' => ['uuid' => 'x-2'],
-            'x-3' => ['uuid' => 'x-3'],
-        ];
+        $contents = $this->createMetadataArrayUsingUuids(...[
+            $this->fakes()->faker()->uuid,
+            $this->fakes()->faker()->uuid,
+            $this->fakes()->faker()->uuid,
+        ]);
+
         $list = new MetadataList($contents);
         $arrayList = [];
         foreach ($list as $uuid => $values) {
@@ -63,21 +69,48 @@ class MetadataListTest extends TestCase
 
     public function testMerge(): void
     {
-        $first = new MetadataList([
-            'x-foo' => ['uuid' => 'x-foo'],
-            'x-bar' => ['uuid' => 'x-bar'],
-            'x-baz' => ['uuid' => 'x-baz'],
-        ]);
-        $second = new MetadataList([
-            'x-xee' => ['uuid' => 'x-xee'],
-            'x-bar' => ['uuid' => 'x-bar'],
-            'x-zoo' => ['uuid' => 'x-zoo'],
-        ]);
+        $repeated = $this->fakes()->faker()->uuid;
+        $first = new MetadataList($this->createMetadataArrayUsingUuids(...[
+            $this->fakes()->faker()->uuid,
+            $repeated,
+            $this->fakes()->faker()->uuid,
+        ]));
+        $second = new MetadataList($this->createMetadataArrayUsingUuids(...[
+            $this->fakes()->faker()->uuid,
+            $repeated,
+            $this->fakes()->faker()->uuid,
+        ]));
 
         $merged = $first->merge($second);
         $this->assertNotSame($merged, $first);
         $this->assertCount(3, $first);
         $this->assertCount(3, $second);
         $this->assertCount(5, $merged);
+    }
+
+    public function testOnlyContainsMetadataEvenWhenNullIsPassed(): void
+    {
+        $list = new MetadataList([null]);
+        $this->assertCount(0, $list);
+    }
+
+    public function testCloningPreserveContentsAndUsesSameContentObjects(): void
+    {
+        $base = $this->fakes()->doMetadataList(10);
+        $clon = clone $base;
+        $this->assertEquals($base, $clon);
+        $this->assertNotSame($base, $clon);
+        foreach ($base as $baseItem) {
+            $this->assertSame($baseItem, $clon->get($baseItem->uuid()));
+        }
+    }
+
+    private function createMetadataArrayUsingUuids(string ...$uuids): array
+    {
+        $contents = array_map(function (string $uuid): Metadata {
+            return new Metadata($uuid);
+        }, $uuids);
+        $contents = array_combine($uuids, $contents);
+        return $contents;
     }
 }

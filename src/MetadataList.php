@@ -6,22 +6,26 @@ namespace PhpCfdi\CfdiSatScraper;
 
 class MetadataList implements \Countable, \IteratorAggregate
 {
-    /**
-     * @var array<string, array>
-     */
+    /** @var Metadata[] */
     private $list = [];
 
-    /**
-     * @param array<string, array> $list
-     */
+    /** @param Metadata[] $list */
     public function __construct(array $list)
     {
-        $this->list = $list;
+        $this->list = [];
+        foreach ($list as $metadata) {
+            if (! $metadata instanceof Metadata) {
+                continue;
+            }
+            $this->list[$metadata->uuid()] = $metadata;
+        }
     }
 
     public function merge(self $list): self
     {
-        return new self(array_merge($this->list, $list->list));
+        $new = new self([]);
+        $new->list = array_merge($this->list, $list->list);
+        return $new;
     }
 
     public function has(string $uuid): bool
@@ -29,12 +33,12 @@ class MetadataList implements \Countable, \IteratorAggregate
         return isset($this->list[$uuid]);
     }
 
-    public function find(string $uuid): ?array
+    public function find(string $uuid): ?Metadata
     {
         return $this->list[$uuid] ?? null;
     }
 
-    public function get(string $uuid): array
+    public function get(string $uuid): Metadata
     {
         $values = $this->find($uuid);
         if (null === $values) {
@@ -44,7 +48,7 @@ class MetadataList implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @return \Traversable|array<string, array>
+     * @return \Traversable|Metadata[]
      */
     public function getIterator()
     {

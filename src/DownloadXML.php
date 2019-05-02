@@ -109,8 +109,8 @@ class DownloadXML
      */
     protected function makePromises()
     {
-        foreach ($this->getMetadataList() as $data) {
-            $link = strval($data['urlXml'] ?? '');
+        foreach ($this->getMetadataList() as $metadata) {
+            $link = $metadata->get('urlXml');
             if ('' === $link) {
                 continue;
             }
