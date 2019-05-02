@@ -15,6 +15,9 @@ class MetadataExtractor
         }
 
         $rows = (new Crawler($html))->filter('table#ctl00_MainContent_tblResult > tr');
+        if ($rows->count() < 2) {
+            return new MetadataList([]);
+        }
 
         // first tr is the only expected to have the th elements
         $fieldsPositions = $this->locateFieldsPositions($rows->first(), $fieldsCaptions);
