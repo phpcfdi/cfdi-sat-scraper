@@ -66,7 +66,7 @@ class MetadataExtractorTest extends TestCase
     {
         $row = (new Crawler('<tr></tr>'))->filter('tr')->first();
         $extractor = new MetadataExtractor();
-        $this->assertNull($extractor->obtainUrlXml($row));
+        $this->assertEmpty($extractor->obtainUrlXml($row));
     }
 
     public function testUsingFakeInputWithTenUuids(): void
