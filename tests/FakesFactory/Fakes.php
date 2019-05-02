@@ -6,6 +6,7 @@ namespace PhpCfdi\CfdiSatScraper\Tests\FakesFactory;
 
 use Faker\Factory as FakerFactory;
 use Faker\Generator as FakerGenerator;
+use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 
 class Fakes
@@ -15,11 +16,9 @@ class Fakes
         return FakerFactory::create();
     }
 
-    public function doMetadata(): array
+    public function doMetadata(): Metadata
     {
-        return [
-            'uuid' => $this->faker()->uuid,
-        ];
+        return new Metadata($this->faker()->uuid);
     }
 
     public function doMetadataList(int $howMany): MetadataList

@@ -66,7 +66,7 @@ class MetadataExtractorTest extends TestCase
     {
         $row = (new Crawler('<tr></tr>'))->filter('tr')->first();
         $extractor = new MetadataExtractor();
-        $this->assertNull($extractor->obtainUrlXml($row));
+        $this->assertEmpty($extractor->obtainUrlXml($row));
     }
 
     public function testUsingFakeInputWithTenUuids(): void
@@ -78,7 +78,7 @@ class MetadataExtractorTest extends TestCase
 
         foreach (range(1, 10) as $i) {
             $uuid = sprintf('B97262E5-704C-4BF7-AE26-%012d', $i);
-            $this->assertArrayHasKey($uuid, $list);
+            $this->assertTrue($list->has($uuid));
         }
     }
 
@@ -88,7 +88,6 @@ class MetadataExtractorTest extends TestCase
         $extractor = new MetadataExtractor();
         $list = $extractor->extract($sample);
         $this->assertCount(0, $list);
-        $this->assertSame([], $list);
     }
 
     public function testUsingFakeInput(): void
@@ -98,7 +97,7 @@ class MetadataExtractorTest extends TestCase
         $list = $extractor->extract($sample);
         $this->assertCount(1, $list);
         $expectedUuid = 'B97262E5-704C-4BF7-AE26-9174FEF04D63';
-        $this->assertArrayHasKey($expectedUuid, $list);
+        $this->assertTrue($list->has($expectedUuid));
     }
 
     public function testExtractUsingSampleWithOneUuid(): void
@@ -129,7 +128,6 @@ class MetadataExtractorTest extends TestCase
                 'estadoComprobante' => 'Vigente',
                 'estatusProcesoCancelacion' => '',
                 'fechaProcesoCancelacion' => '',
-                'fechaCancelacion' => '',
                 'urlXml' => 'https://portalcfdi.facturaelectronica.sat.gob.mx/RecuperaCfdi.aspx'
                     . '?Datos=M1peaCnvSPWnQLHcYL1G+TfX+fycHbwuKHo7GloSoS6fqnGuUFQ9RSqJcwdD4F5kspeWgLtl'
                     . '/vgh+6fWBSRdELCsFI/nXD8HCOfiBTzcb0iW9LMYb3Se0U+ftfc6WC8xKL3ikJOv4JS5YVwJEdUvGup'
@@ -142,12 +140,12 @@ class MetadataExtractorTest extends TestCase
             ],
         ];
 
-        $this->assertArrayHasKey($expectedUuid, $data);
+        $this->assertTrue($data->has($expectedUuid));
 
-        $document = $data[$expectedUuid];
+        $document = $data->get($expectedUuid);
         foreach ($expectedData[$expectedUuid] as $key => $value) {
-            $this->assertArrayHasKey($key, $document);
-            $this->assertSame($value, $document[$key]);
+            $this->assertTrue($document->has($key));
+            $this->assertSame($value, $document->get($key));
         }
     }
 
@@ -157,6 +155,22 @@ class MetadataExtractorTest extends TestCase
         $extractor = new MetadataExtractor();
         $list = $extractor->extract($sample);
         $this->assertCount(0, $list);
-        $this->assertSame([], $list);
+    }
+
+    public function testExtractOmmitsRecordsWithMissingUuid(): void
+    {
+        $sample = $this->fileContentPath('fake-to-extract-metadata-missing-uuid.html');
+        $extractor = new MetadataExtractor();
+        $list = $extractor->extract($sample);
+        $this->assertCount(2, $list);
+        $this->assertTrue($list->has('B97262E5-704C-4BF7-AE26-000000000001'));
+        $this->assertTrue($list->has('B97262E5-704C-4BF7-AE26-000000000002'));
+    }
+
+    public function testExtractUsingContentWithoutData(): void
+    {
+        $extractor = new MetadataExtractor();
+        $list = $extractor->extract('');
+        $this->assertCount(0, $list);
     }
 }
