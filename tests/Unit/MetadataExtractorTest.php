@@ -128,7 +128,6 @@ class MetadataExtractorTest extends TestCase
                 'estadoComprobante' => 'Vigente',
                 'estatusProcesoCancelacion' => '',
                 'fechaProcesoCancelacion' => '',
-                'fechaCancelacion' => '',
                 'urlXml' => 'https://portalcfdi.facturaelectronica.sat.gob.mx/RecuperaCfdi.aspx'
                     . '?Datos=M1peaCnvSPWnQLHcYL1G+TfX+fycHbwuKHo7GloSoS6fqnGuUFQ9RSqJcwdD4F5kspeWgLtl'
                     . '/vgh+6fWBSRdELCsFI/nXD8HCOfiBTzcb0iW9LMYb3Se0U+ftfc6WC8xKL3ikJOv4JS5YVwJEdUvGup'
