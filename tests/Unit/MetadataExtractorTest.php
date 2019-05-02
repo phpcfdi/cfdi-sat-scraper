@@ -157,7 +157,6 @@ class MetadataExtractorTest extends TestCase
         $this->assertCount(0, $list);
     }
 
-
     public function testExtractOmmitsRecordsWithMissingUuid(): void
     {
         $sample = $this->fileContentPath('fake-to-extract-metadata-missing-uuid.html');
@@ -166,5 +165,12 @@ class MetadataExtractorTest extends TestCase
         $this->assertCount(2, $list);
         $this->assertTrue($list->has('B97262E5-704C-4BF7-AE26-000000000001'));
         $this->assertTrue($list->has('B97262E5-704C-4BF7-AE26-000000000002'));
+    }
+
+    public function testExtractUsingContentWithoutData(): void
+    {
+        $extractor = new MetadataExtractor();
+        $list = $extractor->extract('');
+        $this->assertCount(0, $list);
     }
 }
