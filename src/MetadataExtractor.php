@@ -87,16 +87,16 @@ class MetadataExtractor
         return $values;
     }
 
-    public function obtainUrlXml(Crawler $row): ?string
+    public function obtainUrlXml(Crawler $row): string
     {
         $spansBtnDownload = $row->filter('span#BtnDescarga');
         if (0 === $spansBtnDownload->count()) { // button not found
-            return null;
+            return '';
         }
 
         $onClickAttribute = $spansBtnDownload->first()->attr('onclick') ?? '';
         if ('' === $onClickAttribute) { // button without text
-            return null;
+            return '';
         }
 
         // change javascript call and replace it with complete url
