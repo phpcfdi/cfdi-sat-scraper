@@ -14,6 +14,7 @@ use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATCredentialsException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATException;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Class SATScraper.
@@ -195,15 +196,16 @@ class SATScraper
     {
         try {
             $image = $this->client->get(
-                URLS::SAT_URL_CAPTCHA,
+                URLS::SAT_URL_LOGIN,
                 [
                     'future' => true,
                     'verify' => false,
                     'cookies' => $this->cookie,
                 ]
             )->getBody()->getContents();
-
-            $imageBase64 = base64_encode($image);
+			
+			$crawler = new Crawler($image);
+			$imageBase64 = $crawler->filterXPath('//img')->attr('src');	
 
             return $this->captchaResolver
                 ->setImage($imageBase64)
@@ -239,7 +241,7 @@ class SATScraper
                     'Ecom_User_ID' => $this->rfc,
                     'option' => 'credential',
                     'submit' => 'Enviar',
-                    'jcaptcha' => $this->getCaptchaValue(),
+                    'userCaptcha' => $this->getCaptchaValue(),
                 ],
             ]
         )->getBody()->getContents();
