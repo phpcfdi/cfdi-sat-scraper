@@ -7,7 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 use PhpCfdi\CfdiSatScraper\HtmlForm;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
-class HtmlFormTest extends TestCase
+final class HtmlFormTest extends TestCase
 {
     public function testGetFormValues(): void
     {

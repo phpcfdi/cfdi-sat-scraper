@@ -38,7 +38,7 @@
     },
     "require-dev": {
         "fzaninotto/faker": "^1.8",
-        "phpunit/phpunit": "^8.0",
+        "phpunit/phpunit": "^8.5",
         "overtrue/phplint": "^1.0",
         "squizlabs/php_codesniffer": "^3.0",
         "friendsofphp/php-cs-fixer": "^2.4",

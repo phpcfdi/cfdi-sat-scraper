@@ -10,7 +10,7 @@ use PhpCfdi\CfdiSatScraper\Filters\Options\RfcReceptorOption;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
-class QueryTest extends TestCase
+final class QueryTest extends TestCase
 {
     public function testFinalDateLessThanInitialDate(): void
     {

@@ -10,7 +10,7 @@ use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\QueryResolver;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
-class MetadataDownloaderTest extends TestCase
+final class MetadataDownloaderTest extends TestCase
 {
     public function testConstructor(): void
     {
