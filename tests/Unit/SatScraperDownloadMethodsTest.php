@@ -15,7 +15,7 @@ use PhpCfdi\CfdiSatScraper\SATScraper;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class SatScraperDownloadMethodsTest extends TestCase
+final class SatScraperDownloadMethodsTest extends TestCase
 {
     public function testCreateMetadataDownloaderHasSatScraperProperties(): void
     {

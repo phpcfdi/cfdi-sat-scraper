@@ -8,7 +8,7 @@ use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\QueryResolver;
 
-class FakeQueryResolver extends QueryResolver
+final class FakeQueryResolver extends QueryResolver
 {
     private $fakeMoments = [];
 

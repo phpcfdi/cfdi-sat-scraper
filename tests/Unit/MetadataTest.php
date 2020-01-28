@@ -7,7 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
-class MetadataTest extends TestCase
+final class MetadataTest extends TestCase
 {
     public function testCreateAndRetrieveData(): void
     {

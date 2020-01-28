@@ -15,7 +15,7 @@ use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use PhpCfdi\CfdiSatScraper\URLS;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class QueryResolverTest extends TestCase
+final class QueryResolverTest extends TestCase
 {
     /** @var QueryResolver */
     private $resolver;
