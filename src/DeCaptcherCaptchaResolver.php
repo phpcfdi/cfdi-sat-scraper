@@ -76,7 +76,7 @@ class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
                 'multipart' => [
                     [
                         'name' => 'pict',
-                        'contents' => fopen("data://text/plain;base64,{$this->image}", 'r'),
+                        'contents' => fopen($this->image, 'r'),
                     ],
                     [
                         'name' => 'function',
