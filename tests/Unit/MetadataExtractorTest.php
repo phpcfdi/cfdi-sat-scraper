@@ -8,7 +8,7 @@ use PhpCfdi\CfdiSatScraper\MetadataExtractor;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class MetadataExtractorTest extends TestCase
+final class MetadataExtractorTest extends TestCase
 {
     public function testLocateHeaderFieldsInRow(): void
     {

@@ -7,7 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
-class CaptchaBase64ExtractorTest extends TestCase
+final class CaptchaBase64ExtractorTest extends TestCase
 {
     public function testRetrieveWhenDefaultElementExists(): void
     {

@@ -7,7 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Tests;
 use PhpCfdi\CfdiSatScraper\Tests\FakesFactory\Fakes;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 
-class TestCase extends PHPUnitTestCase
+abstract class TestCase extends PHPUnitTestCase
 {
     public static function filePath(string $append = ''): string
     {

@@ -8,7 +8,7 @@ use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
-class MetadataListTest extends TestCase
+final class MetadataListTest extends TestCase
 {
     public function testCreateEmptyList(): Void
     {
