@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper;
+namespace PhpCfdi\CfdiSatScraper\Captcha\Resolvers;
 
 use GuzzleHttp\Client;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;

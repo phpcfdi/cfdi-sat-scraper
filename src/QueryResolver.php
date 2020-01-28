@@ -42,6 +42,9 @@ class QueryResolver
 
         // extract main inputs
         $html = $this->consumeFormPage($url);
+        // hack for bad encoding
+        $html = str_replace('charset=utf-16', 'charset=utf-8', $html);
+
         $inputs = (new HtmlForm($html, 'form'))->getFormValues();
 
         // create filters from query
@@ -66,6 +69,7 @@ class QueryResolver
             'cookies' => $this->getCookie(),
             'verify' => false,
         ]);
+
         return $response->getBody()->getContents();
     }
 

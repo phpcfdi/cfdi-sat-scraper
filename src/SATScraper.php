@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
+use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATCredentialsException;
@@ -180,16 +181,18 @@ class SATScraper
     protected function getCaptchaValue(): ?string
     {
         try {
-            $image = $this->client->get(
-                URLS::SAT_URL_CAPTCHA,
+            $html = $this->client->get(
+                $this->loginUrl,
                 [
                     'future' => true,
                     'verify' => false,
                     'cookies' => $this->cookie,
                 ]
-            )->getBody()->getContents();
+            )->getBody()
+                ->getContents();
 
-            $imageBase64 = base64_encode($image);
+            $captchaBase64Extractor = new CaptchaBase64Extractor($html);
+            $imageBase64 = $captchaBase64Extractor->retrieve();
 
             return $this->captchaResolver
                 ->setImage($imageBase64)
@@ -200,7 +203,7 @@ class SATScraper
                 return $this->getCaptchaValue();
             }
 
-            throw new $e();
+            throw $e;
         }
     }
 
@@ -225,7 +228,7 @@ class SATScraper
                     'Ecom_User_ID' => $this->rfc,
                     'option' => 'credential',
                     'submit' => 'Enviar',
-                    'jcaptcha' => $this->getCaptchaValue(),
+                    'userCaptcha' => $this->getCaptchaValue(),
                 ],
             ]
         )->getBody()->getContents();
