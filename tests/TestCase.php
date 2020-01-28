@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests;
 
+use PhpCfdi\CfdiSatScraper\Tests\FakesFactory\Fakes;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 
-class TestCase extends PHPUnitTestCase
+abstract class TestCase extends PHPUnitTestCase
 {
     public static function filePath(string $append = ''): string
     {
@@ -24,5 +25,10 @@ class TestCase extends PHPUnitTestCase
             return '';
         }
         return strval(file_get_contents($path));
+    }
+
+    public static function fakes(): Fakes
+    {
+        return new Fakes();
     }
 }

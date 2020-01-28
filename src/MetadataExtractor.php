@@ -8,31 +8,34 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class MetadataExtractor
 {
-    public function extract(string $html, ?array $fieldsCaptions = null): array
+    public function extract(string $html, ?array $fieldsCaptions = null): MetadataList
     {
         if (null === $fieldsCaptions) {
             $fieldsCaptions = $this->defaultFieldsCaptions();
         }
 
         $rows = (new Crawler($html))->filter('table#ctl00_MainContent_tblResult > tr');
+        if ($rows->count() < 2) {
+            return new MetadataList([]);
+        }
 
         // first tr is the only expected to have the th elements
         $fieldsPositions = $this->locateFieldsPositions($rows->first(), $fieldsCaptions);
 
         // slice first row (headers), build data array as a collection of metadata
         $data = $rows->slice(1)->each(
-            function (Crawler $row) use ($fieldsPositions): array {
+            function (Crawler $row) use ($fieldsPositions): ?Metadata {
                 $metadata = $this->obtainMetadataValues($row, $fieldsPositions);
-                $metadata['fechaCancelacion'] = $metadata['fechaProcesoCancelacion'];
+                if ('' === ($metadata['uuid'] ?? '')) {
+                    return null;
+                }
                 $metadata['urlXml'] = $this->obtainUrlXml($row);
-                return $metadata;
+                return new Metadata($metadata['uuid'], $metadata);
             }
         );
 
         // build metadata using uuid as key
-        $data = array_combine(array_column($data, 'uuid'), $data);
-
-        return $data;
+        return new MetadataList($data);
     }
 
     public function defaultFieldsCaptions(): array
@@ -84,16 +87,16 @@ class MetadataExtractor
         return $values;
     }
 
-    public function obtainUrlXml(Crawler $row): ?string
+    public function obtainUrlXml(Crawler $row): string
     {
         $spansBtnDownload = $row->filter('span#BtnDescarga');
         if (0 === $spansBtnDownload->count()) { // button not found
-            return null;
+            return '';
         }
 
         $onClickAttribute = $spansBtnDownload->first()->attr('onclick') ?? '';
         if ('' === $onClickAttribute) { // button without text
-            return null;
+            return '';
         }
 
         // change javascript call and replace it with complete url

@@ -4,30 +4,35 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use DOMDocument;
+use Symfony\Component\DomCrawler\Crawler;
 
 class HtmlForm
 {
-    public $xpathForm;
-
-    public $htmlSource;
+    /**
+     * @var string
+     */
+    protected $parentElement;
 
     /**
-     * HTMLForm constructor.
-     *
-     * @param string $htmlSource
-     * @param string $xpathForm
+     * @var Crawler
      */
-    public function __construct($htmlSource, $xpathForm)
+    protected $crawler;
+
+    /**
+     * HtmlForm constructor.
+     * @param string $htmlSource
+     * @param string $parentElement
+     */
+    public function __construct(string $htmlSource, string $parentElement)
     {
-        $this->xpathForm = $xpathForm;
-        $this->htmlSource = $htmlSource;
+        $this->parentElement = $parentElement;
+        $this->crawler = new Crawler($htmlSource);
     }
 
     /**
      * @return array
      */
-    public function getFormValues()
+    public function getFormValues(): array
     {
         $inputValues = $this->readInputValues();
         $selectValues = $this->readSelectValues();
@@ -40,7 +45,7 @@ class HtmlForm
     /**
      * @return array
      */
-    public function readInputValues()
+    public function readInputValues(): array
     {
         return $this->readAndGetValues('input');
     }
@@ -48,7 +53,7 @@ class HtmlForm
     /**
      * @return array
      */
-    public function readSelectValues()
+    public function readSelectValues(): array
     {
         return $this->readAndGetValues('select');
     }
@@ -58,31 +63,15 @@ class HtmlForm
      *
      * @return array
      */
-    public function readAndGetValues($element)
+    public function readAndGetValues(string $element): array
     {
-        $old = libxml_use_internal_errors(true);
+        $data = [];
+        $elements = $this->crawler->filter("{$this->parentElement} > {$element}");
 
-        $dom = new DOMDocument();
-        $dom->loadHTML($this->htmlSource);
-
-        libxml_use_internal_errors($old);
-        $sxe = simplexml_import_dom($dom);
-
-        $document = $sxe;
-        $inputValues = [];
-
-        $xpath = $document->xpath('//' . $this->xpathForm . '/' . $element);
-
-        foreach ($xpath as $input) {
-            $name = (string)$input->attributes()->{'name'};
-            $value = (string)$input->attributes()->{'value'};
-            if (preg_match('!!u', $value)) {
-                $value = utf8_decode($value);
-            }
-
-            $inputValues[$name] = $value;
+        foreach ($elements as $element) {
+            $data[$element->getAttribute('name')] = $element->getAttribute('value');
         }
 
-        return $inputValues;
+        return $data;
     }
 }
