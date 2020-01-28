@@ -1,6 +1,8 @@
 <?php
 
-namespace PhpCfdi\CfdiSatScraper;
+declare(strict_types=1);
+
+namespace PhpCfdi\CfdiSatScraper\Captcha\Resolvers;
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 
@@ -9,13 +11,15 @@ class ConsoleCaptchaResolver implements CaptchaResolverInterface
     /** @var string */
     private $image;
 
-    public function __construct(string $image)
+    public function __construct(string $image = '')
     {
         $this->setImage($image);
     }
 
     public function setImage(string $image): CaptchaResolverInterface
     {
+        $this->image = $image;
+
         return $this;
     }
 
@@ -27,6 +31,7 @@ class ConsoleCaptchaResolver implements CaptchaResolverInterface
         if (file_exists($temporaryFile)) {
             unlink($temporaryFile);
         }
+
         return $decoded;
     }
 
@@ -35,8 +40,10 @@ class ConsoleCaptchaResolver implements CaptchaResolverInterface
         if ('' === $this->image) {
             throw new \RuntimeException('Current image is empty');
         }
-        $filename = tempnam('', 'captcha-');
-        file_put_contents($filename, $this->image);
+
+        $filename = getcwd() . '/captcha.jpg';
+        file_put_contents($filename, base64_decode($this->image));
+
         return $filename;
     }
 

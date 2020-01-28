@@ -66,7 +66,7 @@ class HtmlForm
     public function readAndGetValues(string $element): array
     {
         $data = [];
-        $elements = $this->crawler->filter("{$this->parentElement} > $element");
+        $elements = $this->crawler->filter("{$this->parentElement} > {$element}");
 
         foreach ($elements as $element) {
             $data[$element->getAttribute('name')] = $element->getAttribute('value');

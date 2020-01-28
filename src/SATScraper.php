@@ -8,11 +8,11 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
+use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATCredentialsException;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
-use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Class SATScraper.
@@ -181,17 +181,18 @@ class SATScraper
     protected function getCaptchaValue(): ?string
     {
         try {
-            $image = $this->client->get(
-                URLS::SAT_URL_LOGIN,
+            $html = $this->client->get(
+                $this->loginUrl,
                 [
                     'future' => true,
                     'verify' => false,
                     'cookies' => $this->cookie,
                 ]
-            )->getBody()->getContents();
-			
-			$crawler = new Crawler($image);
-			$imageBase64 = $crawler->filterXPath('//img')->attr('src');	
+            )->getBody()
+                ->getContents();
+
+            $captchaBase64Extractor = new CaptchaBase64Extractor($html);
+            $imageBase64 = $captchaBase64Extractor->retrieve();
 
             return $this->captchaResolver
                 ->setImage($imageBase64)
@@ -202,7 +203,7 @@ class SATScraper
                 return $this->getCaptchaValue();
             }
 
-            throw new $e();
+            throw $e;
         }
     }
 
