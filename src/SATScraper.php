@@ -164,7 +164,9 @@ class SATScraper
      */
     public function initScraper(DownloadTypesOption $downloadType): self
     {
-        $this->login(1);
+        if (! $this->hasLogin()) {
+            $this->login(1);
+        }
         $data = $this->dataAuth();
         $data = $this->postDataAuth($data);
         $data = $this->start($data);
@@ -229,6 +231,12 @@ class SATScraper
 
             throw $exception;
         }
+    }
+
+    protected function hasLogin(): bool
+    {
+        $html = $this->consumeLoginPage();
+        return (false !== strpos($html, 'https://cfdiau.sat.gob.mx/nidp/app?sid=0'));
     }
 
     protected function login(int $attempt): string
