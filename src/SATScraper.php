@@ -13,67 +13,37 @@ use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATCredentialsException;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 
-/**
- * Class SATScraper.
- */
 class SATScraper
 {
     public const SAT_CREDENTIAL_ERROR = 'El RFC o CIEC son incorrectos';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $rfc;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $ciec;
 
-    /**
-     * @var Client
-     */
+    /** @var Client */
     protected $client;
 
-    /**
-     * @var CookieJar
-     */
+    /** @var CookieJar */
     protected $cookie;
 
-    /**
-     * @var callable|null
-     */
-    protected $onFiveHundred = null;
+    /** @var callable|null */
+    protected $onFiveHundred;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $loginUrl;
 
-    /**
-     * @var CaptchaResolverInterface
-     */
+    /** @var CaptchaResolverInterface */
     protected $captchaResolver;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $maxTriesCaptcha = 3;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $maxTriesLogin = 3;
 
-    /**
-     * SATScraper constructor.
-     *
-     * @param string $rfc
-     * @param string $ciec
-     * @param Client $client
-     * @param CookieJar $cookie
-     * @param CaptchaResolverInterface $captchaResolver
-     */
     public function __construct(
         string $rfc,
         string $ciec,
@@ -118,11 +88,6 @@ class SATScraper
         return $this->captchaResolver;
     }
 
-    /**
-     * @param CaptchaResolverInterface $captchaResolver
-     *
-     * @return SATScraper
-     */
     public function setCaptchaResolver(CaptchaResolverInterface $captchaResolver): self
     {
         $this->captchaResolver = $captchaResolver;
@@ -135,11 +100,6 @@ class SATScraper
         return $this->maxTriesCaptcha;
     }
 
-    /**
-     * @param int $maxTriesCaptcha
-     *
-     * @return SATScraper
-     */
     public function setMaxTriesCaptcha(int $maxTriesCaptcha): self
     {
         $this->maxTriesCaptcha = $maxTriesCaptcha;
@@ -152,11 +112,6 @@ class SATScraper
         return $this->maxTriesLogin;
     }
 
-    /**
-     * @param int $maxTriesLogin
-     *
-     * @return SATScraper
-     */
     public function setMaxTriesLogin(int $maxTriesLogin): self
     {
         $this->maxTriesLogin = $maxTriesLogin;
@@ -164,9 +119,6 @@ class SATScraper
         return $this;
     }
 
-    /**
-     * @return CookieJar
-     */
     public function getCookie(): CookieJar
     {
         return $this->cookie;
@@ -179,9 +131,6 @@ class SATScraper
         return $this;
     }
 
-    /**
-     * @return Client
-     */
     public function getClient(): Client
     {
         return $this->client;
@@ -199,10 +148,6 @@ class SATScraper
         return $this->onFiveHundred;
     }
 
-    /**
-     * @param callable $callback
-     * @return self
-     */
     public function setOnFiveHundred(?callable $callback): self
     {
         $this->onFiveHundred = $callback;
@@ -213,6 +158,7 @@ class SATScraper
     /**
      * @param DownloadTypesOption $downloadType
      * @return SATScraper
+     *
      * @throws SATAuthenticatedException
      * @throws SATCredentialsException
      */
@@ -270,11 +216,6 @@ class SATScraper
         }
     }
 
-    /**
-     * @param int $attempt The number of attempt to evaluate if is above max allowed execution
-     * @return string
-     * @throws SATCredentialsException
-     */
     protected function login(int $attempt): string
     {
         $response = $this->client->post(
@@ -308,9 +249,6 @@ class SATScraper
         return $response;
     }
 
-    /**
-     * @return array
-     */
     protected function dataAuth(): array
     {
         $response = $this->client->get(
@@ -352,11 +290,6 @@ class SATScraper
         }
     }
 
-    /**
-     * @param array $inputs
-     *
-     * @return array
-     */
     protected function start(array $inputs = []): array
     {
         $response = $this->client->post(
@@ -373,12 +306,6 @@ class SATScraper
         return $inputs;
     }
 
-    /**
-     * @param DownloadTypesOption $downloadType
-     * @param array $inputs
-     *
-     * @return string
-     */
     protected function selectType(DownloadTypesOption $downloadType, array $inputs): string
     {
         $data = [
@@ -434,11 +361,6 @@ class SATScraper
         return $this->createMetadataDownloader()->downloadByDateTime($query);
     }
 
-    /**
-     * @param string $html
-     *
-     * @return array
-     */
     protected function parseInputs($html): array
     {
         $htmlForm = new HtmlForm($html, 'form');
@@ -447,9 +369,6 @@ class SATScraper
         return $inputs;
     }
 
-    /**
-     * @return DownloadXML
-     */
     public function downloader(): DownloadXML
     {
         return new DownloadXML($this->getClient(), $this->getCookie());
