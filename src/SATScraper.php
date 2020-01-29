@@ -164,6 +164,52 @@ class SATScraper
     }
 
     /**
+     * @return CookieJar
+     */
+    public function getCookie(): CookieJar
+    {
+        return $this->cookie;
+    }
+
+    public function setCookie(CookieJar $cookieJar): self
+    {
+        $this->cookie = $cookieJar;
+
+        return $this;
+    }
+
+    /**
+     * @return Client
+     */
+    public function getClient(): Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(Client $client): SATScraper
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    public function getOnFiveHundred(): ?callable
+    {
+        return $this->onFiveHundred;
+    }
+
+    /**
+     * @param callable $callback
+     * @return self
+     */
+    public function setOnFiveHundred(?callable $callback): SATScraper
+    {
+        $this->onFiveHundred = $callback;
+
+        return $this;
+    }
+    
+    /**
      * @param DownloadTypesOption $downloadType
      * @return SATScraper
      * @throws SATAuthenticatedException
@@ -398,52 +444,6 @@ class SATScraper
         $inputs = $htmlForm->getFormValues();
 
         return $inputs;
-    }
-
-    /**
-     * @return CookieJar
-     */
-    public function getCookie(): CookieJar
-    {
-        return $this->cookie;
-    }
-
-    public function setCookie(CookieJar $cookieJar): self
-    {
-        $this->cookie = $cookieJar;
-
-        return $this;
-    }
-
-    /**
-     * @return Client
-     */
-    public function getClient(): Client
-    {
-        return $this->client;
-    }
-
-    public function setClient(Client $client): SATScraper
-    {
-        $this->client = $client;
-
-        return $this;
-    }
-
-    public function getOnFiveHundred(): ?callable
-    {
-        return $this->onFiveHundred;
-    }
-
-    /**
-     * @param callable $callback
-     * @return self
-     */
-    public function setOnFiveHundred(?callable $callback): SATScraper
-    {
-        $this->onFiveHundred = $callback;
-
-        return $this;
     }
 
     /**
