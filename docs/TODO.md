@@ -3,7 +3,6 @@
 ## Pendientes
 
 - Core:
-    - PHP Minimal version to PHP 7.2 (cambios en código, no solamente en composer.json).
     - Clases que vienen de Enum deberían ser finales.
     - RfcReceptorOption es el que se debe usar incluso con una consulta de cfdi recibidos.
       Debería tener otro nombre o crear RfcEmisorOption aunque solo sea una extensión de RfcReceptorOption.
