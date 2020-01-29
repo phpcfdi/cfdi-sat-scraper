@@ -173,7 +173,17 @@ class SATScraper
         return $this;
     }
 
-    protected function requestCaptchaImage(): string
+    /**
+     * This is only a consumption of the login page.
+     * It is expected to return the raw html to be processed.
+     *
+     * Is known that if there is a session active it will return only a redirect page
+     * with a known URL, but if it isn't, it will show a form to login.
+     *
+     * @return string
+     * @throws \RuntimeException Unable to retrive the contents from login page
+     */
+    protected function consumeLoginPage(): string
     {
         $html = $this->client->get(
             $this->loginUrl,
@@ -184,9 +194,14 @@ class SATScraper
             ]
         )->getBody()->getContents();
         if ('' === $html) {
-            throw new \RuntimeException('Unable to retrive contents from login page');
+            throw new \RuntimeException('Unable to retrive the contents from login page');
         }
+        return $html;
+    }
 
+    protected function requestCaptchaImage(): string
+    {
+        $html = $this->consumeLoginPage();
         $captchaBase64Extractor = new CaptchaBase64Extractor($html);
         $imageBase64 = $captchaBase64Extractor->retrieve();
         if ('' === $imageBase64) {
