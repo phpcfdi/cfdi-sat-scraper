@@ -97,4 +97,12 @@ final class SATScraperProperties extends TestCase
         $tries = 6;
         $this->assertSame($tries, $scraper->setMaxTriesCaptcha($tries)->getMaxTriesCaptcha());
     }
+
+    public function testMaxTriesLogin(): void
+    {
+        $scraper = $this->createScraper();
+        $this->assertSame(3, $scraper->getMaxTriesLogin(), 'Default MaxTriesCaptcha did not match');
+        $tries = 6;
+        $this->assertSame($tries, $scraper->setMaxTriesLogin($tries)->getMaxTriesLogin());
+    }
 }

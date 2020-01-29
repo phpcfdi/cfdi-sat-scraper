@@ -157,6 +157,11 @@ class SATScraper
         return $this;
     }
 
+    public function getMaxTriesLogin(): int
+    {
+        return $this->maxTriesLogin;
+    }
+
     /**
      * @param int $maxTriesLogin
      *
