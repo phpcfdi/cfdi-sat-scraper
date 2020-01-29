@@ -65,4 +65,14 @@ final class SATScraperProperties extends TestCase
         $this->assertSame($scraper, $scraper->setCaptchaResolver($captcha), 'Expected fluent method');
         $this->assertSame($captcha, $scraper->getCaptchaResolver());
     }
+
+    public function testOnFiveHundred(): void
+    {
+        $scraper = $this->createScraper();
+        $this->assertNull($scraper->getOnFiveHundred(), 'Default OnFiveHundred should be NULL');
+        $callable = function () {
+        };
+        $this->assertSame($callable, $scraper->setOnFiveHundred($callable)->getOnFiveHundred());
+        $this->assertNull($scraper->setOnFiveHundred(null)->getOnFiveHundred());
+    }
 }

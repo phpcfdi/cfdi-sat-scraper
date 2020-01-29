@@ -406,12 +406,20 @@ class SATScraper
         return $this->client;
     }
 
+    public function getOnFiveHundred(): ?callable
+    {
+        return $this->onFiveHundred;
+    }
+
     /**
      * @param callable $callback
+     * @return self
      */
-    public function setOnFiveHundred(callable $callback): void
+    public function setOnFiveHundred(?callable $callback): SATScraper
     {
         $this->onFiveHundred = $callback;
+
+        return $this;
     }
 
     /**
