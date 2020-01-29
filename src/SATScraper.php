@@ -107,10 +107,11 @@ class SATScraper
         $this->captchaResolver = $captchaResolver;
     }
 
-    /**
-     * @param string $loginUrl
-     * @return SATScraper
-     */
+    public function getLoginUrl(): string
+    {
+        return $this->loginUrl;
+    }
+
     public function setLoginUrl(string $loginUrl): self
     {
         if (! filter_var($loginUrl, FILTER_VALIDATE_URL)) {
