@@ -140,6 +140,11 @@ class SATScraper
         return $this;
     }
 
+    public function getMaxTriesCaptcha(): int
+    {
+        return $this->maxTriesCaptcha;
+    }
+
     /**
      * @param int $maxTriesCaptcha
      *

@@ -89,4 +89,12 @@ final class SATScraperProperties extends TestCase
         $cookie = $this->createCookieJar();
         $this->assertSame($cookie, $scraper->setCookie($cookie)->getCookie());
     }
+
+    public function testMaxTriesCaptcha(): void
+    {
+        $scraper = $this->createScraper();
+        $this->assertSame(3, $scraper->getMaxTriesCaptcha(), 'Default MaxTriesCaptcha did not match');
+        $tries = 6;
+        $this->assertSame($tries, $scraper->setMaxTriesCaptcha($tries)->getMaxTriesCaptcha());
+    }
 }
