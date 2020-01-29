@@ -201,9 +201,15 @@ class SATScraper
                 'cookies' => $this->cookie,
             ]
         )->getBody()->getContents();
+        if ('' === $html) {
+            throw new \RuntimeException('Unable to retrive contents from login page');
+        }
 
         $captchaBase64Extractor = new CaptchaBase64Extractor($html);
         $imageBase64 = $captchaBase64Extractor->retrieve();
+        if ('' === $imageBase64) {
+            throw new \RuntimeException('Unable to extract the base64 image from login page');
+        }
 
         return $imageBase64;
     }
