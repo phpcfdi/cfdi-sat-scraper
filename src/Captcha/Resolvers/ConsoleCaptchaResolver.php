@@ -41,7 +41,7 @@ class ConsoleCaptchaResolver implements CaptchaResolverInterface
             throw new \RuntimeException('Current image is empty');
         }
 
-        $filename = getcwd() . '/captcha.jpg';
+        $filename = getcwd() . '/captcha.png';
         file_put_contents($filename, base64_decode($this->image));
 
         return $filename;
