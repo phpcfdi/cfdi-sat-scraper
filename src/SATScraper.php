@@ -406,6 +406,13 @@ class SATScraper
         return $this->client;
     }
 
+    public function setClient(Client $client): SATScraper
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
     public function getOnFiveHundred(): ?callable
     {
         return $this->onFiveHundred;

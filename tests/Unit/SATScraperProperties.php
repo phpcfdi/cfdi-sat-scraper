@@ -75,4 +75,11 @@ final class SATScraperProperties extends TestCase
         $this->assertSame($callable, $scraper->setOnFiveHundred($callable)->getOnFiveHundred());
         $this->assertNull($scraper->setOnFiveHundred(null)->getOnFiveHundred());
     }
+
+    public function testClient(): void
+    {
+        $scraper = $this->createScraper();
+        $client = $this->createGuzzleClient();
+        $this->assertSame($client, $scraper->setClient($client)->getClient());
+    }
 }
