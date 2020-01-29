@@ -66,11 +66,6 @@ class SATScraper
     protected $maxTriesLogin = 3;
 
     /**
-     * @var int
-     */
-    private $triesLogin = 0;
-
-    /**
      * SATScraper constructor.
      * @param string $rfc
      * @param string $ciec
@@ -176,7 +171,7 @@ class SATScraper
      */
     public function initScraper(DownloadTypesOption $downloadType): self
     {
-        $this->login();
+        $this->login(1);
         $data = $this->dataAuth();
         $data = $this->postDataAuth($data);
         $data = $this->start($data);
@@ -229,10 +224,11 @@ class SATScraper
     }
 
     /**
+     * @param int $attempt The number of attempt to evaluate if is above max allowed execution
      * @return string
      * @throws SATCredentialsException
      */
-    protected function login(): string
+    protected function login(int $attempt): string
     {
         $response = $this->client->post(
             $this->loginUrl,
@@ -255,9 +251,8 @@ class SATScraper
         )->getBody()->getContents();
 
         if (false !== strpos($response, 'Ecom_User_ID')) {
-            if ($this->triesLogin < $this->maxTriesLogin) {
-                $this->triesLogin++;
-                return $this->login();
+            if ($attempt < $this->maxTriesLogin) {
+                return $this->login($attempt + 1);
             }
 
             throw new SATCredentialsException(self::SAT_CREDENTIAL_ERROR);
