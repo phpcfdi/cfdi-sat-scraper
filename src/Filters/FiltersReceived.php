@@ -23,7 +23,7 @@ class FiltersReceived extends BaseFilters implements Filters
             '__LASTFOCUS' => '',
             'ctl00$MainContent$BtnBusqueda' => 'Buscar CFDI',
             'ctl00$MainContent$CldFecha$DdlAnio' => $this->query->getStartDate()->format('Y'),
-            'ctl00$MainContent$CldFecha$DdlMes' => $this->query->getStartDate()->format('m'),
+            'ctl00$MainContent$CldFecha$DdlMes' => $this->query->getStartDate()->format('n'),
             'ctl00$MainContent$CldFecha$DdlDia' => $this->query->getStartDate()->format('d'),
             'ctl00$MainContent$CldFecha$DdlHora' => $this->query->getStartDate()->format('H'),
             'ctl00$MainContent$CldFecha$DdlMinuto' => $this->query->getStartDate()->format('i'),
