@@ -141,21 +141,19 @@ class DownloadXML
      * @param bool $createDir
      * @param int $mode
      */
-    public function saveTo(string $path, bool $createDir, $mode = 0775): void
+    public function saveTo(string $path, bool $createDir = false, int $mode = 0775): void
     {
         if (! $createDir && ! file_exists($path)) {
             throw new \InvalidArgumentException("The provider path [{$path}] not exists");
         }
 
         if ($createDir && ! file_exists($path)) {
-            mkdir($path, $mode);
+            mkdir($path, $mode, true);
         }
 
         $this->download(
             function ($content, $name) use ($path): void {
-                $f = new \SplFileObject($path . DIRECTORY_SEPARATOR . $name, 'w');
-                $f->fwrite((string)$content);
-                $f = null;
+                file_put_contents($path . DIRECTORY_SEPARATOR . $name, $content);
             }
         );
     }
