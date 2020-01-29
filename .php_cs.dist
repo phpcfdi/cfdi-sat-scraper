@@ -1,10 +1,15 @@
 <?php
+/**
+ * PhpCsFixer is now excluded from PhpStorm scope
+ * @noinspection PhpUndefinedNamespaceInspection
+ * @noinspection PhpUndefinedClassInspection
+ */
 
 declare(strict_types=1);
 
 return PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)
-    ->setCacheFile(__DIR__ . '/build/.php_cs.cache')
+    ->setCacheFile(__DIR__ . '/build/php-cs-fixer.cache')
     ->setRules([
         '@PSR2' => true,
         '@PHP70Migration' => true,
@@ -45,6 +50,6 @@ return PhpCsFixer\Config::create()
     ->setFinder(
         PhpCsFixer\Finder::create()
             ->in(__DIR__)
-            ->exclude(['vendor', 'build'])
+            ->exclude(['vendor', 'tools', 'build'])
     )
 ;

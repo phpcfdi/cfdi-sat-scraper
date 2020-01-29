@@ -1,0 +1,19 @@
+filter:
+  excluded_paths:
+    - 'tests/'
+    - 'vendor/'
+
+build:
+  dependencies:
+    override:
+      - composer self-update --no-interaction --no-progress
+      - composer install --no-interaction
+  nodes:
+    analysis:
+      tests:
+        override:
+          - php-scrutinizer-run --enable-security-analysis
+          - command: vendor/bin/phpunit tests/ --testdox --verbose --coverage-clover=coverage.clover
+            coverage:
+              file: coverage.clover
+              format: clover

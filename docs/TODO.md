@@ -3,17 +3,12 @@
 ## Pendientes
 
 - Core:
-    - PHP Minimal version to PHP 7.2 (cambios en código, no solamente en composer.json).
     - Clases que vienen de Enum deberían ser finales.
     - RfcReceptorOption es el que se debe usar incluso con una consulta de cfdi recibidos.
       Debería tener otro nombre o crear RfcEmisorOption aunque solo sea una extensión de RfcReceptorOption.
 - Documentación:
-    - Incluir badges en README.
     - Todos los puntos de entrada deben tener phpdoc.
 - Entorno de desarrollo:
-    - Travis-CI: construir usando 7.2, 7.3 y 7.4.
-    - Scrutinizer-CI: análisis de código y code coverage.
-    - Herramientas de desarrollo usando phive o descargando directamente de github, no en composer.json.
     - CodeStyle: Subir a PSR-12.
     - PhpStan: Nivel máximo
 
@@ -27,5 +22,11 @@
 
 ## Realizadas
 
+- 2020-01-29:
+    - PHP Minimal version to PHP 7.2 (cambios en código, no solamente en composer.json)
+    - Incluir badges en README.
+    - Travis-CI: construir usando 7.2, 7.3 y 7.4.
+    - Scrutinizer-CI: análisis de código y code coverage.
+    - Herramientas de desarrollo usando phive o descargando directamente de github, no en composer.json.
 - 2020-01-28: Revisión de archivo README, documentación, explicación y ejemplos.
 
