@@ -67,6 +67,7 @@ class SATScraper
 
     /**
      * SATScraper constructor.
+     *
      * @param string $rfc
      * @param string $ciec
      * @param Client $client
@@ -186,7 +187,7 @@ class SATScraper
         return $this->client;
     }
 
-    public function setClient(Client $client): SATScraper
+    public function setClient(Client $client): self
     {
         $this->client = $client;
 
@@ -202,13 +203,13 @@ class SATScraper
      * @param callable $callback
      * @return self
      */
-    public function setOnFiveHundred(?callable $callback): SATScraper
+    public function setOnFiveHundred(?callable $callback): self
     {
         $this->onFiveHundred = $callback;
 
         return $this;
     }
-    
+
     /**
      * @param DownloadTypesOption $downloadType
      * @return SATScraper
@@ -326,7 +327,7 @@ class SATScraper
     }
 
     /**
-     * @param  array $inputs
+     * @param array $inputs
      * @return array
      *
      * @throws SATAuthenticatedException

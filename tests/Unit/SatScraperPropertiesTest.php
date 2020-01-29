@@ -11,7 +11,7 @@ use PhpCfdi\CfdiSatScraper\SATScraper;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use PhpCfdi\CfdiSatScraper\URLS;
 
-final class SATScraperProperties extends TestCase
+final class SatScraperPropertiesTest extends TestCase
 {
     private function createScraper(): SATScraper
     {
@@ -70,7 +70,7 @@ final class SATScraperProperties extends TestCase
     {
         $scraper = $this->createScraper();
         $this->assertNull($scraper->getOnFiveHundred(), 'Default OnFiveHundred should be NULL');
-        $callable = function () {
+        $callable = function (): void {
         };
         $this->assertSame($callable, $scraper->setOnFiveHundred($callable)->getOnFiveHundred());
         $this->assertNull($scraper->setOnFiveHundred(null)->getOnFiveHundred());
