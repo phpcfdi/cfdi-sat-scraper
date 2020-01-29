@@ -12,7 +12,6 @@
 - Entorno de desarrollo:
     - Travis-CI: construir usando 7.2, 7.3 y 7.4.
     - Scrutinizer-CI: análisis de código y code coverage.
-    - Herramientas de desarrollo usando phive o descargando directamente de github, no en composer.json.
     - CodeStyle: Subir a PSR-12.
     - PhpStan: Nivel máximo
 
