@@ -191,25 +191,30 @@ class SATScraper
         return $this;
     }
 
+    protected function requestCaptchaImage(): string
+    {
+        $html = $this->client->get(
+            $this->loginUrl,
+            [
+                'future' => true,
+                'verify' => false,
+                'cookies' => $this->cookie,
+            ]
+        )->getBody()->getContents();
+
+        $captchaBase64Extractor = new CaptchaBase64Extractor($html);
+        $imageBase64 = $captchaBase64Extractor->retrieve();
+
+        return $imageBase64;
+    }
+
     /**
      * @return string|null
      */
     protected function getCaptchaValue(): ?string
     {
+        $imageBase64 = $this->requestCaptchaImage();
         try {
-            $html = $this->client->get(
-                $this->loginUrl,
-                [
-                    'future' => true,
-                    'verify' => false,
-                    'cookies' => $this->cookie,
-                ]
-            )->getBody()
-                ->getContents();
-
-            $captchaBase64Extractor = new CaptchaBase64Extractor($html);
-            $imageBase64 = $captchaBase64Extractor->retrieve();
-
             return $this->captchaResolver
                 ->setImage($imageBase64)
                 ->decode();
