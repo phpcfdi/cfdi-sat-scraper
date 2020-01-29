@@ -398,6 +398,13 @@ class SATScraper
         return $this->cookie;
     }
 
+    public function setCookie(CookieJar $cookieJar): self
+    {
+        $this->cookie = $cookieJar;
+
+        return $this;
+    }
+
     /**
      * @return Client
      */

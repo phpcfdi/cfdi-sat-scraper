@@ -82,4 +82,11 @@ final class SATScraperProperties extends TestCase
         $client = $this->createGuzzleClient();
         $this->assertSame($client, $scraper->setClient($client)->getClient());
     }
+
+    public function testCookie(): void
+    {
+        $scraper = $this->createScraper();
+        $cookie = $this->createCookieJar();
+        $this->assertSame($cookie, $scraper->setCookie($cookie)->getCookie());
+    }
 }
