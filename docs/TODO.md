@@ -11,7 +11,6 @@
     - Todos los puntos de entrada deben tener phpdoc.
 - Entorno de desarrollo:
     - Travis-CI: construir usando 7.2, 7.3 y 7.4.
-    - Scrutinizer-CI: análisis de código y code coverage.
     - CodeStyle: Subir a PSR-12.
     - PhpStan: Nivel máximo
 
