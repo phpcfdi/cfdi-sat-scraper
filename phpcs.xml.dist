@@ -5,7 +5,8 @@
     <arg name="encoding" value="utf-8"/>
     <arg name="report-width" value="auto"/>
     <arg name="extensions" value="php"/>
-    <rule ref="PSR2" />
+    <arg name="cache" value="build/phpcs.cache"/>
+    <rule ref="PSR2"/>
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
     <rule ref="Generic.Files.LineLength">
         <properties>
@@ -16,7 +17,7 @@
     <rule ref="Generic.CodeAnalysis.EmptyStatement"/>
     <rule ref="Generic.CodeAnalysis.UnconditionalIfStatement"/>
     <rule ref="Generic.CodeAnalysis.UnnecessaryFinalModifier"/>
-    <!-- rule ref="Generic.CodeAnalysis.UselessOverridingMethod" /-->
+    <rule ref="Generic.CodeAnalysis.UselessOverridingMethod"/>
     <rule ref="Generic.Formatting.SpaceAfterNot"/>
     <rule ref="Generic.Functions.CallTimePassByReference"/>
     <rule ref="Generic.NamingConventions.ConstructorName"/>
