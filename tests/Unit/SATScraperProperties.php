@@ -57,4 +57,12 @@ final class SATScraperProperties extends TestCase
         $this->expectExceptionMessage('The provided url is invalid');
         $scraper->setLoginUrl('');
     }
+
+    public function testCaptchaResolver(): void
+    {
+        $captcha = $this->createCaptchaResolver();
+        $scraper = $this->createScraper();
+        $this->assertSame($scraper, $scraper->setCaptchaResolver($captcha), 'Expected fluent method');
+        $this->assertSame($captcha, $scraper->getCaptchaResolver());
+    }
 }

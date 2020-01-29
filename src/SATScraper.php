@@ -123,6 +123,11 @@ class SATScraper
         return $this;
     }
 
+    public function getCaptchaResolver(): CaptchaResolverInterface
+    {
+        return $this->captchaResolver;
+    }
+
     /**
      * @param CaptchaResolverInterface $captchaResolver
      *
