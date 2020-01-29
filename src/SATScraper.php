@@ -7,7 +7,6 @@ namespace PhpCfdi\CfdiSatScraper;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ConnectException;
 use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
@@ -60,11 +59,6 @@ class SATScraper
      * @var int
      */
     protected $maxTriesCaptcha = 3;
-
-    /**
-     * @var int
-     */
-    private $triesCaptcha = 0;
 
     /**
      * @var int
@@ -214,23 +208,23 @@ class SATScraper
         return $imageBase64;
     }
 
-    /**
-     * @return string|null
-     */
-    protected function getCaptchaValue(): ?string
+    protected function getCaptchaValue(int $attempt): ?string
     {
         $imageBase64 = $this->requestCaptchaImage();
         try {
-            return $this->captchaResolver
+            $result = $this->captchaResolver
                 ->setImage($imageBase64)
                 ->decode();
-        } catch (ConnectException $e) {
-            if ($this->triesCaptcha < $this->maxTriesCaptcha) {
-                $this->triesCaptcha++;
-                return $this->getCaptchaValue();
+            if (null === $result || '' === $result) {
+                throw new \RuntimeException('Unable to decode captcha image');
+            }
+            return $result;
+        } catch (\Throwable $exception) {
+            if ($attempt < $this->maxTriesCaptcha) {
+                return $this->getCaptchaValue($attempt + 1);
             }
 
-            throw $e;
+            throw $exception;
         }
     }
 
@@ -255,7 +249,7 @@ class SATScraper
                     'Ecom_User_ID' => $this->rfc,
                     'option' => 'credential',
                     'submit' => 'Enviar',
-                    'userCaptcha' => $this->getCaptchaValue(),
+                    'userCaptcha' => $this->getCaptchaValue(1),
                 ],
             ]
         )->getBody()->getContents();
