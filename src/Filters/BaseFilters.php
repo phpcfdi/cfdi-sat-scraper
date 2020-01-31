@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Filters;
 
+use PhpCfdi\CfdiSatScraper\Contracts\Filters;
 use PhpCfdi\CfdiSatScraper\Query;
 
 /**
  * Class BaseFilters.
  */
-abstract class BaseFilters
+abstract class BaseFilters implements Filters
 {
     /**
      * @var Query
