@@ -32,11 +32,6 @@ class ParserFormatSAT
         $this->valids = ['__EVENTTARGET', '__EVENTARGUMENT', '__LASTFOCUS', '__VIEWSTATE'];
     }
 
-    private function process(): void
-    {
-        $this->values = explode('|', $this->source);
-    }
-
     private function orderValues(): void
     {
         $this->sorted = [];
@@ -56,7 +51,7 @@ class ParserFormatSAT
      */
     public function getFormValues()
     {
-        $this->process();
+        $this->values = explode('|', $this->source);
         $this->orderValues();
 
         return $this->items;
