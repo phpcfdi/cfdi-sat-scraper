@@ -54,6 +54,18 @@ final class ParserFormatSatTest extends TestCase
         $this->assertSame($data, $parser->getFormValues($source));
     }
 
+
+    public function testWithSourceWithLeadText(): void
+    {
+        $data = [
+            '__LASTFOCUS' => 'x-foo',
+            '__VIEWSTATE' => 'x-bar',
+        ];
+        $source = 'prefixed text' . $this->buildFakeSourceData($data);
+        $parser = new ParserFormatSAT();
+        $this->assertSame($data, $parser->getFormValues($source));
+    }
+
     public function buildFakeSourceData(array $values): string
     {
         return implode('', array_map(function ($fieldName, $fieldValue): string {
