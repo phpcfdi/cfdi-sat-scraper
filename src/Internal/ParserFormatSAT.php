@@ -27,16 +27,12 @@ class ParserFormatSAT
      */
     public function getFormValues(string $source): array
     {
-        // format is: |value-length|field-type|field-name|value
-
-        $values = explode('|', ltrim($source, '|'));
-        $length = count($values);
-
+        $values = explode('|', $source);
         $items = [];
-        for ($index = 0; $index < $length; $index = $index + 4) {
-            $fieldName = $values[$index + 2] ?? '';
-            if (in_array($fieldName, self::FILTER_KEYS, true)) {
-                $items[$fieldName] = $values[$index + 3] ?? '';
+
+        foreach (self::FILTER_KEYS as $key) {
+            if (false !== $index = array_search($key, $values, true)) {
+                $items[$key] = $values[$index + 1] ?? '';
             }
         }
 
