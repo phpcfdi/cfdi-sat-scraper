@@ -54,7 +54,6 @@ final class ParserFormatSatTest extends TestCase
         $this->assertSame($data, $parser->getFormValues($source));
     }
 
-
     public function testWithSourceWithLeadText(): void
     {
         $data = [
