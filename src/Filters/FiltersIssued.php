@@ -49,7 +49,7 @@ class FiltersIssued extends BaseFilters implements Filters
             'ctl00$MainContent$hfUrlDescarga' => '',
             'ctl00$MainContent$hfParametrosMetadata' => '',
             'ctl00$MainContent$hdnValAccion' => '',
-            'ctl00$MainContent$hfXML' => ''
+            'ctl00$MainContent$hfXML' => '',
         ];
     }
 
