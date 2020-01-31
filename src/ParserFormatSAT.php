@@ -5,7 +5,12 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper;
 
 /**
- * Class ParserFormatSAT.
+ * This class is a helper to parse that incredibly weird responses from SAT that contains internal
+ * information in a pipe delimited list.
+ *
+ * format: |value-length|field-type|field-name|value
+ * example: |3|hiddenField|__FOO|foo|0|hiddenField|__EMPTY||16|hiddenField|__BAR|0123456789abcdef|
+ * contents: __FOO: foo, __EMPTY: , __BAR: 0123456789abcdef
  */
 class ParserFormatSAT
 {
