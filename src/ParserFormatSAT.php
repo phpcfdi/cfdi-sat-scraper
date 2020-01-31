@@ -29,7 +29,7 @@ class ParserFormatSAT
         $this->source = $source;
         $this->values = [];
         $this->items = [];
-        $this->valids = ['EVENTTARGET', '__EVENTARGUMENT', '__LASTFOCUS', '__VIEWSTATE'];
+        $this->valids = ['__EVENTTARGET', '__EVENTARGUMENT', '__LASTFOCUS', '__VIEWSTATE'];
     }
 
     private function process(): void
