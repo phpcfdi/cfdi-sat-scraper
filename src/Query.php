@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use Eclipxe\Enum\Enum;
-use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
+use DateTimeImmutable;
 use PhpCfdi\CfdiSatScraper\Contracts\Filters\Options\RfcOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
@@ -14,46 +13,46 @@ use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 class Query
 {
     /**
-     * @var \DateTime
+     * @var DateTimeImmutable
      */
     protected $startDate;
 
     /**
-     * @var \DateTime
+     * @var DateTimeImmutable
      */
     protected $endDate;
 
     /**
-     * @var RfcOption
+     * @var RfcOption|null
      */
     protected $rfc;
 
     /**
-     * @var array
+     * @var string[]|null
      */
     protected $uuid;
 
     /**
-     * @var Enum
+     * @var ComplementsOption
      */
     protected $complement;
 
     /**
-     * @var Enum
+     * @var StatesVoucherOption
      */
     protected $stateVoucher;
 
     /**
-     * @var Enum
+     * @var DownloadTypesOption
      */
     protected $downloadType;
 
     /**
      * Query constructor.
-     * @param \DateTimeImmutable $startDate
-     * @param \DateTimeImmutable $endDate
+     * @param DateTimeImmutable $startDate
+     * @param DateTimeImmutable $endDate
      */
-    public function __construct(\DateTimeImmutable $startDate, \DateTimeImmutable $endDate)
+    public function __construct(DateTimeImmutable $startDate, DateTimeImmutable $endDate)
     {
         if ($endDate < $startDate) {
             throw new \InvalidArgumentException('La fecha final no puede ser menor a la inicial');
@@ -67,18 +66,18 @@ class Query
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return DateTimeImmutable
      */
-    public function getStartDate(): \DateTimeImmutable
+    public function getStartDate(): DateTimeImmutable
     {
         return $this->startDate;
     }
 
     /**
-     * @param \DateTimeImmutable $startDate
+     * @param DateTimeImmutable $startDate
      * @return Query
      */
-    public function setStartDate(\DateTimeImmutable $startDate): self
+    public function setStartDate(DateTimeImmutable $startDate): self
     {
         $this->startDate = $startDate;
 
@@ -86,18 +85,18 @@ class Query
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return DateTimeImmutable
      */
-    public function getEndDate(): \DateTimeImmutable
+    public function getEndDate(): DateTimeImmutable
     {
         return $this->endDate;
     }
 
     /**
-     * @param \DateTimeImmutable $endDate
+     * @param DateTimeImmutable $endDate
      * @return Query
      */
-    public function setEndDate(\DateTimeImmutable $endDate): self
+    public function setEndDate(DateTimeImmutable $endDate): self
     {
         $this->endDate = $endDate;
 
@@ -113,7 +112,7 @@ class Query
     }
 
     /**
-     * @param array $uuid
+     * @param string[] $uuid
      * @return Query
      */
     public function setUuid(array $uuid): self
@@ -124,7 +123,7 @@ class Query
     }
 
     /**
-     * @return FilterOption|null
+     * @return string[]|null
      */
     public function getUuid(): ?array
     {
