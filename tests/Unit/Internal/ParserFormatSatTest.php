@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
+namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Internal;
 
-use PhpCfdi\CfdiSatScraper\ParserFormatSAT;
+use PhpCfdi\CfdiSatScraper\Internal\ParserFormatSAT;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
 final class ParserFormatSatTest extends TestCase
