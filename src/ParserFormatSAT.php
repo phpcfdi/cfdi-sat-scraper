@@ -25,20 +25,22 @@ class ParserFormatSAT
     }
 
     /**
-     * @return array
+     * Parse and retrieve only the preconfigured valid keys
+     *
+     * @return array<string, string>
      */
-    public function getFormValues()
+    public function getFormValues(): array
     {
-        $values = explode('|', $this->source);
+        // format is: |value-length|field-type|field-name|value
+
+        $values = explode('|', ltrim($this->source, '|'));
+        $length = count($values);
 
         $items = [];
-        foreach (range(0, count($values) - 1) as $index) {
-            $item = $values[$index];
-            if (in_array($item, $this->valids)) {
-                $name = $item;
-                $index += 1;
-                $item = $values[$index];
-                $items[$name] = $item;
+        for ($index = 0; $index < $length; $index = $index + 4) {
+            $fieldName = $values[$index + 2] ?? '';
+            if (in_array($fieldName, $this->valids, true)) {
+                $items[$fieldName] = $values[$index + 3] ?? '';
             }
         }
 
