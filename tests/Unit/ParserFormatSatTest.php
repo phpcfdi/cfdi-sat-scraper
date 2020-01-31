@@ -11,8 +11,8 @@ final class ParserFormatSatTest extends TestCase
 {
     public function testWithEmptySource(): void
     {
-        $parser = new ParserFormatSAT('');
-        $this->assertSame([], $parser->getFormValues());
+        $parser = new ParserFormatSAT();
+        $this->assertSame([], $parser->getFormValues(''));
     }
 
     public function testWithExactSource(): void
@@ -24,8 +24,8 @@ final class ParserFormatSatTest extends TestCase
             '__VIEWSTATE' => 'x-event-viewstate',
         ];
         $source = $this->buildFakeSourceData($data);
-        $parser = new ParserFormatSAT($source);
-        $this->assertSame($data, $parser->getFormValues());
+        $parser = new ParserFormatSAT();
+        $this->assertSame($data, $parser->getFormValues($source));
     }
 
     public function testWithSourceMissingKeys(): void
@@ -37,9 +37,9 @@ final class ParserFormatSatTest extends TestCase
             '__VIEWSTATE' => 'x-event-viewstate',
         ];
         $source = $this->buildFakeSourceData($data);
-        $parser = new ParserFormatSAT($source);
+        $parser = new ParserFormatSAT();
         unset($data['__FOO_BAR']);
-        $this->assertSame($data, $parser->getFormValues());
+        $this->assertSame($data, $parser->getFormValues($source));
     }
 
     public function testWithSourceOtherKeys(): void
@@ -50,8 +50,8 @@ final class ParserFormatSatTest extends TestCase
             '__VIEWSTATE' => 'x-event-viewstate',
         ];
         $source = $this->buildFakeSourceData($data);
-        $parser = new ParserFormatSAT($source);
-        $this->assertSame($data, $parser->getFormValues());
+        $parser = new ParserFormatSAT();
+        $this->assertSame($data, $parser->getFormValues($source));
     }
 
     public function buildFakeSourceData(array $values): string

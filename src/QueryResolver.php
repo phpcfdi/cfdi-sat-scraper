@@ -55,7 +55,7 @@ class QueryResolver
         $html = $this->consumeSearch($url, $post);
 
         // consume search using search filters
-        $post = array_merge($inputs, $filters->getRequestFilters(), (new ParserFormatSAT($html))->getFormValues());
+        $post = array_merge($inputs, $filters->getRequestFilters(), (new ParserFormatSAT())->getFormValues($html));
         $htmlSearch = $this->consumeSearch($url, $post);
 
         // extract data from resolved search

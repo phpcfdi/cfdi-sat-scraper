@@ -9,31 +9,20 @@ namespace PhpCfdi\CfdiSatScraper;
  */
 class ParserFormatSAT
 {
-    public $source;
-
     /** @var string[] array of field names to filter */
     private const FILTER_KEYS = ['__EVENTTARGET', '__EVENTARGUMENT', '__LASTFOCUS', '__VIEWSTATE'];
 
     /**
-     * ParserFormatSAT constructor.
+     * Parse source and retrieve only the preconfigured valid keys
      *
-     * @param $source
-     */
-    public function __construct($source)
-    {
-        $this->source = $source;
-    }
-
-    /**
-     * Parse and retrieve only the preconfigured valid keys
-     *
+     * @param string $source
      * @return array<string, string>
      */
-    public function getFormValues(): array
+    public function getFormValues(string $source): array
     {
         // format is: |value-length|field-type|field-name|value
 
-        $values = explode('|', ltrim($this->source, '|'));
+        $values = explode('|', ltrim($source, '|'));
         $length = count($values);
 
         $items = [];
