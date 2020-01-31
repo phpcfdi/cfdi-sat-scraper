@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Filters;
 
+use PhpCfdi\CfdiSatScraper\Contracts\Filters;
 use PhpCfdi\CfdiSatScraper\Query;
 
 /**
  * Class BaseFilters.
  */
-abstract class BaseFilters
+abstract class BaseFilters implements Filters
 {
     /**
      * @var Query
@@ -98,5 +99,19 @@ abstract class BaseFilters
         }
 
         return 'RdoFechas';
+    }
+
+    /**
+     * Helper function that emulates idate($ts, $format) but using a DateTimeImmutable and padding leading zeros
+     *
+     * @param \DateTimeImmutable $date
+     * @param string $format some value of date, use only those values that return an integer expression
+     * @param int $fixedPositions expected minimal positions, will pad leading zeros if length is lower than fixed
+     * @return string
+     */
+    protected function sidate(\DateTimeImmutable $date, string $format, int $fixedPositions = 1): string
+    {
+        $fixedPositions = max(1, $fixedPositions);
+        return sprintf("%0{$fixedPositions}d", (int) $date->format($format));
     }
 }

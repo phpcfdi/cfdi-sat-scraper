@@ -13,8 +13,8 @@ before_script:
   - travis_retry bash develop/install-development-tools
 
 script:
-  - tools/php-cs-fixer fix --verbose
-  - tools/phpcbf --colors -sp src/ tests/
+  - tools/php-cs-fixer fix --verbose --dry-run
+  - tools/phpcs --colors -sp src/ tests/
   - vendor/bin/phpunit --testdox --verbose
 
 notifications:
