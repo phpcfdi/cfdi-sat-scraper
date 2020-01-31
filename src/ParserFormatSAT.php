@@ -11,7 +11,8 @@ class ParserFormatSAT
 {
     public $source;
 
-    public $valids;
+    /** @var string[] array of field names to filter */
+    private $valids = ['__EVENTTARGET', '__EVENTARGUMENT', '__LASTFOCUS', '__VIEWSTATE'];
 
     /**
      * ParserFormatSAT constructor.
@@ -21,7 +22,6 @@ class ParserFormatSAT
     public function __construct($source)
     {
         $this->source = $source;
-        $this->valids = ['__EVENTTARGET', '__EVENTARGUMENT', '__LASTFOCUS', '__VIEWSTATE'];
     }
 
     /**
