@@ -12,7 +12,7 @@ class ParserFormatSAT
     public $source;
 
     /** @var string[] array of field names to filter */
-    private $valids = ['__EVENTTARGET', '__EVENTARGUMENT', '__LASTFOCUS', '__VIEWSTATE'];
+    private const FILTER_KEYS = ['__EVENTTARGET', '__EVENTARGUMENT', '__LASTFOCUS', '__VIEWSTATE'];
 
     /**
      * ParserFormatSAT constructor.
@@ -39,7 +39,7 @@ class ParserFormatSAT
         $items = [];
         for ($index = 0; $index < $length; $index = $index + 4) {
             $fieldName = $values[$index + 2] ?? '';
-            if (in_array($fieldName, $this->valids, true)) {
+            if (in_array($fieldName, self::FILTER_KEYS, true)) {
                 $items[$fieldName] = $values[$index + 3] ?? '';
             }
         }
