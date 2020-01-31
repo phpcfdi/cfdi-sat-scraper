@@ -15,8 +15,6 @@ class ParserFormatSAT
 
     public $valids;
 
-    public $sorted;
-
     /**
      * ParserFormatSAT constructor.
      *
@@ -36,7 +34,6 @@ class ParserFormatSAT
     {
         $values = explode('|', $this->source);
 
-        $this->sorted = [];
         foreach (range(0, count($values) - 1) as $index) {
             $item = $values[$index];
             if (in_array($item, $this->valids)) {
