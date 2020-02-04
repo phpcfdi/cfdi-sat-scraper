@@ -59,7 +59,7 @@ class HtmlForm
     }
 
     /**
-     * @param $element
+     * @param string $element
      *
      * @return array
      */
