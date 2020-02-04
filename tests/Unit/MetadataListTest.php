@@ -90,7 +90,9 @@ final class MetadataListTest extends TestCase
 
     public function testOnlyContainsMetadataEvenWhenNullIsPassed(): void
     {
-        $list = new MetadataList([null]);
+        /** @var Metadata[] $source */
+        $source = [null];
+        $list = new MetadataList($source);
         $this->assertCount(0, $list);
     }
 
