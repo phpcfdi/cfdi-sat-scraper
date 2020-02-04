@@ -18,7 +18,7 @@ abstract class BaseFilters implements Filters
     protected $query;
 
     /**
-     * @var
+     * @var string
      */
     protected $uuid;
 
@@ -32,7 +32,7 @@ abstract class BaseFilters implements Filters
     }
 
     /**
-     * @param $uuid
+     * @param string $uuid
      *
      * @return BaseFilters
      */
