@@ -69,9 +69,6 @@ abstract class BaseFilters implements Filters
         return $overrideFilters;
     }
 
-    /**
-     * @return array
-     */
     public function getRequestFilters(): array
     {
         $requestFilters = array_merge($this->getFilters(), $this->overrideDefaultFilters());

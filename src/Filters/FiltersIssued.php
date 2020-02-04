@@ -11,9 +11,6 @@ use PhpCfdi\CfdiSatScraper\Contracts\Filters;
  */
 class FiltersIssued extends BaseFilters implements Filters
 {
-    /**
-     * @return array
-     */
     public function getFilters(): array
     {
         return [
@@ -53,9 +50,6 @@ class FiltersIssued extends BaseFilters implements Filters
         ];
     }
 
-    /**
-     * @return array
-     */
     public function getInitialFilters(): array
     {
         return [
