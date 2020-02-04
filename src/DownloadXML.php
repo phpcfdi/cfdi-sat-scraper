@@ -7,7 +7,7 @@ namespace PhpCfdi\CfdiSatScraper;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Promise\EachPromise;
-use Prophecy\Promise\PromiseInterface;
+use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
