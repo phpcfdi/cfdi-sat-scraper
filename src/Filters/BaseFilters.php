@@ -77,16 +77,6 @@ abstract class BaseFilters implements Filters
     }
 
     /**
-     * @return array
-     */
-    abstract public function getFilters(): array;
-
-    /**
-     * @return array
-     */
-    abstract public function getInitialFilters(): array;
-
-    /**
      * @return string
      */
     protected function getCentralFilter()
