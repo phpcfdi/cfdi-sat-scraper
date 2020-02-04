@@ -77,11 +77,13 @@ abstract class BaseFilters implements Filters
     }
 
     /**
+     * Retrieve the CentralFilter data, if this query is about UUID then it is RdoFolioFiscal, else is RdoFechas
+     *
      * @return string
      */
-    protected function getCentralFilter()
+    protected function getCentralFilter(): string
     {
-        if (! empty($this->uuid)) {
+        if (! empty($this->query->getUuid())) {
             return 'RdoFolioFiscal';
         }
 
