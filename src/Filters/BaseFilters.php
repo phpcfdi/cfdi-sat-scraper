@@ -66,7 +66,7 @@ abstract class BaseFilters implements Filters
      */
     protected function getCentralFilter(): string
     {
-        if (! empty($this->query->getUuid())) {
+        if ($this->query->hasUuids()) {
             return 'RdoFolioFiscal';
         }
 

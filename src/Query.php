@@ -122,6 +122,11 @@ class Query
         return $this;
     }
 
+    public function hasUuids(): bool
+    {
+        return (! empty($this->uuid));
+    }
+
     /**
      * @return string[]|null
      */
