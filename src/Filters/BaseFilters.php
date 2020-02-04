@@ -18,29 +18,12 @@ abstract class BaseFilters implements Filters
     protected $query;
 
     /**
-     * @var string
-     */
-    protected $uuid;
-
-    /**
      * BaseFilters constructor.
      * @param Query $query
      */
     public function __construct(Query $query)
     {
         $this->query = $query;
-    }
-
-    /**
-     * @param string $uuid
-     *
-     * @return BaseFilters
-     */
-    public function setUuid($uuid): self
-    {
-        $this->uuid = $uuid;
-
-        return $this;
     }
 
     /**
