@@ -6,7 +6,7 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
-use PhpCfdi\CfdiSatScraper\Filters\Options\RfcReceptorOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOption;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
@@ -69,7 +69,7 @@ final class QueryTest extends TestCase
     {
         $rfc = 'ABGC930521D34';
         $query = new Query(new \DateTimeImmutable('2019-01-01'), new \DateTimeImmutable('2019-01-31'));
-        $query->setRfc(new RfcReceptorOption($rfc));
+        $query->setRfc(new RfcOption($rfc));
 
         $this->assertEquals($query->getRfc()->value(), $rfc);
     }

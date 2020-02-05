@@ -4,8 +4,6 @@
 
 - Core:
     - Clases que vienen de Enum deberían ser finales.
-    - RfcReceptorOption es el que se debe usar incluso con una consulta de cfdi recibidos.
-      Debería tener otro nombre o crear RfcEmisorOption aunque solo sea una extensión de RfcReceptorOption.
 - Documentación:
     - Todos los puntos de entrada deben tener phpdoc.
 - Entorno de desarrollo:

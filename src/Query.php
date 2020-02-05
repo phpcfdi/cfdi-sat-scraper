@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper;
 
 use DateTimeImmutable;
-use PhpCfdi\CfdiSatScraper\Contracts\Filters\Options\RfcOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
-use PhpCfdi\CfdiSatScraper\Filters\Options\RfcReceptorOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 
 class Query
@@ -65,7 +64,7 @@ class Query
         $this->complement = ComplementsOption::todos();
         $this->stateVoucher = StatesVoucherOption::todos();
         $this->uuid = [];
-        $this->rfc = new RfcReceptorOption('');
+        $this->rfc = new RfcOption('');
     }
 
     /**
