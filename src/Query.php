@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use PhpCfdi\CfdiSatScraper\Contracts\Filters\Options\RfcOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\RfcReceptorOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 
 class Query
@@ -23,7 +24,7 @@ class Query
     protected $endDate;
 
     /**
-     * @var RfcOption|null
+     * @var RfcOption
      */
     protected $rfc;
 
@@ -64,6 +65,7 @@ class Query
         $this->complement = ComplementsOption::todos();
         $this->stateVoucher = StatesVoucherOption::todos();
         $this->uuid = [];
+        $this->rfc = new RfcReceptorOption('');
     }
 
     /**
@@ -105,9 +107,9 @@ class Query
     }
 
     /**
-     * @return RfcOption|null
+     * @return RfcOption
      */
-    public function getRfc(): ?RfcOption
+    public function getRfc(): RfcOption
     {
         return $this->rfc;
     }
