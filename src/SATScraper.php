@@ -67,6 +67,11 @@ class SATScraper
         $this->captchaResolver = $captchaResolver;
     }
 
+    public function getRfc(): string
+    {
+        return $this->rfc;
+    }
+
     public function getLoginUrl(): string
     {
         return $this->loginUrl;

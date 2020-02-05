@@ -41,6 +41,11 @@ final class SatScraperPropertiesTest extends TestCase
         return new CookieJar();
     }
 
+    public function testRfc(): void
+    {
+        $this->assertSame('rfc', $this->createScraper()->getRfc());
+    }
+
     public function testLoginUrl(): void
     {
         $scraper = $this->createScraper();
