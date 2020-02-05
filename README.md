@@ -242,7 +242,7 @@ $list = $satScraper->downloadPeriod($query);
 $satScraper->downloader()
     ->setMetadataList($list)
     ->download(
-        function (string $content, string $name) use ($path) {
+        function (string $content, string $name) {
             $filename = '/storage/' . $name;
             echo 'saving ', $filename, PHP_EOL;
             file_put_contents($filename, $content);
