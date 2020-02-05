@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Filters;
 
 use PhpCfdi\CfdiSatScraper\Contracts\Filters;
+use PhpCfdi\CfdiSatScraper\Filters\Options\UuidOption;
 use PhpCfdi\CfdiSatScraper\Query;
 
 /**
@@ -31,21 +32,23 @@ abstract class BaseFilters implements Filters
      */
     public function overrideDefaultFilters(): array
     {
+        if ($this->query->hasUuids()) {
+            $filters = [
+                $this->query->getDownloadType(),
+                new UuidOption($this->query->getUuid()[0] ?? ''),
+            ];
+        } else {
+            $filters = [
+                $this->query->getDownloadType(),
+                $this->query->getComplement(),
+                $this->query->getStateVoucher(),
+                $this->query->getRfc(),
+            ];
+        }
+        $filters = array_filter($filters);
+
         $overrideFilters = [];
-
-        $filters = [
-            $this->query->getDownloadType(),
-            $this->query->getComplement(),
-            $this->query->getStateVoucher(),
-            $this->query->getRfc(),
-            $this->query->getUuid(),
-        ];
-
         foreach ($filters as $filter) {
-            if (is_null($filter)) {
-                continue;
-            }
-
             $overrideFilters[$filter->nameIndex()] = $filter->value();
         }
 

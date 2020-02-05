@@ -28,7 +28,7 @@ class Query
     protected $rfc;
 
     /**
-     * @var string[]|null
+     * @var string[]
      */
     protected $uuid;
 
@@ -63,6 +63,7 @@ class Query
         $this->downloadType = DownloadTypesOption::recibidos();
         $this->complement = ComplementsOption::todos();
         $this->stateVoucher = StatesVoucherOption::todos();
+        $this->uuid = [];
     }
 
     /**
@@ -117,7 +118,7 @@ class Query
      */
     public function setUuid(array $uuid): self
     {
-        $this->uuid = $uuid;
+        $this->uuid = array_values($uuid);
 
         return $this;
     }
@@ -128,9 +129,9 @@ class Query
     }
 
     /**
-     * @return string[]|null
+     * @return string[]
      */
-    public function getUuid(): ?array
+    public function getUuid(): array
     {
         return $this->uuid;
     }
