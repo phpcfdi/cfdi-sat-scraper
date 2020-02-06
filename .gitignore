@@ -2,3 +2,5 @@
 /vendor
 /tools
 /composer.lock
+.env
+/tests/repository.json
