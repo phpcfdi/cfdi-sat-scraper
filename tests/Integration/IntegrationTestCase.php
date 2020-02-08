@@ -16,17 +16,38 @@ use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
 class IntegrationTestCase extends TestCase
 {
-    /** @var Factory */
+    /**
+     * @var Factory
+     * @internal
+     */
     protected static $factory;
+
+    protected function getFactory(): Factory
+    {
+        if (null === static::$factory) {
+            static::$factory = new Factory(__DIR__ . '/../repository.json');
+        }
+        return static::$factory;
+    }
 
     protected function getSatScraper(): SATScraper
     {
-        return static::$factory->getSatScraper();
+        try {
+            return $this->getFactory()->getSatScraper();
+        } catch (\RuntimeException $exception) {
+            $this->markTestSkipped($exception->getMessage());
+            throw $exception;
+        }
     }
 
     protected function getRepository(): Repository
     {
-        return static::$factory->getRepository();
+        try {
+            return $this->getFactory()->getRepository();
+        } catch (\RuntimeException $exception) {
+            $this->markTestSkipped($exception->getMessage());
+            throw $exception;
+        }
     }
 
     public function providerEmitidosRecibidos(): array
@@ -35,19 +56,6 @@ class IntegrationTestCase extends TestCase
             'recibidos' => [DownloadTypesOption::recibidos()],
             'emitidos' => [DownloadTypesOption::emitidos()],
         ];
-    }
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        try {
-            if (null === static::$factory) {
-                static::$factory = new Factory(__DIR__ . '/../repository.json');
-                $this->getSatScraper(); // check that SATScraper is available to run tests
-            }
-        } catch (\RuntimeException $exception) {
-            $this->markTestSkipped($exception->getMessage());
-        }
     }
 
     public static function assertRepositoryEqualsMetadataList(Repository $repository, MetadataList $list): void
