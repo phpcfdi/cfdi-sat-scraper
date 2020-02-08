@@ -78,7 +78,7 @@ class Factory
     public function createRepository(string $filename): Repository
     {
         if (! file_exists($filename)) {
-            throw new \RuntimeException(sprintf('Te repository file %s was not found', $filename));
+            throw new \RuntimeException(sprintf('The repository file %s was not found', $filename));
         }
         return Repository::fromFile($filename);
     }

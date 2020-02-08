@@ -43,6 +43,7 @@ class IntegrationTestCase extends TestCase
         try {
             if (null === static::$factory) {
                 static::$factory = new Factory(__DIR__ . '/../repository.json');
+                $this->getSatScraper(); // check that SATScraper is available to run tests
             }
         } catch (\RuntimeException $exception) {
             $this->markTestSkipped($exception->getMessage());
