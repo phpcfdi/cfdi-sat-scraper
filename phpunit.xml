@@ -2,15 +2,12 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.5/phpunit.xsd"
     bootstrap="tests/bootstrap.php"
-    defaultTestSuite="Unit"
+    defaultTestSuite="default"
     cacheResult="false"
     colors="true">
     <testsuites>
-        <testsuite name="Unit">
-            <directory>./tests/Unit/</directory>
-        </testsuite>
-        <testsuite name="Integration">
-            <directory>./tests/Integration/</directory>
+        <testsuite name="default">
+            <directory>./tests/</directory>
         </testsuite>
     </testsuites>
     <filter>
