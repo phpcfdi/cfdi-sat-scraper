@@ -60,7 +60,7 @@
         ],
         "dev:tests": [
             "@dev:check-style",
-            "vendor/bin/phpunit tests/",
+            "vendor/bin/phpunit tests/Unit/",
             "tools/phpstan analyze --level 5 --no-progress --verbose src/ tests/"
         ]
     },
