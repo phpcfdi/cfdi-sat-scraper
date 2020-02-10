@@ -36,20 +36,20 @@ class CaptchaLocalResolverClient
         $this->httpClient = $httpClient;
     }
 
-    public function resolveImage(string $image): ?string
+    public function resolveImage(string $image): string
     {
         $code = $this->sendImage($image);
         if ('' === $code) {
-            return '';
+            return ''; // Unable to send image
         }
-        $waitUntil = time() + $this->timeout;
+        $waitUntil = time() + $this->getTimeout();
         do {
             $result = $this->checkCode($code);
             if ('' !== $result) { // it found an answer !!
                 break;
             }
             if (time() > $waitUntil) {
-                throw new RuntimeException("Unable to get an answer after {$this->timeout} seconds");
+                throw new RuntimeException("Unable to get an answer after {$this->getTimeout()} seconds");
             }
             sleep(1);
         } while (true);
@@ -86,12 +86,15 @@ class CaptchaLocalResolverClient
 
     public function buildUri(string $action): string
     {
-        return sprintf('http://%s:%d/%s', $this->host, $this->port, $action);
+        return sprintf('http://%s:%d/%s', $this->getHost(), $this->getPort(), $action);
     }
 
     private function post(string $uri, array $data): ResponseInterface
     {
-        return $this->httpClient->request('POST', $uri, ['form_params' => $data]);
+        return $this->getHttpClient()->request('POST', $uri, [
+            'form_params' => $data,
+            'timeout' => $this->getTimeout(),
+        ]);
     }
 
     public function getHost(): string

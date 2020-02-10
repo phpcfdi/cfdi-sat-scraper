@@ -11,22 +11,13 @@ class CaptchaLocalResolver implements CaptchaResolverInterface
     /** @var CaptchaLocalResolverClient */
     private $client;
 
-    /** @var string */
-    private $image;
-
     public function __construct(CaptchaLocalResolverClient $client)
     {
         $this->client = $client;
     }
 
-    public function setImage(string $image): CaptchaResolverInterface
+    public function decode(string $image): string
     {
-        $this->image = $image;
-        return $this;
-    }
-
-    public function decode(): ?string
-    {
-        return $this->client->resolveImage($this->image);
+        return $this->client->resolveImage($image);
     }
 }
