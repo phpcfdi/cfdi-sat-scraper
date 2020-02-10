@@ -21,17 +21,17 @@ class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
     protected $client;
 
     /**
-     * @var
+     * @var string
      */
     protected $user;
 
     /**
-     * @var
+     * @var string
      */
     protected $password;
 
     /**
-     * @var
+     * @var string
      */
     protected $image;
 

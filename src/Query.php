@@ -4,22 +4,21 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use Eclipxe\Enum\Enum;
-use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
-use PhpCfdi\CfdiSatScraper\Contracts\Filters\Options\RfcOption;
+use DateTimeImmutable;
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 
 class Query
 {
     /**
-     * @var \DateTime
+     * @var DateTimeImmutable
      */
     protected $startDate;
 
     /**
-     * @var \DateTime
+     * @var DateTimeImmutable
      */
     protected $endDate;
 
@@ -29,31 +28,31 @@ class Query
     protected $rfc;
 
     /**
-     * @var array
+     * @var string[]
      */
     protected $uuid;
 
     /**
-     * @var Enum
+     * @var ComplementsOption
      */
     protected $complement;
 
     /**
-     * @var Enum
+     * @var StatesVoucherOption
      */
     protected $stateVoucher;
 
     /**
-     * @var Enum
+     * @var DownloadTypesOption
      */
     protected $downloadType;
 
     /**
      * Query constructor.
-     * @param \DateTimeImmutable $startDate
-     * @param \DateTimeImmutable $endDate
+     * @param DateTimeImmutable $startDate
+     * @param DateTimeImmutable $endDate
      */
-    public function __construct(\DateTimeImmutable $startDate, \DateTimeImmutable $endDate)
+    public function __construct(DateTimeImmutable $startDate, DateTimeImmutable $endDate)
     {
         if ($endDate < $startDate) {
             throw new \InvalidArgumentException('La fecha final no puede ser menor a la inicial');
@@ -64,21 +63,23 @@ class Query
         $this->downloadType = DownloadTypesOption::recibidos();
         $this->complement = ComplementsOption::todos();
         $this->stateVoucher = StatesVoucherOption::todos();
+        $this->uuid = [];
+        $this->rfc = new RfcOption('');
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return DateTimeImmutable
      */
-    public function getStartDate(): \DateTimeImmutable
+    public function getStartDate(): DateTimeImmutable
     {
         return $this->startDate;
     }
 
     /**
-     * @param \DateTimeImmutable $startDate
+     * @param DateTimeImmutable $startDate
      * @return Query
      */
-    public function setStartDate(\DateTimeImmutable $startDate): self
+    public function setStartDate(DateTimeImmutable $startDate): self
     {
         $this->startDate = $startDate;
 
@@ -86,18 +87,18 @@ class Query
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return DateTimeImmutable
      */
-    public function getEndDate(): \DateTimeImmutable
+    public function getEndDate(): DateTimeImmutable
     {
         return $this->endDate;
     }
 
     /**
-     * @param \DateTimeImmutable $endDate
+     * @param DateTimeImmutable $endDate
      * @return Query
      */
-    public function setEndDate(\DateTimeImmutable $endDate): self
+    public function setEndDate(DateTimeImmutable $endDate): self
     {
         $this->endDate = $endDate;
 
@@ -105,28 +106,33 @@ class Query
     }
 
     /**
-     * @return RfcOption|null
+     * @return RfcOption
      */
-    public function getRfc(): ?RfcOption
+    public function getRfc(): RfcOption
     {
         return $this->rfc;
     }
 
     /**
-     * @param array $uuid
+     * @param string[] $uuid
      * @return Query
      */
     public function setUuid(array $uuid): self
     {
-        $this->uuid = $uuid;
+        $this->uuid = array_values($uuid);
 
         return $this;
     }
 
+    public function hasUuids(): bool
+    {
+        return (! empty($this->uuid));
+    }
+
     /**
-     * @return FilterOption|null
+     * @return string[]
      */
-    public function getUuid(): ?array
+    public function getUuid(): array
     {
         return $this->uuid;
     }

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Filters\Options;
 
-use PhpCfdi\CfdiSatScraper\Contracts\Filters\Options\RfcOption;
+use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
 
-class RfcReceptorOption implements RfcOption
+class RfcOption implements FilterOption
 {
     /**
      * @var string

@@ -7,17 +7,17 @@ namespace PhpCfdi\CfdiSatScraper\Contracts;
 interface Filters
 {
     /**
-     * @return mixed
+     * @return array<string, string>
      */
     public function getFilters(): array;
 
     /**
-     * @return mixed
+     * @return array<string, string>
      */
     public function getInitialFilters(): array;
 
     /**
-     * @return mixed
+     * @return array<string, string>
      */
     public function getRequestFilters(): array;
 }

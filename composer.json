@@ -37,6 +37,8 @@
         "eclipxe/enum": "^0.2.0"
     },
     "require-dev": {
+        "ext-json": "*",
+        "symfony/dotenv": "^4.2|^5.0",
         "fzaninotto/faker": "^1.8",
         "phpunit/phpunit": "^8.5"
     },
@@ -58,7 +60,8 @@
         ],
         "dev:tests": [
             "@dev:check-style",
-            "vendor/bin/phpunit --verbose"
+            "vendor/bin/phpunit tests/Unit/",
+            "tools/phpstan analyze --level 5 --no-progress --verbose src/ tests/"
         ]
     },
     "scripts-descriptions": {

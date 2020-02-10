@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Filters;
 
 use PhpCfdi\CfdiSatScraper\Contracts\Filters;
+use PhpCfdi\CfdiSatScraper\Filters\Options\UuidOption;
 use PhpCfdi\CfdiSatScraper\Query;
 
 /**
@@ -18,11 +19,6 @@ abstract class BaseFilters implements Filters
     protected $query;
 
     /**
-     * @var
-     */
-    protected $uuid;
-
-    /**
      * BaseFilters constructor.
      * @param Query $query
      */
@@ -32,46 +28,33 @@ abstract class BaseFilters implements Filters
     }
 
     /**
-     * @param $uuid
-     *
-     * @return BaseFilters
-     */
-    public function setUuid($uuid): self
-    {
-        $this->uuid = $uuid;
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function overrideDefaultFilters(): array
     {
+        if ($this->query->hasUuids()) {
+            $filters = [
+                $this->query->getDownloadType(),
+                new UuidOption($this->query->getUuid()[0] ?? ''),
+            ];
+        } else {
+            $filters = [
+                $this->query->getDownloadType(),
+                $this->query->getComplement(),
+                $this->query->getStateVoucher(),
+                $this->query->getRfc(),
+            ];
+        }
+        $filters = array_filter($filters);
+
         $overrideFilters = [];
-
-        $filters = [
-            $this->query->getDownloadType(),
-            $this->query->getComplement(),
-            $this->query->getStateVoucher(),
-            $this->query->getRfc(),
-            $this->query->getUuid(),
-        ];
-
         foreach ($filters as $filter) {
-            if (is_null($filter)) {
-                continue;
-            }
-
             $overrideFilters[$filter->nameIndex()] = $filter->value();
         }
 
         return $overrideFilters;
     }
 
-    /**
-     * @return array
-     */
     public function getRequestFilters(): array
     {
         $requestFilters = array_merge($this->getFilters(), $this->overrideDefaultFilters());
@@ -80,21 +63,13 @@ abstract class BaseFilters implements Filters
     }
 
     /**
-     * @return array
-     */
-    abstract public function getFilters(): array;
-
-    /**
-     * @return array
-     */
-    abstract public function getInitialFilters(): array;
-
-    /**
+     * Retrieve the CentralFilter data, if this query is about UUID then it is RdoFolioFiscal, else is RdoFechas
+     *
      * @return string
      */
-    protected function getCentralFilter()
+    protected function getCentralFilter(): string
     {
-        if (! empty($this->uuid)) {
+        if ($this->query->hasUuids()) {
             return 'RdoFolioFiscal';
         }
 

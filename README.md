@@ -96,14 +96,14 @@ use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
-use PhpCfdi\CfdiSatScraper\Filters\Options\RfcReceptorOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOption;
 
 // se crea con un rango de fechas específico
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $query
     ->setDownloadType(DownloadTypesOption::recibidos())         // en lugar de emitidos
     ->setStateVoucher(StatesVoucherOption::vigentes())          // en lugar de todos
-    ->setRfc(new RfcReceptorOption('EKU9003173C9'))             // de este Rfc específico
+    ->setRfc(new RfcOption('EKU9003173C9'))                     // de este RFC específico
     ->setComplement(ComplementsOption::reciboPagoSalarios12())  // que incluya este complemento
 ;
 ```
@@ -242,7 +242,7 @@ $list = $satScraper->downloadPeriod($query);
 $satScraper->downloader()
     ->setMetadataList($list)
     ->download(
-        function (string $content, string $name) use ($path) {
+        function (string $content, string $name) {
             $filename = '/storage/' . $name;
             echo 'saving ', $filename, PHP_EOL;
             file_put_contents($filename, $content);
