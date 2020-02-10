@@ -222,10 +222,8 @@ class SATScraper
     {
         $imageBase64 = $this->requestCaptchaImage();
         try {
-            $result = $this->captchaResolver
-                ->setImage($imageBase64)
-                ->decode();
-            if (null === $result || '' === $result) {
+            $result = $this->captchaResolver->decode($imageBase64);
+            if ('' === $result) {
                 throw new \RuntimeException('Unable to decode captcha image');
             }
             return $result;

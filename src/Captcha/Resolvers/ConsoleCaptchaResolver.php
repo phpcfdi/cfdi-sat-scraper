@@ -8,24 +8,9 @@ use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 
 class ConsoleCaptchaResolver implements CaptchaResolverInterface
 {
-    /** @var string */
-    private $image;
-
-    public function __construct(string $image = '')
+    public function decode(string $image): string
     {
-        $this->setImage($image);
-    }
-
-    public function setImage(string $image): CaptchaResolverInterface
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    public function decode(): ?string
-    {
-        $temporaryFile = $this->storeImage();
+        $temporaryFile = $this->storeImage($image);
         $this->writeLine("\nResolve the captcha stored on file $temporaryFile: ");
         $decoded = $this->readLine();
         if (file_exists($temporaryFile)) {
@@ -35,14 +20,14 @@ class ConsoleCaptchaResolver implements CaptchaResolverInterface
         return $decoded;
     }
 
-    public function storeImage(): string
+    public function storeImage(string $image): string
     {
-        if ('' === $this->image) {
+        if ('' === $image) {
             throw new \RuntimeException('Current image is empty');
         }
 
         $filename = getcwd() . '/captcha.png';
-        file_put_contents($filename, base64_decode($this->image));
+        file_put_contents($filename, base64_decode($image));
 
         return $filename;
     }

@@ -13,8 +13,6 @@ class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
 
     public const METHOD_SERVICE_PICTURE = 'picture2';
 
-    public const METHOD_SERVICE_BALANCE = 'balance';
-
     /**
      * @var Client
      */
@@ -31,11 +29,6 @@ class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
     protected $password;
 
     /**
-     * @var string
-     */
-    protected $image;
-
-    /**
      * CaptchaResolver constructor.
      *
      * @param Client $client
@@ -49,26 +42,7 @@ class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
         $this->password = $password;
     }
 
-    /**
-     * @param string $imageBase64
-     *
-     * @return CaptchaResolverInterface
-     */
-    public function setImage(string $imageBase64): CaptchaResolverInterface
-    {
-        if (empty($imageBase64)) {
-            throw new \InvalidArgumentException('The parameter imageBase64 is required');
-        }
-
-        $this->image = $imageBase64;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function decode(): ?string
+    public function decode(string $image): string
     {
         $response = $this->client->post(
             self::URL_SERVICE,
@@ -76,7 +50,7 @@ class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
                 'multipart' => [
                     [
                         'name' => 'pict',
-                        'contents' => fopen("data://text/plain;base64,{$this->image}", 'r'),
+                        'contents' => fopen("data://text/plain;base64,{$image}", 'r'),
                     ],
                     [
                         'name' => 'function',
@@ -100,12 +74,11 @@ class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
                     ],
                 ],
             ]
-        )->getBody()
-            ->getContents();
+        )->getBody()->getContents();
 
         $parts = explode('|', $response);
-        if (0 !== (int)$parts[0]) {
-            return null;
+        if (0 !== (int) $parts[0]) { // bad answer
+            return '';
         }
 
         return (string)trim(end($parts));

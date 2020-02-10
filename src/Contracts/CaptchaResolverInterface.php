@@ -7,14 +7,11 @@ namespace PhpCfdi\CfdiSatScraper\Contracts;
 interface CaptchaResolverInterface
 {
     /**
-     * @param string $image
+     * Resolve the image (base64 encoded) and return the answer as string.
+     * If the string is empty means that the service was unable to find a solution.
      *
-     * @return CaptchaResolverInterface
+     * @param string $base64Image
+     * @return string
      */
-    public function setImage(string $image): self;
-
-    /**
-     * @return string|null
-     */
-    public function decode(): ?string;
+    public function decode(string $base64Image): string;
 }
