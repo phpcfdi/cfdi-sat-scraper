@@ -19,7 +19,7 @@ class UuidOption implements FilterOption
      */
     public function __construct(string $uuid)
     {
-        $this->value = $uuid;
+        $this->value = strtolower($uuid);
     }
 
     /**

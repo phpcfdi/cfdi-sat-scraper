@@ -133,7 +133,7 @@ class DownloadXML
         $partsOfContentDisposition = explode(';', $contentDisposition);
         $fileName = str_replace('filename=', '', $partsOfContentDisposition[1] ?? '');
 
-        return ! empty($fileName) ? $fileName : uniqid() . '.xml';
+        return strtolower(! empty($fileName) ? $fileName : uniqid() . '.xml');
     }
 
     /**

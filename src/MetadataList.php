@@ -33,12 +33,12 @@ class MetadataList implements \Countable, \IteratorAggregate
 
     public function has(string $uuid): bool
     {
-        return isset($this->list[$uuid]);
+        return isset($this->list[strtolower($uuid)]);
     }
 
     public function find(string $uuid): ?Metadata
     {
-        return $this->list[$uuid] ?? null;
+        return $this->list[strtolower($uuid)] ?? null;
     }
 
     public function get(string $uuid): Metadata

@@ -22,7 +22,7 @@ class RepositoryItem
 
     public function __construct(string $uuid, DateTimeImmutable $date, string $state, string $type)
     {
-        $this->uuid = $uuid;
+        $this->uuid = strtolower($uuid);
         $this->date = $date;
         $this->type = strtoupper(substr($type, 0, 1));
         $this->state = strtoupper(substr($state, 0, 1));

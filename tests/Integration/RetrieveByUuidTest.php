@@ -45,8 +45,8 @@ class RetrieveByUuidTest extends IntegrationTestCase
         $tempDir = sys_get_temp_dir();
         $scraper->downloader()->setMetadataList($list)->saveTo($tempDir);
         foreach ($uuids as $uuid) {
-            $filename = sprintf('%s/%s.xml', $tempDir, $uuid);
-            $this->assertFileExists($filename, sprintf('The file to download the uuid %s does not exists: %s', $uuid, $filename));
+            $filename = strtolower(sprintf('%s/%s.xml', $tempDir, $uuid));
+            $this->assertFileExists($filename, sprintf('The cfdi file with uuid %s does not exists: %s', $uuid, $filename));
             $this->assertCfdiHasUuid($uuid, file_get_contents($filename) ?: '');
         }
     }

@@ -98,8 +98,8 @@ class IntegrationTestCase extends TestCase
         /** @var DOMAttr $uuidAttr */
         $uuidAttr = $list->item(0);
         self::assertSame(
-            $expectedUuid,
-            $uuidAttr->value,
+            strtolower($expectedUuid),
+            strtolower($uuidAttr->value),
             sprintf('The UUID from the XML CFDI %s is not the same as expected %s', $uuidAttr->value, $expectedUuid)
         );
     }

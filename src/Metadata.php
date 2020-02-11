@@ -16,7 +16,7 @@ class Metadata
         if ('' === $uuid) {
             throw new InvalidArgumentException('UUID cannot be empty');
         }
-        $this->data = ['uuid' => $uuid] + $data;
+        $this->data = ['uuid' => strtolower($uuid)] + $data;
     }
 
     public function uuid(): string
