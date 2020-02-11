@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
+/**
+ * @implements \IteratorAggregate<Metadata>
+ */
 class MetadataList implements \Countable, \IteratorAggregate
 {
     /** @var Metadata[] */

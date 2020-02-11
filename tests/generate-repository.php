@@ -83,7 +83,7 @@ exit(call_user_func(new class() {
             'date' => $metadata->get('fechaEmision'),
             'type' => $metadata->get('rfcEmisor') === $this->rfc ? 'E' : 'R',
             'state' => $metadata->get('estadoComprobante'),
-        ]);
+        ]) ?: '';
     }
 
     public function printHelp(): void

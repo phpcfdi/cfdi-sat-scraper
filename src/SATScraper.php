@@ -387,7 +387,7 @@ class SATScraper
         return $this->createMetadataDownloader()->downloadByDateTime($query);
     }
 
-    protected function parseInputs($html): array
+    protected function parseInputs(string $html): array
     {
         $htmlForm = new HtmlForm($html, 'form');
         $inputs = $htmlForm->getFormValues();

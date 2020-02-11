@@ -62,7 +62,7 @@ class IntegrationTestCase extends TestCase
     {
         /** @var RepositoryItem $item */
         foreach ($repository as $item) {
-            $metadata = $list->find($item->getUuid());
+            $metadata = $list->get($item->getUuid());
             self::assertNotNull($metadata, "The metadata list does not contain the UUID {$item->getUuid()}");
             self::assertRepositoryItemEqualsMetadata($item, $metadata);
         }
@@ -88,7 +88,7 @@ class IntegrationTestCase extends TestCase
         $xpath = new DOMXPath($document);
         $xpath->registerNamespace('cfdi', 'http://www.sat.gob.mx/cfd/3');
         $xpath->registerNamespace('tfd', 'http://www.sat.gob.mx/TimbreFiscalDigital');
-        /** @var DOMNodeList|false $list */
+        /** @var DOMNodeList<DOMAttr>|false $list */
         $list = $xpath->query('/cfdi:Comprobante/cfdi:Complemento/tfd:TimbreFiscalDigital/@UUID');
         if (false === $list) {
             $list = new DOMNodeList();

@@ -8,7 +8,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class CaptchaBase64Extractor
 {
-    const DEFAULT_SELECTOR = '#divCaptcha > img';
+    public const DEFAULT_SELECTOR = '#divCaptcha > img';
 
     /**
      * @param string $htmlSource

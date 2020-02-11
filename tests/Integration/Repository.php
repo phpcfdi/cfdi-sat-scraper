@@ -13,6 +13,7 @@ use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 
 /**
  * Class Repository to be able to perform tests
+ * @implements IteratorAggregate<RepositoryItem>
  */
 class Repository implements Countable, IteratorAggregate
 {

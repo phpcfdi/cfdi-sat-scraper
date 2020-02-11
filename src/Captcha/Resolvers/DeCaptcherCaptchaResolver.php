@@ -81,6 +81,6 @@ class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
             return '';
         }
 
-        return (string)trim(end($parts));
+        return trim((string) end($parts));
     }
 }

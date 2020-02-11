@@ -28,7 +28,7 @@ class RepositoryItem
         $this->state = strtoupper(substr($state, 0, 1));
     }
 
-    public static function fromArray(array $item)
+    public static function fromArray(array $item): self
     {
         return new self(
             strval($item['uuid'] ?? ''),
