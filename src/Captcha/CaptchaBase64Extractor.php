@@ -8,54 +8,26 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class CaptchaBase64Extractor
 {
-    /** @var string */
-    private $html;
+    const DEFAULT_SELECTOR = '#divCaptcha > img';
 
     /**
-     * CaptchaBase64Extractor constructor.
-     * @param string $html
+     * @param string $htmlSource
+     * @param string $selector
+     * @return string
      */
-    public function __construct(string $html)
+    public function retrieve(string $htmlSource, string $selector = ''): string
     {
-        $this->html = $html;
-    }
+        $selector = $selector ?: self::DEFAULT_SELECTOR;
 
-    /**
-     * @param string|null $selector
-     * @return Crawler
-     */
-    private function findImg(?string $selector): Crawler
-    {
-        $selector = $selector ?? '#divCaptcha > img';
-
-        $img = (new Crawler($this->html))
-            ->filter($selector);
-
-        if (0 === $img->count()) {
+        $images = (new Crawler($htmlSource))->filter($selector);
+        if (0 === $images->count()) {
             throw new \RuntimeException('Captcha was not found');
         }
+        $firstImage = $images->first();
 
-        return $img->first();
-    }
+        $srcContent = strval($firstImage->attr('src'));
+        $srcContent = str_replace('data:image/jpeg;base64,', '', $srcContent);
 
-    /**
-     * @param string|null $selector
-     * @return string
-     */
-    private function getSrc(?string $selector): string
-    {
-        $img = $this->findImg($selector);
-        $src = $img->attr('src');
-
-        return str_replace('data:image/jpeg;base64,', '', $src);
-    }
-
-    /**
-     * @param string|null $selector
-     * @return string
-     */
-    public function retrieve(?string $selector = null): string
-    {
-        return $this->getSrc($selector);
+        return $srcContent;
     }
 }
