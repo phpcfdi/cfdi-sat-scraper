@@ -72,7 +72,6 @@ class QueryResolver
     {
         $response = $this->getClient()->get($url, [
             'cookies' => $this->getCookie(),
-            'verify' => false,
         ]);
 
         return $response->getBody()->getContents();
@@ -83,7 +82,6 @@ class QueryResolver
         $response = $this->getClient()->post($url, [
             'form_params' => $formParams,
             'headers' => Headers::postAjax(URLS::SAT_HOST_PORTAL_CFDI, $url),
-            'verify' => false,
             'cookies' => $this->getCookie(),
         ]);
         return $response->getBody()->getContents();

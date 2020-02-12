@@ -250,6 +250,23 @@ $satScraper->downloader()
     );
 ```
 
+## Quitar la verificación de certificados del SAT
+
+En caso de que los certificados del SAT usados en HTTPS fallen, será necerario que desactive la verificación
+de los mismos. Esto se puede lograr creando el cliente de Guzzle con la negación de la opción `verify`.
+
+No es una práctica recomendada pero tal vez necesaria ante los problemas a los que el SAT se ve expuesto.
+Tenga en cuenta que esto podría facilitar significativamente un ataque que provoque que la pérdida de su clave CIEC.
+
+```php
+$insecureClient = new \GuzzleHttp\Client([
+    \GuzzleHttp\RequestOptions::VERIFY => false
+]);
+
+/** @var \PhpCfdi\CfdiSatScraper\SATScraper $satScraper */
+$satScraper->setClient($insecureClient);
+```
+
 ## Compatilibilidad
 
 Esta librería se mantendrá compatible con al menos la versión con

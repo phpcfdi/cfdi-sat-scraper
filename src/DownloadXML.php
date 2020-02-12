@@ -115,7 +115,6 @@ class DownloadXML
                 continue;
             }
             yield $this->getClient()->requestAsync('GET', $link, [
-                'verify' => false,
                 'cookies' => $this->getCookie(),
             ]);
         }
