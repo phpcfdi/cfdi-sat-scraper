@@ -87,7 +87,7 @@ class QueryResolver
             $url,
             [
                 RequestOptions::FORM_PARAMS => $formParams,
-                RequestOptions::HEADERS => Headers::postAjax(URLS::SAT_HOST_PORTAL_CFDI, $url),
+                RequestOptions::HEADERS => Headers::postAjax(parse_url(URLS::SAT_URL_PORTAL_CFDI, PHP_URL_HOST), $url),
                 RequestOptions::COOKIES => $this->getCookie(),
             ]
         );

@@ -250,7 +250,7 @@ class SATScraper
             [
                 RequestOptions::COOKIES => $this->cookie,
                 RequestOptions::HEADERS => Headers::post(
-                    URLS::SAT_HOST_CFDI_AUTH,
+                    parse_url(URLS::SAT_URL_LOGIN, PHP_URL_HOST),
                     URLS::SAT_URL_LOGIN
                 ),
                 RequestOptions::FORM_PARAMS => [
@@ -345,7 +345,7 @@ class SATScraper
                 RequestOptions::COOKIES => $this->cookie,
                 RequestOptions::FORM_PARAMS => $data,
                 RequestOptions::HEADERS => Headers::post(
-                    URLS::SAT_HOST_CFDI_AUTH,
+                    parse_url(URLS::SAT_URL_LOGIN, PHP_URL_HOST),
                     URLS::SAT_URL_PORTAL_CFDI
                 ),
             ]
