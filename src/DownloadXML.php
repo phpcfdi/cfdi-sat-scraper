@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Promise\EachPromise;
 use GuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -114,9 +115,7 @@ class DownloadXML
             if ('' === $link) {
                 continue;
             }
-            yield $this->getClient()->requestAsync('GET', $link, [
-                'cookies' => $this->getCookie(),
-            ]);
+            yield $this->getClient()->requestAsync('GET', $link, [RequestOptions::COOKIES => $this->getCookie()]);
         }
     }
 

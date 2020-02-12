@@ -6,6 +6,7 @@ namespace PhpCfdi\CfdiSatScraper;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\RequestOptions;
 use PhpCfdi\CfdiSatScraper\Contracts\Filters;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersReceived;
@@ -70,20 +71,24 @@ class QueryResolver
 
     protected function consumeFormPage(string $url): string
     {
-        $response = $this->getClient()->get($url, [
-            'cookies' => $this->getCookie(),
-        ]);
+        $response = $this->getClient()->get(
+            $url,
+            [RequestOptions::COOKIES => $this->getCookie()]
+        );
 
         return $response->getBody()->getContents();
     }
 
     protected function consumeSearch(string $url, array $formParams): string
     {
-        $response = $this->getClient()->post($url, [
-            'form_params' => $formParams,
-            'headers' => Headers::postAjax(URLS::SAT_HOST_PORTAL_CFDI, $url),
-            'cookies' => $this->getCookie(),
-        ]);
+        $response = $this->getClient()->post(
+            $url,
+            [
+                RequestOptions::FORM_PARAMS => $formParams,
+                RequestOptions::HEADERS => Headers::postAjax(URLS::SAT_HOST_PORTAL_CFDI, $url),
+                RequestOptions::COOKIES => $this->getCookie(),
+            ]
+        );
         return $response->getBody()->getContents();
     }
 

@@ -7,6 +7,7 @@ namespace PhpCfdi\CfdiSatScraper;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\RequestOptions;
 use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
@@ -196,9 +197,7 @@ class SATScraper
     {
         $html = $this->client->get(
             $this->loginUrl,
-            [
-                'cookies' => $this->cookie,
-            ]
+            [RequestOptions::COOKIES => $this->cookie]
         )->getBody()->getContents();
         if ('' === $html) {
             throw new \RuntimeException('Unable to retrive the contents from login page');
@@ -247,12 +246,12 @@ class SATScraper
         $response = $this->client->post(
             $this->loginUrl,
             [
-                'cookies' => $this->cookie,
-                'headers' => Headers::post(
+                RequestOptions::COOKIES => $this->cookie,
+                RequestOptions::HEADERS => Headers::post(
                     URLS::SAT_HOST_CFDI_AUTH,
                     URLS::SAT_URL_LOGIN
                 ),
-                'form_params' => [
+                RequestOptions::FORM_PARAMS => [
                     'Ecom_Password' => $this->ciec,
                     'Ecom_User_ID' => $this->rfc,
                     'option' => 'credential',
@@ -277,9 +276,7 @@ class SATScraper
     {
         $response = $this->client->get(
             URLS::SAT_URL_PORTAL_CFDI,
-            [
-                'cookies' => $this->cookie,
-            ]
+            [RequestOptions::COOKIES => $this->cookie]
         )->getBody()->getContents();
         $inputs = $this->parseInputs($response);
 
@@ -298,8 +295,8 @@ class SATScraper
             $response = $this->client->post(
                 URLS::SAT_URL_PORTAL_CFDI,
                 [
-                    'cookies' => $this->cookie,
-                    'form_params' => $inputs,
+                    RequestOptions::COOKIES => $this->cookie,
+                    RequestOptions::FORM_PARAMS => $inputs,
                 ]
             )->getBody()->getContents();
             $inputs = $this->parseInputs($response);
@@ -315,8 +312,8 @@ class SATScraper
         $response = $this->client->post(
             URLS::SAT_URL_PORTAL_CFDI,
             [
-                'cookies' => $this->cookie,
-                'form_params' => $inputs,
+                RequestOptions::FORM_PARAMS => $inputs,
+                RequestOptions::COOKIES => $this->cookie,
             ]
         )->getBody()->getContents();
         $inputs = $this->parseInputs($response);
@@ -339,9 +336,9 @@ class SATScraper
         $response = $this->client->post(
             URLS::SAT_URL_PORTAL_CFDI_CONSULTA,
             [
-                'cookies' => $this->cookie,
-                'form_params' => $data,
-                'headers' => Headers::post(
+                RequestOptions::COOKIES => $this->cookie,
+                RequestOptions::FORM_PARAMS => $data,
+                RequestOptions::HEADERS => Headers::post(
                     URLS::SAT_HOST_CFDI_AUTH,
                     URLS::SAT_URL_PORTAL_CFDI
                 ),
