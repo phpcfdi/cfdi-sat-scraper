@@ -7,7 +7,7 @@ namespace PhpCfdi\CfdiSatScraper;
 /**
  * @implements \IteratorAggregate<Metadata>
  */
-class MetadataList implements \Countable, \IteratorAggregate
+class MetadataList implements \Countable, \IteratorAggregate, \JsonSerializable
 {
     /** @var Metadata[] */
     private $list = [];
@@ -61,5 +61,11 @@ class MetadataList implements \Countable, \IteratorAggregate
     public function count(): int
     {
         return count($this->list);
+    }
+
+    /** @return array<string, Metadata> */
+    public function jsonSerialize(): array
+    {
+        return $this->list;
     }
 }
