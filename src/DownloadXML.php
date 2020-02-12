@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Cookie\CookieJarInterface;
 use GuzzleHttp\Promise\EachPromise;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\RequestOptions;
@@ -22,12 +22,12 @@ class DownloadXML
     protected $list;
 
     /**
-     * @var Client
+     * @var ClientInterface
      */
     protected $client;
 
     /**
-     * @var CookieJar
+     * @var CookieJarInterface
      */
     protected $cookie;
 
@@ -36,7 +36,7 @@ class DownloadXML
      */
     protected $concurrency;
 
-    public function __construct(Client $client, CookieJar $cookie)
+    public function __construct(ClientInterface $client, CookieJarInterface $cookie)
     {
         $this->client = $client;
         $this->cookie = $cookie;
@@ -63,12 +63,12 @@ class DownloadXML
         return $this;
     }
 
-    public function getClient(): Client
+    public function getClient(): ClientInterface
     {
         return $this->client;
     }
 
-    public function getCookie(): CookieJar
+    public function getCookie(): CookieJarInterface
     {
         return $this->cookie;
     }

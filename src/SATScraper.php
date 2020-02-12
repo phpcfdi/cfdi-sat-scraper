@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Cookie\CookieJarInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
@@ -26,10 +26,10 @@ class SATScraper
     /** @var string */
     protected $ciec;
 
-    /** @var Client */
+    /** @var ClientInterface */
     protected $client;
 
-    /** @var CookieJar */
+    /** @var CookieJarInterface */
     protected $cookie;
 
     /** @var callable|null */
@@ -50,8 +50,8 @@ class SATScraper
     public function __construct(
         string $rfc,
         string $ciec,
-        Client $client,
-        CookieJar $cookie,
+        ClientInterface $client,
+        CookieJarInterface $cookie,
         CaptchaResolverInterface $captchaResolver
     ) {
         if (empty($rfc)) {
@@ -127,24 +127,24 @@ class SATScraper
         return $this;
     }
 
-    public function getCookie(): CookieJar
+    public function getCookie(): CookieJarInterface
     {
         return $this->cookie;
     }
 
-    public function setCookie(CookieJar $cookieJar): self
+    public function setCookie(CookieJarInterface $cookieJar): self
     {
         $this->cookie = $cookieJar;
 
         return $this;
     }
 
-    public function getClient(): Client
+    public function getClient(): ClientInterface
     {
         return $this->client;
     }
 
-    public function setClient(Client $client): self
+    public function setClient(ClientInterface $client): self
     {
         $this->client = $client;
 
@@ -195,7 +195,8 @@ class SATScraper
      */
     protected function consumeLoginPage(): string
     {
-        $html = $this->client->get(
+        $html = $this->client->request(
+            'GET',
             $this->loginUrl,
             [RequestOptions::COOKIES => $this->cookie]
         )->getBody()->getContents();
@@ -243,7 +244,8 @@ class SATScraper
 
     protected function login(int $attempt): string
     {
-        $response = $this->client->post(
+        $response = $this->client->request(
+            'POST',
             $this->loginUrl,
             [
                 RequestOptions::COOKIES => $this->cookie,
@@ -274,7 +276,8 @@ class SATScraper
 
     protected function dataAuth(): array
     {
-        $response = $this->client->get(
+        $response = $this->client->request(
+            'GET',
             URLS::SAT_URL_PORTAL_CFDI,
             [RequestOptions::COOKIES => $this->cookie]
         )->getBody()->getContents();
@@ -292,7 +295,8 @@ class SATScraper
     protected function postDataAuth(array $inputs): array
     {
         try {
-            $response = $this->client->post(
+            $response = $this->client->request(
+                'POST',
                 URLS::SAT_URL_PORTAL_CFDI,
                 [
                     RequestOptions::COOKIES => $this->cookie,
@@ -309,7 +313,8 @@ class SATScraper
 
     protected function start(array $inputs = []): array
     {
-        $response = $this->client->post(
+        $response = $this->client->request(
+            'POST',
             URLS::SAT_URL_PORTAL_CFDI,
             [
                 RequestOptions::FORM_PARAMS => $inputs,
@@ -333,7 +338,8 @@ class SATScraper
 
         $data = array_merge($inputs, $data);
 
-        $response = $this->client->post(
+        $response = $this->client->request(
+            'POST',
             URLS::SAT_URL_PORTAL_CFDI_CONSULTA,
             [
                 RequestOptions::COOKIES => $this->cookie,

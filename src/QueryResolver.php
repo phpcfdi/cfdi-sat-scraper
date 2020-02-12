@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Cookie\CookieJarInterface;
 use GuzzleHttp\RequestOptions;
 use PhpCfdi\CfdiSatScraper\Contracts\Filters;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
@@ -17,24 +17,24 @@ use PhpCfdi\CfdiSatScraper\Internal\ParserFormatSAT;
 
 class QueryResolver
 {
-    /** @var Client */
+    /** @var ClientInterface */
     private $client;
 
-    /** @var CookieJar */
+    /** @var CookieJarInterface */
     private $cookie;
 
-    public function __construct(Client $client, CookieJar $cookie)
+    public function __construct(ClientInterface $client, CookieJarInterface $cookie)
     {
         $this->client = $client;
         $this->cookie = $cookie;
     }
 
-    public function getClient(): Client
+    public function getClient(): ClientInterface
     {
         return $this->client;
     }
 
-    public function getCookie(): CookieJar
+    public function getCookie(): CookieJarInterface
     {
         return $this->cookie;
     }
@@ -71,7 +71,8 @@ class QueryResolver
 
     protected function consumeFormPage(string $url): string
     {
-        $response = $this->getClient()->get(
+        $response = $this->getClient()->request(
+            'GET',
             $url,
             [RequestOptions::COOKIES => $this->getCookie()]
         );
@@ -81,7 +82,8 @@ class QueryResolver
 
     protected function consumeSearch(string $url, array $formParams): string
     {
-        $response = $this->getClient()->post(
+        $response = $this->getClient()->request(
+            'POST',
             $url,
             [
                 RequestOptions::FORM_PARAMS => $formParams,

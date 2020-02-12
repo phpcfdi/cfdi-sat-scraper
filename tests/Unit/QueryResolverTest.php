@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Cookie\CookieJar;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersReceived;
@@ -20,7 +20,7 @@ final class QueryResolverTest extends TestCase
     /** @var QueryResolver */
     private $resolver;
 
-    /** @var Client&MockObject */
+    /** @var ClientInterface&MockObject */
     private $client;
 
     /** @var CookieJar&MockObject */
@@ -29,7 +29,7 @@ final class QueryResolverTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->client = $this->createMock(Client::class);
+        $this->client = $this->createMock(ClientInterface::class);
         $this->cookie = $this->createMock(CookieJar::class);
         $this->resolver = new QueryResolver($this->client, $this->cookie);
     }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Cookie\CookieJarInterface;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\MetadataDownloader;
@@ -21,8 +21,8 @@ final class SatScraperDownloadMethodsTest extends TestCase
     {
         $callable = function (\DateTimeImmutable $date): void {
         };
-        $client = $this->createMock(Client::class);
-        $cookie = $this->createMock(CookieJar::class);
+        $client = $this->createMock(ClientInterface::class);
+        $cookie = $this->createMock(CookieJarInterface::class);
         $captcha = $this->createMock(CaptchaResolverInterface::class);
         $scraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captcha);
         $scraper->setOnFiveHundred($callable);
