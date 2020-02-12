@@ -45,12 +45,10 @@ abstract class BaseFilters implements Filters
     {
         if ($this->query->hasUuids()) {
             $filters = [
-                $this->query->getDownloadType(),
                 new UuidOption($this->query->getUuid()[0] ?? ''),
             ];
         } else {
             $filters = [
-                $this->query->getDownloadType(),
                 $this->query->getComplement(),
                 $this->query->getStateVoucher(),
                 $this->query->getRfc(),

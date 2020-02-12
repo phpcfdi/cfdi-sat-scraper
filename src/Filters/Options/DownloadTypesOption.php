@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Filters\Options;
 
 use Eclipxe\Enum\Enum;
-use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
 
 /**
  * @method static self recibidos()
@@ -14,18 +13,6 @@ use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
  * @method bool isEmitidos()
  * @method bool isRecibidos()
  */
-class DownloadTypesOption extends Enum implements FilterOption
+class DownloadTypesOption extends Enum
 {
-    protected static function overrideValues(): array
-    {
-        return [
-            'emitidos' => 'RdoTipoBusquedaEmisor',
-            'recibidos' => 'RdoTipoBusquedaReceptor',
-        ];
-    }
-
-    public function nameIndex(): string
-    {
-        return 'ctl00$MainContent$TipoBusqueda';
-    }
 }
