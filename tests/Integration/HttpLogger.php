@@ -19,9 +19,11 @@ class HttpLogger extends ArrayObject
     public function __construct(string $destinationDir)
     {
         parent::__construct();
-        if ('' !== $destinationDir) {
-            $this->destinationDir = $destinationDir;
+        // if is not empty and is not an absolute path, prepend project dir
+        if ('' !== $destinationDir && ! in_array(substr($destinationDir, 0, 1), ['/', '\\'], true)) {
+            $destinationDir = dirname(__DIR__, 3) . '/' . $destinationDir;
         }
+        $this->destinationDir = $destinationDir;
     }
 
     /**

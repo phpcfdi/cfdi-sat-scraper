@@ -80,7 +80,7 @@ class Factory
 
     public function createGuzzleClient(): Client
     {
-        $container = new HttpLogger(strval(getenv('SAT_HTTP_LOGFILE')));
+        $container = new HttpLogger(strval(getenv('SAT_HTTPDUMP_FOLDER')));
         $stack = HandlerStack::create();
         $stack->push(Middleware::history($container));
         return new Client(['handler' => $stack]);
