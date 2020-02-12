@@ -62,11 +62,14 @@ class IntegrationTestCase extends TestCase
     {
         /** @var RepositoryItem $item */
         foreach ($repository as $item) {
-            $metadata = $list->get($item->getUuid());
-            self::assertNotNull($metadata, "The metadata list does not contain the UUID {$item->getUuid()}");
+            $metadata = $list->find($item->getUuid());
+            if (null === $metadata) {
+                self::fail("The metadata list does not contain the UUID {$item->getUuid()}");
+                return;
+            }
             self::assertRepositoryItemEqualsMetadata($item, $metadata);
         }
-        self::assertCount(count($repository), $list, 'The metadata list has not the same quantity of elements');
+        self::assertSame(count($repository), count($list), 'The metadata list has not the same quantity of elements');
     }
 
     public static function assertRepositoryItemEqualsMetadata(RepositoryItem $item, Metadata $metadata): void
