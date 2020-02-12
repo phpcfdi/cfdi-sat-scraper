@@ -113,11 +113,11 @@ $query
 ```php
 <?php
 
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\SATScraper;
-use GuzzleHttp\Cookie\CookieJar;
-use PhpCfdi\CfdiSatScraper\Query;
 use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\CookieJar;
+use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
+use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\SATScraper;
 
 $captchaResolver = new DeCaptcherCaptchaResolver(new Client(), 'user', 'password');
 $satScraper = new SATScraper('rfc', 'ciec', new Client(), new CookieJar(), $captchaResolver);
@@ -147,11 +147,11 @@ $downloader->setMetadataList($list)                 // establecer la lista a des
 ```php
 <?php
 
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\SATScraper;
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
-use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\CookieJar;
+use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
+use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\SATScraper;
 
 $captchaResolver = new DeCaptcherCaptchaResolver(new Client(), 'user', 'password');
 $satScraper = new SATScraper('rfc', 'ciec', new Client(), new CookieJar(), $captchaResolver);
@@ -179,8 +179,8 @@ que le puede ayudar a considerar este escenario.
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\SATScraper;
 use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\SATScraper;
 
 $captchaResolver = new DeCaptcherCaptchaResolver(new Client(), 'user', 'password');
 $satScraper = new SATScraper('rfc', 'ciec', new Client(), new CookieJar(), $captchaResolver);
@@ -202,11 +202,11 @@ print_r($list);
 ```php
 <?php
 
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\SATScraper;
-use GuzzleHttp\Cookie\CookieJar;
-use PhpCfdi\CfdiSatScraper\Query;
 use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\CookieJar;
+use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
+use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\SATScraper;
 
 $captchaResolver = new DeCaptcherCaptchaResolver(new Client(), 'user', 'password');
 $satScraper = new SATScraper('rfc', 'ciec', new Client(), new CookieJar(), $captchaResolver);
@@ -226,11 +226,11 @@ $satScraper->downloader()
 ```php
 <?php
 
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\SATScraper;
-use GuzzleHttp\Cookie\CookieJar;
-use PhpCfdi\CfdiSatScraper\Query;
 use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\CookieJar;
+use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
+use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\SATScraper;
 
 $captchaResolver = new DeCaptcherCaptchaResolver(new Client(), 'user', 'password');
 $satScraper = new SATScraper('rfc', 'ciec', new Client(), new CookieJar(), $captchaResolver);
