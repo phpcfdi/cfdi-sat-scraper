@@ -71,7 +71,6 @@ class QueryResolver
     protected function consumeFormPage(string $url): string
     {
         $response = $this->getClient()->get($url, [
-            'future' => true,
             'cookies' => $this->getCookie(),
             'verify' => false,
         ]);
@@ -84,7 +83,6 @@ class QueryResolver
         $response = $this->getClient()->post($url, [
             'form_params' => $formParams,
             'headers' => Headers::postAjax(URLS::SAT_HOST_PORTAL_CFDI, $url),
-            'future' => true,
             'verify' => false,
             'cookies' => $this->getCookie(),
         ]);

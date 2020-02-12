@@ -197,7 +197,6 @@ class SATScraper
         $html = $this->client->get(
             $this->loginUrl,
             [
-                'future' => true,
                 'verify' => false,
                 'cookies' => $this->cookie,
             ]
@@ -249,7 +248,6 @@ class SATScraper
         $response = $this->client->post(
             $this->loginUrl,
             [
-                'future' => true,
                 'verify' => false,
                 'cookies' => $this->cookie,
                 'headers' => Headers::post(
@@ -282,7 +280,6 @@ class SATScraper
         $response = $this->client->get(
             URLS::SAT_URL_PORTAL_CFDI,
             [
-                'future' => true,
                 'cookies' => $this->cookie,
                 'verify' => false,
             ]
@@ -304,7 +301,6 @@ class SATScraper
             $response = $this->client->post(
                 URLS::SAT_URL_PORTAL_CFDI,
                 [
-                    'future' => true,
                     'cookies' => $this->cookie,
                     'verify' => false,
                     'form_params' => $inputs,
@@ -323,7 +319,6 @@ class SATScraper
         $response = $this->client->post(
             URLS::SAT_URL_PORTAL_CFDI,
             [
-                'future' => true,
                 'cookies' => $this->cookie,
                 'verify' => false,
                 'form_params' => $inputs,
@@ -349,7 +344,6 @@ class SATScraper
         $response = $this->client->post(
             URLS::SAT_URL_PORTAL_CFDI_CONSULTA,
             [
-                'future' => true,
                 'cookies' => $this->cookie,
                 'verify' => false,
                 'form_params' => $data,
