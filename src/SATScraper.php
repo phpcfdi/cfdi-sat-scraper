@@ -12,6 +12,7 @@ use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATCredentialsException;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Internal\Headers;
 
 class SATScraper
 {
