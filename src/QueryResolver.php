@@ -48,17 +48,20 @@ class QueryResolver
         // hack for bad encoding
         $html = str_replace('charset=utf-16', 'charset=utf-8', $html);
 
-        $inputs = (new HtmlForm($html, 'form'))->getFormValues();
+        // get first set of inputs from the search page
+        $htmlFormInputExtractor = new HtmlForm($html, 'form', ['/^seleccionador$/']);
+        $baseInputs = $htmlFormInputExtractor->getFormValues();
 
         // create filters from query
         $filters = $this->filtersFromQuery($query);
 
-        // consume search using initial filters (it includes data to be parsed)
-        $post = array_merge($inputs, $filters->getInitialFilters());
-        $html = $this->consumeSearch($url, $post);
+        // consume search using initial inputs and inputs to select the filter (UUID or Search)
+        $post = array_merge($baseInputs, $filters->getInitialFilters());
+        $html = $this->consumeSearch($url, $post); // this html is used to update __VARIABLES
+        $lastViewStateValues = (new ParserFormatSAT())->getFormValues($html);
 
         // consume search using search filters
-        $post = array_merge($inputs, $filters->getRequestFilters(), (new ParserFormatSAT())->getFormValues($html));
+        $post = array_merge($baseInputs, $filters->getRequestFilters(), $lastViewStateValues);
         $htmlSearch = $this->consumeSearch($url, $post);
 
         // extract data from resolved search
