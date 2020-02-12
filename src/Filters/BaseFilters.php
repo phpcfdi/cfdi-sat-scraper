@@ -19,6 +19,15 @@ abstract class BaseFilters implements Filters
     protected $query;
 
     /**
+     * Return the standard inputs affected to be used on the search operation (to get the Metadata html content)
+     *
+     * Only return the fields that must change, other fields are left as they exists in the initial values
+     *
+     * @return array<string, string>
+     */
+    abstract public function getFilters(): array;
+
+    /**
      * BaseFilters constructor.
      * @param Query $query
      */
@@ -28,6 +37,8 @@ abstract class BaseFilters implements Filters
     }
 
     /**
+     * Returns only the appropiate key-values to override based on the current query
+     *
      * @return array<string, string>
      */
     public function overrideDefaultFilters(): array
@@ -57,9 +68,10 @@ abstract class BaseFilters implements Filters
 
     public function getRequestFilters(): array
     {
-        $requestFilters = array_merge($this->getFilters(), $this->overrideDefaultFilters());
-
-        return $requestFilters;
+        return array_merge(
+            $this->getFilters(),                // filters set by the extended class
+            $this->overrideDefaultFilters()     // filters based on query that are the same for issued/received
+        );
     }
 
     /**
@@ -88,5 +100,18 @@ abstract class BaseFilters implements Filters
     {
         $fixedPositions = max(1, $fixedPositions);
         return sprintf("%0{$fixedPositions}d", (int) $date->format($format));
+    }
+
+    public function getInitialFilters(): array
+    {
+        $centralFilter = $this->getCentralFilter();
+        return [
+            '__ASYNCPOST' => 'true',
+            '__EVENTARGUMENT' => '',
+            '__EVENTTARGET' => 'ctl00$MainContent$' . $centralFilter,
+            '__LASTFOCUS' => '',
+            'ctl00$MainContent$FiltroCentral' => $centralFilter,
+            'ctl00$ScriptManager1' => 'ctl00$MainContent$UpnlBusqueda|ctl00$MainContent$' . $centralFilter,
+        ];
     }
 }
