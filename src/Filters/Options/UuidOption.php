@@ -8,31 +8,19 @@ use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
 
 class UuidOption implements FilterOption
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $value;
 
-    /**
-     * RfcReceptor constructor.
-     * @param string $uuid
-     */
     public function __construct(string $uuid)
     {
         $this->value = strtolower($uuid);
     }
 
-    /**
-     * @return string
-     */
     public function nameIndex(): string
     {
         return 'ctl00$MainContent$TxtUUID';
     }
 
-    /**
-     * @return string
-     */
     public function value(): string
     {
         return $this->value;

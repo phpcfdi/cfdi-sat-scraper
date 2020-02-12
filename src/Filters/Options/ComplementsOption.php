@@ -95,9 +95,6 @@ use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
  */
 class ComplementsOption extends Enum implements FilterOption
 {
-    /**
-     * @return array
-     */
     protected static function overrideValues(): array
     {
         return [
@@ -144,9 +141,6 @@ class ComplementsOption extends Enum implements FilterOption
         ];
     }
 
-    /**
-     * @return string
-     */
     public function nameIndex(): string
     {
         return 'ctl00$MainContent$ddlComplementos';
