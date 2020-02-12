@@ -38,6 +38,7 @@
         "eclipxe/enum": "^0.2.0"
     },
     "require-dev": {
+        "ext-iconv": "*",
         "symfony/dotenv": "^4.2|^5.0",
         "fzaninotto/faker": "^1.8",
         "phpunit/phpunit": "^8.5"
