@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 
 use DateTimeImmutable;
+use JsonSerializable;
 
-class RepositoryItem
+class RepositoryItem implements JsonSerializable
 {
     /** @var string */
     private $uuid;
@@ -56,5 +57,10 @@ class RepositoryItem
     public function getState(): string
     {
         return $this->state;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
     }
 }

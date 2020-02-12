@@ -8,6 +8,7 @@ use ArrayIterator;
 use Countable;
 use DateTimeImmutable;
 use IteratorAggregate;
+use JsonSerializable;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 
@@ -15,7 +16,7 @@ use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
  * Class Repository to be able to perform tests
  * @implements IteratorAggregate<RepositoryItem>
  */
-class Repository implements Countable, IteratorAggregate
+class Repository implements Countable, IteratorAggregate, JsonSerializable
 {
     /** @var RepositoryItem[] */
     private $items;
@@ -137,5 +138,10 @@ class Repository implements Countable, IteratorAggregate
     public function getIterator()
     {
         return new ArrayIterator($this->items);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return iterator_to_array($this->getIterator());
     }
 }
