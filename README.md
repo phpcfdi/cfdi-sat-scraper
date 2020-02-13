@@ -272,10 +272,9 @@ y recuerda revisar el archivo de tareas pendientes [TODO][] y el [CHANGELOG][].
 
 Documentación de desarrollo:
 
-  - [Entorno de desarrollo] (https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/development/docs/EntornoDesarrollo.md)
-  - [Integración contínua] (https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/development/docs/IntegracionContinua.md)
-  - [Test de integración] (https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/development/docs/TestIntegracion.md)
-
+  - [Entorno de desarrollo](https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/development/docs/EntornoDesarrollo.md)
+  - [Integración contínua](https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/development/docs/IntegracionContinua.md)
+  - [Test de integración](https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/development/docs/TestIntegracion.md)
 
 ## Copyright and License
 
