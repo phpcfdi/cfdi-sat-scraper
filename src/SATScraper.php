@@ -40,8 +40,12 @@ class SATScraper
     /** @var SatHttpGateway */
     private $satHttpGateway;
 
-    public function __construct(string $rfc, string $ciec, SatHttpGateway $satHttpGateway, CaptchaResolverInterface $captchaResolver)
-    {
+    public function __construct(
+        string $rfc,
+        string $ciec,
+        CaptchaResolverInterface $captchaResolver,
+        ?SatHttpGateway $satHttpGateway = null
+    ) {
         if (empty($rfc)) {
             throw new \InvalidArgumentException('The parameter rfc is invalid');
         }
@@ -53,7 +57,7 @@ class SATScraper
         $this->rfc = $rfc;
         $this->ciec = $ciec;
         $this->loginUrl = URLS::SAT_URL_LOGIN;
-        $this->satHttpGateway = $satHttpGateway;
+        $this->satHttpGateway = $satHttpGateway ?? new SatHttpGateway();
         $this->captchaResolver = $captchaResolver;
     }
 

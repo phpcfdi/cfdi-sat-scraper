@@ -77,7 +77,7 @@ class Factory
         $cookieFile = __DIR__ . '/../../build/cookie-' . strtolower($rfc) . '.json';
         $cookieJar = new FileCookieJar($cookieFile, true);
         $satHttpGateway = new SatHttpGateway($this->createGuzzleClient(), $cookieJar);
-        return new SATScraper($rfc, $ciec, $satHttpGateway, static::createCaptchaResolver());
+        return new SATScraper($rfc, $ciec, static::createCaptchaResolver(), $satHttpGateway);
     }
 
     public function createGuzzleClient(): Client

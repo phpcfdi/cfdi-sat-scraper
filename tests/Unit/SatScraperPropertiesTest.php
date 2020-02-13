@@ -17,8 +17,8 @@ final class SatScraperPropertiesTest extends TestCase
         return new SATScraper(
             'rfc',
             'ciec',
-            $this->createSatHttpGateway(),
-            $this->createCaptchaResolver()
+            $this->createCaptchaResolver(),
+            $this->createSatHttpGateway()
         );
     }
 

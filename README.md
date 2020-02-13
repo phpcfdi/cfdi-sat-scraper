@@ -115,11 +115,10 @@ $query
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
-use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SATScraper;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SATScraper('rfc', 'ciec', new SatHttpGateway(), $captchaResolver);
+$satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->downloadPeriod($query);
@@ -148,11 +147,10 @@ $downloader->setMetadataList($list)                 // establecer la lista a des
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
-use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SATScraper;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SATScraper('rfc', 'ciec', new SatHttpGateway(), $captchaResolver);
+$satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
 
 $uuids = [
     '5cc88a1a-8672-11e6-ae22-56b6b6499611',
@@ -176,11 +174,10 @@ que le puede ayudar a considerar este escenario.
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
-use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SATScraper;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SATScraper('rfc', 'ciec', new SatHttpGateway(), $captchaResolver);
+$satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
 // establecer el callback a ejecutar cuando se encuentre en un mismo segundo 500 o más CFDI
 $satScraper->setOnFiveHundred(
     function (DateTimeImmutable $date) {
@@ -201,11 +198,10 @@ print_r($list);
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
-use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SATScraper;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SATScraper('rfc', 'ciec', new SatHttpGateway(), $captchaResolver);
+$satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->downloadPeriod($query);
@@ -223,11 +219,10 @@ $satScraper->downloader()
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
-use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SATScraper;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SATScraper('rfc', 'ciec', new SatHttpGateway(), $captchaResolver);
+$satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
@@ -256,9 +251,10 @@ Tenga en cuenta que esto podría facilitar significativamente un ataque que prov
 $insecureClient = new \GuzzleHttp\Client([
     \GuzzleHttp\RequestOptions::VERIFY => false
 ]);
+$gateway = new \PhpCfdi\CfdiSatScraper\SatHttpGateway($insecureClient);
 
 /** @var \PhpCfdi\CfdiSatScraper\SATScraper $satScraper */
-$satScraper->setSatHttpGateway(new \PhpCfdi\CfdiSatScraper\SatHttpGateway($insecureClient));
+$satScraper->setSatHttpGateway($gateway);
 ```
 
 ## Compatilibilidad

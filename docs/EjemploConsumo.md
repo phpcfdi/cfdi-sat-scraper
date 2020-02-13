@@ -39,7 +39,7 @@ $downloadsPath = sprintf('%s/build/cfdis/%s', getcwd(), $rfc);
 $gateway = new SatHttpGateway(new Client(), new FileCookieJar($cookieJarPath, true));
 $captchaResolver = new ConsoleCaptchaResolver();
 
-$satScraper = new SATScraper($rfc, $claveCiec, $gateway, $captchaResolver);
+$satScraper = new SATScraper($rfc, $claveCiec, $captchaResolver, $gateway);
 
 $query = new Query(new DateTimeImmutable('2019-12-01'), new DateTimeImmutable('2019-12-31'));
 $query->setDownloadType(DownloadTypesOption::recibidos()) // default: emitidos

@@ -22,7 +22,7 @@ final class SatScraperDownloadMethodsTest extends TestCase
         };
         $satHttpGateway = $this->createMock(SatHttpGateway::class);
         $captcha = $this->createMock(CaptchaResolverInterface::class);
-        $scraper = new SATScraper('rfc', 'ciec', $satHttpGateway, $captcha);
+        $scraper = new SATScraper('rfc', 'ciec', $captcha, $satHttpGateway);
         $scraper->setOnFiveHundred($callable);
         $downloader = $scraper->createMetadataDownloader();
 
