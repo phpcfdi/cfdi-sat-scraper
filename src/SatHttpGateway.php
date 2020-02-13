@@ -49,7 +49,8 @@ class SatHttpGateway
     {
         $html = $this->client->request(
             'GET',
-            $loginUrl
+            $loginUrl,
+            [RequestOptions::HEADERS => Headers::get()]
         )->getBody()->getContents();
         if ('' === $html) {
             throw new \RuntimeException('Unable to retrive the contents from login page');
@@ -61,7 +62,8 @@ class SatHttpGateway
     {
         return $this->client->request(
             'GET',
-            URLS::SAT_URL_PORTAL_CFDI
+            URLS::SAT_URL_PORTAL_CFDI,
+            [RequestOptions::HEADERS => Headers::post('', '')]
         )->getBody()->getContents();
     }
 
@@ -70,7 +72,10 @@ class SatHttpGateway
         return $this->client->request(
             'POST',
             URLS::SAT_URL_PORTAL_CFDI,
-            [RequestOptions::FORM_PARAMS => $formData]
+            [
+                RequestOptions::HEADERS => Headers::post('', ''),
+                RequestOptions::FORM_PARAMS => $formData,
+            ]
         )->getBody()->getContents();
     }
 
@@ -99,7 +104,8 @@ class SatHttpGateway
     {
         return $this->client->request(
             'GET',
-            $url
+            $url,
+            [RequestOptions::HEADERS => Headers::get()]
         )->getBody()->getContents();
     }
 
@@ -120,6 +126,6 @@ class SatHttpGateway
 
     public function getAsync(string $link): PromiseInterface
     {
-        return $this->client->requestAsync('GET', $link);
+        return $this->client->requestAsync('GET', $link, [RequestOptions::HEADERS => Headers::get()]);
     }
 }
