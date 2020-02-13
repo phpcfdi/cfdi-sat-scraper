@@ -23,32 +23,39 @@ class QueryResolver
 
     public function resolve(Query $query): MetadataList
     {
-        // define url by download type
-        $url = $this->urlFromDownloadType($query->getDownloadType());
+        $filters = $this->filtersFromQuery($query); // create filters from query
+        $url = $this->urlFromDownloadType($query->getDownloadType()); // define url by download type
 
-        // extract main inputs
-        $html = $this->consumeFormPage($url);
-        // hack for bad encoding
-        $html = str_replace('charset=utf-16', 'charset=utf-8', $html);
+        $baseInputs = $this->resolveOpenCompletePage($url);
+        $lastViewStates = $this->resolveSelectDownloadType($url, $baseInputs, $filters);
+        $htmlWithMetadata = $this->resolveObtainList($url, array_merge($baseInputs, $lastViewStates), $filters);
 
-        // get first set of inputs from the search page
-        $htmlFormInputExtractor = new HtmlForm($html, 'form', ['/^seleccionador$/']);
+        return (new MetadataExtractor())->extract($htmlWithMetadata);
+    }
+
+    protected function resolveOpenCompletePage(string $url): array
+    {
+        $completePage = $this->consumeFormPage($url);
+        $completePage = str_replace('charset=utf-16', 'charset=utf-8', $completePage); // quick and dirty hack
+        $htmlFormInputExtractor = new HtmlForm($completePage, 'form', ['/^ctl00\$MainContent\$Btn.+/', '/^seleccionador$/']);
         $baseInputs = $htmlFormInputExtractor->getFormValues();
+        return $baseInputs;
+    }
 
-        // create filters from query
-        $filters = $this->filtersFromQuery($query);
-
-        // consume search using initial inputs and inputs to select the filter (UUID or Search)
+    protected function resolveSelectDownloadType(string $url, array $baseInputs, Filters $filters): array
+    {
         $post = array_merge($baseInputs, $filters->getInitialFilters());
         $html = $this->consumeSearch($url, $post); // this html is used to update __VARIABLES
         $lastViewStateValues = (new ParserFormatSAT())->getFormValues($html);
+        return $lastViewStateValues;
+    }
 
+    protected function resolveObtainList(string $url, array $baseInputs, Filters $filters): string
+    {
         // consume search using search filters
-        $post = array_merge($baseInputs, $filters->getRequestFilters(), $lastViewStateValues);
-        $htmlSearch = $this->consumeSearch($url, $post);
-
-        // extract data from resolved search
-        return (new MetadataExtractor())->extract($htmlSearch);
+        $post = array_merge($baseInputs, $filters->getRequestFilters());
+        $htmlWithMetadataContent = $this->consumeSearch($url, $post);
+        return $htmlWithMetadataContent;
     }
 
     protected function consumeFormPage(string $url): string
