@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\EachPromise;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -66,19 +67,27 @@ class DownloadXML
     }
 
     /**
-     * @param callable $callback
+     * Generate the promises to download all the elements on the metadata list that contains
+     * a link to download. When the promise is fulfilled will call $onFulfilled, if it is rejected
+     * will call $onRejected.
+     *
+     * - $onFulfilled callable: function(string $content, string $filename, string $uuid): void
+     * - $onRejected function(ResponseInterface $response, string $uuid): void
+     *
+     * @param callable $onFulfilled
+     * @param callable|null $onRejected
      */
-    public function download(callable $callback): void
+    public function download(callable $onFulfilled, ?callable $onRejected = null): void
     {
         $promises = $this->makePromises();
-
-        (new EachPromise($promises, [
+        $invoker = new EachPromise($promises, [
             'concurrency' => $this->getConcurrency(),
-            'fulfilled' => function (ResponseInterface $response) use ($callback): void {
-                $callback($response->getBody(), $this->getFileName($response));
+            'fulfilled' => function (ResponseInterface $response, string $uuid) use ($onFulfilled): void {
+                $onFulfilled((string) $response->getBody(), $this->getFileName($uuid), $uuid);
             },
-        ]))->promise()
-            ->wait();
+            'rejected' => $onRejected,
+        ]);
+        $invoker->promise()->wait();
     }
 
     /**
@@ -91,42 +100,54 @@ class DownloadXML
             if ('' === $link) {
                 continue;
             }
-            yield $this->satHttpGateway->getAsync($link);
+            yield $metadata->uuid() => $this->satHttpGateway->getAsync($link);
         }
     }
 
     /**
-     * @param ResponseInterface $response
+     * @param string $uuid
      *
      * @return string
      */
-    protected function getFileName(ResponseInterface $response)
+    protected function getFileName(string $uuid): string
     {
-        $contentDisposition = $response->getHeaderLine('content-disposition');
-        $partsOfContentDisposition = explode(';', $contentDisposition);
-        $fileName = str_replace('filename=', '', $partsOfContentDisposition[1] ?? '');
-
-        return strtolower(! empty($fileName) ? $fileName : uniqid() . '.xml');
+        return strtolower($uuid) . '.xml';
     }
 
     /**
-     * @param string $path
+     * Generic method to download all the elements on the metadata list that contains a link to download.
+     * Before download it checks that the destination directory exists, if it doesn't exists and call with
+     * true in $createDir then the directory will be created recursively using mode $mode.
+     *
+     * When one of the downloads fails it will throw an exception.
+     *
+     * @param string $destinationDir
      * @param bool $createDir
      * @param int $mode
      */
-    public function saveTo(string $path, bool $createDir = false, int $mode = 0775): void
+    public function saveTo(string $destinationDir, bool $createDir = false, int $mode = 0775): void
     {
-        if (! $createDir && ! file_exists($path)) {
-            throw new \InvalidArgumentException("The provider path [{$path}] not exists");
+        if (! $createDir && ! file_exists($destinationDir)) {
+            throw new \InvalidArgumentException("The provider path [{$destinationDir}] not exists");
         }
 
-        if ($createDir && ! file_exists($path)) {
-            mkdir($path, $mode, true);
+        if ($createDir && ! file_exists($destinationDir)) {
+            mkdir($destinationDir, $mode, true);
         }
 
         $this->download(
-            function ($content, $name) use ($path): void {
-                file_put_contents($path . DIRECTORY_SEPARATOR . $name, $content);
+            function (string $content, string $name, string $uuid) use ($destinationDir): void {
+                if ('' === $content) {
+                    throw new \RuntimeException(sprintf('Downloaded CFDI %s was empty', $uuid));
+                }
+                $destinationFile = $destinationDir . DIRECTORY_SEPARATOR . $name;
+                if (false === file_put_contents($destinationFile, $content)) {
+                    throw new \RuntimeException(sprintf('Unable to save CFDI %s to %s', $uuid, $destinationFile));
+                }
+            },
+            function (RequestException $exception, string $uuid): void {
+                $uri = (string) $exception->getRequest()->getUri();
+                throw new \RuntimeException(sprintf('Unable to retrieve CFDI %s from %s', $uuid, $uri), 0, $exception);
             }
         );
     }
