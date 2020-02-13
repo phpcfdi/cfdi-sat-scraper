@@ -7,13 +7,11 @@ namespace PhpCfdi\CfdiSatScraper;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Cookie\CookieJarInterface;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\RequestOptions;
 use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATCredentialsException;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
-use PhpCfdi\CfdiSatScraper\Internal\Headers;
 use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
 
 class SATScraper
@@ -47,6 +45,9 @@ class SATScraper
     /** @var int */
     protected $maxTriesLogin = 3;
 
+    /** @var SatHttpGateway */
+    private $satHttpGateway;
+
     public function __construct(
         string $rfc,
         string $ciec,
@@ -68,6 +69,7 @@ class SATScraper
         $this->client = $client;
         $this->cookie = $cookie;
         $this->captchaResolver = $captchaResolver;
+        $this->setUpSatHttpGateway();
     }
 
     public function getRfc(): string
@@ -135,6 +137,7 @@ class SATScraper
     public function setCookie(CookieJarInterface $cookieJar): self
     {
         $this->cookie = $cookieJar;
+        $this->setUpSatHttpGateway();
 
         return $this;
     }
@@ -147,6 +150,7 @@ class SATScraper
     public function setClient(ClientInterface $client): self
     {
         $this->client = $client;
+        $this->setUpSatHttpGateway();
 
         return $this;
     }
@@ -195,15 +199,7 @@ class SATScraper
      */
     protected function consumeLoginPage(): string
     {
-        $html = $this->client->request(
-            'GET',
-            $this->loginUrl,
-            [RequestOptions::COOKIES => $this->cookie]
-        )->getBody()->getContents();
-        if ('' === $html) {
-            throw new \RuntimeException('Unable to retrive the contents from login page');
-        }
-        return $html;
+        return $this->satHttpGateway->getAuthLoginPage($this->loginUrl);
     }
 
     protected function requestCaptchaImage(): string
@@ -218,7 +214,7 @@ class SATScraper
         return $imageBase64;
     }
 
-    protected function getCaptchaValue(int $attempt): ?string
+    protected function getCaptchaValue(int $attempt): string
     {
         $imageBase64 = $this->requestCaptchaImage();
         try {
@@ -244,24 +240,7 @@ class SATScraper
 
     protected function login(int $attempt): string
     {
-        $response = $this->client->request(
-            'POST',
-            $this->loginUrl,
-            [
-                RequestOptions::COOKIES => $this->cookie,
-                RequestOptions::HEADERS => Headers::post(
-                    parse_url(URLS::SAT_URL_LOGIN, PHP_URL_HOST),
-                    URLS::SAT_URL_LOGIN
-                ),
-                RequestOptions::FORM_PARAMS => [
-                    'Ecom_Password' => $this->ciec,
-                    'Ecom_User_ID' => $this->rfc,
-                    'option' => 'credential',
-                    'submit' => 'Enviar',
-                    'userCaptcha' => $this->getCaptchaValue(1),
-                ],
-            ]
-        )->getBody()->getContents();
+        $response = $this->satHttpGateway->postLoginData($this->loginUrl, $this->rfc, $this->ciec, $this->getCaptchaValue(1));
 
         if (false !== strpos($response, 'Ecom_User_ID')) {
             if ($attempt < $this->maxTriesLogin) {
@@ -276,13 +255,8 @@ class SATScraper
 
     protected function dataAuth(): array
     {
-        $response = $this->client->request(
-            'GET',
-            URLS::SAT_URL_PORTAL_CFDI,
-            [RequestOptions::COOKIES => $this->cookie]
-        )->getBody()->getContents();
+        $response = $this->satHttpGateway->getPortalMainPage();
         $inputs = $this->parseInputs($response);
-
         return $inputs;
     }
 
@@ -295,14 +269,7 @@ class SATScraper
     protected function postDataAuth(array $inputs): array
     {
         try {
-            $response = $this->client->request(
-                'POST',
-                URLS::SAT_URL_PORTAL_CFDI,
-                [
-                    RequestOptions::COOKIES => $this->cookie,
-                    RequestOptions::FORM_PARAMS => $inputs,
-                ]
-            )->getBody()->getContents();
+            $response = $this->satHttpGateway->postDataAuth($inputs);
             $inputs = $this->parseInputs($response);
 
             return $inputs;
@@ -311,19 +278,10 @@ class SATScraper
         }
     }
 
-    protected function start(array $inputs = []): array
+    protected function start(array $inputs): array
     {
-        $response = $this->client->request(
-            'POST',
-            URLS::SAT_URL_PORTAL_CFDI,
-            [
-                RequestOptions::FORM_PARAMS => $inputs,
-                RequestOptions::COOKIES => $this->cookie,
-            ]
-        )->getBody()->getContents();
-        $inputs = $this->parseInputs($response);
-
-        return $inputs;
+        $response = $this->satHttpGateway->postStart($inputs);
+        return $this->parseInputs($response);
     }
 
     protected function selectType(DownloadTypesOption $downloadType, array $inputs): string
@@ -335,29 +293,15 @@ class SATScraper
             '__EVENTARGUMENT' => '',
             'ctl00$ScriptManager1' => 'ctl00$MainContent$UpnlBusqueda|ctl00$MainContent$BtnBusqueda',
         ];
-
         $data = array_merge($inputs, $data);
 
-        $response = $this->client->request(
-            'POST',
-            URLS::SAT_URL_PORTAL_CFDI_CONSULTA,
-            [
-                RequestOptions::COOKIES => $this->cookie,
-                RequestOptions::FORM_PARAMS => $data,
-                RequestOptions::HEADERS => Headers::post(
-                    parse_url(URLS::SAT_URL_LOGIN, PHP_URL_HOST),
-                    URLS::SAT_URL_PORTAL_CFDI
-                ),
-            ]
-        )->getBody()->getContents();
-
-        return $response;
+        return $this->satHttpGateway->postSelectType($data);
     }
 
     public function createMetadataDownloader(): MetadataDownloader
     {
         return new MetadataDownloader(
-            new QueryResolver($this->getClient(), $this->getCookie()),
+            new QueryResolver($this->satHttpGateway),
             $this->onFiveHundred
         );
     }
@@ -390,6 +334,11 @@ class SATScraper
 
     public function downloader(): DownloadXML
     {
-        return new DownloadXML($this->getClient(), $this->getCookie());
+        return new DownloadXML($this->satHttpGateway);
+    }
+
+    private function setUpSatHttpGateway(): void
+    {
+        $this->satHttpGateway = new SatHttpGateway($this->client, $this->cookie);
     }
 }

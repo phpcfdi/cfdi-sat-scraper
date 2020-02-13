@@ -28,8 +28,6 @@ final class SatScraperDownloadMethodsTest extends TestCase
         $scraper->setOnFiveHundred($callable);
         $downloader = $scraper->createMetadataDownloader();
 
-        $this->assertSame($client, $downloader->getQueryResolver()->getClient());
-        $this->assertSame($cookie, $downloader->getQueryResolver()->getCookie());
         $this->assertSame($callable, $downloader->getOnFiveHundred());
     }
 

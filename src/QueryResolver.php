@@ -4,39 +4,21 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Cookie\CookieJarInterface;
-use GuzzleHttp\RequestOptions;
 use PhpCfdi\CfdiSatScraper\Contracts\Filters;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersReceived;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
-use PhpCfdi\CfdiSatScraper\Internal\Headers;
 use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
 use PhpCfdi\CfdiSatScraper\Internal\ParserFormatSAT;
 
 class QueryResolver
 {
-    /** @var ClientInterface */
-    private $client;
+    /** @var SatHttpGateway */
+    private $satHttpGateway;
 
-    /** @var CookieJarInterface */
-    private $cookie;
-
-    public function __construct(ClientInterface $client, CookieJarInterface $cookie)
+    public function __construct(SatHttpGateway $satHttpGateway)
     {
-        $this->client = $client;
-        $this->cookie = $cookie;
-    }
-
-    public function getClient(): ClientInterface
-    {
-        return $this->client;
-    }
-
-    public function getCookie(): CookieJarInterface
-    {
-        return $this->cookie;
+        $this->satHttpGateway = $satHttpGateway;
     }
 
     public function resolve(Query $query): MetadataList
@@ -71,27 +53,12 @@ class QueryResolver
 
     protected function consumeFormPage(string $url): string
     {
-        $response = $this->getClient()->request(
-            'GET',
-            $url,
-            [RequestOptions::COOKIES => $this->getCookie()]
-        );
-
-        return $response->getBody()->getContents();
+        return $this->satHttpGateway->getPortalPage($url);
     }
 
     protected function consumeSearch(string $url, array $formParams): string
     {
-        $response = $this->getClient()->request(
-            'POST',
-            $url,
-            [
-                RequestOptions::FORM_PARAMS => $formParams,
-                RequestOptions::HEADERS => Headers::postAjax(parse_url(URLS::SAT_URL_PORTAL_CFDI, PHP_URL_HOST), $url),
-                RequestOptions::COOKIES => $this->getCookie(),
-            ]
-        );
-        return $response->getBody()->getContents();
+        return $this->satHttpGateway->postAjaxSearch($url, $formParams);
     }
 
     public function urlFromDownloadType(DownloadTypesOption $downloadType): string
@@ -108,5 +75,10 @@ class QueryResolver
             return new FiltersIssued($query);
         }
         return new FiltersReceived($query);
+    }
+
+    public function getSatHttpGateway(): SatHttpGateway
+    {
+        return $this->satHttpGateway;
     }
 }

@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Cookie\CookieJarInterface;
 use GuzzleHttp\Promise\EachPromise;
 use GuzzleHttp\Promise\PromiseInterface;
-use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -16,31 +13,19 @@ use Psr\Http\Message\ResponseInterface;
  */
 class DownloadXML
 {
-    /**
-     * @var MetadataList|null
-     */
+    /** @var MetadataList|null */
     protected $list;
 
-    /**
-     * @var ClientInterface
-     */
-    protected $client;
-
-    /**
-     * @var CookieJarInterface
-     */
-    protected $cookie;
-
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $concurrency;
 
-    public function __construct(ClientInterface $client, CookieJarInterface $cookie)
+    /** @var SatHttpGateway */
+    private $satHttpGateway;
+
+    public function __construct(SatHttpGateway $satHttpGateway)
     {
-        $this->client = $client;
-        $this->cookie = $cookie;
-        $this->concurrency = 10;
+        $this->satHttpGateway = $satHttpGateway;
+        $this->setConcurrency(10);
         $this->list = null;
     }
 
@@ -63,29 +48,20 @@ class DownloadXML
         return $this;
     }
 
-    public function getClient(): ClientInterface
-    {
-        return $this->client;
-    }
-
-    public function getCookie(): CookieJarInterface
-    {
-        return $this->cookie;
-    }
-
     public function getConcurrency(): int
     {
         return $this->concurrency;
     }
 
     /**
-     * @param int $concurrency
+     * Set concurrency, if lower than 1 will use 1
      *
-     * @return DownloadXML
+     * @param int $concurrency
+     * @return $this
      */
-    public function setConcurrency(int $concurrency)
+    public function setConcurrency(int $concurrency): self
     {
-        $this->concurrency = $concurrency;
+        $this->concurrency = max(1, $concurrency);
         return $this;
     }
 
@@ -115,7 +91,7 @@ class DownloadXML
             if ('' === $link) {
                 continue;
             }
-            yield $this->getClient()->requestAsync('GET', $link, [RequestOptions::COOKIES => $this->getCookie()]);
+            yield $this->satHttpGateway->getAsync($link);
         }
     }
 
