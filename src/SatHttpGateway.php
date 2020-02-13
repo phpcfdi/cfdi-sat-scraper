@@ -20,34 +20,29 @@ class SatHttpGateway
     public function __construct(?ClientInterface $client = null, ?CookieJarInterface $cookieJar = null)
     {
         $client = $client ?? new Client();
+
         // set CookieJar if it was specified from constructor, does not matter if client already has one
         if (null !== $cookieJar) {
-            $this->reconstructClientWithCookieJar($client, $cookieJar);
+            $client = $this->reconstructClientWithCookieJar($client, $cookieJar);
         }
 
         // set new CookieJar if current is not an instance of CookieJarInterface
         if (! $client->getConfig(RequestOptions::COOKIES) instanceof CookieJarInterface) {
-            $this->reconstructClientWithCookieJar($client, new CookieJar());
+            $client = $this->reconstructClientWithCookieJar($client, new CookieJar());
         }
 
         $this->client = $client;
     }
 
-    private function reconstructClientWithCookieJar(ClientInterface $client, CookieJarInterface $cookieJar): void
+    private function reconstructClientWithCookieJar(ClientInterface $client, CookieJarInterface $cookieJar): ClientInterface
     {
-        if (! $client instanceof Client) {
-            return;
-        }
-
         if ($client->getConfig(RequestOptions::COOKIES) === $cookieJar) {
-            return;
+            return $client;
         }
 
         /** @var array $currentConfig */
         $currentConfig = $client->getConfig();
-
-        /** @var Client $client */
-        $client->__construct([RequestOptions::COOKIES => $cookieJar] + $currentConfig);
+        return new Client([RequestOptions::COOKIES => $cookieJar] + $currentConfig);
     }
 
     public function getAuthLoginPage(string $loginUrl): string
