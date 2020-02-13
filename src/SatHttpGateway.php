@@ -70,6 +70,15 @@ class SatHttpGateway
         )->getBody()->getContents();
     }
 
+    public function postPortalMainPage(array $formData): string
+    {
+        return $this->client->request(
+            'POST',
+            URLS::SAT_URL_PORTAL_CFDI,
+            [RequestOptions::FORM_PARAMS => $formData]
+        )->getBody()->getContents();
+    }
+
     public function postLoginData(string $loginUrl, string $rfc, string $ciec, string $captcha): string
     {
         return $this->client->request(
@@ -88,15 +97,6 @@ class SatHttpGateway
                     'userCaptcha' => $captcha,
                 ],
             ]
-        )->getBody()->getContents();
-    }
-
-    public function postDataAuth(array $inputs): string
-    {
-        return $this->client->request(
-            'POST',
-            URLS::SAT_URL_PORTAL_CFDI,
-            [RequestOptions::FORM_PARAMS => $inputs]
         )->getBody()->getContents();
     }
 
@@ -119,17 +119,6 @@ class SatHttpGateway
                     parse_url(URLS::SAT_URL_PORTAL_CFDI, PHP_URL_HOST),
                     $url
                 ),
-            ]
-        )->getBody()->getContents();
-    }
-
-    public function postStart(array $inputs): string
-    {
-        return $this->client->request(
-            'POST',
-            URLS::SAT_URL_PORTAL_CFDI,
-            [
-                RequestOptions::FORM_PARAMS => $inputs,
             ]
         )->getBody()->getContents();
     }

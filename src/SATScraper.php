@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use GuzzleHttp\Exception\ClientException;
 use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
-use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATCredentialsException;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
@@ -145,7 +143,6 @@ class SATScraper
     /**
      * @return SATScraper
      *
-     * @throws SATAuthenticatedException
      * @throws SATCredentialsException
      */
     public function initScraper(): self
@@ -153,11 +150,23 @@ class SATScraper
         if (! $this->hasLogin()) {
             $this->login(1);
         }
-        $data = $this->dataAuth();
-        $data = $this->postDataAuth($data);
-        $this->start($data);
+        $this->registerOnPortalMainPage();
 
         return $this;
+    }
+
+    protected function registerOnPortalMainPage(): void
+    {
+        $htmlMainPage = $this->satHttpGateway->getPortalMainPage();
+
+        $inputs = (new HtmlForm($htmlMainPage, 'form'))->getFormValues();
+        if (count($inputs) > 0) {
+            $htmlMainPage = $this->satHttpGateway->postPortalMainPage($inputs);
+        }
+
+        if (false === strpos($htmlMainPage, 'RFC Autenticado: ' . $this->getRfc())) {
+            throw new \RuntimeException('The session is authenticated but main page does not contains your RFC');
+        }
     }
 
     /**
@@ -226,37 +235,6 @@ class SATScraper
         return $response;
     }
 
-    protected function dataAuth(): array
-    {
-        $response = $this->satHttpGateway->getPortalMainPage();
-        $inputs = $this->parseInputs($response);
-        return $inputs;
-    }
-
-    /**
-     * @param array $inputs
-     * @return array
-     *
-     * @throws SATAuthenticatedException
-     */
-    protected function postDataAuth(array $inputs): array
-    {
-        try {
-            $response = $this->satHttpGateway->postDataAuth($inputs);
-            $inputs = $this->parseInputs($response);
-
-            return $inputs;
-        } catch (ClientException $e) {
-            throw new SATAuthenticatedException($e->getMessage());
-        }
-    }
-
-    protected function start(array $inputs): array
-    {
-        $response = $this->satHttpGateway->postStart($inputs);
-        return $this->parseInputs($response);
-    }
-
     public function createMetadataDownloader(): MetadataDownloader
     {
         return new MetadataDownloader(
@@ -281,14 +259,6 @@ class SATScraper
     {
         $this->initScraper();
         return $this->createMetadataDownloader()->downloadByDateTime($query);
-    }
-
-    protected function parseInputs(string $html): array
-    {
-        $htmlForm = new HtmlForm($html, 'form');
-        $inputs = $htmlForm->getFormValues();
-
-        return $inputs;
     }
 
     public function downloader(): DownloadXML
