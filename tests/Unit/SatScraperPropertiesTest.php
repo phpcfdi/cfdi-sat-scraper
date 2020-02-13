@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
+use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SATScraper;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use PhpCfdi\CfdiSatScraper\URLS;
@@ -18,15 +17,14 @@ final class SatScraperPropertiesTest extends TestCase
         return new SATScraper(
             'rfc',
             'ciec',
-            $this->createGuzzleClient(),
-            $this->createCookieJar(),
+            $this->createSatHttpGateway(),
             $this->createCaptchaResolver()
         );
     }
 
-    private function createGuzzleClient(): Client
+    private function createSatHttpGateway(): SatHttpGateway
     {
-        return new Client();
+        return new SatHttpGateway();
     }
 
     private function createCaptchaResolver(): CaptchaResolverInterface
@@ -34,11 +32,6 @@ final class SatScraperPropertiesTest extends TestCase
         /** @var CaptchaResolverInterface $captcha */
         $captcha = $this->createMock(CaptchaResolverInterface::class);
         return $captcha;
-    }
-
-    private function createCookieJar(): CookieJar
-    {
-        return new CookieJar();
     }
 
     public function testRfc(): void
@@ -81,18 +74,11 @@ final class SatScraperPropertiesTest extends TestCase
         $this->assertNull($scraper->setOnFiveHundred(null)->getOnFiveHundred());
     }
 
-    public function testClient(): void
+    public function testSatHttpGateway(): void
     {
         $scraper = $this->createScraper();
-        $client = $this->createGuzzleClient();
-        $this->assertSame($client, $scraper->setClient($client)->getClient());
-    }
-
-    public function testCookie(): void
-    {
-        $scraper = $this->createScraper();
-        $cookie = $this->createCookieJar();
-        $this->assertSame($cookie, $scraper->setCookie($cookie)->getCookie());
+        $satHttpGateway = $this->createSatHttpGateway();
+        $this->assertSame($satHttpGateway, $scraper->setSatHttpGateway($satHttpGateway)->getSatHttpGateway());
     }
 
     public function testMaxTriesCaptcha(): void

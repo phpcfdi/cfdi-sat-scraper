@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Cookie\CookieJarInterface;
 use GuzzleHttp\Exception\ClientException;
 use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
@@ -23,12 +21,6 @@ class SATScraper
 
     /** @var string */
     protected $ciec;
-
-    /** @var ClientInterface */
-    protected $client;
-
-    /** @var CookieJarInterface */
-    protected $cookie;
 
     /** @var callable|null */
     protected $onFiveHundred;
@@ -48,13 +40,8 @@ class SATScraper
     /** @var SatHttpGateway */
     private $satHttpGateway;
 
-    public function __construct(
-        string $rfc,
-        string $ciec,
-        ClientInterface $client,
-        CookieJarInterface $cookie,
-        CaptchaResolverInterface $captchaResolver
-    ) {
+    public function __construct(string $rfc, string $ciec, SatHttpGateway $satHttpGateway, CaptchaResolverInterface $captchaResolver)
+    {
         if (empty($rfc)) {
             throw new \InvalidArgumentException('The parameter rfc is invalid');
         }
@@ -66,10 +53,8 @@ class SATScraper
         $this->rfc = $rfc;
         $this->ciec = $ciec;
         $this->loginUrl = URLS::SAT_URL_LOGIN;
-        $this->client = $client;
-        $this->cookie = $cookie;
+        $this->satHttpGateway = $satHttpGateway;
         $this->captchaResolver = $captchaResolver;
-        $this->setUpSatHttpGateway();
     }
 
     public function getRfc(): string
@@ -129,28 +114,14 @@ class SATScraper
         return $this;
     }
 
-    public function getCookie(): CookieJarInterface
+    public function getSatHttpGateway(): SatHttpGateway
     {
-        return $this->cookie;
+        return $this->satHttpGateway;
     }
 
-    public function setCookie(CookieJarInterface $cookieJar): self
+    public function setSatHttpGateway(SatHttpGateway $satHttpGateway): self
     {
-        $this->cookie = $cookieJar;
-        $this->setUpSatHttpGateway();
-
-        return $this;
-    }
-
-    public function getClient(): ClientInterface
-    {
-        return $this->client;
-    }
-
-    public function setClient(ClientInterface $client): self
-    {
-        $this->client = $client;
-        $this->setUpSatHttpGateway();
+        $this->satHttpGateway = $satHttpGateway;
 
         return $this;
     }
@@ -335,10 +306,5 @@ class SATScraper
     public function downloader(): DownloadXML
     {
         return new DownloadXML($this->satHttpGateway);
-    }
-
-    private function setUpSatHttpGateway(): void
-    {
-        $this->satHttpGateway = new SatHttpGateway($this->client, $this->cookie);
     }
 }

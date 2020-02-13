@@ -17,8 +17,9 @@ class SatHttpGateway
     /** @var ClientInterface */
     private $client;
 
-    public function __construct(ClientInterface $client, ?CookieJarInterface $cookieJar = null)
+    public function __construct(?ClientInterface $client = null, ?CookieJarInterface $cookieJar = null)
     {
+        $client = $client ?? new Client();
         // set CookieJar if it was specified from constructor, does not matter if client already has one
         if (null !== $cookieJar) {
             $this->reconstructClientWithCookieJar($client, $cookieJar);
