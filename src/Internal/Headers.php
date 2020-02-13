@@ -23,9 +23,10 @@ class Headers
             'Accept' => ' text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             'Accept-Encoding' => 'gzip, deflate',
             'Accept-Language' => 'en-US,en;q=0.5',
+            'Accept-Charset' => 'utf-8, iso-8859-15;q=0.5',
             'Connection' => 'keep-alive',
             'Referer' => $referer,
-            'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101 Firefox/31.0',
+            'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.5',
         ]);
     }
 
@@ -42,7 +43,7 @@ class Headers
         return array_merge(self::get($referer), array_filter([
             'Pragma' => 'no-cache',
             'Host' => $host,
-            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8',
         ]));
     }
 
@@ -58,7 +59,7 @@ class Headers
     {
         return array_merge(self::post($host, $referer), [
             'X-MicrosoftAjax' => 'Delta=true',
-            'x-requested-with' => 'XMLHttpRequest',
+            'X-Requested-With' => 'XMLHttpRequest',
         ]);
     }
 }
