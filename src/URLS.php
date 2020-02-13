@@ -10,8 +10,6 @@ final class URLS
 
     public const SAT_URL_PORTAL_CFDI = 'https://portalcfdi.facturaelectronica.sat.gob.mx/';
 
-    public const SAT_URL_PORTAL_CFDI_CONSULTA = 'https://portalcfdi.facturaelectronica.sat.gob.mx/Consulta.aspx';
-
     public const SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR = 'https://portalcfdi.facturaelectronica.sat.gob.mx/ConsultaReceptor.aspx';
 
     public const SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR = 'https://portalcfdi.facturaelectronica.sat.gob.mx/ConsultaEmisor.aspx';

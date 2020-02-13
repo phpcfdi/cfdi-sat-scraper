@@ -143,21 +143,19 @@ class SATScraper
     }
 
     /**
-     * @param DownloadTypesOption $downloadType
      * @return SATScraper
      *
      * @throws SATAuthenticatedException
      * @throws SATCredentialsException
      */
-    public function initScraper(DownloadTypesOption $downloadType): self
+    public function initScraper(): self
     {
         if (! $this->hasLogin()) {
             $this->login(1);
         }
         $data = $this->dataAuth();
         $data = $this->postDataAuth($data);
-        $data = $this->start($data);
-        $this->selectType($downloadType, $data);
+        $this->start($data);
 
         return $this;
     }
@@ -259,20 +257,6 @@ class SATScraper
         return $this->parseInputs($response);
     }
 
-    protected function selectType(DownloadTypesOption $downloadType, array $inputs): string
-    {
-        $data = [
-            'ctl00$MainContent$TipoBusqueda' => $downloadType->value(),
-            '__ASYNCPOST' => 'true',
-            '__EVENTTARGET' => '',
-            '__EVENTARGUMENT' => '',
-            'ctl00$ScriptManager1' => 'ctl00$MainContent$UpnlBusqueda|ctl00$MainContent$BtnBusqueda',
-        ];
-        $data = array_merge($inputs, $data);
-
-        return $this->satHttpGateway->postSelectType($data);
-    }
-
     public function createMetadataDownloader(): MetadataDownloader
     {
         return new MetadataDownloader(
@@ -283,19 +267,19 @@ class SATScraper
 
     public function downloadListUUID(array $uuids, DownloadTypesOption $downloadType): MetadataList
     {
-        $this->initScraper($downloadType);
+        $this->initScraper();
         return $this->createMetadataDownloader()->downloadByUuids($uuids, $downloadType);
     }
 
     public function downloadPeriod(Query $query): MetadataList
     {
-        $this->initScraper($query->getDownloadType());
+        $this->initScraper();
         return $this->createMetadataDownloader()->downloadByDate($query);
     }
 
     public function downloadByDateTime(Query $query): MetadataList
     {
-        $this->initScraper($query->getDownloadType());
+        $this->initScraper();
         return $this->createMetadataDownloader()->downloadByDateTime($query);
     }
 

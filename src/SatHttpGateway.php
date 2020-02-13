@@ -134,21 +134,6 @@ class SatHttpGateway
         )->getBody()->getContents();
     }
 
-    public function postSelectType(array $data): string
-    {
-        return $this->client->request(
-            'POST',
-            URLS::SAT_URL_PORTAL_CFDI_CONSULTA,
-            [
-                RequestOptions::FORM_PARAMS => $data,
-                RequestOptions::HEADERS => Headers::post(
-                    parse_url(URLS::SAT_URL_LOGIN, PHP_URL_HOST),
-                    URLS::SAT_URL_PORTAL_CFDI
-                ),
-            ]
-        )->getBody()->getContents();
-    }
-
     public function getAsync(string $link): PromiseInterface
     {
         return $this->client->requestAsync('GET', $link);
