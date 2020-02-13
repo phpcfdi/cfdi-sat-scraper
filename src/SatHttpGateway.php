@@ -128,4 +128,11 @@ class SatHttpGateway
     {
         return $this->client->requestAsync('GET', $link, [RequestOptions::HEADERS => Headers::get()]);
     }
+
+    public function clearCookieJar(): void
+    {
+        /** @var CookieJarInterface $cookieJar */
+        $cookieJar = $this->client->getConfig(RequestOptions::COOKIES);
+        $cookieJar->clear();
+    }
 }

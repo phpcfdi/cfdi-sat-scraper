@@ -216,8 +216,21 @@ class SATScraper
 
     protected function hasLogin(): bool
     {
+        // check login on cfdiau
         $html = $this->consumeLoginPage();
-        return (false !== strpos($html, 'https://cfdiau.sat.gob.mx/nidp/app?sid=0'));
+        if (false === strpos($html, 'https://cfdiau.sat.gob.mx/nidp/app?sid=0')) {
+            $this->logout();
+            return  false;
+        }
+
+        // check main page
+        $html = $this->satHttpGateway->getPortalMainPage();
+        if (false !== strpos($html, urlencode('https://portalcfdi.facturaelectronica.sat.gob.mx/logout.aspx?salir=y'))) {
+            $this->logout();
+            return  false;
+        }
+
+        return true;
     }
 
     protected function login(int $attempt): string
@@ -233,6 +246,13 @@ class SATScraper
         }
 
         return $response;
+    }
+
+    protected function logout(): void
+    {
+        $this->satHttpGateway->getPortalPage('https://portalcfdi.facturaelectronica.sat.gob.mx/logout.aspx?salir=y');
+        $this->satHttpGateway->getPortalPage('https://cfdiau.sat.gob.mx/nidp/app/logout?locale=es');
+        $this->satHttpGateway->clearCookieJar();
     }
 
     public function createMetadataDownloader(): MetadataDownloader
