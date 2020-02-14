@@ -77,8 +77,8 @@ class DownloadXML
      * a link to download. When the promise is fulfilled will call $onFulfilled, if it is rejected
      * will call $onRejected.
      *
-     * - $onFulfilled callable: function(string $content, string $filename, string $uuid): void
-     * - $onRejected function(ResponseInterface $response, string $uuid): void
+     * - $onFulfilled callable: function(ResponseInterface $response, string $uuid): void
+     * - $onRejected callable: function(RequestException $reason, string $uuid): void
      *
      * @param callable $onFulfilled
      * @param callable|null $onRejected
@@ -88,9 +88,7 @@ class DownloadXML
         $promises = $this->makePromises();
         $invoker = new EachPromise($promises, [
             'concurrency' => $this->getConcurrency(),
-            'fulfilled' => function (ResponseInterface $response, string $uuid) use ($onFulfilled): void {
-                $onFulfilled((string) $response->getBody(), $this->getFileName($uuid), $uuid);
-            },
+            'fulfilled' => $onFulfilled,
             'rejected' => $onRejected,
         ]);
         $invoker->promise()->wait();
@@ -108,16 +106,6 @@ class DownloadXML
             }
             yield $metadata->uuid() => $this->satHttpGateway->getAsync($link);
         }
-    }
-
-    /**
-     * @param string $uuid
-     *
-     * @return string
-     */
-    protected function getFileName(string $uuid): string
-    {
-        return strtolower($uuid) . '.xml';
     }
 
     /**
@@ -142,12 +130,15 @@ class DownloadXML
         }
 
         $this->download(
-            function (string $content, string $name, string $uuid) use ($destinationDir): void {
+            function (ResponseInterface $response, string $uuid) use ($destinationDir): void {
+                $content = (string) $response->getBody();
                 if ('' === $content) {
                     throw new \RuntimeException(sprintf('Downloaded CFDI %s was empty', $uuid));
                 }
-                $destinationFile = $destinationDir . DIRECTORY_SEPARATOR . $name;
-                if (false === file_put_contents($destinationFile, $content)) {
+
+                $destinationFile = $destinationDir . DIRECTORY_SEPARATOR . $uuid . '.xml';
+                $putContents = file_put_contents($destinationFile, $content);
+                if (false === $putContents) {
                     throw new \RuntimeException(sprintf('Unable to save CFDI %s to %s', $uuid, $destinationFile));
                 }
             },

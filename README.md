@@ -218,6 +218,7 @@ use GuzzleHttp\Exception\RequestException;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\SATScraper;
+use Psr\Http\Message\ResponseInterface;
 
 /** @var CaptchaResolverInterface $captchaResolver */
 $satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
@@ -227,10 +228,10 @@ $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2
 $list = $satScraper->downloadPeriod($query);
 
 $satScraper->downloader($list)->download(
-    function (string $content, string $name, $uuid) {
-        $filename = '/storage/' . $name;
-        echo 'saving ', $uuid, PHP_EOL;
-        file_put_contents($filename, $content);
+     function (ResponseInterface $response, string $uuid): void {
+        $filename = '/storage/' . $uuid . '.xml';
+        echo 'Saving ', $uuid, PHP_EOL;
+        file_put_contents($filename, (string) $response->getBody());
     },
     function (RequestException $exception, string $uuid) {
         echo 'ERROR: ', $uuid, ' => ', $exception->getMessage(), PHP_EOL;
