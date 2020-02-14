@@ -15,7 +15,7 @@ Actualmente no hay liberada una versión estable, una vez liberada se utilizará
 
 ## Instalacion por composer
 
-```
+```shell
 composer require phpcfdi/cfdi-sat-scraper:master-dev
 ```
 
@@ -61,6 +61,9 @@ Para generar los resultados del `MetadataList` la librería cuenta con una estra
 Si se trata de una consulta de CFDI recibidos automáticamente se divide por día.
 En caso de que en el periodo consultado se encuentren 500 o más registros entonces la búsqueda se va subdividiendo
 en diferentes periodos, hasta llegar a la consulta mínima de 1 segundo. Luego los resultados son nuevamente unidos.
+
+Una vez que tienes un listado `MetadataList` se puede aplicar un filtro para obtener un nuevo listado con únicamente
+los objetos `Metadata` donde el UUID coincide.
 
 Los métodos para ejecutar la descarga de metadata son:
 
@@ -133,10 +136,11 @@ foreach ($list as $cfdi) {
     echo 'Estado: ', $cfdi->get('estadoComprobante'), PHP_EOL;
 }
 
-// descarga de cada uno de los CFDI
-$satScraper->downloader($list)
+// descarga de cada uno de los CFDI, reporta los descargados en $downloadedUuids
+$downloadedUuids = $satScraper->downloader($list)
     ->setConcurrency(50)                            // cambiar a 50 descargas simultáneas
     ->saveTo('/storage/downloads');                 // ejecutar la instrucción de descarga
+echo json_encode($downloadedUuids);
 ```
 
 ## Ejemplo de descarga por lista de UUIDS
@@ -157,8 +161,7 @@ $uuids = [
     '5cc88d4e-8672-11e6-ae22-56b6b6499613'
 ];
 $list = $satScraper->downloadListUUID($uuids, DownloadTypesOption::recibidos());
-
-print_r($list);
+echo json_encode($list);
 ```
 
 ## Aviso de que existen más de 500 comprobantes en un mismo segundo
@@ -186,8 +189,7 @@ $satScraper->setOnFiveHundred(
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->downloadPeriod($query);
-print_r($list);
-
+echo json_encode($list);
 ```
 
 ## Descargar CFDIS a una carpeta
@@ -211,6 +213,7 @@ $list = $satScraper->downloadPeriod($query);
 $downloadedUuids = $satScraper->downloader($list)
     ->setConcurrency(50) // cambiar la concurrencia por defecto a 50 descargas simultáneas
     ->saveTo('/storage/downloads', true, 0777);
+echo json_encode($downloadedUuids);
 ```
 
 ## Procesar de forma personalizada cada descarga de CFDI
@@ -258,6 +261,7 @@ $myHandler = new class implements DownloadXmlHandlerInterface {
 
 // $downloadedUuids contiene un listado de UUID que fueron procesados correctamente
 $downloadedUuids = $satScraper->downloader($list)->download($myHandler);
+echo json_encode($downloadedUuids);
 ```
 
 ## Quitar la verificación de certificados del SAT
