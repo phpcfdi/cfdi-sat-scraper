@@ -169,24 +169,9 @@ class SATScraper
         }
     }
 
-    /**
-     * This is only a consumption of the login page.
-     * It is expected to return the raw html to be processed.
-     *
-     * Is known that if there is a session active it will return only a redirect page
-     * with a known URL, but if it isn't, it will show a form to login.
-     *
-     * @return string
-     * @throws \RuntimeException Unable to retrive the contents from login page
-     */
-    protected function consumeLoginPage(): string
-    {
-        return $this->satHttpGateway->getAuthLoginPage($this->loginUrl);
-    }
-
     protected function requestCaptchaImage(): string
     {
-        $html = $this->consumeLoginPage();
+        $html = $this->satHttpGateway->getAuthLoginPage($this->loginUrl);
         $captchaBase64Extractor = new CaptchaBase64Extractor();
         $imageBase64 = $captchaBase64Extractor->retrieve($html);
         if ('' === $imageBase64) {
@@ -217,7 +202,7 @@ class SATScraper
     protected function hasLogin(): bool
     {
         // check login on cfdiau
-        $html = $this->consumeLoginPage();
+        $html = $this->satHttpGateway->getAuthLoginPage($this->loginUrl);
         if (false === strpos($html, 'https://cfdiau.sat.gob.mx/nidp/app?sid=0')) {
             $this->logout();
             return  false;

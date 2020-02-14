@@ -34,7 +34,7 @@ class QueryResolver
 
     protected function resolveOpenCompletePage(string $url): array
     {
-        $completePage = $this->consumeFormPage($url);
+        $completePage = $this->satHttpGateway->getPortalPage($url);
         $completePage = str_replace('charset=utf-16', 'charset=utf-8', $completePage); // quick and dirty hack
         $htmlFormInputExtractor = new HtmlForm($completePage, 'form', ['/^ctl00\$MainContent\$Btn.+/', '/^seleccionador$/']);
         $baseInputs = $htmlFormInputExtractor->getFormValues();
@@ -44,7 +44,7 @@ class QueryResolver
     protected function resolveSelectDownloadType(string $url, array $baseInputs, Filters $filters): array
     {
         $post = array_merge($baseInputs, $filters->getInitialFilters());
-        $html = $this->consumeSearch($url, $post); // this html is used to update __VARIABLES
+        $html = $this->satHttpGateway->postAjaxSearch($url, $post); // this html is used to update __VARIABLES
         $lastViewStateValues = (new ParserFormatSAT())->getFormValues($html);
         return $lastViewStateValues;
     }
@@ -53,18 +53,8 @@ class QueryResolver
     {
         // consume search using search filters
         $post = array_merge($baseInputs, $filters->getRequestFilters());
-        $htmlWithMetadataContent = $this->consumeSearch($url, $post);
+        $htmlWithMetadataContent = $this->satHttpGateway->postAjaxSearch($url, $post);
         return $htmlWithMetadataContent;
-    }
-
-    protected function consumeFormPage(string $url): string
-    {
-        return $this->satHttpGateway->getPortalPage($url);
-    }
-
-    protected function consumeSearch(string $url, array $formParams): string
-    {
-        return $this->satHttpGateway->postAjaxSearch($url, $formParams);
     }
 
     public function filtersFromQuery(Query $query): Filters

@@ -59,19 +59,21 @@ final class QueryResolverTest extends TestCase
 
     public function testResolveQuery(): void
     {
-        // prepare resolver mocking responses from SAT
-        /** @var QueryResolver&MockObject $resolver */
-        $resolver = $this->getMockBuilder(QueryResolver::class)
+        // prepare fake responses from SAT
+        /** @var SatHttpGateway&MockObject $satHttpGateway */
+        $satHttpGateway = $this->getMockBuilder(SatHttpGateway::class)
             ->disableOriginalConstructor()
-            ->setMethods(['consumeFormPage', 'consumeSearch'])
             ->getMock();
-        $resolver->method('consumeFormPage')->willReturn(
+        $satHttpGateway->method('getPortalPage')->willReturn(
             $this->fileContentPath('sample-response-receiver-form-page.html')
         );
-        $resolver->method('consumeSearch')->willReturn(
+        $satHttpGateway->method('postAjaxSearch')->willReturn(
             $this->fileContentPath('sample-response-receiver-using-filters-initial.html'),
             $this->fileContentPath('sample-response-receiver-using-filters-search.html')
         );
+
+        // create resolver with prepared responses
+        $resolver = new QueryResolver($satHttpGateway);
 
         // given a query (not important since it will not contact real server)
         $now = new \DateTimeImmutable();
