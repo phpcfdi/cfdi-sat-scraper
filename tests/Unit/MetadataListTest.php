@@ -111,6 +111,27 @@ final class MetadataListTest extends TestCase
         $this->assertSame($expectedFiltered, iterator_to_array($filtered->getIterator()), 'List does not contains the same elements');
     }
 
+    public function testFilterWithOutUuids(): void
+    {
+        $uuids = [
+            $uuid1 = $this->fakes()->faker()->uuid,
+            $uuid2 = $this->fakes()->faker()->uuid,
+            $uuid3 = $this->fakes()->faker()->uuid,
+            $uuid4 = $this->fakes()->faker()->uuid,
+        ];
+        $uuidsExclude = [$uuid1, $uuid3];
+        $list = new MetadataList($this->createMetadataArrayUsingUuids(...$uuids));
+        $expectedFiltered = [
+            $uuid2 => $list->get($uuid2),
+            $uuid4 => $list->get($uuid4),
+        ];
+
+        $filtered = $list->filterWithOutUuids($uuidsExclude);
+
+        $this->assertNotSame($filtered, $list, 'A new instance was expected');
+        $this->assertSame($expectedFiltered, iterator_to_array($filtered->getIterator()), 'List does not contains the same elements');
+    }
+
     public function testOnlyContainsMetadataEvenWhenNullIsPassed(): void
     {
         /** @var Metadata[] $source */
