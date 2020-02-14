@@ -43,6 +43,12 @@ class DownloadXML
         return $this->list;
     }
 
+    /**
+     * Change the metadata list that will be used to perform downloads
+     *
+     * @param MetadataList $list
+     * @return $this
+     */
     public function setMetadataList(MetadataList $list): self
     {
         $this->list = $list;

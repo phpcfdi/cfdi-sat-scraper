@@ -48,7 +48,7 @@ $query->setDownloadType(DownloadTypesOption::recibidos()) // default: emitidos
 $list = $satScraper->downloadPeriod($query);
 printf("\nSe encontraron %d registros", $list->count());
 
-$satScraper->downloader()->setMetadataList($list)->saveTo($downloadsPath, true);
+$satScraper->downloader($list)->saveTo($downloadsPath, true);
 foreach ($list as $item) {
     echo PHP_EOL, $item->uuid(), ': ',
     var_export(file_exists(sprintf('%s/%s.xml', $downloadsPath, $item->uuid())), true);

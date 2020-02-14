@@ -134,8 +134,7 @@ foreach ($list as $cfdi) {
 }
 
 // descarga de cada uno de los CFDI
-$downloader = $satScraper->downloader();
-$downloader->setMetadataList($list)                 // establecer la lista a descargar
+$satScraper->downloader($list)
     ->setConcurrency(50)                            // cambiar a 50 descargas simultáneas
     ->saveTo('/storage/downloads');                 // ejecutar la instrucción de descarga
 ```
@@ -206,8 +205,7 @@ $satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->downloadPeriod($query);
 
-$satScraper->downloader()
-    ->setMetadataList($list)
+$satScraper->downloader($list)
     ->setConcurrency(50) // cambiar la concurrencia por defecto a 50 descargas simultáneas
     ->saveTo('/storage/downloads', true, 0777);
 ```
@@ -216,7 +214,7 @@ $satScraper->downloader()
 
 ```php
 <?php
-
+use GuzzleHttp\Exception\RequestException;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\SATScraper;
@@ -228,15 +226,16 @@ $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2
 
 $list = $satScraper->downloadPeriod($query);
 
-$satScraper->downloader()
-    ->setMetadataList($list)
-    ->download(
-        function (string $content, string $name) {
-            $filename = '/storage/' . $name;
-            echo 'saving ', $filename, PHP_EOL;
-            file_put_contents($filename, $content);
-        }
-    );
+$satScraper->downloader($list)->download(
+    function (string $content, string $name, $uuid) {
+        $filename = '/storage/' . $name;
+        echo 'saving ', $uuid, PHP_EOL;
+        file_put_contents($filename, $content);
+    },
+    function (RequestException $exception, string $uuid) {
+        echo 'ERROR: ', $uuid, ' => ', $exception->getMessage(), PHP_EOL;
+    }
+);
 ```
 
 ## Quitar la verificación de certificados del SAT
