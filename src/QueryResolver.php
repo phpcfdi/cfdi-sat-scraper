@@ -7,7 +7,6 @@ namespace PhpCfdi\CfdiSatScraper;
 use PhpCfdi\CfdiSatScraper\Contracts\Filters;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersReceived;
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
 use PhpCfdi\CfdiSatScraper\Internal\ParserFormatSAT;
 
@@ -24,7 +23,7 @@ class QueryResolver
     public function resolve(Query $query): MetadataList
     {
         $filters = $this->filtersFromQuery($query); // create filters from query
-        $url = $this->urlFromDownloadType($query->getDownloadType()); // define url by download type
+        $url = $query->getDownloadType()->url(); // define url by download type
 
         $baseInputs = $this->resolveOpenCompletePage($url);
         $lastViewStates = $this->resolveSelectDownloadType($url, $baseInputs, $filters);
@@ -66,14 +65,6 @@ class QueryResolver
     protected function consumeSearch(string $url, array $formParams): string
     {
         return $this->satHttpGateway->postAjaxSearch($url, $formParams);
-    }
-
-    public function urlFromDownloadType(DownloadTypesOption $downloadType): string
-    {
-        if ($downloadType->isEmitidos()) {
-            return URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR;
-        }
-        return URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR;
     }
 
     public function filtersFromQuery(Query $query): Filters
