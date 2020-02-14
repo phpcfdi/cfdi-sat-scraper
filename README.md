@@ -55,7 +55,7 @@ El objeto principal de trabajo se llama `SATScraper` con el que se pueden realiz
 por UUIDS específicos y obtener resultados. La consulta se llama `Query` y el resultado es un `MetadataList`.
 
 Una vez con los resultados `MetadataList` se puede solicitar una descarga a una carpeta específica o bien por medio
-de una función *callback*. El proceso de descarga permite hacer varias descargas en forma simultánea.
+de un objeto *handler*. El proceso de descarga permite hacer varias descargas en forma simultánea.
 
 Para generar los resultados del `MetadataList` la librería cuenta con una estrategia de división.
 Si se trata de una consulta de CFDI recibidos automáticamente se divide por día.
@@ -192,6 +192,8 @@ print_r($list);
 
 ## Descargar CFDIS a una carpeta
 
+Ejecutar el método `saveTo` devuelve un arreglo con los UUID que fueron efectivamente descargados.
+
 ```php
 <?php
 
@@ -205,12 +207,15 @@ $satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->downloadPeriod($query);
 
-$satScraper->downloader($list)
+// $downloadedUuids contiene un listado de UUID que fueron procesados correctamente
+$downloadedUuids = $satScraper->downloader($list)
     ->setConcurrency(50) // cambiar la concurrencia por defecto a 50 descargas simultáneas
     ->saveTo('/storage/downloads', true, 0777);
 ```
 
 ## Procesar de forma personalizada cada descarga de CFDI
+
+Ejecutar el método `saveTo` devuelve un arreglo con los UUID que fueron efectivamente descargados.
 
 ```php
 <?php
@@ -251,7 +256,8 @@ $myHandler = new class implements DownloadXmlHandlerInterface {
     }
 };
 
-$satScraper->downloader($list)->download($myHandler);
+// $downloadedUuids contiene un listado de UUID que fueron procesados correctamente
+$downloadedUuids = $satScraper->downloader($list)->download($myHandler);
 ```
 
 ## Quitar la verificación de certificados del SAT

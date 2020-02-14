@@ -23,6 +23,9 @@ final class DownloadXmlMainHandler implements DownloadXmlHandlerInterface
     /** @var DownloadXmlHandlerInterface */
     private $handler;
 
+    /** @var string[] */
+    private $fulfilledUuids = [];
+
     public function __construct(DownloadXmlHandlerInterface $handler)
     {
         $this->handler = $handler;
@@ -42,6 +45,7 @@ final class DownloadXmlMainHandler implements DownloadXmlHandlerInterface
         }
 
         $this->handler->onFulfilled($response, $uuid);
+        $this->fulfilledUuids[] = $uuid;
     }
 
     public function onRequestException(RequestException $exception, string $uuid): void
@@ -56,5 +60,15 @@ final class DownloadXmlMainHandler implements DownloadXmlHandlerInterface
             return;
         }
         $this->handler->onRejected($reason, $uuid);
+    }
+
+    /**
+     * Return the list of fulfilled UUIDS
+     *
+     * @return string[]
+     */
+    public function fulfilledUuids(): array
+    {
+        return $this->fulfilledUuids;
     }
 }

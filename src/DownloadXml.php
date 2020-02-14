@@ -92,8 +92,9 @@ class DownloadXml
      * - $onRejected callable: function(RequestException $reason, string $uuid): void
      *
      * @param DownloadXmlHandlerInterface $handler
+     * @return string[]
      */
-    public function download(DownloadXmlHandlerInterface $handler): void
+    public function download(DownloadXmlHandlerInterface $handler): array
     {
         // wrap the privided handler into the main handler, to throw the expected exceptions
         $mainHandler = new DownloadXmlMainHandler($handler);
@@ -107,6 +108,7 @@ class DownloadXml
         ]);
         // create the promise from the invoker and wait for it to finish
         $invoker->promise()->wait();
+        return $mainHandler->fulfilledUuids();
     }
 
     /**
@@ -132,14 +134,17 @@ class DownloadXml
      *
      * When one of the downloads fails it will throw an exception.
      *
+     * Return the list of fulfilled UUID
+     *
      * @param string $destinationFolder
      * @param bool $createFolder
      * @param int $createMode
+     * @return string[]
      */
-    public function saveTo(string $destinationFolder, bool $createFolder = false, int $createMode = 0775): void
+    public function saveTo(string $destinationFolder, bool $createFolder = false, int $createMode = 0775): array
     {
         $storeHandler = new DownloadXmlStoreInFolder($destinationFolder);
         $storeHandler->checkDestinationFolder($createFolder, $createMode);
-        $this->download($storeHandler);
+        return $this->download($storeHandler);
     }
 }
