@@ -4,15 +4,26 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\EachPromise;
 use GuzzleHttp\Promise\PromiseInterface;
-use Psr\Http\Message\ResponseInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\DownloadXmlHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Internal\DownloadXmlMainHandler;
+use PhpCfdi\CfdiSatScraper\Internal\DownloadXmlStoreInFolder;
 
 /**
- * Class DownloadXML.
+ * Helper class to make concurrent downloads of XML files.
+ *
+ * It is based on a MetadataList that contains the link to download.
+ * Be aware that it will only download a CFDI if the `urlXml` exists.
+ *
+ * You can use the method `saveTo` that will store all the downloaded files as destination/uuid.xml
+ *
+ * You can fine tune the download event (fulfilled, request exeption or rejected) if you implement the
+ * `DownloadXmlHandlerInterface` interface and use the `download` method.
+ *
+ * The concurrent downloads are based on Guzzle/Promises.
  */
-class DownloadXML
+class DownloadXml
 {
     /** @var MetadataList|null */
     protected $list;
@@ -80,21 +91,27 @@ class DownloadXML
      * - $onFulfilled callable: function(ResponseInterface $response, string $uuid): void
      * - $onRejected callable: function(RequestException $reason, string $uuid): void
      *
-     * @param callable $onFulfilled
-     * @param callable|null $onRejected
+     * @param DownloadXmlHandlerInterface $handler
      */
-    public function download(callable $onFulfilled, ?callable $onRejected = null): void
+    public function download(DownloadXmlHandlerInterface $handler): void
     {
+        // wrap the privided handler into the main handler, to throw the expected exceptions
+        $mainHandler = new DownloadXmlMainHandler($handler);
+        // create the promises iterator
         $promises = $this->makePromises();
+        // create the invoker
         $invoker = new EachPromise($promises, [
             'concurrency' => $this->getConcurrency(),
-            'fulfilled' => $onFulfilled,
-            'rejected' => $onRejected,
+            'fulfilled' => [$mainHandler, 'onFulfilled'],
+            'rejected' => [$mainHandler, 'onRejected'],
         ]);
+        // create the promise from the invoker and wait for it to finish
         $invoker->promise()->wait();
     }
 
     /**
+     * Create the Promise for each item in the Metadata in the MedataList that contains an `urlXml`
+     *
      * @return \Generator|PromiseInterface[]
      */
     protected function makePromises()
@@ -115,37 +132,14 @@ class DownloadXML
      *
      * When one of the downloads fails it will throw an exception.
      *
-     * @param string $destinationDir
-     * @param bool $createDir
-     * @param int $mode
+     * @param string $destinationFolder
+     * @param bool $createFolder
+     * @param int $createMode
      */
-    public function saveTo(string $destinationDir, bool $createDir = false, int $mode = 0775): void
+    public function saveTo(string $destinationFolder, bool $createFolder = false, int $createMode = 0775): void
     {
-        if (! $createDir && ! file_exists($destinationDir)) {
-            throw new \InvalidArgumentException("The provider path [{$destinationDir}] not exists");
-        }
-
-        if ($createDir && ! file_exists($destinationDir)) {
-            mkdir($destinationDir, $mode, true);
-        }
-
-        $this->download(
-            function (ResponseInterface $response, string $uuid) use ($destinationDir): void {
-                $content = (string) $response->getBody();
-                if ('' === $content) {
-                    throw new \RuntimeException(sprintf('Downloaded CFDI %s was empty', $uuid));
-                }
-
-                $destinationFile = $destinationDir . DIRECTORY_SEPARATOR . $uuid . '.xml';
-                $putContents = file_put_contents($destinationFile, $content);
-                if (false === $putContents) {
-                    throw new \RuntimeException(sprintf('Unable to save CFDI %s to %s', $uuid, $destinationFile));
-                }
-            },
-            function (RequestException $exception, string $uuid): void {
-                $uri = (string) $exception->getRequest()->getUri();
-                throw new \RuntimeException(sprintf('Unable to retrieve CFDI %s from %s', $uuid, $uri), 0, $exception);
-            }
-        );
+        $storeHandler = new DownloadXmlStoreInFolder($destinationFolder);
+        $storeHandler->checkDestinationFolder($createFolder, $createMode);
+        $this->download($storeHandler);
     }
 }

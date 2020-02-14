@@ -281,9 +281,9 @@ class SATScraper
         return $this->createMetadataDownloader()->downloadByDateTime($query);
     }
 
-    public function downloader(?MetadataList $metadataList = null): DownloadXML
+    public function downloader(?MetadataList $metadataList = null): DownloadXml
     {
-        $downloadXml = new DownloadXML($this->satHttpGateway);
+        $downloadXml = new DownloadXml($this->satHttpGateway);
         if (null !== $metadataList) {
             $downloadXml->setMetadataList($metadataList);
         }

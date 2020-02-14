@@ -70,9 +70,9 @@ Los métodos para ejecutar la descarga de metadata son:
 
 Y una vez con el `MetadataList` se crea un objeto descargador y se le pide que ejecute las descargas.
 
-- Creación: `SATScraper::downloader(): DownloadXML`
-- Guardar a una carpeta: `DownloadXML::saveTo(string $destination): void`
-- Guardar con un callback: `DownloadXML::download(function (string $content, string $filename) {}): void`
+- Creación: `SATScraper::downloader(MetadataList $list = null): DownloadXml`
+- Guardar a una carpeta: `DownloadXml::saveTo(string $destination): void`
+- Guardar con un manejador: `DownloadXml::download(DownloadXmlHandlerInterface $handler): void`
 
 Si se llega a la consulta mínima de 1 segundo y se obtuvieron 500 o más registros entonces adicionalmente
 se llama a un *callback* (opcional) para reportar este hecho.
@@ -210,12 +210,14 @@ $satScraper->downloader($list)
     ->saveTo('/storage/downloads', true, 0777);
 ```
 
-## Obtener cada descarga de CFDI
+## Procesar de forma personalizada cada descarga de CFDI
 
 ```php
 <?php
+
 use GuzzleHttp\Exception\RequestException;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\DownloadXmlHandlerInterface;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\SATScraper;
 use Psr\Http\Message\ResponseInterface;
@@ -227,16 +229,29 @@ $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2
 
 $list = $satScraper->downloadPeriod($query);
 
-$satScraper->downloader($list)->download(
-     function (ResponseInterface $response, string $uuid): void {
+$myHandler = new class implements DownloadXmlHandlerInterface {
+    public function onFulfilled(ResponseInterface $response, string $uuid): void
+    {
         $filename = '/storage/' . $uuid . '.xml';
         echo 'Saving ', $uuid, PHP_EOL;
         file_put_contents($filename, (string) $response->getBody());
-    },
-    function (RequestException $exception, string $uuid) {
-        echo 'ERROR: ', $uuid, ' => ', $exception->getMessage(), PHP_EOL;
     }
-);
+
+    public function onRequestException(RequestException $exception, string $uuid): void
+    {
+        $this->onRejected($exception, $uuid);
+    }
+
+    public function onRejected($reason, string $uuid): void
+    {
+        if ($reason instanceof Throwable) {
+            $reason = $reason->getMessage();
+        }
+        echo 'ERROR: ', $uuid, ' => ', strval($reason), PHP_EOL;
+    }
+};
+
+$satScraper->downloader($list)->download($myHandler);
 ```
 
 ## Quitar la verificación de certificados del SAT

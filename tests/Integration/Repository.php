@@ -133,7 +133,7 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
     }
 
     /**
-     * @return \Traversable<RepositoryItem>
+     * @return \Traversable<RepositoryItem>|RepositoryItem[]
      */
     public function getIterator()
     {
