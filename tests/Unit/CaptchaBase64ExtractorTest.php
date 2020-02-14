@@ -15,8 +15,8 @@ final class CaptchaBase64ExtractorTest extends TestCase
         $html .= '<img src="data:image/jpeg;base64,test">';
         $html .= '</div>';
 
-        $captchaExtractor = new CaptchaBase64Extractor($html);
-        $this->assertEquals('test', $captchaExtractor->retrieve());
+        $captchaExtractor = new CaptchaBase64Extractor();
+        $this->assertEquals('test', $captchaExtractor->retrieve($html));
     }
 
     public function testRetrieveWhenDefaultElementNotExists(): void
@@ -25,10 +25,10 @@ final class CaptchaBase64ExtractorTest extends TestCase
         $html .= '<img src="data:image/jpeg;base64,test">';
         $html .= '</div>';
 
-        $captchaExtractor = new CaptchaBase64Extractor($html);
+        $captchaExtractor = new CaptchaBase64Extractor();
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Captcha was not found');
-        $captchaExtractor->retrieve();
+        $captchaExtractor->retrieve($html);
     }
 
     public function testRetrieveBySelectorWhenElementExists(): void
@@ -37,7 +37,7 @@ final class CaptchaBase64ExtractorTest extends TestCase
         $html .= '<img src="data:image/jpeg;base64,test">';
         $html .= '</div>';
 
-        $captchaExtractor = new CaptchaBase64Extractor($html);
-        $this->assertEquals('test', $captchaExtractor->retrieve('#captcha > img'));
+        $captchaExtractor = new CaptchaBase64Extractor();
+        $this->assertEquals('test', $captchaExtractor->retrieve($html, '#captcha > img'));
     }
 }

@@ -7,6 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
@@ -94,5 +95,25 @@ final class QueryTest extends TestCase
         ];
 
         $this->assertEquals($expected, $splitted);
+    }
+
+    public function testSplitByDaysPreserveOtherFilters(): void
+    {
+        // this options are not the default
+        $downloadType = DownloadTypesOption::emitidos();
+        $complement = ComplementsOption::comercioExterior11();
+        $stateVoucher = StatesVoucherOption::cancelados();
+
+        $lowerBound = new \DateTimeImmutable('2019-01-13 14:15:16');
+        $upperBound = new \DateTimeImmutable('2019-01-15 18:19:20');
+        $query = new Query($lowerBound, $upperBound);
+        $query->setDownloadType($downloadType);
+        $query->setComplement($complement);
+        $query->setStateVoucher($stateVoucher);
+        foreach ($query->splitByDays() as $current) {
+            $this->assertEquals($downloadType, $current->getDownloadType());
+            $this->assertEquals($complement, $current->getComplement());
+            $this->assertEquals($stateVoucher, $current->getStateVoucher());
+        }
     }
 }

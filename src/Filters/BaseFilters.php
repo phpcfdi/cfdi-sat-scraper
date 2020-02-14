@@ -28,7 +28,7 @@ abstract class BaseFilters implements Filters
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     public function overrideDefaultFilters(): array
     {

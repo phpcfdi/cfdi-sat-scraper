@@ -109,7 +109,7 @@ final class MetadataExtractorTest extends TestCase
         $data = $extractor->extract($sample);
         $this->assertCount(1, $data);
 
-        $expectedUuid = 'B97262E5-704C-4BF7-AE26-9174FEF04D63';
+        $expectedUuid = 'b97262e5-704c-4bf7-ae26-9174fef04d63';
 
         $expectedData = [
             $expectedUuid => [

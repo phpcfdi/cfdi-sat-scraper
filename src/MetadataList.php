@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-class MetadataList implements \Countable, \IteratorAggregate
+/**
+ * @implements \IteratorAggregate<Metadata>
+ */
+class MetadataList implements \Countable, \IteratorAggregate, \JsonSerializable
 {
     /** @var Metadata[] */
     private $list = [];
@@ -30,12 +33,12 @@ class MetadataList implements \Countable, \IteratorAggregate
 
     public function has(string $uuid): bool
     {
-        return isset($this->list[$uuid]);
+        return isset($this->list[strtolower($uuid)]);
     }
 
     public function find(string $uuid): ?Metadata
     {
-        return $this->list[$uuid] ?? null;
+        return $this->list[strtolower($uuid)] ?? null;
     }
 
     public function get(string $uuid): Metadata
@@ -58,5 +61,11 @@ class MetadataList implements \Countable, \IteratorAggregate
     public function count(): int
     {
         return count($this->list);
+    }
+
+    /** @return array<string, Metadata> */
+    public function jsonSerialize(): array
+    {
+        return $this->list;
     }
 }

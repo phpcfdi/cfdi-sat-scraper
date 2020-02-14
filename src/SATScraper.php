@@ -209,8 +209,8 @@ class SATScraper
     protected function requestCaptchaImage(): string
     {
         $html = $this->consumeLoginPage();
-        $captchaBase64Extractor = new CaptchaBase64Extractor($html);
-        $imageBase64 = $captchaBase64Extractor->retrieve();
+        $captchaBase64Extractor = new CaptchaBase64Extractor();
+        $imageBase64 = $captchaBase64Extractor->retrieve($html);
         if ('' === $imageBase64) {
             throw new \RuntimeException('Unable to extract the base64 image from login page');
         }
@@ -387,7 +387,7 @@ class SATScraper
         return $this->createMetadataDownloader()->downloadByDateTime($query);
     }
 
-    protected function parseInputs($html): array
+    protected function parseInputs(string $html): array
     {
         $htmlForm = new HtmlForm($html, 'form');
         $inputs = $htmlForm->getFormValues();

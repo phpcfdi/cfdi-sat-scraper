@@ -6,6 +6,8 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\FileCookieJar;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\ConsoleCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
@@ -72,7 +74,16 @@ class Factory
         }
 
         $cookieFile = __DIR__ . '/../../build/cookie-' . strtolower($rfc) . '.json';
-        return new SATScraper($rfc, $ciec, new Client(), new FileCookieJar($cookieFile), static::createCaptchaResolver());
+        $client = $this->createGuzzleClient();
+        return new SATScraper($rfc, $ciec, $client, new FileCookieJar($cookieFile), static::createCaptchaResolver());
+    }
+
+    public function createGuzzleClient(): Client
+    {
+        $container = new HttpLogger(strval(getenv('SAT_HTTPDUMP_FOLDER')));
+        $stack = HandlerStack::create();
+        $stack->push(Middleware::history($container));
+        return new Client(['handler' => $stack]);
     }
 
     public function createRepository(string $filename): Repository

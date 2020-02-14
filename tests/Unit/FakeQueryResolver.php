@@ -10,8 +10,10 @@ use PhpCfdi\CfdiSatScraper\QueryResolver;
 
 final class FakeQueryResolver extends QueryResolver
 {
+    /** @var array */
     private $fakeMoments = [];
 
+    /** @var array */
     public $resolveCalls = [];
 
     /** @noinspection PhpMissingParentConstructorInspection */

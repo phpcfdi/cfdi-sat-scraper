@@ -16,7 +16,7 @@ script:
   - tools/php-cs-fixer fix --verbose --dry-run
   - tools/phpcs --colors -sp src/ tests/
   - vendor/bin/phpunit tests/ --testdox --no-interaction --verbose
-  - tools/phpstan analyze --level 5 --no-progress --verbose src/ tests/
+  - tools/phpstan analyze --level max --no-progress --verbose src/ tests/
 
 notifications:
   email:

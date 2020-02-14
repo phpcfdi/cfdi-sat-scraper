@@ -31,13 +31,14 @@
         "ext-libxml": "*",
         "ext-simplexml": "*",
         "ext-dom": "*",
+        "ext-json": "*",
         "guzzlehttp/guzzle": "^6.3",
         "symfony/dom-crawler": "^4.2|^5.0",
         "symfony/css-selector": "^4.2|^5.0",
         "eclipxe/enum": "^0.2.0"
     },
     "require-dev": {
-        "ext-json": "*",
+        "ext-iconv": "*",
         "symfony/dotenv": "^4.2|^5.0",
         "fzaninotto/faker": "^1.8",
         "phpunit/phpunit": "^8.5"
@@ -61,7 +62,7 @@
         "dev:tests": [
             "@dev:check-style",
             "vendor/bin/phpunit tests/Unit/",
-            "tools/phpstan analyze --level 5 --no-progress --verbose src/ tests/"
+            "tools/phpstan analyze --level max --no-progress --verbose src/ tests/"
         ]
     },
     "scripts-descriptions": {

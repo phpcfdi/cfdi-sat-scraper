@@ -113,6 +113,6 @@ final class MetadataListTest extends TestCase
             return new Metadata($uuid);
         }, $uuids);
         $contents = array_combine($uuids, $contents);
-        return $contents;
+        return $contents ?: [];
     }
 }

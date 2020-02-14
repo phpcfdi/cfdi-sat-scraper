@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper;
 
 use InvalidArgumentException;
+use JsonSerializable;
 
-class Metadata
+class Metadata implements JsonSerializable
 {
     /** @var array */
     private $data;
@@ -16,7 +17,7 @@ class Metadata
         if ('' === $uuid) {
             throw new InvalidArgumentException('UUID cannot be empty');
         }
-        $this->data = ['uuid' => $uuid] + $data;
+        $this->data = ['uuid' => strtolower($uuid)] + $data;
     }
 
     public function uuid(): string
@@ -32,5 +33,11 @@ class Metadata
     public function has(string $key): bool
     {
         return isset($this->data[$key]);
+    }
+
+    /** @return array<string, string> */
+    public function jsonSerialize(): array
+    {
+        return $this->data;
     }
 }

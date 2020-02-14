@@ -8,7 +8,6 @@
     - Todos los puntos de entrada deben tener phpdoc.
 - Entorno de desarrollo:
     - CodeStyle: Subir a PSR-12.
-    - PhpStan: Nivel máximo
 
 ## Wishlist
 
@@ -19,6 +18,10 @@
 - Implementar `rector`.
 
 ## Realizadas
+
+- 2020-02-11:
+    - Entorno de desarrollo: PhpStan: Nivel máximo, aunque se está omitiendo la verificación
+      `checkMissingIterableValueType`, corregirla será bastante complejo por las dependencias.
 
 - 2020-01-29:
     - PHP Minimal version to PHP 7.2 (cambios en código, no solamente en composer.json)

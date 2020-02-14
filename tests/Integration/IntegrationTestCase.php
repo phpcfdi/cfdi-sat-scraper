@@ -63,10 +63,13 @@ class IntegrationTestCase extends TestCase
         /** @var RepositoryItem $item */
         foreach ($repository as $item) {
             $metadata = $list->find($item->getUuid());
-            self::assertNotNull($metadata, "The metadata list does not contain the UUID {$item->getUuid()}");
+            if (null === $metadata) {
+                self::fail("The metadata list does not contain the UUID {$item->getUuid()}");
+                return;
+            }
             self::assertRepositoryItemEqualsMetadata($item, $metadata);
         }
-        self::assertCount(count($repository), $list, 'The metadata list has not the same quantity of elements');
+        self::assertSame(count($repository), count($list), 'The metadata list has not the same quantity of elements');
     }
 
     public static function assertRepositoryItemEqualsMetadata(RepositoryItem $item, Metadata $metadata): void
@@ -88,7 +91,7 @@ class IntegrationTestCase extends TestCase
         $xpath = new DOMXPath($document);
         $xpath->registerNamespace('cfdi', 'http://www.sat.gob.mx/cfd/3');
         $xpath->registerNamespace('tfd', 'http://www.sat.gob.mx/TimbreFiscalDigital');
-        /** @var DOMNodeList|false $list */
+        /** @var DOMNodeList<DOMAttr>|false $list */
         $list = $xpath->query('/cfdi:Comprobante/cfdi:Complemento/tfd:TimbreFiscalDigital/@UUID');
         if (false === $list) {
             $list = new DOMNodeList();
@@ -98,8 +101,8 @@ class IntegrationTestCase extends TestCase
         /** @var DOMAttr $uuidAttr */
         $uuidAttr = $list->item(0);
         self::assertSame(
-            $expectedUuid,
-            $uuidAttr->value,
+            strtolower($expectedUuid),
+            strtolower($uuidAttr->value),
             sprintf('The UUID from the XML CFDI %s is not the same as expected %s', $uuidAttr->value, $expectedUuid)
         );
     }
