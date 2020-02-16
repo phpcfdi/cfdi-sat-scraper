@@ -26,17 +26,17 @@ class QueryResolver
 
     public function resolve(Query $query): MetadataList
     {
-        $filters = $this->filtersFromQuery($query); // create filters from query
+        $filters = $this->createFiltersFromQuery($query); // create filters from query
         $url = $query->getDownloadType()->url(); // define url by download type
 
-        $baseInputs = $this->resolveOpenCompletePage($url);
-        $lastViewStates = $this->resolveSelectDownloadType($url, $baseInputs, $filters);
-        $htmlWithMetadata = $this->resolveObtainList($url, array_merge($baseInputs, $lastViewStates), $filters);
+        $baseInputs = $this->inputFieldsFromInitialPage($url);
+        $lastViewStates = $this->inputFieldsFromSelectDownloadType($url, $baseInputs, $filters);
+        $htmlWithMetadata = $this->htmlFromExecuteQuery($url, array_merge($baseInputs, $lastViewStates), $filters);
 
         return (new MetadataExtractor())->extract($htmlWithMetadata);
     }
 
-    protected function resolveOpenCompletePage(string $url): array
+    protected function inputFieldsFromInitialPage(string $url): array
     {
         $completePage = $this->satHttpGateway->getPortalPage($url);
         $completePage = str_replace('charset=utf-16', 'charset=utf-8', $completePage); // quick and dirty hack
@@ -45,7 +45,7 @@ class QueryResolver
         return $baseInputs;
     }
 
-    protected function resolveSelectDownloadType(string $url, array $baseInputs, Filters $filters): array
+    protected function inputFieldsFromSelectDownloadType(string $url, array $baseInputs, Filters $filters): array
     {
         $post = array_merge($baseInputs, $filters->getInitialFilters());
         $html = $this->satHttpGateway->postAjaxSearch($url, $post); // this html is used to update __VARIABLES
@@ -53,7 +53,7 @@ class QueryResolver
         return $lastViewStateValues;
     }
 
-    protected function resolveObtainList(string $url, array $baseInputs, Filters $filters): string
+    protected function htmlFromExecuteQuery(string $url, array $baseInputs, Filters $filters): string
     {
         // consume search using search filters
         $post = array_merge($baseInputs, $filters->getRequestFilters());
@@ -61,7 +61,7 @@ class QueryResolver
         return $htmlWithMetadataContent;
     }
 
-    public function filtersFromQuery(Query $query): Filters
+    public function createFiltersFromQuery(Query $query): Filters
     {
         if ($query->getDownloadType()->isEmitidos()) {
             return new FiltersIssued($query);

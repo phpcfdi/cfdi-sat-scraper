@@ -34,13 +34,13 @@ final class QueryResolverTest extends TestCase
         $this->assertSame($this->satHttpGateway, $this->resolver->getSatHttpGateway());
     }
 
-    public function testFiltersFromQuery(): void
+    public function testCreateFiltersFromQuery(): void
     {
         $now = new \DateTimeImmutable();
-        $this->assertInstanceOf(FiltersIssued::class, $this->resolver->filtersFromQuery(
+        $this->assertInstanceOf(FiltersIssued::class, $this->resolver->createFiltersFromQuery(
             (new Query($now, $now))->setDownloadType(DownloadTypesOption::emitidos())
         ));
-        $this->assertInstanceOf(FiltersReceived::class, $this->resolver->filtersFromQuery(
+        $this->assertInstanceOf(FiltersReceived::class, $this->resolver->createFiltersFromQuery(
             (new Query($now, $now))->setDownloadType(DownloadTypesOption::recibidos())
         ));
     }
