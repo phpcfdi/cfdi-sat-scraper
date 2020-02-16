@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Filters\Options;
 
-use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
+use PhpCfdi\CfdiSatScraper\Contracts\FilterOption;
 
 class RfcOption implements FilterOption
 {

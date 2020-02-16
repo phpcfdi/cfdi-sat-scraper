@@ -57,6 +57,7 @@ abstract class BaseFilters implements Filters
         $filters = array_filter($filters);
 
         $overrideFilters = [];
+        /** @var \PhpCfdi\CfdiSatScraper\Contracts\FilterOption $filter  */
         foreach ($filters as $filter) {
             $overrideFilters[$filter->nameIndex()] = $filter->value();
         }
