@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
+namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Internal;
 
-use PhpCfdi\CfdiSatScraper\MetadataExtractor;
+use PhpCfdi\CfdiSatScraper\Internal\MetadataExtractor;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use Symfony\Component\DomCrawler\Crawler;
 

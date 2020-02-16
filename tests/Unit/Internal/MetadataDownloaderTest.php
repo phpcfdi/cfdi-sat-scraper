@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
+namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Internal;
 
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
-use PhpCfdi\CfdiSatScraper\MetadataDownloader;
+use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
+use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
 use PhpCfdi\CfdiSatScraper\Query;
-use PhpCfdi\CfdiSatScraper\QueryResolver;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
 final class MetadataDownloaderTest extends TestCase

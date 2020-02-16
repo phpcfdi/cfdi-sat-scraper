@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
+namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Internal;
 
 use PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersReceived;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
 use PhpCfdi\CfdiSatScraper\Query;
-use PhpCfdi\CfdiSatScraper\QueryResolver;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use PhpCfdi\CfdiSatScraper\URLS;

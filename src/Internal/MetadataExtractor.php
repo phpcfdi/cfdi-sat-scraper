@@ -2,10 +2,16 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper;
+namespace PhpCfdi\CfdiSatScraper\Internal;
 
+use PhpCfdi\CfdiSatScraper\Metadata;
+use PhpCfdi\CfdiSatScraper\MetadataList;
+use PhpCfdi\CfdiSatScraper\URLS;
 use Symfony\Component\DomCrawler\Crawler;
 
+/**
+ * @internal
+ */
 class MetadataExtractor
 {
     public function extract(string $html, ?array $fieldsCaptions = null): MetadataList

@@ -6,7 +6,7 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
-use PhpCfdi\CfdiSatScraper\MetadataDownloader;
+use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;

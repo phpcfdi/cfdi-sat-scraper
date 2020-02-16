@@ -2,14 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper;
+namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use PhpCfdi\CfdiSatScraper\Contracts\Filters;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersReceived;
-use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
-use PhpCfdi\CfdiSatScraper\Internal\ParserFormatSAT;
+use PhpCfdi\CfdiSatScraper\MetadataList;
+use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 
+/**
+ * @internal
+ */
 class QueryResolver
 {
     /** @var SatHttpGateway */

@@ -9,6 +9,8 @@ use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATCredentialsException;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
+use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
+use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
 
 class SATScraper
 {

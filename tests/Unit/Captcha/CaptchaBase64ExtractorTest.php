@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
+namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Captcha;
 
 use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
+namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Internal;
 
+use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\Query;
-use PhpCfdi\CfdiSatScraper\QueryResolver;
 
 final class FakeQueryResolver extends QueryResolver
 {

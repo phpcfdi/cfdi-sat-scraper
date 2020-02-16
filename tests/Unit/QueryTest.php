@@ -37,7 +37,7 @@ final class QueryTest extends TestCase
         $this->assertEquals($query->getEndDate(), $end);
     }
 
-    public function testSetDatesFrmSetters(): void
+    public function testSetDatesFromSetters(): void
     {
         $start = new \DateTimeImmutable('2019-01-15');
         $end = new \DateTimeImmutable('2019-01-17');

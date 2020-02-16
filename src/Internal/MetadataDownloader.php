@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper;
+namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\MetadataList;
+use PhpCfdi\CfdiSatScraper\Query;
 
 /**
  * Class MetadataDownloader contains the logic to manipulate queries to obtain metadata
