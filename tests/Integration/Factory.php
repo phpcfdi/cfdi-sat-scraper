@@ -12,7 +12,7 @@ use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\ConsoleCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
-use PhpCfdi\CfdiSatScraper\SATScraper;
+use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver\CaptchaLocalResolver;
 use PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver\CaptchaLocalResolverClient;
 
@@ -21,7 +21,7 @@ class Factory
     /** @var string */
     private $repositoryPath;
 
-    /** @var SATScraper|null */
+    /** @var SatScraper|null */
     private $scraper;
 
     /** @var Repository|null */
@@ -62,7 +62,7 @@ class Factory
         throw new \RuntimeException('Unable to create resolver');
     }
 
-    public function createSatScraper(): SATScraper
+    public function createSatScraper(): SatScraper
     {
         $rfc = strval(getenv('SAT_AUTH_RFC'));
         if ('' === $rfc) {
@@ -77,7 +77,7 @@ class Factory
         $cookieFile = __DIR__ . '/../../build/cookie-' . strtolower($rfc) . '.json';
         $cookieJar = new FileCookieJar($cookieFile, true);
         $satHttpGateway = new SatHttpGateway($this->createGuzzleClient(), $cookieJar);
-        return new SATScraper($rfc, $ciec, static::createCaptchaResolver(), $satHttpGateway);
+        return new SatScraper($rfc, $ciec, static::createCaptchaResolver(), $satHttpGateway);
     }
 
     public function createGuzzleClient(): Client
@@ -96,7 +96,7 @@ class Factory
         return Repository::fromFile($filename);
     }
 
-    public function getSatScraper(): SATScraper
+    public function getSatScraper(): SatScraper
     {
         if (null === $this->scraper) {
             $this->scraper = $this->createSatScraper();

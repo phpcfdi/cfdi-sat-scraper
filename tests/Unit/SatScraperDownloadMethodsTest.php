@@ -10,7 +10,7 @@ use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
-use PhpCfdi\CfdiSatScraper\SATScraper;
+use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -22,7 +22,7 @@ final class SatScraperDownloadMethodsTest extends TestCase
         };
         $satHttpGateway = $this->createMock(SatHttpGateway::class);
         $captcha = $this->createMock(CaptchaResolverInterface::class);
-        $scraper = new SATScraper('rfc', 'ciec', $captcha, $satHttpGateway);
+        $scraper = new SatScraper('rfc', 'ciec', $captcha, $satHttpGateway);
         $scraper->setOnFiveHundred($callable);
         $downloader = $scraper->createMetadataDownloader();
 
@@ -31,8 +31,8 @@ final class SatScraperDownloadMethodsTest extends TestCase
 
     public function testDownloadListUuidCallDownloaderMethod(): void
     {
-        /** @var SATScraper&MockObject $scraper */
-        $scraper = $this->getMockBuilder(SATScraper::class)
+        /** @var SatScraper&MockObject $scraper */
+        $scraper = $this->getMockBuilder(SatScraper::class)
             ->disableOriginalConstructor()
             ->setMethodsExcept(['downloadListUUID'])
             ->getMock();
@@ -55,8 +55,8 @@ final class SatScraperDownloadMethodsTest extends TestCase
 
     public function testDownloadPeriodCallDownloaderMethod(): void
     {
-        /** @var SATScraper&MockObject $scraper */
-        $scraper = $this->getMockBuilder(SATScraper::class)
+        /** @var SatScraper&MockObject $scraper */
+        $scraper = $this->getMockBuilder(SatScraper::class)
             ->disableOriginalConstructor()
             ->setMethodsExcept(['downloadPeriod'])
             ->getMock();
@@ -79,8 +79,8 @@ final class SatScraperDownloadMethodsTest extends TestCase
 
     public function testDownloadByDateTimeCallDownloaderMethod(): void
     {
-        /** @var SATScraper&MockObject $scraper */
-        $scraper = $this->getMockBuilder(SATScraper::class)
+        /** @var SatScraper&MockObject $scraper */
+        $scraper = $this->getMockBuilder(SatScraper::class)
             ->disableOriginalConstructor()
             ->setMethodsExcept(['downloadByDateTime'])
             ->getMock();

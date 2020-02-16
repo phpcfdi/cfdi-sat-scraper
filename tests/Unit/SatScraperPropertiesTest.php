@@ -6,15 +6,15 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
-use PhpCfdi\CfdiSatScraper\SATScraper;
+use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use PhpCfdi\CfdiSatScraper\URLS;
 
 final class SatScraperPropertiesTest extends TestCase
 {
-    private function createScraper(): SATScraper
+    private function createScraper(): SatScraper
     {
-        return new SATScraper(
+        return new SatScraper(
             'rfc',
             'ciec',
             $this->createCaptchaResolver(),

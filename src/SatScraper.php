@@ -12,7 +12,7 @@ use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
 use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
 
-class SATScraper
+class SatScraper
 {
     public const SAT_CREDENTIAL_ERROR = 'El RFC o CIEC son incorrectos';
 
@@ -143,7 +143,7 @@ class SATScraper
     }
 
     /**
-     * @return SATScraper
+     * @return SatScraper
      *
      * @throws SATCredentialsException
      */

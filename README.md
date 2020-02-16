@@ -51,7 +51,7 @@ Una vez con el listado el sitio ofrece ligas para poder descargar el archivo XML
 
 ## Implementación del funcionamiento del sitio en la librería
 
-El objeto principal de trabajo se llama `SATScraper` con el que se pueden realizar consultas por rango de fecha o
+El objeto principal de trabajo se llama `SatScraper` con el que se pueden realizar consultas por rango de fecha o
 por UUIDS específicos y obtener resultados. La consulta se llama `Query` y el resultado es un `MetadataList`.
 
 Una vez con los resultados `MetadataList` se puede solicitar una descarga a una carpeta específica o bien por medio
@@ -67,13 +67,13 @@ los objetos `Metadata` donde el UUID coincide.
 
 Los métodos para ejecutar la descarga de metadata son:
 
-- Por UUID: `SATScraper::downloadListUUID(string[] $uuids, DownloadTypesOption $type): MetadataList`
-- Por filtros con días completos: `SATScraper::downloadPeriod(Query $query): MetadataList`
-- Por filtros con fechas exactas: `SATScraper::downloadByDateTime(Query $query): MetadataList`
+- Por UUID: `SatScraper::downloadListUUID(string[] $uuids, DownloadTypesOption $type): MetadataList`
+- Por filtros con días completos: `SatScraper::downloadPeriod(Query $query): MetadataList`
+- Por filtros con fechas exactas: `SatScraper::downloadByDateTime(Query $query): MetadataList`
 
 Y una vez con el `MetadataList` se crea un objeto descargador y se le pide que ejecute las descargas.
 
-- Creación: `SATScraper::downloader(MetadataList $list = null): DownloadXml`
+- Creación: `SatScraper::downloader(MetadataList $list = null): DownloadXml`
 - Guardar a una carpeta: `DownloadXml::saveTo(string $destination): void`
 - Guardar con un manejador: `DownloadXml::download(DownloadXmlHandlerInterface $handler): void`
 
@@ -118,10 +118,10 @@ $query
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
-use PhpCfdi\CfdiSatScraper\SATScraper;
+use PhpCfdi\CfdiSatScraper\SatScraper;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
+$satScraper = new SatScraper('rfc', 'ciec', $captchaResolver);
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->downloadPeriod($query);
@@ -150,10 +150,10 @@ echo json_encode($downloadedUuids);
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
-use PhpCfdi\CfdiSatScraper\SATScraper;
+use PhpCfdi\CfdiSatScraper\SatScraper;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
+$satScraper = new SatScraper('rfc', 'ciec', $captchaResolver);
 
 $uuids = [
     '5cc88a1a-8672-11e6-ae22-56b6b6499611',
@@ -176,10 +176,10 @@ que le puede ayudar a considerar este escenario.
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
-use PhpCfdi\CfdiSatScraper\SATScraper;
+use PhpCfdi\CfdiSatScraper\SatScraper;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
+$satScraper = new SatScraper('rfc', 'ciec', $captchaResolver);
 // establecer el callback a ejecutar cuando se encuentre en un mismo segundo 500 o más CFDI
 $satScraper->setOnFiveHundred(
     function (DateTimeImmutable $date) {
@@ -201,10 +201,10 @@ Ejecutar el método `saveTo` devuelve un arreglo con los UUID que fueron efectiv
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
-use PhpCfdi\CfdiSatScraper\SATScraper;
+use PhpCfdi\CfdiSatScraper\SatScraper;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
+$satScraper = new SatScraper('rfc', 'ciec', $captchaResolver);
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->downloadPeriod($query);
@@ -227,11 +227,11 @@ use GuzzleHttp\Exception\RequestException;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Contracts\DownloadXmlHandlerInterface;
 use PhpCfdi\CfdiSatScraper\Query;
-use PhpCfdi\CfdiSatScraper\SATScraper;
+use PhpCfdi\CfdiSatScraper\SatScraper;
 use Psr\Http\Message\ResponseInterface;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
+$satScraper = new SatScraper('rfc', 'ciec', $captchaResolver);
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
@@ -278,7 +278,7 @@ $insecureClient = new \GuzzleHttp\Client([
 ]);
 $gateway = new \PhpCfdi\CfdiSatScraper\SatHttpGateway($insecureClient);
 
-/** @var \PhpCfdi\CfdiSatScraper\SATScraper $satScraper */
+/** @var \PhpCfdi\CfdiSatScraper\SatScraper $satScraper */
 $satScraper->setSatHttpGateway($gateway);
 ```
 

@@ -11,7 +11,7 @@ use DOMXPath;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\MetadataList;
-use PhpCfdi\CfdiSatScraper\SATScraper;
+use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
 class IntegrationTestCase extends TestCase
@@ -30,7 +30,7 @@ class IntegrationTestCase extends TestCase
         return static::$factory;
     }
 
-    protected function getSatScraper(): SATScraper
+    protected function getSatScraper(): SatScraper
     {
         try {
             return $this->getFactory()->getSatScraper();
