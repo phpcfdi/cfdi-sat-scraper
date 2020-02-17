@@ -4,94 +4,57 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
 use PhpCfdi\CfdiSatScraper\Contracts\Filters;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersReceived;
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
 use PhpCfdi\CfdiSatScraper\Internal\ParserFormatSAT;
 
 class QueryResolver
 {
-    /** @var Client */
-    private $client;
+    /** @var SatHttpGateway */
+    private $satHttpGateway;
 
-    /** @var CookieJar */
-    private $cookie;
-
-    public function __construct(Client $client, CookieJar $cookie)
+    public function __construct(SatHttpGateway $satHttpGateway)
     {
-        $this->client = $client;
-        $this->cookie = $cookie;
-    }
-
-    public function getClient(): Client
-    {
-        return $this->client;
-    }
-
-    public function getCookie(): CookieJar
-    {
-        return $this->cookie;
+        $this->satHttpGateway = $satHttpGateway;
     }
 
     public function resolve(Query $query): MetadataList
     {
-        // define url by download type
-        $url = $this->urlFromDownloadType($query->getDownloadType());
+        $filters = $this->filtersFromQuery($query); // create filters from query
+        $url = $query->getDownloadType()->url(); // define url by download type
 
-        // extract main inputs
-        $html = $this->consumeFormPage($url);
-        // hack for bad encoding
-        $html = str_replace('charset=utf-16', 'charset=utf-8', $html);
+        $baseInputs = $this->resolveOpenCompletePage($url);
+        $lastViewStates = $this->resolveSelectDownloadType($url, $baseInputs, $filters);
+        $htmlWithMetadata = $this->resolveObtainList($url, array_merge($baseInputs, $lastViewStates), $filters);
 
-        $inputs = (new HtmlForm($html, 'form'))->getFormValues();
+        return (new MetadataExtractor())->extract($htmlWithMetadata);
+    }
 
-        // create filters from query
-        $filters = $this->filtersFromQuery($query);
+    protected function resolveOpenCompletePage(string $url): array
+    {
+        $completePage = $this->satHttpGateway->getPortalPage($url);
+        $completePage = str_replace('charset=utf-16', 'charset=utf-8', $completePage); // quick and dirty hack
+        $htmlFormInputExtractor = new HtmlForm($completePage, 'form', ['/^ctl00\$MainContent\$Btn.+/', '/^seleccionador$/']);
+        $baseInputs = $htmlFormInputExtractor->getFormValues();
+        return $baseInputs;
+    }
 
-        // consume search using initial filters (it includes data to be parsed)
-        $post = array_merge($inputs, $filters->getInitialFilters());
-        $html = $this->consumeSearch($url, $post);
+    protected function resolveSelectDownloadType(string $url, array $baseInputs, Filters $filters): array
+    {
+        $post = array_merge($baseInputs, $filters->getInitialFilters());
+        $html = $this->satHttpGateway->postAjaxSearch($url, $post); // this html is used to update __VARIABLES
+        $lastViewStateValues = (new ParserFormatSAT())->getFormValues($html);
+        return $lastViewStateValues;
+    }
 
+    protected function resolveObtainList(string $url, array $baseInputs, Filters $filters): string
+    {
         // consume search using search filters
-        $post = array_merge($inputs, $filters->getRequestFilters(), (new ParserFormatSAT())->getFormValues($html));
-        $htmlSearch = $this->consumeSearch($url, $post);
-
-        // extract data from resolved search
-        return (new MetadataExtractor())->extract($htmlSearch);
-    }
-
-    protected function consumeFormPage(string $url): string
-    {
-        $response = $this->getClient()->get($url, [
-            'future' => true,
-            'cookies' => $this->getCookie(),
-            'verify' => false,
-        ]);
-
-        return $response->getBody()->getContents();
-    }
-
-    protected function consumeSearch(string $url, array $formParams): string
-    {
-        $response = $this->getClient()->post($url, [
-            'form_params' => $formParams,
-            'headers' => Headers::postAjax(URLS::SAT_HOST_PORTAL_CFDI, $url),
-            'future' => true,
-            'verify' => false,
-            'cookies' => $this->getCookie(),
-        ]);
-        return $response->getBody()->getContents();
-    }
-
-    public function urlFromDownloadType(DownloadTypesOption $downloadType): string
-    {
-        if ($downloadType->isEmitidos()) {
-            return URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR;
-        }
-        return URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR;
+        $post = array_merge($baseInputs, $filters->getRequestFilters());
+        $htmlWithMetadataContent = $this->satHttpGateway->postAjaxSearch($url, $post);
+        return $htmlWithMetadataContent;
     }
 
     public function filtersFromQuery(Query $query): Filters
@@ -100,5 +63,10 @@ class QueryResolver
             return new FiltersIssued($query);
         }
         return new FiltersReceived($query);
+    }
+
+    public function getSatHttpGateway(): SatHttpGateway
+    {
+        return $this->satHttpGateway;
     }
 }

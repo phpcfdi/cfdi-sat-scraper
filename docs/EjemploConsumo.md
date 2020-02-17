@@ -28,6 +28,7 @@ use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\ConsoleCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SATScraper;
 
 $rfc = strval(getenv('SAT_AUTH_RFC'));
@@ -35,11 +36,10 @@ $claveCiec = strval(getenv('SAT_AUTH_CIEC'));
 $cookieJarPath = sprintf('%s/build/cookies/%s.json', getcwd(), $rfc);
 $downloadsPath = sprintf('%s/build/cfdis/%s', getcwd(), $rfc);
 
-$client = new Client();
-$cookie = new FileCookieJar($cookieJarPath, true);
+$gateway = new SatHttpGateway(new Client(), new FileCookieJar($cookieJarPath, true));
 $captchaResolver = new ConsoleCaptchaResolver();
 
-$satScraper = new SATScraper($rfc, $claveCiec, $client, $cookie, $captchaResolver);
+$satScraper = new SATScraper($rfc, $claveCiec, $captchaResolver, $gateway);
 
 $query = new Query(new DateTimeImmutable('2019-12-01'), new DateTimeImmutable('2019-12-31'));
 $query->setDownloadType(DownloadTypesOption::recibidos()) // default: emitidos
@@ -48,7 +48,7 @@ $query->setDownloadType(DownloadTypesOption::recibidos()) // default: emitidos
 $list = $satScraper->downloadPeriod($query);
 printf("\nSe encontraron %d registros", $list->count());
 
-$satScraper->downloader()->setMetadataList($list)->saveTo($downloadsPath, true);
+$satScraper->downloader($list)->saveTo($downloadsPath, true);
 foreach ($list as $item) {
     echo PHP_EOL, $item->uuid(), ': ',
     var_export(file_exists(sprintf('%s/%s.xml', $downloadsPath, $item->uuid())), true);

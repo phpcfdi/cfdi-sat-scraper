@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersReceived;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\QueryResolver;
+use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use PhpCfdi\CfdiSatScraper\URLS;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -20,24 +19,19 @@ final class QueryResolverTest extends TestCase
     /** @var QueryResolver */
     private $resolver;
 
-    /** @var Client&MockObject */
-    private $client;
-
-    /** @var CookieJar&MockObject */
-    private $cookie;
+    /** @var SatHttpGateway&MockObject */
+    private $satHttpGateway;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->client = $this->createMock(Client::class);
-        $this->cookie = $this->createMock(CookieJar::class);
-        $this->resolver = new QueryResolver($this->client, $this->cookie);
+        $this->satHttpGateway = $this->createMock(SatHttpGateway::class);
+        $this->resolver = new QueryResolver($this->satHttpGateway);
     }
 
     public function testResolverConstruction(): void
     {
-        $this->assertSame($this->client, $this->resolver->getClient());
-        $this->assertSame($this->cookie, $this->resolver->getCookie());
+        $this->assertSame($this->satHttpGateway, $this->resolver->getSatHttpGateway());
     }
 
     public function testFiltersFromQuery(): void
@@ -55,29 +49,31 @@ final class QueryResolverTest extends TestCase
     {
         $this->assertSame(
             URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR,
-            $this->resolver->urlFromDownloadType(DownloadTypesOption::recibidos())
+            DownloadTypesOption::recibidos()->url()
         );
         $this->assertSame(
             URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR,
-            $this->resolver->urlFromDownloadType(DownloadTypesOption::emitidos())
+            DownloadTypesOption::emitidos()->url()
         );
     }
 
     public function testResolveQuery(): void
     {
-        // prepare resolver mocking responses from SAT
-        /** @var QueryResolver&MockObject $resolver */
-        $resolver = $this->getMockBuilder(QueryResolver::class)
+        // prepare fake responses from SAT
+        /** @var SatHttpGateway&MockObject $satHttpGateway */
+        $satHttpGateway = $this->getMockBuilder(SatHttpGateway::class)
             ->disableOriginalConstructor()
-            ->setMethods(['consumeFormPage', 'consumeSearch'])
             ->getMock();
-        $resolver->method('consumeFormPage')->willReturn(
+        $satHttpGateway->method('getPortalPage')->willReturn(
             $this->fileContentPath('sample-response-receiver-form-page.html')
         );
-        $resolver->method('consumeSearch')->willReturn(
+        $satHttpGateway->method('postAjaxSearch')->willReturn(
             $this->fileContentPath('sample-response-receiver-using-filters-initial.html'),
             $this->fileContentPath('sample-response-receiver-using-filters-search.html')
         );
+
+        // create resolver with prepared responses
+        $resolver = new QueryResolver($satHttpGateway);
 
         // given a query (not important since it will not contact real server)
         $now = new \DateTimeImmutable();

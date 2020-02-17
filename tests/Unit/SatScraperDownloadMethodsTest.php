@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\MetadataDownloader;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SATScraper;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -21,15 +20,12 @@ final class SatScraperDownloadMethodsTest extends TestCase
     {
         $callable = function (\DateTimeImmutable $date): void {
         };
-        $client = $this->createMock(Client::class);
-        $cookie = $this->createMock(CookieJar::class);
+        $satHttpGateway = $this->createMock(SatHttpGateway::class);
         $captcha = $this->createMock(CaptchaResolverInterface::class);
-        $scraper = new SATScraper('rfc', 'ciec', $client, $cookie, $captcha);
+        $scraper = new SATScraper('rfc', 'ciec', $captcha, $satHttpGateway);
         $scraper->setOnFiveHundred($callable);
         $downloader = $scraper->createMetadataDownloader();
 
-        $this->assertSame($client, $downloader->getQueryResolver()->getClient());
-        $this->assertSame($cookie, $downloader->getQueryResolver()->getCookie());
         $this->assertSame($callable, $downloader->getOnFiveHundred());
     }
 

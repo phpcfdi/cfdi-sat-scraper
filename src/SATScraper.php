@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
-use GuzzleHttp\Exception\ClientException;
 use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
-use PhpCfdi\CfdiSatScraper\Exceptions\SATAuthenticatedException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATCredentialsException;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
 
 class SATScraper
 {
@@ -22,12 +19,6 @@ class SATScraper
 
     /** @var string */
     protected $ciec;
-
-    /** @var Client */
-    protected $client;
-
-    /** @var CookieJar */
-    protected $cookie;
 
     /** @var callable|null */
     protected $onFiveHundred;
@@ -44,12 +35,14 @@ class SATScraper
     /** @var int */
     protected $maxTriesLogin = 3;
 
+    /** @var SatHttpGateway */
+    private $satHttpGateway;
+
     public function __construct(
         string $rfc,
         string $ciec,
-        Client $client,
-        CookieJar $cookie,
-        CaptchaResolverInterface $captchaResolver
+        CaptchaResolverInterface $captchaResolver,
+        ?SatHttpGateway $satHttpGateway = null
     ) {
         if (empty($rfc)) {
             throw new \InvalidArgumentException('The parameter rfc is invalid');
@@ -62,8 +55,7 @@ class SATScraper
         $this->rfc = $rfc;
         $this->ciec = $ciec;
         $this->loginUrl = URLS::SAT_URL_LOGIN;
-        $this->client = $client;
-        $this->cookie = $cookie;
+        $this->satHttpGateway = $satHttpGateway ?? new SatHttpGateway();
         $this->captchaResolver = $captchaResolver;
     }
 
@@ -124,26 +116,14 @@ class SATScraper
         return $this;
     }
 
-    public function getCookie(): CookieJar
+    public function getSatHttpGateway(): SatHttpGateway
     {
-        return $this->cookie;
+        return $this->satHttpGateway;
     }
 
-    public function setCookie(CookieJar $cookieJar): self
+    public function setSatHttpGateway(SatHttpGateway $satHttpGateway): self
     {
-        $this->cookie = $cookieJar;
-
-        return $this;
-    }
-
-    public function getClient(): Client
-    {
-        return $this->client;
-    }
-
-    public function setClient(Client $client): self
-    {
-        $this->client = $client;
+        $this->satHttpGateway = $satHttpGateway;
 
         return $this;
     }
@@ -161,54 +141,37 @@ class SATScraper
     }
 
     /**
-     * @param DownloadTypesOption $downloadType
      * @return SATScraper
      *
-     * @throws SATAuthenticatedException
      * @throws SATCredentialsException
      */
-    public function initScraper(DownloadTypesOption $downloadType): self
+    public function initScraper(): self
     {
         if (! $this->hasLogin()) {
             $this->login(1);
         }
-        $data = $this->dataAuth();
-        $data = $this->postDataAuth($data);
-        $data = $this->start($data);
-        $this->selectType($downloadType, $data);
+        $this->registerOnPortalMainPage();
 
         return $this;
     }
 
-    /**
-     * This is only a consumption of the login page.
-     * It is expected to return the raw html to be processed.
-     *
-     * Is known that if there is a session active it will return only a redirect page
-     * with a known URL, but if it isn't, it will show a form to login.
-     *
-     * @return string
-     * @throws \RuntimeException Unable to retrive the contents from login page
-     */
-    protected function consumeLoginPage(): string
+    protected function registerOnPortalMainPage(): void
     {
-        $html = $this->client->get(
-            $this->loginUrl,
-            [
-                'future' => true,
-                'verify' => false,
-                'cookies' => $this->cookie,
-            ]
-        )->getBody()->getContents();
-        if ('' === $html) {
-            throw new \RuntimeException('Unable to retrive the contents from login page');
+        $htmlMainPage = $this->satHttpGateway->getPortalMainPage();
+
+        $inputs = (new HtmlForm($htmlMainPage, 'form'))->getFormValues();
+        if (count($inputs) > 0) {
+            $htmlMainPage = $this->satHttpGateway->postPortalMainPage($inputs);
         }
-        return $html;
+
+        if (false === strpos($htmlMainPage, 'RFC Autenticado: ' . $this->getRfc())) {
+            throw new \RuntimeException('The session is authenticated but main page does not contains your RFC');
+        }
     }
 
     protected function requestCaptchaImage(): string
     {
-        $html = $this->consumeLoginPage();
+        $html = $this->satHttpGateway->getAuthLoginPage($this->loginUrl);
         $captchaBase64Extractor = new CaptchaBase64Extractor();
         $imageBase64 = $captchaBase64Extractor->retrieve($html);
         if ('' === $imageBase64) {
@@ -218,7 +181,7 @@ class SATScraper
         return $imageBase64;
     }
 
-    protected function getCaptchaValue(int $attempt): ?string
+    protected function getCaptchaValue(int $attempt): string
     {
         $imageBase64 = $this->requestCaptchaImage();
         try {
@@ -238,31 +201,26 @@ class SATScraper
 
     protected function hasLogin(): bool
     {
-        $html = $this->consumeLoginPage();
-        return (false !== strpos($html, 'https://cfdiau.sat.gob.mx/nidp/app?sid=0'));
+        // check login on cfdiau
+        $html = $this->satHttpGateway->getAuthLoginPage($this->loginUrl);
+        if (false === strpos($html, 'https://cfdiau.sat.gob.mx/nidp/app?sid=0')) {
+            $this->logout();
+            return  false;
+        }
+
+        // check main page
+        $html = $this->satHttpGateway->getPortalMainPage();
+        if (false !== strpos($html, urlencode('https://portalcfdi.facturaelectronica.sat.gob.mx/logout.aspx?salir=y'))) {
+            $this->logout();
+            return  false;
+        }
+
+        return true;
     }
 
     protected function login(int $attempt): string
     {
-        $response = $this->client->post(
-            $this->loginUrl,
-            [
-                'future' => true,
-                'verify' => false,
-                'cookies' => $this->cookie,
-                'headers' => Headers::post(
-                    URLS::SAT_HOST_CFDI_AUTH,
-                    URLS::SAT_URL_LOGIN
-                ),
-                'form_params' => [
-                    'Ecom_Password' => $this->ciec,
-                    'Ecom_User_ID' => $this->rfc,
-                    'option' => 'credential',
-                    'submit' => 'Enviar',
-                    'userCaptcha' => $this->getCaptchaValue(1),
-                ],
-            ]
-        )->getBody()->getContents();
+        $response = $this->satHttpGateway->postLoginData($this->loginUrl, $this->rfc, $this->ciec, $this->getCaptchaValue(1));
 
         if (false !== strpos($response, 'Ecom_User_ID')) {
             if ($attempt < $this->maxTriesLogin) {
@@ -275,128 +233,45 @@ class SATScraper
         return $response;
     }
 
-    protected function dataAuth(): array
+    protected function logout(): void
     {
-        $response = $this->client->get(
-            URLS::SAT_URL_PORTAL_CFDI,
-            [
-                'future' => true,
-                'cookies' => $this->cookie,
-                'verify' => false,
-            ]
-        )->getBody()->getContents();
-        $inputs = $this->parseInputs($response);
-
-        return $inputs;
-    }
-
-    /**
-     * @param array $inputs
-     * @return array
-     *
-     * @throws SATAuthenticatedException
-     */
-    protected function postDataAuth(array $inputs): array
-    {
-        try {
-            $response = $this->client->post(
-                URLS::SAT_URL_PORTAL_CFDI,
-                [
-                    'future' => true,
-                    'cookies' => $this->cookie,
-                    'verify' => false,
-                    'form_params' => $inputs,
-                ]
-            )->getBody()->getContents();
-            $inputs = $this->parseInputs($response);
-
-            return $inputs;
-        } catch (ClientException $e) {
-            throw new SATAuthenticatedException($e->getMessage());
-        }
-    }
-
-    protected function start(array $inputs = []): array
-    {
-        $response = $this->client->post(
-            URLS::SAT_URL_PORTAL_CFDI,
-            [
-                'future' => true,
-                'cookies' => $this->cookie,
-                'verify' => false,
-                'form_params' => $inputs,
-            ]
-        )->getBody()->getContents();
-        $inputs = $this->parseInputs($response);
-
-        return $inputs;
-    }
-
-    protected function selectType(DownloadTypesOption $downloadType, array $inputs): string
-    {
-        $data = [
-            'ctl00$MainContent$TipoBusqueda' => $downloadType->value(),
-            '__ASYNCPOST' => 'true',
-            '__EVENTTARGET' => '',
-            '__EVENTARGUMENT' => '',
-            'ctl00$ScriptManager1' => 'ctl00$MainContent$UpnlBusqueda|ctl00$MainContent$BtnBusqueda',
-        ];
-
-        $data = array_merge($inputs, $data);
-
-        $response = $this->client->post(
-            URLS::SAT_URL_PORTAL_CFDI_CONSULTA,
-            [
-                'future' => true,
-                'cookies' => $this->cookie,
-                'verify' => false,
-                'form_params' => $data,
-                'headers' => Headers::post(
-                    URLS::SAT_HOST_CFDI_AUTH,
-                    URLS::SAT_URL_PORTAL_CFDI
-                ),
-            ]
-        )->getBody()->getContents();
-
-        return $response;
+        $this->satHttpGateway->getPortalPage('https://portalcfdi.facturaelectronica.sat.gob.mx/logout.aspx?salir=y');
+        $this->satHttpGateway->getPortalPage('https://cfdiau.sat.gob.mx/nidp/app/logout?locale=es');
+        $this->satHttpGateway->clearCookieJar();
     }
 
     public function createMetadataDownloader(): MetadataDownloader
     {
         return new MetadataDownloader(
-            new QueryResolver($this->getClient(), $this->getCookie()),
+            new QueryResolver($this->satHttpGateway),
             $this->onFiveHundred
         );
     }
 
     public function downloadListUUID(array $uuids, DownloadTypesOption $downloadType): MetadataList
     {
-        $this->initScraper($downloadType);
+        $this->initScraper();
         return $this->createMetadataDownloader()->downloadByUuids($uuids, $downloadType);
     }
 
     public function downloadPeriod(Query $query): MetadataList
     {
-        $this->initScraper($query->getDownloadType());
+        $this->initScraper();
         return $this->createMetadataDownloader()->downloadByDate($query);
     }
 
     public function downloadByDateTime(Query $query): MetadataList
     {
-        $this->initScraper($query->getDownloadType());
+        $this->initScraper();
         return $this->createMetadataDownloader()->downloadByDateTime($query);
     }
 
-    protected function parseInputs(string $html): array
+    public function downloader(?MetadataList $metadataList = null): DownloadXml
     {
-        $htmlForm = new HtmlForm($html, 'form');
-        $inputs = $htmlForm->getFormValues();
-
-        return $inputs;
-    }
-
-    public function downloader(): DownloadXML
-    {
-        return new DownloadXML($this->getClient(), $this->getCookie());
+        $downloadXml = new DownloadXml($this->satHttpGateway);
+        if (null !== $metadataList) {
+            $downloadXml->setMetadataList($metadataList);
+        }
+        return $downloadXml;
     }
 }

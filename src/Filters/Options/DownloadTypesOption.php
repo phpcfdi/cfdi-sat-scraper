@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Filters\Options;
 
 use Eclipxe\Enum\Enum;
-use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
+use LogicException;
+use PhpCfdi\CfdiSatScraper\URLS;
 
 /**
  * @method static self recibidos()
@@ -14,18 +15,19 @@ use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
  * @method bool isEmitidos()
  * @method bool isRecibidos()
  */
-class DownloadTypesOption extends Enum implements FilterOption
+class DownloadTypesOption extends Enum
 {
-    protected static function overrideValues(): array
-    {
-        return [
-            'emitidos' => 'RdoTipoBusquedaEmisor',
-            'recibidos' => 'RdoTipoBusquedaReceptor',
-        ];
-    }
+    private const URLS = [
+        'recibidos' => URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR,
+        'emitidos' => URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR,
+    ];
 
-    public function nameIndex(): string
+    public function url(): string
     {
-        return 'ctl00$MainContent$TipoBusqueda';
+        $url = self::URLS[$this->value()] ?? '';
+        if ('' === $url) {
+            throw new LogicException(sprintf('Class %s does not have the url for "%s"', static::class, $this->value()));
+        }
+        return $url;
     }
 }

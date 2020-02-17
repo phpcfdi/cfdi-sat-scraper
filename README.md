@@ -15,7 +15,7 @@ Actualmente no hay liberada una versión estable, una vez liberada se utilizará
 
 ## Instalacion por composer
 
-```
+```shell
 composer require phpcfdi/cfdi-sat-scraper:master-dev
 ```
 
@@ -55,12 +55,15 @@ El objeto principal de trabajo se llama `SATScraper` con el que se pueden realiz
 por UUIDS específicos y obtener resultados. La consulta se llama `Query` y el resultado es un `MetadataList`.
 
 Una vez con los resultados `MetadataList` se puede solicitar una descarga a una carpeta específica o bien por medio
-de una función *callback*. El proceso de descarga permite hacer varias descargas en forma simultánea.
+de un objeto *handler*. El proceso de descarga permite hacer varias descargas en forma simultánea.
 
 Para generar los resultados del `MetadataList` la librería cuenta con una estrategia de división.
 Si se trata de una consulta de CFDI recibidos automáticamente se divide por día.
 En caso de que en el periodo consultado se encuentren 500 o más registros entonces la búsqueda se va subdividiendo
 en diferentes periodos, hasta llegar a la consulta mínima de 1 segundo. Luego los resultados son nuevamente unidos.
+
+Una vez que tienes un listado `MetadataList` se puede aplicar un filtro para obtener un nuevo listado con únicamente
+los objetos `Metadata` donde el UUID coincide.
 
 Los métodos para ejecutar la descarga de metadata son:
 
@@ -70,9 +73,9 @@ Los métodos para ejecutar la descarga de metadata son:
 
 Y una vez con el `MetadataList` se crea un objeto descargador y se le pide que ejecute las descargas.
 
-- Creación: `SATScraper::downloader(): DownloadXML`
-- Guardar a una carpeta: `DownloadXML::saveTo(string $destination): void`
-- Guardar con un callback: `DownloadXML::download(function (string $content, string $filename) {}): void`
+- Creación: `SATScraper::downloader(MetadataList $list = null): DownloadXml`
+- Guardar a una carpeta: `DownloadXml::saveTo(string $destination): void`
+- Guardar con un manejador: `DownloadXml::download(DownloadXmlHandlerInterface $handler): void`
 
 Si se llega a la consulta mínima de 1 segundo y se obtuvieron 500 o más registros entonces adicionalmente
 se llama a un *callback* (opcional) para reportar este hecho.
@@ -113,14 +116,12 @@ $query
 ```php
 <?php
 
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\SATScraper;
-use GuzzleHttp\Cookie\CookieJar;
+use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
-use GuzzleHttp\Client;
+use PhpCfdi\CfdiSatScraper\SATScraper;
 
-$captchaResolver = new DeCaptcherCaptchaResolver(new Client(), 'user', 'password');
-$satScraper = new SATScraper('rfc', 'ciec', new Client(), new CookieJar(), $captchaResolver);
+/** @var CaptchaResolverInterface $captchaResolver */
+$satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->downloadPeriod($query);
@@ -135,11 +136,11 @@ foreach ($list as $cfdi) {
     echo 'Estado: ', $cfdi->get('estadoComprobante'), PHP_EOL;
 }
 
-// descarga de cada uno de los CFDI
-$downloader = $satScraper->downloader();
-$downloader->setMetadataList($list)                 // establecer la lista a descargar
+// descarga de cada uno de los CFDI, reporta los descargados en $downloadedUuids
+$downloadedUuids = $satScraper->downloader($list)
     ->setConcurrency(50)                            // cambiar a 50 descargas simultáneas
     ->saveTo('/storage/downloads');                 // ejecutar la instrucción de descarga
+echo json_encode($downloadedUuids);
 ```
 
 ## Ejemplo de descarga por lista de UUIDS
@@ -147,14 +148,12 @@ $downloader->setMetadataList($list)                 // establecer la lista a des
 ```php
 <?php
 
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\SATScraper;
+use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
-use GuzzleHttp\Cookie\CookieJar;
-use GuzzleHttp\Client;
+use PhpCfdi\CfdiSatScraper\SATScraper;
 
-$captchaResolver = new DeCaptcherCaptchaResolver(new Client(), 'user', 'password');
-$satScraper = new SATScraper('rfc', 'ciec', new Client(), new CookieJar(), $captchaResolver);
+/** @var CaptchaResolverInterface $captchaResolver */
+$satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
 
 $uuids = [
     '5cc88a1a-8672-11e6-ae22-56b6b6499611',
@@ -162,8 +161,7 @@ $uuids = [
     '5cc88d4e-8672-11e6-ae22-56b6b6499613'
 ];
 $list = $satScraper->downloadListUUID($uuids, DownloadTypesOption::recibidos());
-
-print_r($list);
+echo json_encode($list);
 ```
 
 ## Aviso de que existen más de 500 comprobantes en un mismo segundo
@@ -176,14 +174,12 @@ que le puede ayudar a considerar este escenario.
 ```php
 <?php
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\SATScraper;
+use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\SATScraper;
 
-$captchaResolver = new DeCaptcherCaptchaResolver(new Client(), 'user', 'password');
-$satScraper = new SATScraper('rfc', 'ciec', new Client(), new CookieJar(), $captchaResolver);
+/** @var CaptchaResolverInterface $captchaResolver */
+$satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
 // establecer el callback a ejecutar cuando se encuentre en un mismo segundo 500 o más CFDI
 $satScraper->setOnFiveHundred(
     function (DateTimeImmutable $date) {
@@ -193,61 +189,97 @@ $satScraper->setOnFiveHundred(
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->downloadPeriod($query);
-print_r($list);
-
+echo json_encode($list);
 ```
 
 ## Descargar CFDIS a una carpeta
 
+Ejecutar el método `saveTo` devuelve un arreglo con los UUID que fueron efectivamente descargados.
+
 ```php
 <?php
 
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\SATScraper;
-use GuzzleHttp\Cookie\CookieJar;
+use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
-use GuzzleHttp\Client;
+use PhpCfdi\CfdiSatScraper\SATScraper;
 
-$captchaResolver = new DeCaptcherCaptchaResolver(new Client(), 'user', 'password');
-$satScraper = new SATScraper('rfc', 'ciec', new Client(), new CookieJar(), $captchaResolver);
+/** @var CaptchaResolverInterface $captchaResolver */
+$satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->downloadPeriod($query);
 
-$satScraper->downloader()
-    ->setMetadataList($list)
+// $downloadedUuids contiene un listado de UUID que fueron procesados correctamente
+$downloadedUuids = $satScraper->downloader($list)
     ->setConcurrency(50) // cambiar la concurrencia por defecto a 50 descargas simultáneas
     ->saveTo('/storage/downloads', true, 0777);
-
+echo json_encode($downloadedUuids);
 ```
 
-## Obtener cada descarga de CFDI
+## Procesar de forma personalizada cada descarga de CFDI
+
+Ejecutar el método `saveTo` devuelve un arreglo con los UUID que fueron efectivamente descargados.
 
 ```php
 <?php
 
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\SATScraper;
-use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\Exception\RequestException;
+use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\DownloadXmlHandlerInterface;
 use PhpCfdi\CfdiSatScraper\Query;
-use GuzzleHttp\Client;
+use PhpCfdi\CfdiSatScraper\SATScraper;
+use Psr\Http\Message\ResponseInterface;
 
-$captchaResolver = new DeCaptcherCaptchaResolver(new Client(), 'user', 'password');
-$satScraper = new SATScraper('rfc', 'ciec', new Client(), new CookieJar(), $captchaResolver);
+/** @var CaptchaResolverInterface $captchaResolver */
+$satScraper = new SATScraper('rfc', 'ciec', $captchaResolver);
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
 $list = $satScraper->downloadPeriod($query);
 
-$satScraper->downloader()
-    ->setMetadataList($list)
-    ->download(
-        function (string $content, string $name) {
-            $filename = '/storage/' . $name;
-            echo 'saving ', $filename, PHP_EOL;
-            file_put_contents($filename, $content);
+$myHandler = new class implements DownloadXmlHandlerInterface {
+    public function onFulfilled(ResponseInterface $response, string $uuid): void
+    {
+        $filename = '/storage/' . $uuid . '.xml';
+        echo 'Saving ', $uuid, PHP_EOL;
+        file_put_contents($filename, (string) $response->getBody());
+    }
+
+    public function onRequestException(RequestException $exception, string $uuid): void
+    {
+        $this->onRejected($exception, $uuid);
+    }
+
+    public function onRejected($reason, string $uuid): void
+    {
+        if ($reason instanceof Throwable) {
+            $reason = $reason->getMessage();
         }
-    );
+        echo 'ERROR: ', $uuid, ' => ', strval($reason), PHP_EOL;
+    }
+};
+
+// $downloadedUuids contiene un listado de UUID que fueron procesados correctamente
+$downloadedUuids = $satScraper->downloader($list)->download($myHandler);
+echo json_encode($downloadedUuids);
+```
+
+## Quitar la verificación de certificados del SAT
+
+En caso de que los certificados del SAT usados en HTTPS fallen, será necerario que desactive la verificación
+de los mismos. Esto se puede lograr creando el cliente de Guzzle con la negación de la opción `verify`.
+
+No es una práctica recomendada pero tal vez necesaria ante los problemas a los que el SAT se ve expuesto.
+Tenga en cuenta que esto podría facilitar significativamente un ataque que provoque que la pérdida de su clave CIEC.
+
+```php
+$insecureClient = new \GuzzleHttp\Client([
+    \GuzzleHttp\RequestOptions::VERIFY => false
+]);
+$gateway = new \PhpCfdi\CfdiSatScraper\SatHttpGateway($insecureClient);
+
+/** @var \PhpCfdi\CfdiSatScraper\SATScraper $satScraper */
+$satScraper->setSatHttpGateway($gateway);
 ```
 
 ## Compatilibilidad
@@ -265,10 +297,9 @@ y recuerda revisar el archivo de tareas pendientes [TODO][] y el [CHANGELOG][].
 
 Documentación de desarrollo:
 
-  - [Entorno de desarrollo] (https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/development/docs/EntornoDesarrollo.md)
-  - [Integración contínua] (https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/development/docs/IntegracionContinua.md)
-  - [Test de integración] (https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/development/docs/TestIntegracion.md)
-
+  - [Entorno de desarrollo](https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/development/docs/EntornoDesarrollo.md)
+  - [Integración contínua](https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/development/docs/IntegracionContinua.md)
+  - [Test de integración](https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/development/docs/TestIntegracion.md)
 
 ## Copyright and License
 

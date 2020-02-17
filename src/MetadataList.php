@@ -31,6 +31,30 @@ class MetadataList implements \Countable, \IteratorAggregate, \JsonSerializable
         return $new;
     }
 
+    /**
+     * Return a new list with only the Metadata that is on the uuids
+     *
+     * @param string[] $uuids
+     * @return self
+     */
+    public function filterWithUuids(array $uuids): self
+    {
+        $uuids = array_change_key_case(array_flip($uuids), CASE_LOWER);
+        return new self(array_intersect_key($this->list, $uuids));
+    }
+
+    /**
+     * Return a new list excluding the Metadata that is on the uuids
+     *
+     * @param string[] $uuids
+     * @return self
+     */
+    public function filterWithOutUuids(array $uuids): self
+    {
+        $uuids = array_change_key_case(array_flip($uuids), CASE_LOWER);
+        return new self(array_diff_key($this->list, $uuids));
+    }
+
     public function has(string $uuid): bool
     {
         return isset($this->list[strtolower($uuid)]);

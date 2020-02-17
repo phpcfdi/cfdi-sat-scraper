@@ -14,6 +14,24 @@ que nombraremos así: ` Breaking . Feature . Fix `, donde:
 **Importante:** Las reglas de SEMVER no aplican si estás usando una rama (por ejemplo `master-dev`)
 o estás usando una versión cero (por ejemplo `0.18.4`).
 
+## UNRELEASED 2020-02-14
+
+Estos son algunos de los cambios más importantes relacionados con la compatibilidad si está usando una versión previa.
+
+- Se crea el `SatHttpGateway` que encierra las comunicaciones con el SAT, es éste el que utiliza
+  el cliente de Guzzle (`GuzzleInterface`).
+- Se cambió el constructor del `SatScraper`, ahora el tercer parámetro es el resolvedor de captchas
+  y el cuarto parámetro es un `SatHttpGateway` y es opcional (por si la cookie es solo de memoria).
+- Se cambia el objeto `DownloadXml`, antes funcionaba con un callable, ahora funciona con una interfaz
+  de tipo `DownloadXmlHandlerInterface` para forzar las firmas de los métodos. También devuelve al
+  hacer `download` o `saveTo` el listado de UUID descargados.
+- Se cambió el inicio de sesión en el SAT después de revisar el funcionamiento actual, ahora es más limpio
+  y con menos llamadas.
+- Los filtros solamente llenan los input que deberían llenar.
+- El `DownloadTypesOption` ya no es un filtro, pero sigue siendo un `Enum`
+- Se removieron las constantes `URLS::SAT_HOST_CFDI_AUTH`, `URLS::SAT_HOST_PORTAL_CFDI` y `URLS::SAT_URL_PORTAL_CFDI_CONSULTA`
+- Se movieron las clases internas al espacio de nombres interno.
+
 ## UNRELEASED 2020-02-10
 
 - Se cambia la interfaz `PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface`, la nueva forma de uso

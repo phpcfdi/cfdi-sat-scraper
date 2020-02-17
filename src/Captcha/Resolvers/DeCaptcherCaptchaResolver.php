@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Captcha\Resolvers;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 
 class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
@@ -14,7 +14,7 @@ class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
     public const METHOD_SERVICE_PICTURE = 'picture2';
 
     /**
-     * @var Client
+     * @var ClientInterface
      */
     protected $client;
 
@@ -31,11 +31,11 @@ class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
     /**
      * CaptchaResolver constructor.
      *
-     * @param Client $client
+     * @param ClientInterface $client
      * @param string $user
      * @param string $password
      */
-    public function __construct(Client $client, string $user, string $password)
+    public function __construct(ClientInterface $client, string $user, string $password)
     {
         $this->client = $client;
         $this->user = $user;
@@ -44,7 +44,8 @@ class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
 
     public function decode(string $image): string
     {
-        $response = $this->client->post(
+        $response = $this->client->request(
+            'POST',
             self::URL_SERVICE,
             [
                 'multipart' => [

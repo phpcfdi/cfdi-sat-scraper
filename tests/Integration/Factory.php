@@ -11,6 +11,7 @@ use GuzzleHttp\Middleware;
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\ConsoleCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
+use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SATScraper;
 use PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver\CaptchaLocalResolver;
 use PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver\CaptchaLocalResolverClient;
@@ -74,8 +75,9 @@ class Factory
         }
 
         $cookieFile = __DIR__ . '/../../build/cookie-' . strtolower($rfc) . '.json';
-        $client = $this->createGuzzleClient();
-        return new SATScraper($rfc, $ciec, $client, new FileCookieJar($cookieFile), static::createCaptchaResolver());
+        $cookieJar = new FileCookieJar($cookieFile, true);
+        $satHttpGateway = new SatHttpGateway($this->createGuzzleClient(), $cookieJar);
+        return new SATScraper($rfc, $ciec, static::createCaptchaResolver(), $satHttpGateway);
     }
 
     public function createGuzzleClient(): Client
