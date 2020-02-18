@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Exceptions;
 
-class SATException extends \Exception
+use Throwable;
+
+interface SatException extends Throwable
 {
 }

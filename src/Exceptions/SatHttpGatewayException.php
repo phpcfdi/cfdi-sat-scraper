@@ -7,7 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Exceptions;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
-class SatHttpGatewayException extends RuntimeException
+class SatHttpGatewayException extends RuntimeException implements SatException
 {
     /** @var string */
     private $url;
@@ -29,5 +29,21 @@ class SatHttpGatewayException extends RuntimeException
     public static function unexpectedEmptyResponse(string $when, string $url, ResponseInterface $response, array $requestFormParams = []): self
     {
         return new self("Unexpected empty content when $when", $url, $response, $requestFormParams);
+    }
+
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+    public function getResponse(): ResponseInterface
+    {
+        return $this->response;
+    }
+
+    /** @return array<string, string> */
+    public function getRequestFormParams(): array
+    {
+        return $this->requestFormParams;
     }
 }
