@@ -26,7 +26,7 @@ class DownloadTypesOption extends Enum
     {
         $url = self::URLS[$this->value()] ?? '';
         if ('' === $url) {
-            throw new LogicException(sprintf('Class %s does not have the url for "%s"', static::class, $this->value()));
+            throw new LogicException(sprintf('Enum %s does not have the url for "%s"', static::class, $this->value()));
         }
         return $url;
     }
