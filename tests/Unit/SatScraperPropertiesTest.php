@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
+use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
@@ -34,6 +35,20 @@ final class SatScraperPropertiesTest extends TestCase
         return $captcha;
     }
 
+    public function testConstructWithEmptyRfc(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('RFC');
+        new SatScraper('', 'ciec', $this->createCaptchaResolver());
+    }
+
+    public function testConstructWithEmptyCiec(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('CIEC');
+        new SatScraper('rfc', '', $this->createCaptchaResolver());
+    }
+
     public function testRfc(): void
     {
         $this->assertSame('rfc', $this->createScraper()->getRfc());
@@ -51,8 +66,8 @@ final class SatScraperPropertiesTest extends TestCase
     public function testLoginUrlWithInvalidUrl(): void
     {
         $scraper = $this->createScraper();
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The provided url is invalid');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Login URL');
         $scraper->setLoginUrl('');
     }
 

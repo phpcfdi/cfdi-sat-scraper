@@ -7,6 +7,7 @@ namespace PhpCfdi\CfdiSatScraper;
 use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\SATCredentialsException;
+use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
@@ -40,6 +41,18 @@ class SatScraper
     /** @var SatHttpGateway */
     private $satHttpGateway;
 
+    /**
+     * SatScraper constructor.
+     *
+     * @param string $rfc
+     * @param string $ciec
+     * @param CaptchaResolverInterface $captchaResolver
+     * @param SatHttpGateway|null $satHttpGateway
+     *
+     * @throws InvalidArgumentException when RFC is an empty string
+     * @throws InvalidArgumentException when CIEC is an empty string
+     * @throws InvalidArgumentException when Login URL is not a valid url
+     */
     public function __construct(
         string $rfc,
         string $ciec,
@@ -47,11 +60,11 @@ class SatScraper
         ?SatHttpGateway $satHttpGateway = null
     ) {
         if (empty($rfc)) {
-            throw new \InvalidArgumentException('The parameter rfc is invalid');
+            throw InvalidArgumentException::emptyInput('RFC');
         }
 
         if (empty($ciec)) {
-            throw new \InvalidArgumentException('The parameter ciec is invalid');
+            throw InvalidArgumentException::emptyInput('CIEC');
         }
 
         $this->rfc = $rfc;
@@ -71,10 +84,17 @@ class SatScraper
         return $this->loginUrl;
     }
 
+    /**
+     * Change the current Login URL to a new destination
+     *
+     * @param string $loginUrl
+     * @return $this
+     * @throws InvalidArgumentException when Login URL is not a valid url
+     */
     public function setLoginUrl(string $loginUrl): self
     {
         if (! filter_var($loginUrl, FILTER_VALIDATE_URL)) {
-            throw new \InvalidArgumentException('The provided url is invalid');
+            throw InvalidArgumentException::emptyInput('Login URL');
         }
 
         $this->loginUrl = $loginUrl;
