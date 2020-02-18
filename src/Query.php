@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper;
 
 use DateTimeImmutable;
+use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOption;
@@ -55,7 +56,7 @@ class Query
     public function __construct(DateTimeImmutable $startDate, DateTimeImmutable $endDate)
     {
         if ($endDate < $startDate) {
-            throw new \InvalidArgumentException('La fecha final no puede ser menor a la inicial');
+            throw InvalidArgumentException::periodStartDateGreaterThanEndDate($startDate, $endDate);
         }
 
         $this->startDate = $startDate;
