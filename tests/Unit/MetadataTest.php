@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
+use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
@@ -36,8 +37,8 @@ final class MetadataTest extends TestCase
 
     public function testCreatingWithEmptyUuidThrowsInvalidArgumentException(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('UUID cannot be empty');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('UUID');
         new Metadata('');
     }
 

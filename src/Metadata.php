@@ -4,18 +4,27 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use InvalidArgumentException;
 use JsonSerializable;
+use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 
 class Metadata implements JsonSerializable
 {
-    /** @var array */
+    /** @var array<string, string> */
     private $data;
 
+    /**
+     * Metadata constructor.
+     * $uuid will be converted to lower case.
+     * If $data contains a key with 'uuid' will be ignored.
+     *
+     * @param string $uuid
+     * @param array<string, string> $data
+     * @throws InvalidArgumentException when UUID is empty
+     */
     public function __construct(string $uuid, array $data = [])
     {
         if ('' === $uuid) {
-            throw new InvalidArgumentException('UUID cannot be empty');
+            throw InvalidArgumentException::emptyInput('UUID');
         }
         $this->data = ['uuid' => strtolower($uuid)] + $data;
     }
