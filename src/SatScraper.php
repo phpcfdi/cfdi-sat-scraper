@@ -6,8 +6,8 @@ namespace PhpCfdi\CfdiSatScraper;
 
 use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
-use PhpCfdi\CfdiSatScraper\Exceptions\SATCredentialsException;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
+use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
@@ -15,8 +15,6 @@ use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
 
 class SatScraper
 {
-    public const SAT_CREDENTIAL_ERROR = 'El RFC o CIEC son incorrectos';
-
     /** @var string */
     protected $rfc;
 
@@ -163,9 +161,10 @@ class SatScraper
     }
 
     /**
-     * @return SatScraper
+     * Initializates session on SAT
      *
-     * @throws SATCredentialsException
+     * @return SatScraper
+     * @throws LoginException
      */
     public function initScraper(): self
     {
@@ -187,7 +186,7 @@ class SatScraper
         }
 
         if (false === strpos($htmlMainPage, 'RFC Autenticado: ' . $this->getRfc())) {
-            throw new \RuntimeException('The session is authenticated but main page does not contains your RFC');
+            throw LoginException::notRegisteredAfterLogin($this->rfc, $htmlMainPage); // 'The session is authenticated but main page does not contains your RFC'
         }
     }
 
@@ -197,7 +196,7 @@ class SatScraper
         $captchaBase64Extractor = new CaptchaBase64Extractor();
         $imageBase64 = $captchaBase64Extractor->retrieve($html);
         if ('' === $imageBase64) {
-            throw new \RuntimeException('Unable to extract the base64 image from login page');
+            throw LoginException::noCaptchaImageFound($this->loginUrl, $html); // 'Unable to extract the base64 image from login page'
         }
 
         return $imageBase64;
@@ -209,7 +208,7 @@ class SatScraper
         try {
             $result = $this->captchaResolver->decode($imageBase64);
             if ('' === $result) {
-                throw new \RuntimeException('Unable to decode captcha image');
+                throw LoginException::captchaWithoutAnswer($imageBase64, $this->captchaResolver);
             }
             return $result;
         } catch (\Throwable $exception) {
@@ -242,14 +241,22 @@ class SatScraper
 
     protected function login(int $attempt): string
     {
-        $response = $this->satHttpGateway->postLoginData($this->loginUrl, $this->rfc, $this->ciec, $this->getCaptchaValue(1));
+        $captchaValue = $this->getCaptchaValue(1);
+        $loginData = [
+            'Ecom_User_ID' => $this->rfc,
+            'Ecom_Password' => $this->ciec,
+            'option' => 'credential',
+            'submit' => 'Enviar',
+            'userCaptcha' => $captchaValue,
+        ];
+        $response = $this->satHttpGateway->postLoginData($this->loginUrl, $loginData);
 
         if (false !== strpos($response, 'Ecom_User_ID')) {
             if ($attempt < $this->maxTriesLogin) {
                 return $this->login($attempt + 1);
             }
 
-            throw new SATCredentialsException(self::SAT_CREDENTIAL_ERROR);
+            throw LoginException::incorrectLoginData($loginData);
         }
 
         return $response;
@@ -270,18 +277,40 @@ class SatScraper
         );
     }
 
+    /**
+     * Retrieve the MetadataList using specific UUIDS to download
+     *
+     * @param array $uuids
+     * @param DownloadTypesOption $downloadType
+     * @return MetadataList
+     * @throws LoginException
+     */
     public function downloadListUUID(array $uuids, DownloadTypesOption $downloadType): MetadataList
     {
         $this->initScraper();
         return $this->createMetadataDownloader()->downloadByUuids($uuids, $downloadType);
     }
 
+    /**
+     * Retrieve the MetadataList based on the query, but uses full days on dates (without time parts)
+     *
+     * @param Query $query
+     * @return MetadataList
+     * @throws LoginException
+     */
     public function downloadPeriod(Query $query): MetadataList
     {
         $this->initScraper();
         return $this->createMetadataDownloader()->downloadByDate($query);
     }
 
+    /**
+     * Retrieve the MetadataList based on the query, but uses the period considering dates and times
+     *
+     * @param Query $query
+     * @return MetadataList
+     * @throws LoginException
+     */
     public function downloadByDateTime(Query $query): MetadataList
     {
         $this->initScraper();
