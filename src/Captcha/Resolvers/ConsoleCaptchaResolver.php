@@ -22,10 +22,6 @@ class ConsoleCaptchaResolver implements CaptchaResolverInterface
 
     public function storeImage(string $image): string
     {
-        if ('' === $image) {
-            throw new \RuntimeException('Current image is empty');
-        }
-
         $filename = getcwd() . '/captcha.png';
         file_put_contents($filename, base64_decode($image));
 
