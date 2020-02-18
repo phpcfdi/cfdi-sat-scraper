@@ -26,9 +26,7 @@ final class CaptchaBase64ExtractorTest extends TestCase
         $html .= '</div>';
 
         $captchaExtractor = new CaptchaBase64Extractor();
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Captcha was not found');
-        $captchaExtractor->retrieve($html);
+        $this->assertSame('', $captchaExtractor->retrieve($html));
     }
 
     public function testRetrieveBySelectorWhenElementExists(): void
