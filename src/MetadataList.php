@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
+use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
+
 /**
  * @implements \IteratorAggregate<Metadata>
  */
@@ -60,16 +62,29 @@ class MetadataList implements \Countable, \IteratorAggregate, \JsonSerializable
         return isset($this->list[strtolower($uuid)]);
     }
 
+    /**
+     * Retrieve a Metadata by UUID, if the metadata object does not exists returns NULL
+     *
+     * @param string $uuid
+     * @return Metadata|null
+     */
     public function find(string $uuid): ?Metadata
     {
         return $this->list[strtolower($uuid)] ?? null;
     }
 
+    /**
+     * Obtain a Metadata by UUID, the metadata object must exists in the collection
+     *
+     * @param string $uuid
+     * @return Metadata
+     * @throws LogicException when UUID is not found
+     */
     public function get(string $uuid): Metadata
     {
         $values = $this->find($uuid);
         if (null === $values) {
-            throw new \RuntimeException(sprintf('UUID %s not found', $uuid));
+            throw LogicException::generic("UUID $uuid not found");
         }
         return $values;
     }

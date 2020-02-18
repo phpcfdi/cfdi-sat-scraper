@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
+use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
@@ -46,7 +47,7 @@ final class MetadataListTest extends TestCase
     public function testGetMethodWithoutUuid(): Void
     {
         $list = new MetadataList([]);
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessage('UUID x-foo not found');
         $list->get('x-foo');
     }
@@ -60,11 +61,7 @@ final class MetadataListTest extends TestCase
         ]);
 
         $list = new MetadataList($contents);
-        $arrayList = [];
-        foreach ($list as $uuid => $values) {
-            $arrayList[$uuid] = $values;
-        }
-        $this->assertSame($contents, $arrayList);
+        $this->assertSame($contents, iterator_to_array($list));
     }
 
     public function testMerge(): void
@@ -151,6 +148,10 @@ final class MetadataListTest extends TestCase
         }
     }
 
+    /**
+     * @param string ...$uuids
+     * @return array<string, Metadata>
+     */
     private function createMetadataArrayUsingUuids(string ...$uuids): array
     {
         $contents = array_map(function (string $uuid): Metadata {
