@@ -35,11 +35,11 @@ class DownloadXml
     /** @var SatHttpGateway */
     private $satHttpGateway;
 
-    public function __construct(SatHttpGateway $satHttpGateway)
+    public function __construct(SatHttpGateway $satHttpGateway, ?MetadataList $list = null, int $concurrency = 10)
     {
         $this->satHttpGateway = $satHttpGateway;
-        $this->setConcurrency(10);
-        $this->list = null;
+        $this->list = $list;
+        $this->setConcurrency($concurrency);
     }
 
     public function hasMetatadaList(): bool
