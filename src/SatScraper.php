@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
-use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
@@ -14,8 +12,8 @@ use PhpCfdi\CfdiSatScraper\Internal\SatSessionManager;
 
 class SatScraper
 {
-    /** @var SatSessionManager */
-    private $satSession;
+    /** @var SatSessionData */
+    private $satSessionData;
 
     /** @var callable|null */
     protected $onFiveHundred;
@@ -26,92 +24,51 @@ class SatScraper
     /**
      * SatScraper constructor.
      *
-     * @param string $rfc
-     * @param string $ciec
-     * @param CaptchaResolverInterface $captchaResolver
+     * @param SatSessionData $sessionData
      * @param SatHttpGateway|null $satHttpGateway
-     *
-     * @throws InvalidArgumentException when RFC is an empty string
-     * @throws InvalidArgumentException when CIEC is an empty string
-     * @throws InvalidArgumentException when Login URL is not a valid url
+     * @param callable|null $onFiveHundred
      */
     public function __construct(
-        string $rfc,
-        string $ciec,
-        CaptchaResolverInterface $captchaResolver,
-        ?SatHttpGateway $satHttpGateway = null
+        SatSessionData $sessionData,
+        ?SatHttpGateway $satHttpGateway = null,
+        ?callable $onFiveHundred = null
     ) {
-        $this->satHttpGateway = $satHttpGateway ?? new SatHttpGateway();
-        $this->satSession = $this->createSessionManager($rfc, $ciec, $captchaResolver, $satHttpGateway);
+        $this->satHttpGateway = $satHttpGateway ?? $this->createDefaultSatHttpGateway();
+        $this->satSessionData = $sessionData;
+        $this->onFiveHundred = $onFiveHundred;
     }
 
-    protected function createSessionManager(
-        string $rfc,
-        string $ciec,
-        CaptchaResolverInterface $captchaResolver,
-        SatHttpGateway $satHttpGateway
-    ): SatSessionManager
+    protected function createDefaultSatHttpGateway(): SatHttpGateway
     {
-        return new SatSessionManager($rfc, $ciec, URLS::SAT_URL_LOGIN, $satHttpGateway, $captchaResolver, 3, 3);
+        return new SatHttpGateway();
     }
 
-    public function getRfc(): string
+    protected function createSessionManager(): SatSessionManager
     {
-        return $this->satSession->getRfc();
+        return new SatSessionManager($this->satSessionData, $this->getSatHttpGateway());
     }
 
-    public function getLoginUrl(): string
+    public function createMetadataDownloader(): MetadataDownloader
     {
-        return $this->satSession->getLoginUrl();
+        return new MetadataDownloader(new QueryResolver($this->satHttpGateway), $this->onFiveHundred);
     }
 
     /**
-     * Change the current Login URL to a new destination
+     * Create a DownloadXml object with (optionally) a MetadataList.
+     * The DownloadXml object can be used to retrieve the CFDI XML contents.
      *
-     * @param string $loginUrl
-     * @return $this
-     * @throws InvalidArgumentException when Login URL is not a valid url
+     * @param MetadataList|null $metadataList
+     * @param int $concurrency
+     * @return DownloadXml
      */
-    public function setLoginUrl(string $loginUrl): self
+    public function createXmlDownloader(?MetadataList $metadataList = null, int $concurrency = 10): DownloadXml
     {
-        $this->satSession->setLoginUrl($loginUrl);
-        return $this;
+        return new DownloadXml($this->satHttpGateway, $metadataList, $concurrency);
     }
 
-    public function getCaptchaResolver(): CaptchaResolverInterface
+    public function getSatSessionData(): SatSessionData
     {
-        return $this->satSession->getCaptchaResolver();
-    }
-
-    public function setCaptchaResolver(CaptchaResolverInterface $captchaResolver): self
-    {
-        $this->satSession->setCaptchaResolver($captchaResolver);
-
-        return $this;
-    }
-
-    public function getMaxTriesCaptcha(): int
-    {
-        return $this->satSession->getMaxTriesCaptcha();
-    }
-
-    public function setMaxTriesCaptcha(int $maxTriesCaptcha): self
-    {
-        $this->satSession->setMaxTriesCaptcha($maxTriesCaptcha);
-
-        return $this;
-    }
-
-    public function getMaxTriesLogin(): int
-    {
-        return $this->satSession->getMaxTriesLogin();
-    }
-
-    public function setMaxTriesLogin(int $maxTriesLogin): self
-    {
-        $this->satSession->setMaxTriesLogin($maxTriesLogin);
-
-        return $this;
+        return $this->satSessionData;
     }
 
     public function getSatHttpGateway(): SatHttpGateway
@@ -119,44 +76,22 @@ class SatScraper
         return $this->satHttpGateway;
     }
 
-    public function setSatHttpGateway(SatHttpGateway $satHttpGateway): self
-    {
-        $this->satHttpGateway = $satHttpGateway;
-
-        return $this;
-    }
-
     public function getOnFiveHundred(): ?callable
     {
         return $this->onFiveHundred;
-    }
-
-    public function setOnFiveHundred(?callable $callback): self
-    {
-        $this->onFiveHundred = $callback;
-
-        return $this;
     }
 
     /**
      * Initializates session on SAT
      *
      * @return SatScraper
-     * @throws LoginException
+     * @throws LoginException if session is not alive
      */
     public function confirmSessionIsAlive(): self
     {
-        $this->satSession->initSession();
+        $this->createSessionManager()->initSession();
 
         return $this;
-    }
-
-    public function createMetadataDownloader(): MetadataDownloader
-    {
-        return new MetadataDownloader(
-            new QueryResolver($this->satHttpGateway),
-            $this->onFiveHundred
-        );
     }
 
     /**
@@ -205,9 +140,10 @@ class SatScraper
      *
      * @param MetadataList|null $metadataList
      * @return DownloadXml
+     * @deprecated
      */
     public function downloader(?MetadataList $metadataList = null): DownloadXml
     {
-        return new DownloadXml($this->satHttpGateway, $metadataList);
+        return $this->createXmlDownloader($metadataList);
     }
 }

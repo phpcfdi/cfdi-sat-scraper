@@ -37,7 +37,7 @@ exit(call_user_func(new class() {
             $until = new DateTimeImmutable($arguments[1] ?? '');
 
             $scraper = (new Factory('no-repository-file'))->createSatScraper();
-            $this->rfc = $scraper->getRfc();
+            $this->rfc = $scraper->getSatSessionData()->getRfc();
 
             $list = new MetadataList([]);
 

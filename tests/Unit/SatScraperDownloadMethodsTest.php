@@ -11,6 +11,7 @@ use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -22,8 +23,7 @@ final class SatScraperDownloadMethodsTest extends TestCase
         };
         $satHttpGateway = $this->createMock(SatHttpGateway::class);
         $captcha = $this->createMock(CaptchaResolverInterface::class);
-        $scraper = new SatScraper('rfc', 'ciec', $captcha, $satHttpGateway);
-        $scraper->setOnFiveHundred($callable);
+        $scraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captcha), $satHttpGateway, $callable);
         $downloader = $scraper->createMetadataDownloader();
 
         $this->assertSame($callable, $downloader->getOnFiveHundred());

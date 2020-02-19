@@ -119,9 +119,10 @@ $query
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SatScraper('rfc', 'ciec', $captchaResolver);
+$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->downloadPeriod($query);
@@ -151,9 +152,10 @@ echo json_encode($downloadedUuids);
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
 use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SatScraper('rfc', 'ciec', $captchaResolver);
+$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
 
 $uuids = [
     '5cc88a1a-8672-11e6-ae22-56b6b6499611',
@@ -174,18 +176,20 @@ que le puede ayudar a considerar este escenario.
 ```php
 <?php
 
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 
-/** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SatScraper('rfc', 'ciec', $captchaResolver);
-// establecer el callback a ejecutar cuando se encuentre en un mismo segundo 500 o más CFDI
-$satScraper->setOnFiveHundred(
-    function (DateTimeImmutable $date) {
-        echo 'Se encontraron más de 500 CFDI en el segundo: ', $date->format('c'), PHP_EOL;
-    }
-);
+// define onFiveHundred callback
+$onFiveHundred = function (DateTimeImmutable $date) {
+    echo 'Se encontraron más de 500 CFDI en el segundo: ', $date->format('c'), PHP_EOL;
+};
+
+// create scraper using the callback
+/**
+ * @var \PhpCfdi\CfdiSatScraper\SatSessionData $sessionData
+ * @var \PhpCfdi\CfdiSatScraper\SatHttpGateway $httpGateway
+ */
+$satScraper = new SatScraper($sessionData, $httpGateway, $onFiveHundred);
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->downloadPeriod($query);
@@ -204,16 +208,16 @@ Si ocurrió un error con alguna de las descargas dicho error será ignorado.
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SatScraper('rfc', 'ciec', $captchaResolver);
+$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->downloadPeriod($query);
 
-// $downloadedUuids contiene un listado de UUID que fueron procesados correctamente
-$downloadedUuids = $satScraper->downloader($list)
-    ->setConcurrency(50) // cambiar la concurrencia por defecto a 50 descargas simultáneas
+// $downloadedUuids contiene un listado de UUID que fueron procesados correctamente, 50 descargas simultáneas
+$downloadedUuids = $satScraper->downloader($list, 50)
     ->saveTo('/storage/downloads', true, 0777);
 echo json_encode($downloadedUuids);
 ```
@@ -241,10 +245,11 @@ use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlResponseError;
 use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlRequestExceptionError;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
 use Psr\Http\Message\ResponseInterface;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SatScraper('rfc', 'ciec', $captchaResolver);
+$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
@@ -288,13 +293,17 @@ No es una práctica recomendada pero tal vez necesaria ante los problemas a los 
 Tenga en cuenta que esto podría facilitar significativamente un ataque que provoque que la pérdida de su clave CIEC.
 
 ```php
+<?php
+use PhpCfdi\CfdiSatScraper\SatHttpGateway;
+use PhpCfdi\CfdiSatScraper\SatScraper;
+
 $insecureClient = new \GuzzleHttp\Client([
     \GuzzleHttp\RequestOptions::VERIFY => false
 ]);
-$gateway = new \PhpCfdi\CfdiSatScraper\SatHttpGateway($insecureClient);
+$gateway = new SatHttpGateway($insecureClient);
 
-/** @var \PhpCfdi\CfdiSatScraper\SatScraper $satScraper */
-$satScraper->setSatHttpGateway($gateway);
+/** @var \PhpCfdi\CfdiSatScraper\SatSessionData $sessionData */
+$scraper = new SatScraper($sessionData, $gateway);
 ```
 
 ## Compatilibilidad

@@ -13,6 +13,7 @@ use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
 use PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver\CaptchaLocalResolver;
 use PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver\CaptchaLocalResolverClient;
 
@@ -62,7 +63,7 @@ class Factory
         throw new \RuntimeException('Unable to create resolver');
     }
 
-    public function createSatScraper(): SatScraper
+    public function createSatSessionData(): SatSessionData
     {
         $rfc = strval(getenv('SAT_AUTH_RFC'));
         if ('' === $rfc) {
@@ -74,10 +75,18 @@ class Factory
             throw new \RuntimeException('The is no environment variable SAT_AUTH_CIEC');
         }
 
-        $cookieFile = __DIR__ . '/../../build/cookie-' . strtolower($rfc) . '.json';
+        $resolver = static::createCaptchaResolver();
+
+        return new SatSessionData($rfc, $ciec, $resolver);
+    }
+
+    public function createSatScraper(): SatScraper
+    {
+        $sessionData = $this->createSatSessionData();
+        $cookieFile = __DIR__ . '/../../build/cookie-' . strtolower($sessionData->getRfc()) . '.json';
         $cookieJar = new FileCookieJar($cookieFile, true);
         $satHttpGateway = new SatHttpGateway($this->createGuzzleClient(), $cookieJar);
-        return new SatScraper($rfc, $ciec, static::createCaptchaResolver(), $satHttpGateway);
+        return new SatScraper($sessionData, $satHttpGateway);
     }
 
     public function createGuzzleClient(): Client
