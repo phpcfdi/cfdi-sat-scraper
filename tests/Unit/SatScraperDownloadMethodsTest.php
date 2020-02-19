@@ -37,8 +37,8 @@ final class SatScraperDownloadMethodsTest extends TestCase
             ->setMethodsExcept(['downloadListUUID'])
             ->getMock();
 
-        // downloadListUUID must call initScraper once
-        $scraper->expects($a = $this->once())->method('initScraper');
+        // downloadListUUID must call confirmSessionIsAlive once
+        $scraper->expects($a = $this->once())->method('confirmSessionIsAlive');
 
         // downloadListUUID must call createMetadataDownloader once
         $metadataDownloader = $this->createMock(MetadataDownloader::class);
@@ -61,8 +61,8 @@ final class SatScraperDownloadMethodsTest extends TestCase
             ->setMethodsExcept(['downloadPeriod'])
             ->getMock();
 
-        // downloadListUUID must call initScraper once
-        $scraper->expects($a = $this->once())->method('initScraper');
+        // downloadListUUID must call confirmSessionIsAlive once
+        $scraper->expects($a = $this->once())->method('confirmSessionIsAlive');
 
         // downloadListUUID must call createMetadataDownloader once
         $metadataDownloader = $this->createMock(MetadataDownloader::class);
@@ -85,8 +85,8 @@ final class SatScraperDownloadMethodsTest extends TestCase
             ->setMethodsExcept(['downloadByDateTime'])
             ->getMock();
 
-        // downloadListUUID must call initScraper once
-        $scraper->expects($a = $this->once())->method('initScraper');
+        // downloadListUUID must call confirmSessionIsAlive once
+        $scraper->expects($a = $this->once())->method('confirmSessionIsAlive');
 
         // downloadListUUID must call createMetadataDownloader once
         $metadataDownloader = $this->createMock(MetadataDownloader::class);

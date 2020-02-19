@@ -4,37 +4,21 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
-use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
 use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
+use PhpCfdi\CfdiSatScraper\Internal\SatSessionManager;
 
 class SatScraper
 {
-    /** @var string */
-    protected $rfc;
-
-    /** @var string */
-    protected $ciec;
+    /** @var SatSessionManager */
+    private $satSession;
 
     /** @var callable|null */
     protected $onFiveHundred;
-
-    /** @var string */
-    protected $loginUrl;
-
-    /** @var CaptchaResolverInterface */
-    protected $captchaResolver;
-
-    /** @var int */
-    protected $maxTriesCaptcha = 3;
-
-    /** @var int */
-    protected $maxTriesLogin = 3;
 
     /** @var SatHttpGateway */
     private $satHttpGateway;
@@ -57,29 +41,28 @@ class SatScraper
         CaptchaResolverInterface $captchaResolver,
         ?SatHttpGateway $satHttpGateway = null
     ) {
-        if (empty($rfc)) {
-            throw InvalidArgumentException::emptyInput('RFC');
-        }
-
-        if (empty($ciec)) {
-            throw InvalidArgumentException::emptyInput('CIEC');
-        }
-
-        $this->rfc = $rfc;
-        $this->ciec = $ciec;
-        $this->loginUrl = URLS::SAT_URL_LOGIN;
         $this->satHttpGateway = $satHttpGateway ?? new SatHttpGateway();
-        $this->captchaResolver = $captchaResolver;
+        $this->satSession = $this->createSessionManager($rfc, $ciec, $captchaResolver, $satHttpGateway);
+    }
+
+    protected function createSessionManager(
+        string $rfc,
+        string $ciec,
+        CaptchaResolverInterface $captchaResolver,
+        SatHttpGateway $satHttpGateway
+    ): SatSessionManager
+    {
+        return new SatSessionManager($rfc, $ciec, URLS::SAT_URL_LOGIN, $satHttpGateway, $captchaResolver, 3, 3);
     }
 
     public function getRfc(): string
     {
-        return $this->rfc;
+        return $this->satSession->getRfc();
     }
 
     public function getLoginUrl(): string
     {
-        return $this->loginUrl;
+        return $this->satSession->getLoginUrl();
     }
 
     /**
@@ -91,47 +74,42 @@ class SatScraper
      */
     public function setLoginUrl(string $loginUrl): self
     {
-        if (! filter_var($loginUrl, FILTER_VALIDATE_URL)) {
-            throw InvalidArgumentException::emptyInput('Login URL');
-        }
-
-        $this->loginUrl = $loginUrl;
-
+        $this->satSession->setLoginUrl($loginUrl);
         return $this;
     }
 
     public function getCaptchaResolver(): CaptchaResolverInterface
     {
-        return $this->captchaResolver;
+        return $this->satSession->getCaptchaResolver();
     }
 
     public function setCaptchaResolver(CaptchaResolverInterface $captchaResolver): self
     {
-        $this->captchaResolver = $captchaResolver;
+        $this->satSession->setCaptchaResolver($captchaResolver);
 
         return $this;
     }
 
     public function getMaxTriesCaptcha(): int
     {
-        return $this->maxTriesCaptcha;
+        return $this->satSession->getMaxTriesCaptcha();
     }
 
     public function setMaxTriesCaptcha(int $maxTriesCaptcha): self
     {
-        $this->maxTriesCaptcha = $maxTriesCaptcha;
+        $this->satSession->setMaxTriesCaptcha($maxTriesCaptcha);
 
         return $this;
     }
 
     public function getMaxTriesLogin(): int
     {
-        return $this->maxTriesLogin;
+        return $this->satSession->getMaxTriesLogin();
     }
 
     public function setMaxTriesLogin(int $maxTriesLogin): self
     {
-        $this->maxTriesLogin = $maxTriesLogin;
+        $this->satSession->setMaxTriesLogin($maxTriesLogin);
 
         return $this;
     }
@@ -166,107 +144,11 @@ class SatScraper
      * @return SatScraper
      * @throws LoginException
      */
-    public function initScraper(): self
+    public function confirmSessionIsAlive(): self
     {
-        if (! $this->hasLogin()) {
-            $this->login(1);
-        }
-        $this->registerOnPortalMainPage();
+        $this->satSession->initSession();
 
         return $this;
-    }
-
-    protected function registerOnPortalMainPage(): void
-    {
-        $htmlMainPage = $this->satHttpGateway->getPortalMainPage();
-
-        $inputs = (new HtmlForm($htmlMainPage, 'form'))->getFormValues();
-        if (count($inputs) > 0) {
-            $htmlMainPage = $this->satHttpGateway->postPortalMainPage($inputs);
-        }
-
-        if (false === strpos($htmlMainPage, 'RFC Autenticado: ' . $this->getRfc())) {
-            throw LoginException::notRegisteredAfterLogin($this->rfc, $htmlMainPage); // 'The session is authenticated but main page does not contains your RFC'
-        }
-    }
-
-    protected function requestCaptchaImage(): string
-    {
-        $html = $this->satHttpGateway->getAuthLoginPage($this->loginUrl);
-        $captchaBase64Extractor = new CaptchaBase64Extractor();
-        $imageBase64 = $captchaBase64Extractor->retrieve($html);
-        if ('' === $imageBase64) {
-            throw LoginException::noCaptchaImageFound($this->loginUrl, $html); // 'Unable to extract the base64 image from login page'
-        }
-
-        return $imageBase64;
-    }
-
-    protected function getCaptchaValue(int $attempt): string
-    {
-        $imageBase64 = $this->requestCaptchaImage();
-        try {
-            $result = $this->captchaResolver->decode($imageBase64);
-            if ('' === $result) {
-                throw LoginException::captchaWithoutAnswer($imageBase64, $this->captchaResolver);
-            }
-            return $result;
-        } catch (\Throwable $exception) {
-            if ($attempt < $this->maxTriesCaptcha) {
-                return $this->getCaptchaValue($attempt + 1);
-            }
-
-            throw $exception;
-        }
-    }
-
-    protected function hasLogin(): bool
-    {
-        // check login on cfdiau
-        $html = $this->satHttpGateway->getAuthLoginPage($this->loginUrl);
-        if (false === strpos($html, 'https://cfdiau.sat.gob.mx/nidp/app?sid=0')) {
-            $this->logout();
-            return  false;
-        }
-
-        // check main page
-        $html = $this->satHttpGateway->getPortalMainPage();
-        if (false !== strpos($html, urlencode('https://portalcfdi.facturaelectronica.sat.gob.mx/logout.aspx?salir=y'))) {
-            $this->logout();
-            return  false;
-        }
-
-        return true;
-    }
-
-    protected function login(int $attempt): string
-    {
-        $captchaValue = $this->getCaptchaValue(1);
-        $loginData = [
-            'Ecom_User_ID' => $this->rfc,
-            'Ecom_Password' => $this->ciec,
-            'option' => 'credential',
-            'submit' => 'Enviar',
-            'userCaptcha' => $captchaValue,
-        ];
-        $response = $this->satHttpGateway->postLoginData($this->loginUrl, $loginData);
-
-        if (false !== strpos($response, 'Ecom_User_ID')) {
-            if ($attempt < $this->maxTriesLogin) {
-                return $this->login($attempt + 1);
-            }
-
-            throw LoginException::incorrectLoginData($loginData);
-        }
-
-        return $response;
-    }
-
-    protected function logout(): void
-    {
-        $this->satHttpGateway->getPortalPage('https://portalcfdi.facturaelectronica.sat.gob.mx/logout.aspx?salir=y');
-        $this->satHttpGateway->getPortalPage('https://cfdiau.sat.gob.mx/nidp/app/logout?locale=es');
-        $this->satHttpGateway->clearCookieJar();
     }
 
     public function createMetadataDownloader(): MetadataDownloader
@@ -287,7 +169,7 @@ class SatScraper
      */
     public function downloadListUUID(array $uuids, DownloadTypesOption $downloadType): MetadataList
     {
-        $this->initScraper();
+        $this->confirmSessionIsAlive();
         return $this->createMetadataDownloader()->downloadByUuids($uuids, $downloadType);
     }
 
@@ -300,7 +182,7 @@ class SatScraper
      */
     public function downloadPeriod(Query $query): MetadataList
     {
-        $this->initScraper();
+        $this->confirmSessionIsAlive();
         return $this->createMetadataDownloader()->downloadByDate($query);
     }
 
@@ -313,10 +195,17 @@ class SatScraper
      */
     public function downloadByDateTime(Query $query): MetadataList
     {
-        $this->initScraper();
+        $this->confirmSessionIsAlive();
         return $this->createMetadataDownloader()->downloadByDateTime($query);
     }
 
+    /**
+     * Create a DownloadXml object with (optionally) a MetadataList.
+     * The DownloadXml object can be used to retrieve the CFDI XML contents.
+     *
+     * @param MetadataList|null $metadataList
+     * @return DownloadXml
+     */
     public function downloader(?MetadataList $metadataList = null): DownloadXml
     {
         return new DownloadXml($this->satHttpGateway, $metadataList);
