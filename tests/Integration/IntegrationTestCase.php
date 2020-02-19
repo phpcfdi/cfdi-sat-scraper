@@ -8,7 +8,7 @@ use DOMAttr;
 use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\SatScraper;
@@ -53,8 +53,8 @@ class IntegrationTestCase extends TestCase
     public function providerEmitidosRecibidos(): array
     {
         return [
-            'recibidos' => [DownloadTypesOption::recibidos()],
-            'emitidos' => [DownloadTypesOption::emitidos()],
+            'recibidos' => [DownloadType::recibidos()],
+            'emitidos' => [DownloadType::emitidos()],
         ];
     }
 
@@ -107,7 +107,7 @@ class IntegrationTestCase extends TestCase
         );
     }
 
-    public function getDownloadTypeText(DownloadTypesOption $downloadType): string
+    public function getDownloadTypeText(DownloadType $downloadType): string
     {
         return $downloadType->isEmitidos() ? 'emitidos' : 'recibidos';
     }

@@ -9,7 +9,7 @@ use Countable;
 use DateTimeImmutable;
 use IteratorAggregate;
 use JsonSerializable;
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 
 /**
@@ -63,7 +63,7 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
         );
     }
 
-    public function filterByType(DownloadTypesOption $type): self
+    public function filterByType(DownloadType $type): self
     {
         $itemType = $type->isEmitidos() ? 'E' : 'R'; // E - emitido, R - recibido
         return new self(

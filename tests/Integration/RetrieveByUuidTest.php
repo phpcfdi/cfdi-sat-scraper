@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 
 class RetrieveByUuidTest extends IntegrationTestCase
 {
     public function providerRetrieveByUuid(): array
     {
         return [
-            'recibidos, random 1' => [DownloadTypesOption::recibidos(), 8],
-            'emitidos, random 1' => [DownloadTypesOption::emitidos(), 1],
-            'recibidos, random 4' => [DownloadTypesOption::recibidos(), 3],
-            'emitidos, random 4' => [DownloadTypesOption::emitidos(), 3],
+            'recibidos, random 1' => [DownloadType::recibidos(), 8],
+            'emitidos, random 1' => [DownloadType::emitidos(), 1],
+            'recibidos, random 4' => [DownloadType::recibidos(), 3],
+            'emitidos, random 4' => [DownloadType::emitidos(), 3],
         ];
     }
 
     /**
-     * @param DownloadTypesOption $downloadType
+     * @param DownloadType $downloadType
      * @param int $count
      * @dataProvider providerRetrieveByUuid
      */
-    public function testRetrieveByUuid(DownloadTypesOption $downloadType, int $count): void
+    public function testRetrieveByUuid(DownloadType $downloadType, int $count): void
     {
         $typeText = $this->getDownloadTypeText($downloadType);
         $repository = $this->getRepository()->filterByType($downloadType);

@@ -6,7 +6,7 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Internal;
 
 use PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersReceived;
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
@@ -38,10 +38,10 @@ final class QueryResolverTest extends TestCase
     {
         $now = new \DateTimeImmutable();
         $this->assertInstanceOf(FiltersIssued::class, $this->resolver->createFiltersFromQuery(
-            (new Query($now, $now))->setDownloadType(DownloadTypesOption::emitidos())
+            (new Query($now, $now))->setDownloadType(DownloadType::emitidos())
         ));
         $this->assertInstanceOf(FiltersReceived::class, $this->resolver->createFiltersFromQuery(
-            (new Query($now, $now))->setDownloadType(DownloadTypesOption::recibidos())
+            (new Query($now, $now))->setDownloadType(DownloadType::recibidos())
         ));
     }
 
@@ -49,11 +49,11 @@ final class QueryResolverTest extends TestCase
     {
         $this->assertSame(
             URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR,
-            DownloadTypesOption::recibidos()->url()
+            DownloadType::recibidos()->url()
         );
         $this->assertSame(
             URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR,
-            DownloadTypesOption::emitidos()->url()
+            DownloadType::emitidos()->url()
         );
     }
 
@@ -77,7 +77,7 @@ final class QueryResolverTest extends TestCase
 
         // given a query (not important since it will not contact real server)
         $now = new \DateTimeImmutable();
-        $query = (new Query($now, $now))->setDownloadType(DownloadTypesOption::recibidos());
+        $query = (new Query($now, $now))->setDownloadType(DownloadType::recibidos());
 
         // obtain results
         $list = $resolver->resolve($query);

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Tests;
 
 use DateTimeImmutable;
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\Query;
@@ -43,12 +43,12 @@ exit(call_user_func(new class() {
 
             $list = $list->merge(
                 $scraper->downloadPeriod(
-                    (new Query($since, $until))->setDownloadType(DownloadTypesOption::recibidos())
+                    (new Query($since, $until))->setDownloadType(DownloadType::recibidos())
                 )
             );
             $list = $list->merge(
                 $scraper->downloadPeriod(
-                    (new Query($since, $until))->setDownloadType(DownloadTypesOption::emitidos())
+                    (new Query($since, $until))->setDownloadType(DownloadType::emitidos())
                 )
             );
             $this->printList($list);

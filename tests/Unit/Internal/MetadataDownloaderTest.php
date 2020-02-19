@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Internal;
 
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
 use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
 use PhpCfdi\CfdiSatScraper\Query;
@@ -212,7 +212,7 @@ final class MetadataDownloaderTest extends TestCase
             $fakes->faker()->uuid,
             $fakes->faker()->uuid,
             $fakes->faker()->uuid,
-        ], DownloadTypesOption::recibidos());
+        ], DownloadType::recibidos());
 
         $this->assertCount(3, $resolver->resolveCalls);
     }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Internal;
 
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\Query;
 
@@ -40,7 +40,7 @@ class MetadataDownloader
         return $this->onFiveHundred;
     }
 
-    public function downloadByUuids(array $uuids, DownloadTypesOption $downloadType): MetadataList
+    public function downloadByUuids(array $uuids, DownloadType $downloadType): MetadataList
     {
         $query = new Query(new \DateTimeImmutable(), new \DateTimeImmutable());
         $query->setDownloadType($downloadType);

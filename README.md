@@ -67,7 +67,7 @@ los objetos `Metadata` donde el UUID coincide.
 
 Los métodos para ejecutar la descarga de metadata son:
 
-- Por UUID: `SatScraper::downloadListUUID(string[] $uuids, DownloadTypesOption $type): MetadataList`
+- Por UUID: `SatScraper::downloadListUUID(string[] $uuids, DownloadType $type): MetadataList`
 - Por filtros con días completos: `SatScraper::downloadPeriod(Query $query): MetadataList`
 - Por filtros con fechas exactas: `SatScraper::downloadByDateTime(Query $query): MetadataList`
 
@@ -97,14 +97,14 @@ de enviar a procesarla.
 
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOption;
 
 // se crea con un rango de fechas específico
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $query
-    ->setDownloadType(DownloadTypesOption::recibidos())         // en lugar de emitidos
+    ->setDownloadType(DownloadType::recibidos())                // en lugar de emitidos
     ->setStateVoucher(StatesVoucherOption::vigentes())          // en lugar de todos
     ->setRfc(new RfcOption('EKU9003173C9'))                     // de este RFC específico
     ->setComplement(ComplementsOption::reciboPagoSalarios12())  // que incluya este complemento
@@ -150,7 +150,7 @@ echo json_encode($downloadedUuids);
 <?php
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\SatSessionData;
 
@@ -162,7 +162,7 @@ $uuids = [
     '5cc88c4a-8672-11e6-ae22-56b6b6499612',
     '5cc88d4e-8672-11e6-ae22-56b6b6499613'
 ];
-$list = $satScraper->downloadListUUID($uuids, DownloadTypesOption::recibidos());
+$list = $satScraper->downloadListUUID($uuids, DownloadType::recibidos());
 echo json_encode($list);
 ```
 

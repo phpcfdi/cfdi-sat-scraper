@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Filters\Options;
+namespace PhpCfdi\CfdiSatScraper\Filters;
 
 use Eclipxe\Enum\Enum;
 use LogicException;
@@ -15,7 +15,7 @@ use PhpCfdi\CfdiSatScraper\URLS;
  * @method bool isEmitidos()
  * @method bool isRecibidos()
  */
-class DownloadTypesOption extends Enum
+class DownloadType extends Enum
 {
     private const URLS = [
         'recibidos' => URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR,

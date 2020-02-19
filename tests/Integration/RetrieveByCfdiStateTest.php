@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 use PhpCfdi\CfdiSatScraper\Query;
 
 class RetrieveByCfdiStateTest extends IntegrationTestCase
 {
     /**
-     * @param DownloadTypesOption $downloadType
+     * @param DownloadType $downloadType
      * @dataProvider providerEmitidosRecibidos
      */
-    public function testRetrieveByCfdiStateCancelados(DownloadTypesOption $downloadType): void
+    public function testRetrieveByCfdiStateCancelados(DownloadType $downloadType): void
     {
         $state = StatesVoucherOption::cancelados();
         $typeText = $this->getDownloadTypeText($downloadType);
@@ -36,10 +36,10 @@ class RetrieveByCfdiStateTest extends IntegrationTestCase
     }
 
     /**
-     * @param DownloadTypesOption $downloadType
+     * @param DownloadType $downloadType
      * @dataProvider providerEmitidosRecibidos
      */
-    public function testRetrieveByCfdiStateVigentes(DownloadTypesOption $downloadType): void
+    public function testRetrieveByCfdiStateVigentes(DownloadType $downloadType): void
     {
         $state = StatesVoucherOption::vigentes();
         $typeText = $this->getDownloadTypeText($downloadType);

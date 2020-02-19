@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 use PhpCfdi\CfdiSatScraper\Query;
@@ -61,7 +61,7 @@ final class QueryTest extends TestCase
     public function testSetDownloadTypeOption(): void
     {
         $query = new Query(new \DateTimeImmutable('2019-01-01'), new \DateTimeImmutable('2019-01-31'));
-        $query->setDownloadType(DownloadTypesOption::recibidos());
+        $query->setDownloadType(DownloadType::recibidos());
 
         $this->assertTrue($query->getDownloadType()->isRecibidos());
     }
@@ -100,7 +100,7 @@ final class QueryTest extends TestCase
     public function testSplitByDaysPreserveOtherFilters(): void
     {
         // this options are not the default
-        $downloadType = DownloadTypesOption::emitidos();
+        $downloadType = DownloadType::emitidos();
         $complement = ComplementsOption::comercioExterior11();
         $stateVoucher = StatesVoucherOption::cancelados();
 

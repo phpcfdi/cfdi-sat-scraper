@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Query;
 
 class RetrieveByDateTimeTest extends IntegrationTestCase
 {
     /**
-     * @param DownloadTypesOption $downloadType
+     * @param DownloadType $downloadType
      * @dataProvider providerEmitidosRecibidos
      */
-    public function testRetrieveByDateTime(DownloadTypesOption $downloadType): void
+    public function testRetrieveByDateTime(DownloadType $downloadType): void
     {
         $repository = $this->getRepository()->filterByType($downloadType);
         $typeText = $this->getDownloadTypeText($downloadType);

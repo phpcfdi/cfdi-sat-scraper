@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper;
 
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
 use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
 use PhpCfdi\CfdiSatScraper\Internal\SatSessionManager;
@@ -111,11 +111,11 @@ class SatScraper
      * Retrieve the MetadataList using specific UUIDS to download
      *
      * @param array $uuids
-     * @param DownloadTypesOption $downloadType
+     * @param DownloadType $downloadType
      * @return MetadataList
      * @throws LoginException
      */
-    public function downloadListUUID(array $uuids, DownloadTypesOption $downloadType): MetadataList
+    public function downloadListUUID(array $uuids, DownloadType $downloadType): MetadataList
     {
         $this->confirmSessionIsAlive();
         return $this->metadataDownloader()->downloadByUuids($uuids, $downloadType);

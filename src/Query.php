@@ -7,7 +7,7 @@ namespace PhpCfdi\CfdiSatScraper;
 use DateTimeImmutable;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 
@@ -44,7 +44,7 @@ class Query
     protected $stateVoucher;
 
     /**
-     * @var DownloadTypesOption
+     * @var DownloadType
      */
     protected $downloadType;
 
@@ -61,7 +61,7 @@ class Query
 
         $this->startDate = $startDate;
         $this->endDate = $endDate;
-        $this->downloadType = DownloadTypesOption::recibidos();
+        $this->downloadType = DownloadType::recibidos();
         $this->complement = ComplementsOption::todos();
         $this->stateVoucher = StatesVoucherOption::todos();
         $this->uuid = [];
@@ -189,18 +189,18 @@ class Query
     }
 
     /**
-     * @return DownloadTypesOption
+     * @return DownloadType
      */
-    public function getDownloadType(): DownloadTypesOption
+    public function getDownloadType(): DownloadType
     {
         return $this->downloadType;
     }
 
     /**
-     * @param DownloadTypesOption $downloadType
+     * @param DownloadType $downloadType
      * @return Query
      */
-    public function setDownloadType(DownloadTypesOption $downloadType): self
+    public function setDownloadType(DownloadType $downloadType): self
     {
         $this->downloadType = $downloadType;
 
