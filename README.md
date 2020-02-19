@@ -138,7 +138,7 @@ foreach ($list as $cfdi) {
 }
 
 // descarga de cada uno de los CFDI, reporta los descargados en $downloadedUuids
-$downloadedUuids = $satScraper->downloader($list)
+$downloadedUuids = $satScraper->xmlDownloader($list)
     ->setConcurrency(50)                            // cambiar a 50 descargas simultáneas
     ->saveTo('/storage/downloads');                 // ejecutar la instrucción de descarga
 echo json_encode($downloadedUuids);
@@ -217,7 +217,7 @@ $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2
 $list = $satScraper->downloadPeriod($query);
 
 // $downloadedUuids contiene un listado de UUID que fueron procesados correctamente, 50 descargas simultáneas
-$downloadedUuids = $satScraper->downloader($list, 50)
+$downloadedUuids = $satScraper->xmlDownloader($list, 50)
     ->saveTo('/storage/downloads', true, 0777);
 echo json_encode($downloadedUuids);
 ```
@@ -280,7 +280,7 @@ $myHandler = new class implements DownloadXmlHandlerInterface {
 };
 
 // $downloadedUuids contiene un listado de UUID que fueron procesados correctamente
-$downloadedUuids = $satScraper->downloader($list)->download($myHandler);
+$downloadedUuids = $satScraper->xmlDownloader($list)->download($myHandler);
 echo json_encode($downloadedUuids);
 ```
 

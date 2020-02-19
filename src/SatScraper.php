@@ -38,19 +38,14 @@ class SatScraper
         $this->onFiveHundred = $onFiveHundred;
     }
 
-    protected function createDefaultSatHttpGateway(): SatHttpGateway
+    /**
+     * Create a new configured instance of MetadataDownloader
+     *
+     * @return MetadataDownloader
+     */
+    public function metadataDownloader(): MetadataDownloader
     {
-        return new SatHttpGateway();
-    }
-
-    protected function createSessionManager(): SatSessionManager
-    {
-        return new SatSessionManager($this->satSessionData, $this->getSatHttpGateway());
-    }
-
-    public function createMetadataDownloader(): MetadataDownloader
-    {
-        return new MetadataDownloader(new QueryResolver($this->satHttpGateway), $this->onFiveHundred);
+        return new MetadataDownloader($this->createQueryResolver(), $this->onFiveHundred);
     }
 
     /**
@@ -61,24 +56,42 @@ class SatScraper
      * @param int $concurrency
      * @return DownloadXml
      */
-    public function createXmlDownloader(?MetadataList $metadataList = null, int $concurrency = 10): DownloadXml
+    public function xmlDownloader(?MetadataList $metadataList = null, int $concurrency = 10): DownloadXml
     {
         return new DownloadXml($this->satHttpGateway, $metadataList, $concurrency);
     }
 
-    public function getSatSessionData(): SatSessionData
+    /**
+     * Method factory to create a SatHttpGateway
+     *
+     * @internal
+     * @return SatHttpGateway
+     */
+    protected function createDefaultSatHttpGateway(): SatHttpGateway
     {
-        return $this->satSessionData;
+        return new SatHttpGateway();
     }
 
-    public function getSatHttpGateway(): SatHttpGateway
+    /**
+     * Method factory to create a SatSessionManager
+     *
+     * @internal
+     * @return SatSessionManager
+     */
+    protected function createSessionManager(): SatSessionManager
     {
-        return $this->satHttpGateway;
+        return new SatSessionManager($this->satSessionData, $this->getSatHttpGateway());
     }
 
-    public function getOnFiveHundred(): ?callable
+    /**
+     * Method factory to create a QueryResolver
+     *
+     * @internal
+     * @return QueryResolver
+     */
+    protected function createQueryResolver(): QueryResolver
     {
-        return $this->onFiveHundred;
+        return new QueryResolver($this->satHttpGateway);
     }
 
     /**
@@ -105,7 +118,7 @@ class SatScraper
     public function downloadListUUID(array $uuids, DownloadTypesOption $downloadType): MetadataList
     {
         $this->confirmSessionIsAlive();
-        return $this->createMetadataDownloader()->downloadByUuids($uuids, $downloadType);
+        return $this->metadataDownloader()->downloadByUuids($uuids, $downloadType);
     }
 
     /**
@@ -118,7 +131,7 @@ class SatScraper
     public function downloadPeriod(Query $query): MetadataList
     {
         $this->confirmSessionIsAlive();
-        return $this->createMetadataDownloader()->downloadByDate($query);
+        return $this->metadataDownloader()->downloadByDate($query);
     }
 
     /**
@@ -131,19 +144,21 @@ class SatScraper
     public function downloadByDateTime(Query $query): MetadataList
     {
         $this->confirmSessionIsAlive();
-        return $this->createMetadataDownloader()->downloadByDateTime($query);
+        return $this->metadataDownloader()->downloadByDateTime($query);
     }
 
-    /**
-     * Create a DownloadXml object with (optionally) a MetadataList.
-     * The DownloadXml object can be used to retrieve the CFDI XML contents.
-     *
-     * @param MetadataList|null $metadataList
-     * @return DownloadXml
-     * @deprecated
-     */
-    public function downloader(?MetadataList $metadataList = null): DownloadXml
+    public function getSatSessionData(): SatSessionData
     {
-        return $this->createXmlDownloader($metadataList);
+        return $this->satSessionData;
+    }
+
+    public function getSatHttpGateway(): SatHttpGateway
+    {
+        return $this->satHttpGateway;
+    }
+
+    public function getOnFiveHundred(): ?callable
+    {
+        return $this->onFiveHundred;
     }
 }

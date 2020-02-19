@@ -50,7 +50,7 @@ class RetrieveByUuidTest extends IntegrationTestCase
                 unlink($filename);
             }
         }
-        $scraper->downloader($list)->saveTo($tempDir);
+        $scraper->xmlDownloader($list)->saveTo($tempDir);
         foreach ($repository->getIterator() as $uuid => $item) {
             $filename = strtolower(sprintf('%s/%s.xml', $tempDir, $uuid));
             if ('Cancelado' !== $item->getState()) {
