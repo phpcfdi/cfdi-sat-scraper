@@ -240,9 +240,9 @@ de la interfaz `DownloadXmlHandlerInterface`.
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Contracts\DownloadXmlHandlerInterface;
-use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlError;
-use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlResponseError;
-use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlRequestExceptionError;
+use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadError;
+use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadResponseError;
+use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadRequestExceptionError;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\SatSessionData;
@@ -262,17 +262,17 @@ $myHandler = new class implements DownloadXmlHandlerInterface {
         echo 'Saving ', $uuid, PHP_EOL;
         file_put_contents($filename, (string) $response->getBody());
     }
-    public function onError(DownloadXmlError $error) : void
+    public function onError(XmlDownloadError $error) : void
     {
         try {
             throw $error;
-        } catch (DownloadXmlRequestExceptionError $error) {
+        } catch (XmlDownloadRequestExceptionError $error) {
             echo "Error getting {$error->getUuid()} from {$error->getReason()->getRequest()->getUri()}\n";
-        } catch (DownloadXmlResponseError $error) {
+        } catch (XmlDownloadResponseError $error) {
             echo "Error getting {$error->getUuid()}, invalid response: {$error->getMessage()}\n";
             $response = $error->getReason(); // reason is a ResponseInterface
             print_r(['headers' => $response->getHeaders(), 'body' => $response->getBody()]);
-        } catch (DownloadXmlError $error) {
+        } catch (XmlDownloadError $error) {
             echo "Error getting {$error->getUuid()}, reason: {$error->getMessage()}\n";
             print_r(['reason' => $error->getReason()]);
         }

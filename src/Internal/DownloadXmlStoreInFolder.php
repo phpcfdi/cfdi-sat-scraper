@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use PhpCfdi\CfdiSatScraper\Contracts\DownloadXmlHandlerInterface;
-use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlError;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
+use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadError;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
@@ -66,7 +66,7 @@ class DownloadXmlStoreInFolder implements DownloadXmlHandlerInterface
         }
     }
 
-    public function onError(DownloadXmlError $error): void
+    public function onError(XmlDownloadError $error): void
     {
         // errors are just ignored
     }

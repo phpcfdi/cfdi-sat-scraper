@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Contracts;
 
-use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlError;
+use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadError;
 use Psr\Http\Message\ResponseInterface;
 
 interface DownloadXmlHandlerInterface
@@ -20,9 +20,9 @@ interface DownloadXmlHandlerInterface
 
     /**
      * Invoked when the CFDI XML was unsuccessfully downloaded creating an error
-     * Remember that DownloadXmlError can be a more specific class.
+     * Remember that XmlDownloadError can be a more specific class.
      *
-     * @param DownloadXmlError $error
+     * @param XmlDownloadError $error
      */
-    public function onError(DownloadXmlError $error): void;
+    public function onError(XmlDownloadError $error): void;
 }

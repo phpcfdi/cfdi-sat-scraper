@@ -6,9 +6,9 @@ namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use GuzzleHttp\Exception\RequestException;
 use PhpCfdi\CfdiSatScraper\Contracts\DownloadXmlHandlerInterface;
-use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlError;
-use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlRequestExceptionError;
-use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlResponseError;
+use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadError;
+use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadRequestExceptionError;
+use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadResponseError;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
@@ -16,7 +16,7 @@ use Throwable;
  * This is a handler for \GuzzleHttp\Promise\EachPromise events fulfilled & rejected.
  *
  * It performs basic operations like validate the received response and call "onSuccess" method or
- * call "onError" method with a generic or specialized DownloadXmlError object.
+ * call "onError" method with a generic or specialized XmlDownloadError object.
  *
  * @internal
  */
@@ -45,10 +45,10 @@ final class DownloadXmlMainHandler
         try {
             $content = $this->validateResponse($response, $uuid);
             $this->handler->onSuccess($uuid, $content, $response);
-        } catch (DownloadXmlResponseError $exception) {
+        } catch (XmlDownloadResponseError $exception) {
             return $this->handlerError($exception);
         } catch (Throwable $exception) {
-            return $this->handlerError(DownloadXmlResponseError::onSuccess($response, $uuid, $exception));
+            return $this->handlerError(XmlDownloadResponseError::onSuccess($response, $uuid, $exception));
         }
 
         $this->fulfilledUuids[] = $uuid;
@@ -58,17 +58,17 @@ final class DownloadXmlMainHandler
     public function validateResponse(ResponseInterface $response, string $uuid): string
     {
         if (200 !== $response->getStatusCode()) {
-            throw DownloadXmlResponseError::invalidStatusCode($response, $uuid);
+            throw XmlDownloadResponseError::invalidStatusCode($response, $uuid);
         }
 
         $content = (string) $response->getBody();
 
         if ('' === $content) {
-            throw DownloadXmlResponseError::emptyContent($response, $uuid);
+            throw XmlDownloadResponseError::emptyContent($response, $uuid);
         }
 
         if (false === stripos($content, 'UUID="')) {
-            throw DownloadXmlResponseError::contentIsNotCfdi($response, $uuid);
+            throw XmlDownloadResponseError::contentIsNotCfdi($response, $uuid);
         }
 
         return $content;
@@ -84,19 +84,19 @@ final class DownloadXmlMainHandler
     public function promiseRejected($reason, string $uuid)
     {
         if ($reason instanceof RequestException) {
-            return $this->handlerError(DownloadXmlRequestExceptionError::onRequestException($reason, $uuid));
+            return $this->handlerError(XmlDownloadRequestExceptionError::onRequestException($reason, $uuid));
         }
 
-        return $this->handlerError(DownloadXmlError::onRejected($uuid, $reason));
+        return $this->handlerError(XmlDownloadError::onRejected($uuid, $reason));
     }
 
     /**
      * Send the error to handler error method
      *
-     * @param DownloadXmlError $error
+     * @param XmlDownloadError $error
      * @return null
      */
-    public function handlerError(DownloadXmlError $error)
+    public function handlerError(XmlDownloadError $error)
     {
         $this->handler->onError($error);
         return null;

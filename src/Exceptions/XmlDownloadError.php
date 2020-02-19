@@ -6,7 +6,7 @@ namespace PhpCfdi\CfdiSatScraper\Exceptions;
 
 use Throwable;
 
-class DownloadXmlError extends \RuntimeException implements SatException
+class XmlDownloadError extends \RuntimeException implements SatException
 {
     /** @var string */
     private $uuid;
@@ -15,7 +15,7 @@ class DownloadXmlError extends \RuntimeException implements SatException
     private $reason;
 
     /**
-     * DownloadXmlError constructor.
+     * XmlDownloadError constructor.
      *
      * @param string $message
      * @param string $uuid

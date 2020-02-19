@@ -9,7 +9,7 @@ use GuzzleHttp\Exception\RequestException;
 /**
  * @method RequestException getReason()
  */
-class DownloadXmlRequestExceptionError extends DownloadXmlError
+class XmlDownloadRequestExceptionError extends XmlDownloadError
 {
     public function __construct(string $message, string $uuid, RequestException $reason)
     {

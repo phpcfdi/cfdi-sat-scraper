@@ -10,7 +10,7 @@ use Throwable;
 /**
  * @method ResponseInterface getReason()
  */
-class DownloadXmlResponseError extends DownloadXmlError
+class XmlDownloadResponseError extends XmlDownloadError
 {
     public function __construct(string $message, string $uuid, ResponseInterface $response, Throwable $previous = null)
     {
