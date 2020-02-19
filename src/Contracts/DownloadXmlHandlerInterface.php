@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Contracts;
 
-use GuzzleHttp\Exception\RequestException;
+use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlError;
 use Psr\Http\Message\ResponseInterface;
 
 interface DownloadXmlHandlerInterface
@@ -12,24 +12,16 @@ interface DownloadXmlHandlerInterface
     /**
      * Invoked when the async request promise was fulfilled
      *
+     * @param string $uuid
+     * @param string $content
      * @param ResponseInterface $response
-     * @param string $uuid
      */
-    public function onFulfilled(ResponseInterface $response, string $uuid): void;
+    public function onSuccess(string $uuid, string $content, ResponseInterface $response): void;
 
     /**
-     * Invoked when the promise was rejected and the reason is a RequestException
+     * Invoked when the download process had an error.
      *
-     * @param RequestException $exception
-     * @param string $uuid
+     * @param DownloadXmlError $error
      */
-    public function onRequestException(RequestException $exception, string $uuid): void;
-
-    /**
-     * Invoked when the promise was rejected but the reason is not a RequestException
-     *
-     * @param mixed $reason
-     * @param string $uuid
-     */
-    public function onRejected($reason, string $uuid): void;
+    public function onError(DownloadXmlError $error): void;
 }

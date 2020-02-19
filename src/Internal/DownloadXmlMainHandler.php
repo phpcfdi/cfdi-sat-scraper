@@ -6,19 +6,21 @@ namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use GuzzleHttp\Exception\RequestException;
 use PhpCfdi\CfdiSatScraper\Contracts\DownloadXmlHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlError;
+use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlRequestExceptionError;
+use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlResponseError;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
+use Throwable;
 
 /**
- * This is an implementation of DownloadXmlHandlerInterface.
- * It performs basic operations like validate the received response
- * or call to specialized method onRequestException.
+ * This is a handler for \GuzzleHttp\Promise\EachPromise events fulfilled & rejected.
  *
- * It works as an internal wrapper of the real handler.
+ * It performs basic operations like validate the received response and call "onSuccess" method or
+ * call "onError" method with a generic or specialized DownloadXmlError object.
  *
  * @internal
  */
-final class DownloadXmlMainHandler implements DownloadXmlHandlerInterface
+final class DownloadXmlMainHandler
 {
     /** @var DownloadXmlHandlerInterface */
     private $handler;
@@ -31,43 +33,81 @@ final class DownloadXmlMainHandler implements DownloadXmlHandlerInterface
         $this->handler = $handler;
     }
 
-    public function onFulfilled(ResponseInterface $response, string $uuid): void
+    /**
+     * This method handles the each promise fulfilled event
+     *
+     * @param ResponseInterface $response
+     * @param string $uuid
+     * @return null
+     */
+    public function promiseFulfilled(ResponseInterface $response, string $uuid)
+    {
+        try {
+            $content = $this->validateResponse($response, $uuid);
+            $this->handler->onSuccess($uuid, $content, $response);
+        } catch (DownloadXmlResponseError $exception) {
+            return $this->handlerError($exception);
+        } catch (Throwable $exception) {
+            return $this->handlerError(DownloadXmlResponseError::onSuccess($response, $uuid, $exception));
+        }
+
+        $this->fulfilledUuids[] = $uuid;
+        return null;
+    }
+
+    public function validateResponse(ResponseInterface $response, string $uuid): string
     {
         if (200 !== $response->getStatusCode()) {
-            throw new RuntimeException(sprintf('Download of CFDI %s return an invalid status code %d', $uuid, $response->getStatusCode()));
+            throw DownloadXmlResponseError::invalidStatusCode($response, $uuid);
         }
+
         $content = (string) $response->getBody();
+
         if ('' === $content) {
-            throw new RuntimeException(sprintf('Downloaded CFDI %s was empty', $uuid));
+            throw DownloadXmlResponseError::emptyContent($response, $uuid);
         }
+
         if (false === stripos($content, 'UUID="')) {
-            throw new RuntimeException(sprintf('Downloaded CFDI %s is not a CFDI', $uuid));
+            throw DownloadXmlResponseError::contentIsNotCfdi($response, $uuid);
         }
 
-        $this->handler->onFulfilled($response, $uuid);
-        $this->fulfilledUuids[] = $uuid;
-    }
-
-    public function onRequestException(RequestException $exception, string $uuid): void
-    {
-        $this->handler->onRequestException($exception, $uuid);
-    }
-
-    public function onRejected($reason, string $uuid): void
-    {
-        if ($reason instanceof RequestException) {
-            $this->onRequestException($reason, $uuid);
-            return;
-        }
-        $this->handler->onRejected($reason, $uuid);
+        return $content;
     }
 
     /**
-     * Return the list of fulfilled UUIDS
+     * This method handles the each promise rejected event
+     *
+     * @param mixed $reason
+     * @param string $uuid
+     * @return null
+     */
+    public function promiseRejected($reason, string $uuid)
+    {
+        if ($reason instanceof RequestException) {
+            return $this->handlerError(DownloadXmlRequestExceptionError::onRequestException($reason, $uuid));
+        }
+
+        return $this->handlerError(DownloadXmlError::onRejected($uuid, $reason));
+    }
+
+    /**
+     * Send the error to handler error method
+     *
+     * @param DownloadXmlError $error
+     * @return null
+     */
+    public function handlerError(DownloadXmlError $error)
+    {
+        $this->handler->onError($error);
+        return null;
+    }
+
+    /**
+     * Return the list of succesfully processed UUIDS
      *
      * @return string[]
      */
-    public function fulfilledUuids(): array
+    public function downloadedUuids(): array
     {
         return $this->fulfilledUuids;
     }

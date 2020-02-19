@@ -7,19 +7,20 @@ namespace PhpCfdi\CfdiSatScraper;
 use GuzzleHttp\Promise\EachPromise;
 use GuzzleHttp\Promise\PromiseInterface;
 use PhpCfdi\CfdiSatScraper\Contracts\DownloadXmlHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 use PhpCfdi\CfdiSatScraper\Internal\DownloadXmlMainHandler;
 use PhpCfdi\CfdiSatScraper\Internal\DownloadXmlStoreInFolder;
 
 /**
- * Helper class to make concurrent downloads of XML files.
+ * Helper class to make concurrent downloads of CFDI files.
  *
- * It is based on a MetadataList that contains the link to download.
- * Be aware that it will only download a CFDI if the `urlXml` exists.
+ * It is based on a MetadataList on which each Metadata contains the link to download.
+ * Be aware that it will only download a CFDI if the Metadata `urlXml` value exists.
  *
  * You can use the method `saveTo` that will store all the downloaded files as destination/uuid.xml
  *
- * You can fine tune the download event (fulfilled, request exeption or rejected) if you implement the
- * `DownloadXmlHandlerInterface` interface and use the `download` method.
+ * You can fine tune the download process (success & error) if you implement
+ * the `DownloadXmlHandlerInterface` interface and use the `download` method.
  *
  * The concurrent downloads are based on Guzzle/Promises.
  */
@@ -49,7 +50,7 @@ class DownloadXml
     public function getMetadataList(): MetadataList
     {
         if (null === $this->list) {
-            throw new \LogicException('The metadata list has not been set');
+            throw LogicException::generic('The metadata list has not been set');
         }
         return $this->list;
     }
@@ -85,14 +86,19 @@ class DownloadXml
 
     /**
      * Generate the promises to download all the elements on the metadata list that contains
-     * a link to download. When the promise is fulfilled will call $onFulfilled, if it is rejected
-     * will call $onRejected.
+     * a link to download the CFDI.
      *
-     * - $onFulfilled callable: function(ResponseInterface $response, string $uuid): void
-     * - $onRejected callable: function(RequestException $reason, string $uuid): void
+     * Then the download operation was successful it will call DownloadXmlHandlerInterface::onSuccess.
+     * If some exception was raced when downloading, validating the response or calling onSuccess
+     * then it will call DownloadXmlHandlerInterface::onError.
+     *
+     * The download will return an array that contains all the successful processed uuids.
      *
      * @param DownloadXmlHandlerInterface $handler
      * @return string[]
+     *
+     * @see DownloadXmlMainHandler::promiseFulfilled()
+     * @see DownloadXmlMainHandler::promiseRejected()
      */
     public function download(DownloadXmlHandlerInterface $handler): array
     {
@@ -103,12 +109,12 @@ class DownloadXml
         // create the invoker
         $invoker = new EachPromise($promises, [
             'concurrency' => $this->getConcurrency(),
-            'fulfilled' => [$mainHandler, 'onFulfilled'],
-            'rejected' => [$mainHandler, 'onRejected'],
+            'fulfilled' => [$mainHandler, 'promiseFulfilled'],
+            'rejected' => [$mainHandler, 'promiseRejected'],
         ]);
         // create the promise from the invoker and wait for it to finish
         $invoker->promise()->wait();
-        return $mainHandler->fulfilledUuids();
+        return $mainHandler->downloadedUuids();
     }
 
     /**

@@ -196,6 +196,8 @@ echo json_encode($list);
 
 Ejecutar el método `saveTo` devuelve un arreglo con los UUID que fueron efectivamente descargados.
 
+Si ocurrió un error con alguna de las descargas dicho error será ignorado.
+
 ```php
 <?php
 
@@ -218,14 +220,25 @@ echo json_encode($downloadedUuids);
 
 ## Procesar de forma personalizada cada descarga de CFDI
 
-Ejecutar el método `saveTo` devuelve un arreglo con los UUID que fueron efectivamente descargados.
+Ejecutar el método `download` devuelve un arreglo con los UUID que fueron efectivamente descargados.
+Y permite configurar los eventos de descarga y manejo de errores.
+
+Si se desea ignorar los errores se puede simplemente especificar el método `DownloadXmlHandlerInterface::onError()`
+sin contenido, entonces el error solamente se perderá. De todas maneras, gracias a que el método `download`
+devuelve un arreglo de UUID con los que fueron efectivamente descargados entonces se puede filtrar el `MetadataList`
+para extraer aquellos que no fueron descargados.
+
+Vea la clase `PhpCfdi\CfdiSatScraper\Internal\DownloadXmlStoreInFolder` como ejemplo de implementación
+de la interfaz `DownloadXmlHandlerInterface`.
 
 ```php
 <?php
 
-use GuzzleHttp\Exception\RequestException;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Contracts\DownloadXmlHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlError;
+use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlResponseError;
+use PhpCfdi\CfdiSatScraper\Exceptions\DownloadXmlRequestExceptionError;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use Psr\Http\Message\ResponseInterface;
@@ -238,24 +251,26 @@ $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2
 $list = $satScraper->downloadPeriod($query);
 
 $myHandler = new class implements DownloadXmlHandlerInterface {
-    public function onFulfilled(ResponseInterface $response, string $uuid): void
+    public function onSuccess(string $uuid, string $content, ResponseInterface $response): void
     {
         $filename = '/storage/' . $uuid . '.xml';
         echo 'Saving ', $uuid, PHP_EOL;
         file_put_contents($filename, (string) $response->getBody());
     }
-
-    public function onRequestException(RequestException $exception, string $uuid): void
+    public function onError(DownloadXmlError $error) : void
     {
-        $this->onRejected($exception, $uuid);
-    }
-
-    public function onRejected($reason, string $uuid): void
-    {
-        if ($reason instanceof Throwable) {
-            $reason = $reason->getMessage();
+        try {
+            throw $error;
+        } catch (DownloadXmlRequestExceptionError $error) {
+            echo "Error getting {$error->getUuid()} from {$error->getReason()->getRequest()->getUri()}\n";
+        } catch (DownloadXmlResponseError $error) {
+            echo "Error getting {$error->getUuid()}, invalid response: {$error->getMessage()}\n";
+            $response = $error->getReason(); // reason is a ResponseInterface
+            print_r(['headers' => $response->getHeaders(), 'body' => $response->getBody()]);
+        } catch (DownloadXmlError $error) {
+            echo "Error getting {$error->getUuid()}, reason: {$error->getMessage()}\n";
+            print_r(['reason' => $error->getReason()]);
         }
-        echo 'ERROR: ', $uuid, ' => ', strval($reason), PHP_EOL;
     }
 };
 
