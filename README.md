@@ -73,9 +73,9 @@ Los métodos para ejecutar la descarga de metadata son:
 
 Y una vez con el `MetadataList` se crea un objeto descargador y se le pide que ejecute las descargas.
 
-- Creación: `SatScraper::downloader(MetadataList $list = null): DownloadXml`
-- Guardar a una carpeta: `DownloadXml::saveTo(string $destination): void`
-- Guardar con un manejador: `DownloadXml::download(DownloadXmlHandlerInterface $handler): void`
+- Creación: `SatScraper::xmlDownloader(MetadataList $list = null, int $concurrency = 10): XmlDownloader`
+- Guardar a una carpeta: `XmlDownloader::saveTo(string $destination): void`
+- Guardar con un manejador: `XmlDownloader::download(DownloadXmlHandlerInterface $handler): void`
 
 Si se llega a la consulta mínima de 1 segundo y se obtuvieron 500 o más registros entonces adicionalmente
 se llama a un *callback* (opcional) para reportar este hecho.

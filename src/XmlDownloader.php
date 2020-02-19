@@ -24,7 +24,7 @@ use PhpCfdi\CfdiSatScraper\Internal\DownloadXmlStoreInFolder;
  *
  * The concurrent downloads are based on Guzzle/Promises.
  */
-class DownloadXml
+class XmlDownloader
 {
     /** @var MetadataList|null */
     protected $list;

@@ -49,16 +49,16 @@ class SatScraper
     }
 
     /**
-     * Create a DownloadXml object with (optionally) a MetadataList.
-     * The DownloadXml object can be used to retrieve the CFDI XML contents.
+     * Create a XmlDownloader object with (optionally) a MetadataList.
+     * The XmlDownloader object can be used to retrieve the CFDI XML contents.
      *
      * @param MetadataList|null $metadataList
      * @param int $concurrency
-     * @return DownloadXml
+     * @return XmlDownloader
      */
-    public function xmlDownloader(?MetadataList $metadataList = null, int $concurrency = 10): DownloadXml
+    public function xmlDownloader(?MetadataList $metadataList = null, int $concurrency = 10): XmlDownloader
     {
-        return new DownloadXml($this->satHttpGateway, $metadataList, $concurrency);
+        return new XmlDownloader($this->satHttpGateway, $metadataList, $concurrency);
     }
 
     /**
