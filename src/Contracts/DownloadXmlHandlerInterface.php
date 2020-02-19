@@ -10,7 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 interface DownloadXmlHandlerInterface
 {
     /**
-     * Invoked when the async request promise was fulfilled
+     * Invoked when the CFDI XML was successfully downloaded
      *
      * @param string $uuid
      * @param string $content
@@ -19,7 +19,8 @@ interface DownloadXmlHandlerInterface
     public function onSuccess(string $uuid, string $content, ResponseInterface $response): void;
 
     /**
-     * Invoked when the download process had an error.
+     * Invoked when the CFDI XML was unsuccessfully downloaded creating an error
+     * Remember that DownloadXmlError can be a more specific class.
      *
      * @param DownloadXmlError $error
      */
