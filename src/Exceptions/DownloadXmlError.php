@@ -25,7 +25,7 @@ class DownloadXmlError extends \RuntimeException implements SatException
     public function __construct(string $message, string $uuid, $reason, Throwable $previous = null)
     {
         if (null === $previous && $reason instanceof Throwable) {
-            $previous = $this->reason;
+            $previous = $reason;
         }
         parent::__construct($message, 0, $previous);
         $this->uuid = $uuid;
