@@ -7,7 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Contracts;
 use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadError;
 use Psr\Http\Message\ResponseInterface;
 
-interface DownloadXmlHandlerInterface
+interface XmlDownloadHandlerInterface
 {
     /**
      * Invoked when the CFDI XML was successfully downloaded

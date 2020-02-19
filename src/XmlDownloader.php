@@ -6,10 +6,10 @@ namespace PhpCfdi\CfdiSatScraper;
 
 use GuzzleHttp\Promise\EachPromise;
 use GuzzleHttp\Promise\PromiseInterface;
-use PhpCfdi\CfdiSatScraper\Contracts\DownloadXmlHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloadHandlerInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
-use PhpCfdi\CfdiSatScraper\Internal\DownloadXmlMainHandler;
-use PhpCfdi\CfdiSatScraper\Internal\DownloadXmlStoreInFolder;
+use PhpCfdi\CfdiSatScraper\Internal\XmlDownloaderPromiseHandler;
+use PhpCfdi\CfdiSatScraper\Internal\XmlDownloadStoreInFolder;
 
 /**
  * Helper class to make concurrent downloads of CFDI files.
@@ -20,7 +20,7 @@ use PhpCfdi\CfdiSatScraper\Internal\DownloadXmlStoreInFolder;
  * You can use the method `saveTo` that will store all the downloaded files as destination/uuid.xml
  *
  * You can fine tune the download process (success & error) if you implement
- * the `DownloadXmlHandlerInterface` interface and use the `download` method.
+ * the `XmlDownloadHandlerInterface` interface and use the `download` method.
  *
  * The concurrent downloads are based on Guzzle/Promises.
  */
@@ -88,22 +88,22 @@ class XmlDownloader
      * Generate the promises to download all the elements on the metadata list that contains
      * a link to download the CFDI.
      *
-     * Then the download operation was successful it will call DownloadXmlHandlerInterface::onSuccess.
+     * Then the download operation was successful it will call XmlDownloadHandlerInterface::onSuccess.
      * If some exception was raced when downloading, validating the response or calling onSuccess
-     * then it will call DownloadXmlHandlerInterface::onError.
+     * then it will call XmlDownloadHandlerInterface::onError.
      *
      * The download will return an array that contains all the successful processed uuids.
      *
-     * @param DownloadXmlHandlerInterface $handler
+     * @param XmlDownloadHandlerInterface $handler
      * @return string[]
      *
-     * @see DownloadXmlMainHandler::promiseFulfilled()
-     * @see DownloadXmlMainHandler::promiseRejected()
+     * @see XmlDownloaderPromiseHandler::promiseFulfilled()
+     * @see XmlDownloaderPromiseHandler::promiseRejected()
      */
-    public function download(DownloadXmlHandlerInterface $handler): array
+    public function download(XmlDownloadHandlerInterface $handler): array
     {
         // wrap the privided handler into the main handler, to throw the expected exceptions
-        $mainHandler = new DownloadXmlMainHandler($handler);
+        $mainHandler = new XmlDownloaderPromiseHandler($handler);
         // create the promises iterator
         $promises = $this->makePromises();
         // create the invoker
@@ -149,7 +149,7 @@ class XmlDownloader
      */
     public function saveTo(string $destinationFolder, bool $createFolder = false, int $createMode = 0775): array
     {
-        $storeHandler = new DownloadXmlStoreInFolder($destinationFolder);
+        $storeHandler = new XmlDownloadStoreInFolder($destinationFolder);
         $storeHandler->checkDestinationFolder($createFolder, $createMode);
         return $this->download($storeHandler);
     }

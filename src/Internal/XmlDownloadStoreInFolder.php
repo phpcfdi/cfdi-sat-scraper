@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Internal;
 
-use PhpCfdi\CfdiSatScraper\Contracts\DownloadXmlHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloadHandlerInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadError;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
-class DownloadXmlStoreInFolder implements DownloadXmlHandlerInterface
+class XmlDownloadStoreInFolder implements XmlDownloadHandlerInterface
 {
     /** @var string */
     private $destinationFolder;

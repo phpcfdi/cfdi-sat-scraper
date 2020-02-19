@@ -75,7 +75,7 @@ Y una vez con el `MetadataList` se crea un objeto descargador y se le pide que e
 
 - Creación: `SatScraper::xmlDownloader(MetadataList $list = null, int $concurrency = 10): XmlDownloader`
 - Guardar a una carpeta: `XmlDownloader::saveTo(string $destination): void`
-- Guardar con un manejador: `XmlDownloader::download(DownloadXmlHandlerInterface $handler): void`
+- Guardar con un manejador: `XmlDownloader::download(XmlDownloadHandlerInterface $handler): void`
 
 Si se llega a la consulta mínima de 1 segundo y se obtuvieron 500 o más registros entonces adicionalmente
 se llama a un *callback* (opcional) para reportar este hecho.
@@ -227,19 +227,19 @@ echo json_encode($downloadedUuids);
 Ejecutar el método `download` devuelve un arreglo con los UUID que fueron efectivamente descargados.
 Y permite configurar los eventos de descarga y manejo de errores.
 
-Si se desea ignorar los errores se puede simplemente especificar el método `DownloadXmlHandlerInterface::onError()`
+Si se desea ignorar los errores se puede simplemente especificar el método `XmlDownloadHandlerInterface::onError()`
 sin contenido, entonces el error solamente se perderá. De todas maneras, gracias a que el método `download`
 devuelve un arreglo de UUID con los que fueron efectivamente descargados entonces se puede filtrar el `MetadataList`
 para extraer aquellos que no fueron descargados.
 
-Vea la clase `PhpCfdi\CfdiSatScraper\Internal\DownloadXmlStoreInFolder` como ejemplo de implementación
-de la interfaz `DownloadXmlHandlerInterface`.
+Vea la clase `PhpCfdi\CfdiSatScraper\Internal\XmlDownloadStoreInFolder` como ejemplo de implementación
+de la interfaz `XmlDownloadHandlerInterface`.
 
 ```php
 <?php
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
-use PhpCfdi\CfdiSatScraper\Contracts\DownloadXmlHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloadHandlerInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadError;
 use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadResponseError;
 use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadRequestExceptionError;
@@ -255,7 +255,7 @@ $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2
 
 $list = $satScraper->downloadPeriod($query);
 
-$myHandler = new class implements DownloadXmlHandlerInterface {
+$myHandler = new class implements XmlDownloadHandlerInterface {
     public function onSuccess(string $uuid, string $content, ResponseInterface $response): void
     {
         $filename = '/storage/' . $uuid . '.xml';
