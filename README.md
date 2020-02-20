@@ -93,7 +93,7 @@ con cualquier complemento y con cualquier estado (vigente o cancelado). Sin emba
 de enviar a procesarla.
 
 ```php
-<?php
+<?php declare(strict_types=1);
 
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
@@ -114,7 +114,7 @@ $query
 ## Ejemplo de descarga por rango de fechas
 
 ```php
-<?php
+<?php declare(strict_types=1);
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
@@ -147,7 +147,7 @@ echo json_encode($downloadedUuids);
 ## Ejemplo de descarga por lista de UUIDS
 
 ```php
-<?php
+<?php declare(strict_types=1);
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
@@ -174,10 +174,12 @@ si se presenta que en un mismo segundo existen 500 o más CFDI, entonces se pued
 que le puede ayudar a considerar este escenario.
 
 ```php
-<?php
+<?php declare(strict_types=1);
 
 use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
 
 // define onFiveHundred callback
 $onFiveHundred = function (DateTimeImmutable $date) {
@@ -186,8 +188,8 @@ $onFiveHundred = function (DateTimeImmutable $date) {
 
 // create scraper using the callback
 /**
- * @var \PhpCfdi\CfdiSatScraper\SatSessionData $sessionData
- * @var \PhpCfdi\CfdiSatScraper\SatHttpGateway $httpGateway
+ * @var SatSessionData $sessionData
+ * @var SatHttpGateway $httpGateway
  */
 $satScraper = new SatScraper($sessionData, $httpGateway, $onFiveHundred);
 
@@ -203,7 +205,7 @@ Ejecutar el método `saveTo` devuelve un arreglo con los UUID que fueron efectiv
 Si ocurrió un error con alguna de las descargas dicho error será ignorado.
 
 ```php
-<?php
+<?php declare(strict_types=1);
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Query;
@@ -236,7 +238,7 @@ Vea la clase `PhpCfdi\CfdiSatScraper\Internal\XmlDownloadStoreInFolder` como eje
 de la interfaz `XmlDownloadHandlerInterface`.
 
 ```php
-<?php
+<?php declare(strict_types=1);
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloadHandlerInterface;
@@ -264,15 +266,13 @@ $myHandler = new class implements XmlDownloadHandlerInterface {
     }
     public function onError(XmlDownloadError $error) : void
     {
-        try {
-            throw $error;
-        } catch (XmlDownloadRequestExceptionError $error) {
+        if ($error instanceof XmlDownloadRequestExceptionError) {
             echo "Error getting {$error->getUuid()} from {$error->getReason()->getRequest()->getUri()}\n";
-        } catch (XmlDownloadResponseError $error) {
+        } elseif ($error instanceof XmlDownloadResponseError) {
             echo "Error getting {$error->getUuid()}, invalid response: {$error->getMessage()}\n";
             $response = $error->getReason(); // reason is a ResponseInterface
             print_r(['headers' => $response->getHeaders(), 'body' => $response->getBody()]);
-        } catch (XmlDownloadError $error) {
+        } else { // XmlDownloadError
             echo "Error getting {$error->getUuid()}, reason: {$error->getMessage()}\n";
             print_r(['reason' => $error->getReason()]);
         }
@@ -293,16 +293,19 @@ No es una práctica recomendada pero tal vez necesaria ante los problemas a los 
 Tenga en cuenta que esto podría facilitar significativamente un ataque que provoque que la pérdida de su clave CIEC.
 
 ```php
-<?php
+<?php declare(strict_types=1);
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
 
-$insecureClient = new \GuzzleHttp\Client([
-    \GuzzleHttp\RequestOptions::VERIFY => false
+$insecureClient = new Client([
+    RequestOptions::VERIFY => false
 ]);
 $gateway = new SatHttpGateway($insecureClient);
 
-/** @var \PhpCfdi\CfdiSatScraper\SatSessionData $sessionData */
+/** @var SatSessionData $sessionData */
 $scraper = new SatScraper($sessionData, $gateway);
 ```
 

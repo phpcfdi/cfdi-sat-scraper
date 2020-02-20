@@ -8,9 +8,12 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Cookie\CookieJarInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\RequestOptions;
+use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayClientException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
+use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayResponseException;
 use PhpCfdi\CfdiSatScraper\Internal\Headers;
 
 class SatHttpGateway
@@ -39,38 +42,75 @@ class SatHttpGateway
         $this->cookieJar = $cookieJar;
     }
 
+    /**
+     * @param string $url
+     * @return string
+     * @throws SatHttpGatewayException
+     */
     public function getAuthLoginPage(string $url): string
     {
         return $this->get('get login page', $url);
     }
 
+    /**
+     * @return string
+     * @throws SatHttpGatewayException
+     */
     public function getPortalMainPage(): string
     {
         return $this->get('get portal main page', URLS::SAT_URL_PORTAL_CFDI);
     }
 
+    /**
+     * @param array $formData
+     * @return string
+     * @throws SatHttpGatewayException
+     */
     public function postPortalMainPage(array $formData): string
     {
         return $this->post('post to portal main page', URLS::SAT_URL_PORTAL_CFDI, Headers::post('', ''), $formData);
     }
 
+    /**
+     * @param string $loginUrl
+     * @param array $formParams
+     * @return string
+     * @throws SatHttpGatewayException
+     */
     public function postLoginData(string $loginUrl, array $formParams): string
     {
         $headers = Headers::post(parse_url(URLS::SAT_URL_LOGIN, PHP_URL_HOST), URLS::SAT_URL_LOGIN);
         return $this->post('post login data', $loginUrl, $headers, $formParams);
     }
 
+    /**
+     * @param string $url
+     * @return string
+     * @throws SatHttpGatewayException
+     */
     public function getPortalPage(string $url): string
     {
         return $this->get('get portal page', $url);
     }
 
+    /**
+     * @param string $url
+     * @param array $formParams
+     * @return string
+     * @throws SatHttpGatewayException
+     */
     public function postAjaxSearch(string $url, array $formParams): string
     {
         $headers = Headers::postAjax(parse_url(URLS::SAT_URL_PORTAL_CFDI, PHP_URL_HOST), $url);
         return $this->post('query search page', $url, $headers, $formParams);
     }
 
+    /**
+     * Create a promise (asyncronic request) to perform an XML download.
+     *
+     * @param string $link
+     * @return PromiseInterface
+     */
     public function getAsync(string $link): PromiseInterface
     {
         $options = [
@@ -85,20 +125,43 @@ class SatHttpGateway
         $this->cookieJar->clear();
     }
 
+    /**
+     * Helper to make a GET request
+     *
+     * @param string $reason
+     * @param string $url
+     * @return string
+     * @throws SatHttpGatewayException
+     */
     private function get(string $reason, string $url): string
     {
+        $headers = Headers::get();
         $options = [
-            RequestOptions::HEADERS => Headers::get(),
+            RequestOptions::HEADERS => $headers,
             RequestOptions::COOKIES => $this->cookieJar,
         ];
-        $response = $this->client->request('GET', $url, $options);
-        $contents = $response->getBody()->getContents();
+        try {
+            $response = $this->client->request('GET', $url, $options);
+        } catch (GuzzleException $exception) {
+            throw SatHttpGatewayClientException::clientException($reason, 'GET', $url, $headers, [], $exception);
+        }
+        $contents = strval($response->getBody());
         if ('' === $contents) {
-            throw SatHttpGatewayException::unexpectedEmptyResponse($reason, $url, $response);
+            throw SatHttpGatewayResponseException::unexpectedEmptyResponse($reason, $response, 'GET', $url, $headers);
         }
         return $contents;
     }
 
+    /**
+     * Helper to make a POST request
+     *
+     * @param string $reason
+     * @param string $url
+     * @param array $headers
+     * @param array $data
+     * @return string
+     * @throws SatHttpGatewayException
+     */
     private function post(string $reason, string $url, array $headers, array $data): string
     {
         $options = [
@@ -106,10 +169,14 @@ class SatHttpGateway
             RequestOptions::COOKIES => $this->cookieJar,
             RequestOptions::FORM_PARAMS => $data,
         ];
-        $response = $this->client->request('POST', $url, $options);
-        $contents = $response->getBody()->getContents();
+        try {
+            $response = $this->client->request('POST', $url, $options);
+        } catch (GuzzleException $exception) {
+            throw SatHttpGatewayClientException::clientException($reason, 'POST', $url, $headers, $data, $exception);
+        }
+        $contents = strval($response->getBody());
         if ('' === $contents) {
-            throw SatHttpGatewayException::unexpectedEmptyResponse($reason, $url, $response);
+            throw SatHttpGatewayResponseException::unexpectedEmptyResponse($reason, $response, 'POST', $url, $headers, $data);
         }
         return $contents;
     }

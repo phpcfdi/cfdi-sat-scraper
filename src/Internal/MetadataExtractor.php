@@ -7,6 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Internal;
 use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\URLS;
+use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -20,7 +21,11 @@ class MetadataExtractor
             $fieldsCaptions = $this->defaultFieldsCaptions();
         }
 
-        $rows = (new Crawler($html))->filter('table#ctl00_MainContent_tblResult > tr');
+        try {
+            $rows = (new Crawler($html))->filter('table#ctl00_MainContent_tblResult > tr');
+        } catch (RuntimeException $exception) {
+            return new MetadataList([]);
+        }
         if ($rows->count() < 2) {
             return new MetadataList([]);
         }
@@ -66,11 +71,15 @@ class MetadataExtractor
 
     public function locateFieldsPositions(Crawler $headersRow, array $fieldsCaptions): array
     {
-        $headerCells = $headersRow->children()->each(
-            function (Crawler $cell) {
-                return trim($cell->text());
-            }
-        );
+        try {
+            $headerCells = $headersRow->children()->each(
+                function (Crawler $cell) {
+                    return trim($cell->text());
+                }
+            );
+        } catch (RuntimeException $exception) {
+            $headerCells = [];
+        }
 
         $headerPositions = $fieldsCaptions;
         foreach ($headerPositions as $field => $label) {
@@ -85,8 +94,13 @@ class MetadataExtractor
 
     public function obtainMetadataValues(Crawler $row, array $fieldsPositions): array
     {
+        try {
+            $cells = $row->children();
+        } catch (RuntimeException $exception) {
+            return [];
+        }
+
         $values = [];
-        $cells = $row->children();
         foreach ($fieldsPositions as $field => $position) {
             $values[$field] = trim($cells->getNode($position)->textContent ?? '');
         }
@@ -95,7 +109,12 @@ class MetadataExtractor
 
     public function obtainUrlXml(Crawler $row): string
     {
-        $spansBtnDownload = $row->filter('span#BtnDescarga');
+        try {
+            $spansBtnDownload = $row->filter('span#BtnDescarga');
+        } catch (RuntimeException $exception) {
+            return '';
+        }
+
         if (0 === $spansBtnDownload->count()) { // button not found
             return '';
         }

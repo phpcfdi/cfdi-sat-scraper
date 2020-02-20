@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
+use Generator;
 use GuzzleHttp\Promise\EachPromise;
 use GuzzleHttp\Promise\PromiseInterface;
 use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloadHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 use PhpCfdi\CfdiSatScraper\Internal\XmlDownloaderPromiseHandler;
 use PhpCfdi\CfdiSatScraper\Internal\XmlDownloadStoreInFolder;
+use RuntimeException;
 
 /**
  * Helper class to make concurrent downloads of CFDI files.
@@ -118,14 +121,14 @@ class XmlDownloader
     }
 
     /**
-     * Create the Promise for each item in the Metadata in the MedataList that contains an `urlXml`
+     * Create the Promise for each item in the Metadata in the MedataList that has an URL to download the XML.
      *
-     * @return \Generator|PromiseInterface[]
+     * @return Generator|PromiseInterface[]
      */
     protected function makePromises()
     {
         foreach ($this->getMetadataList() as $metadata) {
-            $link = $metadata->get('urlXml');
+            $link = $metadata->getXmlDownloadUrl();
             if ('' === $link) {
                 continue;
             }
@@ -146,6 +149,11 @@ class XmlDownloader
      * @param bool $createFolder
      * @param int $createMode
      * @return string[]
+     *
+     * @throws RuntimeException if ask to create destination folder and was an error creating it
+     * @throws InvalidArgumentException if don't ask to create destination folder and it does not exists
+     * @throws InvalidArgumentException if ask to create destination folder and it exists and is not a foler
+     * @throws InvalidArgumentException if ask to create destination folder and it exists and is not a foler
      */
     public function saveTo(string $destinationFolder, bool $createFolder = false, int $createMode = 0775): array
     {

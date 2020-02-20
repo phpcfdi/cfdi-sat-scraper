@@ -7,6 +7,12 @@ namespace PhpCfdi\CfdiSatScraper;
 use JsonSerializable;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 
+/**
+ * The Metadata class is an storage of values retrieved from the list of documents obtained from
+ * a seach on the SAT CFDI Portal.
+ *
+ * It always has an UUID, all other properties are optional.
+ */
 class Metadata implements JsonSerializable
 {
     /** @var array<string, string> */
@@ -32,6 +38,16 @@ class Metadata implements JsonSerializable
     public function uuid(): string
     {
         return $this->data['uuid'];
+    }
+
+    public function getXmlDownloadUrl(): string
+    {
+        return $this->get('urlXml');
+    }
+
+    public function hasXmlDownloadUrl(): bool
+    {
+        return '' !== $this->getXmlDownloadUrl();
     }
 
     public function get(string $key): string

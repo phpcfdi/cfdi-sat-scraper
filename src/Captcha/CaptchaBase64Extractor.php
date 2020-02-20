@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Captcha;
 
+use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
 
 class CaptchaBase64Extractor
@@ -14,7 +15,11 @@ class CaptchaBase64Extractor
     {
         $selector = $selector ?: self::DEFAULT_SELECTOR;
 
-        $images = (new Crawler($htmlSource))->filter($selector);
+        try {
+            $images = (new Crawler($htmlSource))->filter($selector);
+        } catch (RuntimeException $exception) {
+            return '';
+        }
         if (0 === $images->count()) {
             return '';
         }

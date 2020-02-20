@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper;
 
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
+use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
 use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
@@ -114,6 +115,7 @@ class SatScraper
      * @param DownloadType $downloadType
      * @return MetadataList
      * @throws LoginException
+     * @throws SatHttpGatewayException
      */
     public function downloadListUUID(array $uuids, DownloadType $downloadType): MetadataList
     {
@@ -127,6 +129,7 @@ class SatScraper
      * @param Query $query
      * @return MetadataList
      * @throws LoginException
+     * @throws SatHttpGatewayException
      */
     public function downloadPeriod(Query $query): MetadataList
     {
@@ -140,6 +143,7 @@ class SatScraper
      * @param Query $query
      * @return MetadataList
      * @throws LoginException
+     * @throws SatHttpGatewayException
      */
     public function downloadByDateTime(Query $query): MetadataList
     {

@@ -4,58 +4,87 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Exceptions;
 
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
 use RuntimeException;
 use Throwable;
 
+/**
+ * The LoginException defines a problem on registering to the SAT platform with specific credentials.
+ * It contains the SAT session data, retrieved contents and posted data.
+ */
 class LoginException extends RuntimeException implements SatException
 {
-    /** @var array<string, mixed> */
-    private $context;
+    /** @var SatSessionData */
+    private $sessionData;
+
+    /** @var string */
+    private $contents;
+
+    /** @var array<string, string> */
+    private $postedData;
 
     /**
      * LoginException constructor.
      *
      * @param string $message
-     * @param array<string, mixed> $context
+     * @param SatSessionData $sessionData
+     * @param string $contents
+     * @param array<string, mixed> $post
      * @param Throwable|null $previous
      */
-    public function __construct(string $message, array $context, Throwable $previous = null)
+    public function __construct(string $message, SatSessionData $sessionData, string $contents, array $post = [], Throwable $previous = null)
     {
         parent::__construct($message, 0, $previous);
-        $this->context = $context;
+        $this->sessionData = $sessionData;
+        $this->contents = $contents;
+        $this->postedData = $post;
     }
 
-    public static function notRegisteredAfterLogin(string $rfc, string $htmlContents): self
+    public static function notRegisteredAfterLogin(SatSessionData $data, string $contents): self
     {
-        return new self("It was expected to have the session registered on portal home page with RFC $rfc", [
-            'rfc' => $rfc,
-            'contents' => $htmlContents,
-        ]);
+        $message = "It was expected to have the session registered on portal home page with RFC {$data->getRfc()}";
+        return new self($message, $data, $contents);
     }
 
-    public static function noCaptchaImageFound(string $url, string $htmlContents): self
+    public static function noCaptchaImageFound(SatSessionData $data, string $contents): self
     {
-        return new self("It was unable to find the captcha image from url $url", [
-            'url' => $url,
-            'contents' => $htmlContents,
-        ]);
+        return new self('It was unable to find the captcha image', $data, $contents);
     }
 
-    public static function captchaWithoutAnswer(string $imageBase64, CaptchaResolverInterface $resolver): self
+    public static function captchaWithoutAnswer(SatSessionData $data, string $imageBase64, Throwable $previous = null): self
     {
-        return new self('Unable to decode captcha', [
-            'imageBase64' => $imageBase64,
-            'contents' => $resolver,
-        ]);
+        return new self('Unable to decode captcha', $data, '', ['image' => $imageBase64], $previous);
     }
 
     /**
-     * @param array<string, string> $postData
+     * @param SatSessionData $data
+     * @param string $contents
+     * @param array<string, string> $postedData
      * @return self
      */
-    public static function incorrectLoginData(array $postData): self
+    public static function incorrectLoginData(SatSessionData $data, string $contents, array $postedData): self
     {
-        return new self('Unable to decode captcha', $postData);
+        return new self('Unable to decode captcha', $data, $contents, $postedData);
+    }
+
+    public static function connectionException(string $when, SatSessionData $data, SatHttpGatewayException $exception): self
+    {
+        return new self("Connection error when $when", $data, '', [], $exception);
+    }
+
+    public function getSessionData(): SatSessionData
+    {
+        return $this->sessionData;
+    }
+
+    public function getContents(): string
+    {
+        return $this->contents;
+    }
+
+    /** @return array<string, string> */
+    public function getPostedData(): array
+    {
+        return $this->postedData;
     }
 }

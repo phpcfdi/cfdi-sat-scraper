@@ -10,7 +10,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements SatE
 {
     public static function emptyInput(string $name): self
     {
-        return new self(sprintf('Invalid argument %s: cannot be empty', $name));
+        return new self(sprintf('Invalid argument %s is empty', $name));
     }
 
     public static function pathDoesNotExists(string $name, string $path): self

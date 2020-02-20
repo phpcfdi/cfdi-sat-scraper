@@ -4,31 +4,59 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Exceptions;
 
-use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
+use Throwable;
 
-class SatHttpGatewayException extends RuntimeException implements SatException
+/**
+ * This is a base exception to track a client exception or an exception with a response.
+ * This exception must be thrown by SatHttpGateway.
+ *
+ * @see \PhpCfdi\CfdiSatScraper\SatHttpGateway
+ * @see SatHttpGatewayClientException
+ * @see SatHttpGatewayResponseException
+ */
+abstract class SatHttpGatewayException extends RuntimeException implements SatException
 {
     /** @var string */
     private $url;
 
-    /** @var ResponseInterface */
-    private $response;
+    /** @var array<string, mixed> */
+    private $requestHeaders;
 
-    /** @var array<string, string> */
-    private $requestFormParams;
+    /** @var array<string, mixed> */
+    private $requestData;
 
-    private function __construct(string $message, string $url, ResponseInterface $response, array $requestFormParams = [])
-    {
-        parent::__construct($message);
+    /** @var string */
+    private $httpMethod;
+
+    /**
+     * SatHttpGatewayException constructor.
+     *
+     * @param string $message
+     * @param string $httpMethod
+     * @param string $url
+     * @param array<string, mixed> $requestHeaders
+     * @param array<string, mixed> $requestData
+     * @param Throwable|null $previous
+     */
+    protected function __construct(
+        string $message,
+        string $httpMethod,
+        string $url,
+        array $requestHeaders,
+        array $requestData = [],
+        Throwable $previous = null
+    ) {
+        parent::__construct($message, 0, $previous);
+        $this->httpMethod = $httpMethod;
         $this->url = $url;
-        $this->response = $response;
-        $this->requestFormParams = $requestFormParams;
+        $this->requestHeaders = $requestHeaders;
+        $this->requestData = $requestData;
     }
 
-    public static function unexpectedEmptyResponse(string $when, string $url, ResponseInterface $response, array $requestFormParams = []): self
+    public function getHttpMethod(): string
     {
-        return new self("Unexpected empty content when $when", $url, $response, $requestFormParams);
+        return $this->httpMethod;
     }
 
     public function getUrl(): string
@@ -36,14 +64,15 @@ class SatHttpGatewayException extends RuntimeException implements SatException
         return $this->url;
     }
 
-    public function getResponse(): ResponseInterface
+    /** @return array<string, mixed> */
+    public function getRequestHeaders(): array
     {
-        return $this->response;
+        return $this->requestHeaders;
     }
 
-    /** @return array<string, string> */
-    public function getRequestFormParams(): array
+    /** @return array<string, mixed> */
+    public function getRequestData(): array
     {
-        return $this->requestFormParams;
+        return $this->requestData;
     }
 }

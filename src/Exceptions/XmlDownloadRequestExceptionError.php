@@ -7,6 +7,8 @@ namespace PhpCfdi\CfdiSatScraper\Exceptions;
 use GuzzleHttp\Exception\RequestException;
 
 /**
+ * This error is thrown when fail to perform an XML download and a RequestException is available.
+ *
  * @method RequestException getReason()
  */
 class XmlDownloadRequestExceptionError extends XmlDownloadError

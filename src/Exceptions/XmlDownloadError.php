@@ -4,9 +4,19 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Exceptions;
 
+use RuntimeException;
 use Throwable;
 
-class XmlDownloadError extends \RuntimeException implements SatException
+/**
+ * This exception (called intentionally error) encloses a problem with a reason
+ * that was thrown when performing an XML download.
+ *
+ * There are specializations, that stores reason with a specific type.
+ *
+ * @see XmlDownloadResponseError
+ * @see XmlDownloadRequestExceptionError
+ */
+class XmlDownloadError extends RuntimeException implements SatException
 {
     /** @var string */
     private $uuid;
@@ -16,6 +26,8 @@ class XmlDownloadError extends \RuntimeException implements SatException
 
     /**
      * XmlDownloadError constructor.
+     *
+     * If the reason is a Throwable and previous was not defined then it set up previous as reason
      *
      * @param string $message
      * @param string $uuid

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use PhpCfdi\CfdiSatScraper\Contracts\Filters;
+use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
 use PhpCfdi\CfdiSatScraper\Filters\FiltersReceived;
 use PhpCfdi\CfdiSatScraper\MetadataList;
@@ -24,6 +25,11 @@ class QueryResolver
         $this->satHttpGateway = $satHttpGateway;
     }
 
+    /**
+     * @param Query $query
+     * @return MetadataList
+     * @throws SatHttpGatewayException
+     */
     public function resolve(Query $query): MetadataList
     {
         $filters = $this->createFiltersFromQuery($query); // create filters from query
@@ -36,6 +42,11 @@ class QueryResolver
         return (new MetadataExtractor())->extract($htmlWithMetadata);
     }
 
+    /**
+     * @param string $url
+     * @return array
+     * @throws SatHttpGatewayException
+     */
     protected function inputFieldsFromInitialPage(string $url): array
     {
         $completePage = $this->satHttpGateway->getPortalPage($url);
@@ -45,6 +56,13 @@ class QueryResolver
         return $baseInputs;
     }
 
+    /**
+     * @param string $url
+     * @param array $baseInputs
+     * @param Filters $filters
+     * @return array
+     * @throws SatHttpGatewayException
+     */
     protected function inputFieldsFromSelectDownloadType(string $url, array $baseInputs, Filters $filters): array
     {
         $post = array_merge($baseInputs, $filters->getInitialFilters());
@@ -53,6 +71,13 @@ class QueryResolver
         return $lastViewStateValues;
     }
 
+    /**
+     * @param string $url
+     * @param array $baseInputs
+     * @param Filters $filters
+     * @return string
+     * @throws SatHttpGatewayException
+     */
     protected function htmlFromExecuteQuery(string $url, array $baseInputs, Filters $filters): string
     {
         // consume search using search filters

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Internal;
 
+use DateTimeImmutable;
+use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\Query;
@@ -40,9 +42,15 @@ class MetadataDownloader
         return $this->onFiveHundred;
     }
 
+    /**
+     * @param array $uuids
+     * @param DownloadType $downloadType
+     * @return MetadataList
+     * @throws SatHttpGatewayException
+     */
     public function downloadByUuids(array $uuids, DownloadType $downloadType): MetadataList
     {
-        $query = new Query(new \DateTimeImmutable(), new \DateTimeImmutable());
+        $query = new Query(new DateTimeImmutable(), new DateTimeImmutable());
         $query->setDownloadType($downloadType);
 
         $result = new MetadataList([]);
@@ -55,6 +63,11 @@ class MetadataDownloader
         return $result;
     }
 
+    /**
+     * @param Query $query
+     * @return MetadataList
+     * @throws SatHttpGatewayException
+     */
     public function downloadByDate(Query $query): MetadataList
     {
         $query = clone $query;
@@ -63,6 +76,11 @@ class MetadataDownloader
         return $this->downloadByDateTime($query);
     }
 
+    /**
+     * @param Query $query
+     * @return MetadataList
+     * @throws SatHttpGatewayException
+     */
     public function downloadByDateTime(Query $query): MetadataList
     {
         $result = new MetadataList([]);
@@ -72,6 +90,11 @@ class MetadataDownloader
         return $result;
     }
 
+    /**
+     * @param Query $query
+     * @return MetadataList
+     * @throws SatHttpGatewayException
+     */
     public function downloadQuery(Query $query): MetadataList
     {
         $finalList = new MetadataList([]);
@@ -114,17 +137,22 @@ class MetadataDownloader
             ->setEndDate($this->buildDateWithDayAndSeconds($query->getEndDate(), $endSec));
     }
 
+    /**
+     * @param Query $query
+     * @return MetadataList
+     * @throws SatHttpGatewayException
+     */
     public function resolveQuery(Query $query): MetadataList
     {
         return $this->getQueryResolver()->resolve($query);
     }
 
-    public function buildDateWithDayAndSeconds(\DateTimeImmutable $day, int $seconds): \DateTimeImmutable
+    public function buildDateWithDayAndSeconds(DateTimeImmutable $day, int $seconds): DateTimeImmutable
     {
         return $day->modify(sprintf('midnight + %d seconds', $seconds));
     }
 
-    public function raiseOnLimit(\DateTimeImmutable $date): void
+    public function raiseOnLimit(DateTimeImmutable $date): void
     {
         if (null === $this->onFiveHundred) {
             return;

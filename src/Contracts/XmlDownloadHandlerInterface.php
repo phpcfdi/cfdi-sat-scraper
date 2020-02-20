@@ -7,6 +7,9 @@ namespace PhpCfdi\CfdiSatScraper\Contracts;
 use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadError;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * This kind of objects handles the success and error events when downloading XML CFDI files.
+ */
 interface XmlDownloadHandlerInterface
 {
     /**

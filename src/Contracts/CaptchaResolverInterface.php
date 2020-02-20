@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Contracts;
 
+/**
+ * This kind of objects are created to connect to the captcha resolver solution.
+ */
 interface CaptchaResolverInterface
 {
     /**

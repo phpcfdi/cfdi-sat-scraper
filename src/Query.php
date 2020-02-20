@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper;
 
 use DateTimeImmutable;
+use Generator;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
-use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
+use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 
@@ -210,7 +211,7 @@ class Query
     /**
      * Generates a clone of this query splitted by day
      *
-     * @return \Generator|Query[]
+     * @return Generator|Query[]
      */
     public function splitByDays()
     {

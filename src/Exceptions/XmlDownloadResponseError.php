@@ -8,6 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
 /**
+ * This error is thrown when fail to perform an XML download and a ResponseInterface is already available.
+ *
  * @method ResponseInterface getReason()
  */
 class XmlDownloadResponseError extends XmlDownloadError
@@ -36,7 +38,7 @@ class XmlDownloadResponseError extends XmlDownloadError
         return new self(sprintf('Download of CFDI %s return something that is not a CFDI', $uuid), $uuid, $response);
     }
 
-    public static function onSuccess(ResponseInterface $response, string $uuid, Throwable $throwable): self
+    public static function onSuccessException(ResponseInterface $response, string $uuid, Throwable $throwable): self
     {
         if ($throwable instanceof self) {
             return $throwable;

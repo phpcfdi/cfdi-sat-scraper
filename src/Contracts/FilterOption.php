@@ -6,7 +6,7 @@ namespace PhpCfdi\CfdiSatScraper\Contracts;
 
 /**
  * This interface defines a class that has a name and value describing an option to be send to get the list of uuids
- * on the html post form
+ * on the html post form.
  */
 interface FilterOption
 {

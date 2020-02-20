@@ -10,11 +10,21 @@ use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadError;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
-class XmlDownloadStoreInFolder implements XmlDownloadHandlerInterface
+/**
+ * This is a class to perform the XmlDownloader::saveTo method.
+ * @see \PhpCfdi\CfdiSatScraper\XmlDownloader::saveTo()
+ */
+final class XmlDownloadStoreInFolder implements XmlDownloadHandlerInterface
 {
     /** @var string */
     private $destinationFolder;
 
+    /**
+     * XmlDownloadStoreInFolder constructor.
+     *
+     * @param string $destinationFolder
+     * @throws InvalidArgumentException if destination folder argument is empty
+     */
     public function __construct(string $destinationFolder)
     {
         if ('' === $destinationFolder) {
@@ -33,6 +43,17 @@ class XmlDownloadStoreInFolder implements XmlDownloadHandlerInterface
         return $this->getDestinationFolder() . DIRECTORY_SEPARATOR . $uuid . '.xml';
     }
 
+    /**
+     * This method is invoked from XmlDownloader::saveTo() to validate that the
+     * destination folder exists or create it.
+     *
+     * @param bool $createDestinationFolder
+     * @param int $createMode
+     * @throws RuntimeException if ask to create destination folder and was an error creating it
+     * @throws InvalidArgumentException if don't ask to create destination folder and it does not exists
+     * @throws InvalidArgumentException if ask to create destination folder and it exists and is not a foler
+     * @throws InvalidArgumentException if ask to create destination folder and it exists and is not a foler
+     */
     public function checkDestinationFolder(bool $createDestinationFolder, int $createMode = 0755): void
     {
         $destinationFolder = $this->getDestinationFolder();
@@ -57,6 +78,10 @@ class XmlDownloadStoreInFolder implements XmlDownloadHandlerInterface
         }
     }
 
+    /**
+     * @inheritDoc
+     * @throws RuntimeException if putting the content into file fails
+     */
     public function onSuccess(string $uuid, string $content, ResponseInterface $response): void
     {
         $destinationFile = $this->pathFor($uuid);
@@ -66,6 +91,9 @@ class XmlDownloadStoreInFolder implements XmlDownloadHandlerInterface
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function onError(XmlDownloadError $error): void
     {
         // errors are just ignored

@@ -48,20 +48,30 @@ final class XmlDownloaderPromiseHandler
         } catch (XmlDownloadResponseError $exception) {
             return $this->handlerError($exception);
         } catch (Throwable $exception) {
-            return $this->handlerError(XmlDownloadResponseError::onSuccess($response, $uuid, $exception));
+            return $this->handlerError(XmlDownloadResponseError::onSuccessException($response, $uuid, $exception));
         }
 
         $this->fulfilledUuids[] = $uuid;
         return null;
     }
 
+    /**
+     * Validate that the Response object was OK and contains something that looks like CFDI.
+     * Return the content read from the response body.
+     *
+     * @param ResponseInterface $response
+     * @param string $uuid
+     * @return string
+     *
+     * @throws XmlDownloadResponseError
+     */
     public function validateResponse(ResponseInterface $response, string $uuid): string
     {
         if (200 !== $response->getStatusCode()) {
             throw XmlDownloadResponseError::invalidStatusCode($response, $uuid);
         }
 
-        $content = (string) $response->getBody();
+        $content = strval($response->getBody());
 
         if ('' === $content) {
             throw XmlDownloadResponseError::emptyContent($response, $uuid);

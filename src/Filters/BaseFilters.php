@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Filters;
 
+use DateTimeImmutable;
+use PhpCfdi\CfdiSatScraper\Contracts\FilterOption;
 use PhpCfdi\CfdiSatScraper\Contracts\Filters;
 use PhpCfdi\CfdiSatScraper\Filters\Options\UuidOption;
 use PhpCfdi\CfdiSatScraper\Query;
@@ -57,7 +59,7 @@ abstract class BaseFilters implements Filters
         $filters = array_filter($filters);
 
         $overrideFilters = [];
-        /** @var \PhpCfdi\CfdiSatScraper\Contracts\FilterOption $filter  */
+        /** @var FilterOption $filter  */
         foreach ($filters as $filter) {
             $overrideFilters[$filter->nameIndex()] = $filter->value();
         }
@@ -90,12 +92,12 @@ abstract class BaseFilters implements Filters
     /**
      * Helper function that emulates idate($ts, $format) but using a DateTimeImmutable and padding leading zeros
      *
-     * @param \DateTimeImmutable $date
+     * @param DateTimeImmutable $date
      * @param string $format some value of date, use only those values that return an integer expression
      * @param int $fixedPositions expected minimal positions, will pad leading zeros if length is lower than fixed
      * @return string
      */
-    protected function sidate(\DateTimeImmutable $date, string $format, int $fixedPositions = 1): string
+    protected function sidate(DateTimeImmutable $date, string $format, int $fixedPositions = 1): string
     {
         $fixedPositions = max(1, $fixedPositions);
         return sprintf("%0{$fixedPositions}d", (int) $date->format($format));

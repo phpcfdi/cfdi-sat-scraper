@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Internal;
 
+use DOMElement;
+use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -82,8 +84,8 @@ class HtmlForm
     public function readSelectValues(): array
     {
         $data = [];
-        /** @var \DOMElement[] $elements */
-        $elements = $this->crawler->filter("{$this->parentElement} select");
+        /** @var DOMElement[] $elements */
+        $elements = $this->filterCrawlerElements("{$this->parentElement} select");
         foreach ($elements as $element) {
             $name = $element->getAttribute('name');
             if ($this->elementNameIsExcluded($name)) {
@@ -91,7 +93,7 @@ class HtmlForm
             }
 
             $value = '';
-            /** @var \DOMElement $option */
+            /** @var DOMElement $option */
             foreach ($element->getElementsByTagName('option') as $option) {
                 if ($option->getAttribute('selected')) {
                     $value = $option->getAttribute('value');
@@ -121,8 +123,8 @@ class HtmlForm
         $excludeTypes = array_map('strtolower', $excludeTypes);
         $data = [];
 
-        /** @var \DOMElement[] $elements */
-        $elements = $this->crawler->filter("{$this->parentElement} {$element}");
+        /** @var DOMElement[] $elements */
+        $elements = $this->filterCrawlerElements("{$this->parentElement} {$element}");
         foreach ($elements as $element) {
             $name = $element->getAttribute('name');
             if ($this->elementNameIsExcluded($name)) {
@@ -151,5 +153,22 @@ class HtmlForm
             }
         }
         return false;
+    }
+
+    /**
+     * This method is made to ignore RuntimeException if the CssSelector Component is not available.
+     *
+     * @param string $filter
+     * @return Crawler|DOMElement[]
+     */
+    private function filterCrawlerElements(string $filter)
+    {
+        try {
+            $elements = $this->crawler->filter($filter);
+        } catch (RuntimeException $exception) {
+            $elements = [];
+        }
+        /** @var Crawler|DOMElement[] $elements */
+        return $elements;
     }
 }
