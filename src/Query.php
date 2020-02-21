@@ -11,6 +11,7 @@ use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\UuidOption;
 
 class Query
 {
@@ -30,7 +31,7 @@ class Query
     protected $rfc;
 
     /**
-     * @var string[]
+     * @var UuidOption
      */
     protected $uuid;
 
@@ -65,7 +66,7 @@ class Query
         $this->downloadType = DownloadType::recibidos();
         $this->complement = ComplementsOption::todos();
         $this->stateVoucher = StatesVoucherOption::todos();
-        $this->uuid = [];
+        $this->uuid = new UuidOption('');
         $this->rfc = new RfcOption('');
     }
 
@@ -116,25 +117,25 @@ class Query
     }
 
     /**
-     * @param string[] $uuid
+     * @param UuidOption $uuid
      * @return Query
      */
-    public function setUuid(array $uuid): self
+    public function setUuid(UuidOption $uuid): self
     {
-        $this->uuid = array_values($uuid);
+        $this->uuid = $uuid;
 
         return $this;
     }
 
-    public function hasUuids(): bool
+    public function hasUuid(): bool
     {
-        return (! empty($this->uuid));
+        return ('' !== $this->uuid->value());
     }
 
     /**
-     * @return string[]
+     * @return UuidOption
      */
-    public function getUuid(): array
+    public function getUuid(): UuidOption
     {
         return $this->uuid;
     }

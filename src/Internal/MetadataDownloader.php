@@ -7,6 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Internal;
 use DateTimeImmutable;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
+use PhpCfdi\CfdiSatScraper\Filters\Options\UuidOption;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\Query;
 
@@ -55,7 +56,7 @@ class MetadataDownloader
 
         $result = new MetadataList([]);
         foreach ($uuids as $uuid) {
-            $query->setUuid([$uuid]);
+            $query->setUuid(new UuidOption($uuid));
             $uuidResult = $this->resolveQuery($query);
             $result = $result->merge($uuidResult);
         }

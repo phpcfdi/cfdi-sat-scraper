@@ -7,7 +7,6 @@ namespace PhpCfdi\CfdiSatScraper\Filters;
 use DateTimeImmutable;
 use PhpCfdi\CfdiSatScraper\Contracts\FilterOption;
 use PhpCfdi\CfdiSatScraper\Contracts\Filters;
-use PhpCfdi\CfdiSatScraper\Filters\Options\UuidOption;
 use PhpCfdi\CfdiSatScraper\Query;
 
 /**
@@ -45,17 +44,12 @@ abstract class BaseFilters implements Filters
      */
     public function overrideDefaultFilters(): array
     {
-        if ($this->query->hasUuids()) {
-            $filters = [
-                new UuidOption($this->query->getUuid()[0] ?? ''),
-            ];
-        } else {
-            $filters = [
-                $this->query->getComplement(),
-                $this->query->getStateVoucher(),
-                $this->query->getRfc(),
-            ];
-        }
+        $filters = [
+            $this->query->getUuid(), // this is null if it does not have uuid
+            $this->query->getComplement(),
+            $this->query->getStateVoucher(),
+            $this->query->getRfc(),
+        ];
         $filters = array_filter($filters);
 
         $overrideFilters = [];
@@ -82,7 +76,7 @@ abstract class BaseFilters implements Filters
      */
     protected function getCentralFilter(): string
     {
-        if ($this->query->hasUuids()) {
+        if ($this->query->hasUuid()) {
             return 'RdoFolioFiscal';
         }
 
