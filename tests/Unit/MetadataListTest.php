@@ -147,17 +147,4 @@ final class MetadataListTest extends TestCase
             $this->assertSame($baseItem, $clon->get($baseItem->uuid()));
         }
     }
-
-    /**
-     * @param string ...$uuids
-     * @return array<string, Metadata>
-     */
-    private function createMetadataArrayUsingUuids(string ...$uuids): array
-    {
-        $contents = array_map(function (string $uuid): Metadata {
-            return new Metadata($uuid);
-        }, $uuids);
-        $contents = array_combine($uuids, $contents);
-        return $contents ?: [];
-    }
 }
