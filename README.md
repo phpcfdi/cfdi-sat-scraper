@@ -69,7 +69,7 @@ Los métodos para ejecutar la descarga de metadata son:
 
 - Por UUID: `SatScraper::listByUuids(string[] $uuids, DownloadType $type): MetadataList`
 - Por filtros con días completos: `SatScraper::listByPeriod(Query $query): MetadataList`
-- Por filtros con fechas exactas: `SatScraper::downloadByDateTime(Query $query): MetadataList`
+- Por filtros con fechas exactas: `SatScraper::listByDateTime(Query $query): MetadataList`
 
 Y una vez con el `MetadataList` se crea un objeto descargador y se le pide que ejecute las descargas.
 

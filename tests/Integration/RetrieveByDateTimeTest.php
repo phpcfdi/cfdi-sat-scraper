@@ -29,7 +29,7 @@ class RetrieveByDateTimeTest extends IntegrationTestCase
 
         $scraper = $this->getSatScraper();
         $query = (new Query($since, $until))->setDownloadType($downloadType);
-        $list = $scraper->downloadByDateTime($query);
+        $list = $scraper->listByDateTime($query);
 
         $this->assertRepositoryEqualsMetadataList($repository, $list);
     }

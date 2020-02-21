@@ -30,7 +30,7 @@ class RetrieveByCfdiStateTest extends IntegrationTestCase
         $query = (new Query($repository->getSinceDate(), $repository->getUntilDate()))
             ->setDownloadType($downloadType)
             ->setStateVoucher($state);
-        $list = $scraper->downloadByDateTime($query);
+        $list = $scraper->listByDateTime($query);
 
         $this->assertRepositoryEqualsMetadataList($repository, $list);
     }
@@ -55,7 +55,7 @@ class RetrieveByCfdiStateTest extends IntegrationTestCase
         $query = (new Query($repository->getSinceDate(), $repository->getUntilDate()))
             ->setDownloadType($downloadType)
             ->setStateVoucher($state);
-        $list = $scraper->downloadByDateTime($query);
+        $list = $scraper->listByDateTime($query);
 
         $this->assertRepositoryEqualsMetadataList($repository, $list);
     }
