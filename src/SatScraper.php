@@ -57,7 +57,7 @@ class SatScraper
      * @param int $concurrency
      * @return XmlDownloader
      */
-    public function xmlDownloader(?MetadataList $metadataList = null, int $concurrency = 10): XmlDownloader
+    public function xmlDownloader(?MetadataList $metadataList = null, int $concurrency = XmlDownloader::DEFAULT_CONCURRENCY): XmlDownloader
     {
         return new XmlDownloader($this->satHttpGateway, $metadataList, $concurrency);
     }

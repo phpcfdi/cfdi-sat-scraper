@@ -30,6 +30,8 @@ use RuntimeException;
  */
 class XmlDownloader
 {
+    public const DEFAULT_CONCURRENCY = 10;
+
     /** @var MetadataList|null */
     protected $list;
 
@@ -39,7 +41,7 @@ class XmlDownloader
     /** @var SatHttpGateway */
     private $satHttpGateway;
 
-    public function __construct(SatHttpGateway $satHttpGateway, ?MetadataList $list = null, int $concurrency = 10)
+    public function __construct(SatHttpGateway $satHttpGateway, ?MetadataList $list = null, int $concurrency = self::DEFAULT_CONCURRENCY)
     {
         $this->satHttpGateway = $satHttpGateway;
         $this->list = $list;
