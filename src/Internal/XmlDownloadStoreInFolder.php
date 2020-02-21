@@ -6,9 +6,10 @@ namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloadHandlerInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
+use PhpCfdi\CfdiSatScraper\Exceptions\RuntimeException;
 use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadError;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
+use Throwable;
 
 /**
  * This is a class to perform the XmlDownloader::saveTo method.
@@ -49,17 +50,17 @@ final class XmlDownloadStoreInFolder implements XmlDownloadHandlerInterface
      *
      * @param bool $createDestinationFolder
      * @param int $createMode
-     * @throws RuntimeException if ask to create destination folder and was an error creating it
-     * @throws InvalidArgumentException if don't ask to create destination folder and it does not exists
-     * @throws InvalidArgumentException if ask to create destination folder and it exists and is not a foler
-     * @throws InvalidArgumentException if ask to create destination folder and it exists and is not a foler
+     *
+     * @throws RuntimeException if didn't ask to create folder and path does not exists
+     * @throws RuntimeException if ask to create folder path exists and is not a folder
+     * @throws RuntimeException if unable to create folder
      */
     public function checkDestinationFolder(bool $createDestinationFolder, int $createMode = 0755): void
     {
         $destinationFolder = $this->getDestinationFolder();
         if (! $createDestinationFolder) {
             if (! is_dir($destinationFolder)) {
-                throw InvalidArgumentException::pathDoesNotExists('destination folder', $destinationFolder);
+                throw RuntimeException::pathDoesNotExists($destinationFolder);
             }
             return;
         }
@@ -69,13 +70,10 @@ final class XmlDownloadStoreInFolder implements XmlDownloadHandlerInterface
         }
 
         if (file_exists($destinationFolder)) {
-            throw InvalidArgumentException::pathIsNotFolder('destination folder', $destinationFolder);
+            throw RuntimeException::pathIsNotFolder($destinationFolder);
         }
 
-        $mkdir = mkdir($destinationFolder, $createMode, true);
-        if (false === $mkdir) { // in case error reporting is disabled
-            throw new RuntimeException(sprintf('Unable to create folder %s', $destinationFolder));
-        }
+        $this->mkdirRecursive($destinationFolder, $createMode);
     }
 
     /**
@@ -85,10 +83,7 @@ final class XmlDownloadStoreInFolder implements XmlDownloadHandlerInterface
     public function onSuccess(string $uuid, string $content, ResponseInterface $response): void
     {
         $destinationFile = $this->pathFor($uuid);
-        $putContents = file_put_contents($destinationFile, $content);
-        if (false === $putContents) { // in case error reporting is disabled
-            throw new RuntimeException(sprintf('Unable to save CFDI %s to %s', $uuid, $destinationFile));
-        }
+        $this->filePutContents($destinationFile, $content);
     }
 
     /**
@@ -97,5 +92,39 @@ final class XmlDownloadStoreInFolder implements XmlDownloadHandlerInterface
     public function onError(XmlDownloadError $error): void
     {
         // errors are just ignored
+    }
+
+    /**
+     * @param string $destinationFolder
+     * @param int $createMode
+     * @throws RuntimeException if unable to create folder
+     */
+    public function mkdirRecursive(string $destinationFolder, int $createMode): void
+    {
+        try {
+            $mkdir = mkdir($destinationFolder, $createMode, true);
+        } catch (Throwable $exception) {
+            throw RuntimeException::unableToCreateFolder($destinationFolder, $exception);
+        }
+        if (false === $mkdir) { // in case error reporting is disabled
+            throw RuntimeException::unableToCreateFolder($destinationFolder);
+        }
+    }
+
+    /**
+     * @param string $destinationFile
+     * @param string $content
+     * @throws RuntimeException if unable to put contents on file
+     */
+    public function filePutContents(string $destinationFile, string $content): void
+    {
+        try {
+            $putContents = file_put_contents($destinationFile, $content);
+        } catch (Throwable $exception) {
+            throw RuntimeException::unableToFilePutContents($destinationFile, $content, $exception);
+        }
+        if (false === $putContents) { // in case error reporting is disabled
+            throw RuntimeException::unableToFilePutContents($destinationFile, $content);
+        }
     }
 }

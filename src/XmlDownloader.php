@@ -10,6 +10,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloadHandlerInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
+use PhpCfdi\CfdiSatScraper\Exceptions\RuntimeException;
 use PhpCfdi\CfdiSatScraper\Internal\XmlDownloaderPromiseHandler;
 use PhpCfdi\CfdiSatScraper\Internal\XmlDownloadStoreInFolder;
 use RuntimeException;
@@ -150,10 +151,10 @@ class XmlDownloader
      * @param int $createMode
      * @return string[]
      *
-     * @throws RuntimeException if ask to create destination folder and was an error creating it
-     * @throws InvalidArgumentException if don't ask to create destination folder and it does not exists
-     * @throws InvalidArgumentException if ask to create destination folder and it exists and is not a foler
-     * @throws InvalidArgumentException if ask to create destination folder and it exists and is not a foler
+     * @throws InvalidArgumentException if destination folder argument is empty
+     * @throws RuntimeException if didn't ask to create folder and path does not exists
+     * @throws RuntimeException if ask to create folder path exists and is not a folder
+     * @throws RuntimeException if unable to create folder
      */
     public function saveTo(string $destinationFolder, bool $createFolder = false, int $createMode = 0775): array
     {
