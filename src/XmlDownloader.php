@@ -7,6 +7,7 @@ namespace PhpCfdi\CfdiSatScraper;
 use Generator;
 use GuzzleHttp\Promise\EachPromise;
 use GuzzleHttp\Promise\PromiseInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloaderPromiseHandlerInterface;
 use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloadHandlerInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
@@ -109,18 +110,31 @@ class XmlDownloader
     public function download(XmlDownloadHandlerInterface $handler): array
     {
         // wrap the privided handler into the main handler, to throw the expected exceptions
-        $mainHandler = new XmlDownloaderPromiseHandler($handler);
+        $promisesHandler = $this->makePromiseHandler($handler);
         // create the promises iterator
         $promises = $this->makePromises();
         // create the invoker
         $invoker = new EachPromise($promises, [
             'concurrency' => $this->getConcurrency(),
-            'fulfilled' => [$mainHandler, 'promiseFulfilled'],
-            'rejected' => [$mainHandler, 'promiseRejected'],
+            'fulfilled' => [$promisesHandler, 'promiseFulfilled'],
+            'rejected' => [$promisesHandler, 'promiseRejected'],
         ]);
         // create the promise from the invoker and wait for it to finish
         $invoker->promise()->wait();
-        return $mainHandler->downloadedUuids();
+
+        return $promisesHandler->downloadedUuids();
+    }
+
+    /**
+     * Factory method to make the default XmlDownloaderPromiseHandler,
+     * by extracting the creation it can be replaced with any XmlDownloaderPromiseHandlerInterface.
+     *
+     * @param XmlDownloadHandlerInterface $handler
+     * @return XmlDownloaderPromiseHandlerInterface
+     */
+    protected function makePromiseHandler(XmlDownloadHandlerInterface $handler): XmlDownloaderPromiseHandlerInterface
+    {
+        return new XmlDownloaderPromiseHandler($handler);
     }
 
     /**

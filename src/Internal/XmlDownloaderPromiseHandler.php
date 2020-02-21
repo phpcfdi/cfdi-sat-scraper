@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use GuzzleHttp\Exception\RequestException;
+use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloaderPromiseHandlerInterface;
 use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloadHandlerInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadError;
 use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadRequestExceptionError;
@@ -20,7 +21,7 @@ use Throwable;
  *
  * @internal
  */
-final class XmlDownloaderPromiseHandler
+final class XmlDownloaderPromiseHandler implements XmlDownloaderPromiseHandlerInterface
 {
     /** @var XmlDownloadHandlerInterface */
     private $handler;
@@ -120,5 +121,10 @@ final class XmlDownloaderPromiseHandler
     public function downloadedUuids(): array
     {
         return $this->fulfilledUuids;
+    }
+
+    public function getHandler(): XmlDownloadHandlerInterface
+    {
+        return $this->handler;
     }
 }
