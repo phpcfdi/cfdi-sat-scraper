@@ -117,7 +117,7 @@ class SatScraper
      * @throws LoginException
      * @throws SatHttpGatewayException
      */
-    public function downloadListUUID(array $uuids, DownloadType $downloadType): MetadataList
+    public function listByUuids(array $uuids, DownloadType $downloadType): MetadataList
     {
         $this->confirmSessionIsAlive();
         return $this->metadataDownloader()->downloadByUuids($uuids, $downloadType);

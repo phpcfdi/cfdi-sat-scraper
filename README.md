@@ -67,7 +67,7 @@ los objetos `Metadata` donde el UUID coincide.
 
 Los métodos para ejecutar la descarga de metadata son:
 
-- Por UUID: `SatScraper::downloadListUUID(string[] $uuids, DownloadType $type): MetadataList`
+- Por UUID: `SatScraper::listByUuids(string[] $uuids, DownloadType $type): MetadataList`
 - Por filtros con días completos: `SatScraper::downloadPeriod(Query $query): MetadataList`
 - Por filtros con fechas exactas: `SatScraper::downloadByDateTime(Query $query): MetadataList`
 
@@ -162,7 +162,7 @@ $uuids = [
     '5cc88c4a-8672-11e6-ae22-56b6b6499612',
     '5cc88d4e-8672-11e6-ae22-56b6b6499613'
 ];
-$list = $satScraper->downloadListUUID($uuids, DownloadType::recibidos());
+$list = $satScraper->listByUuids($uuids, DownloadType::recibidos());
 echo json_encode($list);
 ```
 

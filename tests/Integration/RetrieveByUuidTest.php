@@ -37,7 +37,7 @@ class RetrieveByUuidTest extends IntegrationTestCase
         }
 
         $scraper = $this->getSatScraper();
-        $list = $scraper->downloadListUUID($uuids, $downloadType);
+        $list = $scraper->listByUuids($uuids, $downloadType);
         foreach ($uuids as $uuid) {
             $this->assertTrue($list->has($uuid), "The UUID $uuid was not found in the metadata list $typeText");
         }
