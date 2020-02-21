@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use Generator;
 use GuzzleHttp\Promise\EachPromise;
 use GuzzleHttp\Promise\PromiseInterface;
 use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloaderPromiseHandlerInterface;
@@ -14,7 +13,7 @@ use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 use PhpCfdi\CfdiSatScraper\Exceptions\RuntimeException;
 use PhpCfdi\CfdiSatScraper\Internal\XmlDownloaderPromiseHandler;
 use PhpCfdi\CfdiSatScraper\Internal\XmlDownloadStoreInFolder;
-use RuntimeException;
+use Traversable;
 
 /**
  * Helper class to make concurrent downloads of CFDI files.
@@ -138,11 +137,13 @@ class XmlDownloader
     }
 
     /**
-     * Create the Promise for each item in the Metadata in the MedataList that has an URL to download the XML.
+     * Factory method to make a Promise iterator with each item in the Metadata in the MedataList
+     * that has an URL to download the XML.
+     * By extracting the creation it can be replaced with any iterable.
      *
-     * @return Generator|PromiseInterface[]
+     * @return Traversable<string, PromiseInterface>|PromiseInterface[]
      */
-    protected function makePromises()
+    protected function makePromises(): Traversable
     {
         foreach ($this->getMetadataList() as $metadata) {
             $link = $metadata->getXmlDownloadUrl();
