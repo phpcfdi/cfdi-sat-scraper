@@ -48,7 +48,7 @@ class XmlDownloader
         $this->setConcurrency($concurrency);
     }
 
-    public function hasMetatadaList(): bool
+    public function hasMetadataList(): bool
     {
         return $this->list instanceof MetadataList;
     }
