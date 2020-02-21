@@ -28,7 +28,7 @@ class RuntimeException extends \RuntimeException implements SatException
         return new self(sprintf('Unable to create folder %s', $destinationFolder), $previous);
     }
 
-    public static function unableToFilePutContents(string $destinationFile, string $content, Throwable $previous = null): self
+    public static function unableToFilePutContents(string $destinationFile, Throwable $previous = null): self
     {
         return new self(sprintf('Unable to put contents on %s', $destinationFile), $previous);
     }

@@ -121,10 +121,10 @@ final class XmlDownloadStoreInFolder implements XmlDownloadHandlerInterface
         try {
             $putContents = file_put_contents($destinationFile, $content);
         } catch (Throwable $exception) {
-            throw RuntimeException::unableToFilePutContents($destinationFile, $content, $exception);
+            throw RuntimeException::unableToFilePutContents($destinationFile, $exception);
         }
         if (false === $putContents) { // in case error reporting is disabled
-            throw RuntimeException::unableToFilePutContents($destinationFile, $content);
+            throw RuntimeException::unableToFilePutContents($destinationFile);
         }
     }
 }
