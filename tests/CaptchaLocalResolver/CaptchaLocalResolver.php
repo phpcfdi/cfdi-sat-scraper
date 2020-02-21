@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver;
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
+use RuntimeException;
 
 class CaptchaLocalResolver implements CaptchaResolverInterface
 {
@@ -18,6 +19,10 @@ class CaptchaLocalResolver implements CaptchaResolverInterface
 
     public function decode(string $image): string
     {
-        return $this->client->resolveImage($image);
+        try {
+            return $this->client->resolveImage($image);
+        } catch (RuntimeException $exception) {
+            return '';
+        }
     }
 }

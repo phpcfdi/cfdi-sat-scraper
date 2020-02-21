@@ -1,10 +1,15 @@
 <?php
+/**
+ * @noinspection PhpDocMissingThrowsInspection
+ * @noinspection PhpUnhandledExceptionInspection
+ */
 
 declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 
 use ArrayObject;
+use DateTimeImmutable;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -49,7 +54,6 @@ class HttpLogger extends ArrayObject
 
     /**
      * @param mixed $entry
-     * @throws \Exception
      */
     public function write($entry): void
     {
@@ -66,7 +70,7 @@ class HttpLogger extends ArrayObject
         $request = $entry['request'];
         /** @var ResponseInterface $response */
         $response = $entry['response'];
-        $time = new \DateTimeImmutable();
+        $time = new DateTimeImmutable();
         $file = sprintf(
             '%s/%s.%06d-%s-%s.json',
             $this->destinationDir,

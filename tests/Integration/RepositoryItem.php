@@ -31,9 +31,11 @@ class RepositoryItem implements JsonSerializable
 
     public static function fromArray(array $item): self
     {
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $dateTime = new DateTimeImmutable(strval($item['date'] ?? ''));
         return new self(
             strval($item['uuid'] ?? ''),
-            new DateTimeImmutable(strval($item['date'] ?? '')),
+            $dateTime,
             strval($item['state'] ?? ''),
             strval($item['type'] ?? '')
         );

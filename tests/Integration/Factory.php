@@ -1,4 +1,7 @@
 <?php
+/**
+ * @noinspection PhpUnhandledExceptionInspection
+ */
 
 declare(strict_types=1);
 
@@ -16,6 +19,7 @@ use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\SatSessionData;
 use PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver\CaptchaLocalResolver;
 use PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver\CaptchaLocalResolverClient;
+use RuntimeException;
 
 class Factory
 {
@@ -60,19 +64,20 @@ class Factory
             );
         }
 
-        throw new \RuntimeException('Unable to create resolver');
+        throw new RuntimeException('Unable to create resolver');
     }
 
+    /** @noinspection PhpUnhandledExceptionInspection */
     public function createSatSessionData(): SatSessionData
     {
         $rfc = strval(getenv('SAT_AUTH_RFC'));
         if ('' === $rfc) {
-            throw new \RuntimeException('The is no environment variable SAT_AUTH_RFC');
+            throw new RuntimeException('The is no environment variable SAT_AUTH_RFC');
         }
 
         $ciec = strval(getenv('SAT_AUTH_CIEC'));
         if ('' === $ciec) {
-            throw new \RuntimeException('The is no environment variable SAT_AUTH_CIEC');
+            throw new RuntimeException('The is no environment variable SAT_AUTH_CIEC');
         }
 
         $resolver = static::createCaptchaResolver();
@@ -100,7 +105,7 @@ class Factory
     public function createRepository(string $filename): Repository
     {
         if (! file_exists($filename)) {
-            throw new \RuntimeException(sprintf('The repository file %s was not found', $filename));
+            throw new RuntimeException(sprintf('The repository file %s was not found', $filename));
         }
         return Repository::fromFile($filename);
     }
