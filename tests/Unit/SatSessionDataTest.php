@@ -42,6 +42,11 @@ final class SatSessionDataTest extends TestCase
         $this->assertSame('rfc', $this->createDefaultSessionData()->getRfc());
     }
 
+    public function testCiec(): void
+    {
+        $this->assertSame('ciec', $this->createDefaultSessionData()->getCiec());
+    }
+
     public function testCaptchaResolver(): void
     {
         $captcha = $this->createCaptchaResolver();

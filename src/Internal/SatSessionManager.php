@@ -191,4 +191,14 @@ class SatSessionManager
             $this->httpGateway->clearCookieJar();
         }
     }
+
+    public function getSessionData(): SatSessionData
+    {
+        return $this->sessionData;
+    }
+
+    public function getHttpGateway(): SatHttpGateway
+    {
+        return $this->httpGateway;
+    }
 }

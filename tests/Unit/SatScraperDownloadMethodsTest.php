@@ -7,6 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
+use PhpCfdi\CfdiSatScraper\Internal\SatSessionManager;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
@@ -99,5 +100,26 @@ final class SatScraperDownloadMethodsTest extends TestCase
         $this->assertTrue($a->hasBeenInvoked());
         $this->assertTrue($b->hasBeenInvoked());
         $this->assertTrue($c->hasBeenInvoked());
+    }
+
+    public function testConfirmSessionIsAlive(): void
+    {
+        /** @var SatSessionManager&MockObject $sessionManager */
+        $sessionManager = $this->createMock(SatSessionManager::class);
+        $sessionManager->expects($this->once())->method('initSession');
+
+        // prepare an scraper with custom session manager
+        $scraper = new class($this->createMock(SatSessionData::class), $this->createMock(SatHttpGateway::class)) extends SatScraper {
+            /** @var SatSessionManager */
+            public $sessionManager;
+
+            protected function createSessionManager(): SatSessionManager
+            {
+                return $this->sessionManager;
+            }
+        };
+        $scraper->sessionManager = $sessionManager;
+
+        $this->assertSame($scraper, $scraper->confirmSessionIsAlive(), 'confirmSessionIsAlive is a fluent method');
     }
 }
