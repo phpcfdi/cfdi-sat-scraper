@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 
+use DateTimeImmutable;
 use DOMAttr;
 use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
+use InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
+use Throwable;
 
 class IntegrationTestCase extends TestCase
 {
@@ -34,9 +37,9 @@ class IntegrationTestCase extends TestCase
     {
         try {
             return $this->getFactory()->getSatScraper();
-        } catch (\RuntimeException $exception) {
-            $this->markTestSkipped($exception->getMessage());
-            throw $exception;
+        } catch (Throwable $exception) {
+            $this->markTestSkipped($exception->getMessage()); // this will stop execution
+            throw new InvalidArgumentException('no satscraper', 0, $exception);
         }
     }
 
@@ -44,9 +47,9 @@ class IntegrationTestCase extends TestCase
     {
         try {
             return $this->getFactory()->getRepository();
-        } catch (\RuntimeException $exception) {
-            $this->markTestSkipped($exception->getMessage());
-            throw $exception;
+        } catch (Throwable $exception) {
+            $this->markTestSkipped($exception->getMessage()); // this will stop execution
+            throw new InvalidArgumentException('no repository', 0, $exception);
         }
     }
 
@@ -79,7 +82,8 @@ class IntegrationTestCase extends TestCase
         $metadataState = $metadata->get('estadoComprobante');
         self::assertSame($item->getState(), strtoupper(substr($metadataState, 0, 1)), 'The metadata state does not match');
 
-        $metadataDateTime = new \DateTimeImmutable($metadata->get('fechaEmision'));
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $metadataDateTime = new DateTimeImmutable($metadata->get('fechaEmision'));
         self::assertEquals($item->getDate(), $metadataDateTime, 'The metadata date does not match');
     }
 
