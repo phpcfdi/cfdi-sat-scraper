@@ -44,7 +44,7 @@ $query = new Query(new DateTimeImmutable('2019-12-01'), new DateTimeImmutable('2
 $query->setDownloadType(DownloadType::recibidos()) // default: emitidos
     ->setStateVoucher(StatesVoucherOption::vigentes());   // default: todos
 
-$list = $satScraper->downloadPeriod($query);
+$list = $satScraper->listByPeriod($query);
 printf("\nSe encontraron %d registros", $list->count());
 
 $satScraper->xmlDownloader($list)->saveTo($downloadsPath, true);

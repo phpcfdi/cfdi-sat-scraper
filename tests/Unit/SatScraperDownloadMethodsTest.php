@@ -53,25 +53,25 @@ final class SatScraperDownloadMethodsTest extends TestCase
         $this->assertTrue($c->hasBeenInvoked());
     }
 
-    public function testDownloadPeriodCallDownloaderMethod(): void
+    public function testListByPeriodCallDownloaderMethod(): void
     {
         /** @var SatScraper&MockObject $scraper */
         $scraper = $this->getMockBuilder(SatScraper::class)
             ->disableOriginalConstructor()
-            ->setMethodsExcept(['downloadPeriod'])
+            ->setMethodsExcept(['listByPeriod'])
             ->getMock();
 
-        // downloadPeriod must call confirmSessionIsAlive once
+        // listByPeriod must call confirmSessionIsAlive once
         $scraper->expects($a = $this->once())->method('confirmSessionIsAlive');
 
-        // downloadPeriod must call metadataDownloader once
+        // listByPeriod must call metadataDownloader once
         $metadataDownloader = $this->createMock(MetadataDownloader::class);
         $scraper->expects($b = $this->once())->method('metadataDownloader')->willReturn($metadataDownloader);
 
         // MetadataDownloader::downloadByDate must be called once
         $metadataDownloader->expects($c = $this->once())->method('downloadByDate')->willReturn(new MetadataList([]));
 
-        $scraper->downloadPeriod($this->createMock(Query::class));
+        $scraper->listByPeriod($this->createMock(Query::class));
         $this->assertTrue($a->hasBeenInvoked());
         $this->assertTrue($b->hasBeenInvoked());
         $this->assertTrue($c->hasBeenInvoked());

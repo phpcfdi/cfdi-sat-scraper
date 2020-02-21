@@ -42,12 +42,12 @@ exit(call_user_func(new class() {
             $list = new MetadataList([]);
 
             $list = $list->merge(
-                $scraper->downloadPeriod(
+                $scraper->listByPeriod(
                     (new Query($since, $until))->setDownloadType(DownloadType::recibidos())
                 )
             );
             $list = $list->merge(
-                $scraper->downloadPeriod(
+                $scraper->listByPeriod(
                     (new Query($since, $until))->setDownloadType(DownloadType::emitidos())
                 )
             );

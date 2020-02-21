@@ -68,7 +68,7 @@ los objetos `Metadata` donde el UUID coincide.
 Los métodos para ejecutar la descarga de metadata son:
 
 - Por UUID: `SatScraper::listByUuids(string[] $uuids, DownloadType $type): MetadataList`
-- Por filtros con días completos: `SatScraper::downloadPeriod(Query $query): MetadataList`
+- Por filtros con días completos: `SatScraper::listByPeriod(Query $query): MetadataList`
 - Por filtros con fechas exactas: `SatScraper::downloadByDateTime(Query $query): MetadataList`
 
 Y una vez con el `MetadataList` se crea un objeto descargador y se le pide que ejecute las descargas.
@@ -125,7 +125,7 @@ use PhpCfdi\CfdiSatScraper\SatSessionData;
 $satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
-$list = $satScraper->downloadPeriod($query);
+$list = $satScraper->listByPeriod($query);
 
 // impresión de cada uno de los metadata
 foreach ($list as $cfdi) {
@@ -194,7 +194,7 @@ $onFiveHundred = function (DateTimeImmutable $date) {
 $satScraper = new SatScraper($sessionData, $httpGateway, $onFiveHundred);
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
-$list = $satScraper->downloadPeriod($query);
+$list = $satScraper->listByPeriod($query);
 echo json_encode($list);
 ```
 
@@ -216,7 +216,7 @@ use PhpCfdi\CfdiSatScraper\SatSessionData;
 $satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
-$list = $satScraper->downloadPeriod($query);
+$list = $satScraper->listByPeriod($query);
 
 // $downloadedUuids contiene un listado de UUID que fueron procesados correctamente, 50 descargas simultáneas
 $downloadedUuids = $satScraper->xmlDownloader($list, 50)
@@ -255,7 +255,7 @@ $satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver)
 
 $query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
-$list = $satScraper->downloadPeriod($query);
+$list = $satScraper->listByPeriod($query);
 
 $myHandler = new class implements XmlDownloadHandlerInterface {
     public function onSuccess(string $uuid, string $content, ResponseInterface $response): void

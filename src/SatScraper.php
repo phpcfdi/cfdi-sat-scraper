@@ -131,7 +131,7 @@ class SatScraper
      * @throws LoginException
      * @throws SatHttpGatewayException
      */
-    public function downloadPeriod(Query $query): MetadataList
+    public function listByPeriod(Query $query): MetadataList
     {
         $this->confirmSessionIsAlive();
         return $this->metadataDownloader()->downloadByDate($query);
