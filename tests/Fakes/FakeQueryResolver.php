@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Internal;
+namespace PhpCfdi\CfdiSatScraper\Tests\Fakes;
 
+use DateTimeImmutable;
+use PhpCfdi\CfdiSatScraper\Inputs\InputsByFilters;
+use PhpCfdi\CfdiSatScraper\Inputs\InputsInterface;
 use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
 use PhpCfdi\CfdiSatScraper\MetadataList;
-use PhpCfdi\CfdiSatScraper\Query;
 
 final class FakeQueryResolver extends QueryResolver
 {
@@ -21,8 +23,17 @@ final class FakeQueryResolver extends QueryResolver
     {
     }
 
-    public function resolve(Query $query): MetadataList
+    public function resolve(InputsInterface $inputs): MetadataList
     {
+        if ($inputs instanceof InputsByFilters) {
+            return $this->resolveQueryByFilters($inputs);
+        }
+        return $this->resolveAllMoments();
+    }
+
+    public function resolveQueryByFilters(InputsByFilters $inputs): MetadataList
+    {
+        $query = $inputs->getQuery();
         $list = new MetadataList([]);
         foreach ($this->fakeMoments as $moment) {
             $date = $moment['date'];
@@ -38,7 +49,21 @@ final class FakeQueryResolver extends QueryResolver
         return $list;
     }
 
-    public function appendMoment(\DateTimeImmutable $date, MetadataList $list): void
+    public function resolveAllMoments(): MetadataList
+    {
+        $list = new MetadataList([]);
+        foreach ($this->fakeMoments as $moment) {
+            $list = $list->merge($moment['list']);
+        }
+        $this->resolveCalls[] = [
+            'start' => 'n/a',
+            'end' => 'n/a',
+            'count' => $list->count(),
+        ];
+        return $list;
+    }
+
+    public function appendMoment(DateTimeImmutable $date, MetadataList $list): void
     {
         $this->fakeMoments[] = [
             'date' => $date,

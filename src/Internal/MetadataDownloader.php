@@ -5,11 +5,19 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use DateTimeImmutable;
+use PhpCfdi\CfdiSatScraper\Contracts\QueryInterface;
+use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\UuidOption;
+use PhpCfdi\CfdiSatScraper\Inputs\InputsByFiltersIssued;
+use PhpCfdi\CfdiSatScraper\Inputs\InputsByFiltersReceived;
+use PhpCfdi\CfdiSatScraper\Inputs\InputsByUuid;
+use PhpCfdi\CfdiSatScraper\Inputs\InputsInterface;
 use PhpCfdi\CfdiSatScraper\MetadataList;
-use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\QueryByFilters;
+use PhpCfdi\CfdiSatScraper\QueryByUuid;
+use Traversable;
 
 /**
  * Class MetadataDownloader contains the logic to manipulate queries to obtain metadata
@@ -44,20 +52,17 @@ class MetadataDownloader
     }
 
     /**
-     * @param array $uuids
+     * @param string[] $uuids
      * @param DownloadType $downloadType
      * @return MetadataList
      * @throws SatHttpGatewayException
      */
     public function downloadByUuids(array $uuids, DownloadType $downloadType): MetadataList
     {
-        $query = new Query(new DateTimeImmutable(), new DateTimeImmutable());
-        $query->setDownloadType($downloadType);
-
+        $uuids = array_keys(array_change_key_case(array_flip($uuids), CASE_LOWER));
         $result = new MetadataList([]);
         foreach ($uuids as $uuid) {
-            $query->setUuid(new UuidOption($uuid));
-            $uuidResult = $this->resolveQuery($query);
+            $uuidResult = $this->downloadByUuid($uuid, $downloadType);
             $result = $result->merge($uuidResult);
         }
 
@@ -65,38 +70,49 @@ class MetadataDownloader
     }
 
     /**
-     * @param Query $query
+     * @param string $uuid
+     * @param DownloadType $downloadType
      * @return MetadataList
      * @throws SatHttpGatewayException
      */
-    public function downloadByDate(Query $query): MetadataList
+    public function downloadByUuid(string $uuid, DownloadType $downloadType): MetadataList
+    {
+        $query = new QueryByUuid(new UuidOption($uuid), $downloadType);
+        return $this->resolveQuery($query);
+    }
+
+    /**
+     * @param QueryByFilters $query
+     * @return MetadataList
+     * @throws SatHttpGatewayException
+     */
+    public function downloadByDate(QueryByFilters $query): MetadataList
     {
         $query = clone $query;
-        $query->setStartDate($query->getStartDate()->setTime(0, 0, 0));
-        $query->setEndDate($query->getEndDate()->setTime(23, 59, 59));
+        $query->setPeriod($query->getStartDate()->setTime(0, 0, 0), $query->getEndDate()->setTime(23, 59, 59));
         return $this->downloadByDateTime($query);
     }
 
     /**
-     * @param Query $query
+     * @param QueryByFilters $query
      * @return MetadataList
      * @throws SatHttpGatewayException
      */
-    public function downloadByDateTime(Query $query): MetadataList
+    public function downloadByDateTime(QueryByFilters $query): MetadataList
     {
         $result = new MetadataList([]);
-        foreach ($query->splitByDays() as $current) {
+        foreach ($this->splitQueryByFiltersByDays($query) as $current) {
             $result = $result->merge($this->downloadQuery($current));
         }
         return $result;
     }
 
     /**
-     * @param Query $query
+     * @param QueryByFilters $query
      * @return MetadataList
      * @throws SatHttpGatewayException
      */
-    public function downloadQuery(Query $query): MetadataList
+    public function downloadQuery(QueryByFilters $query): MetadataList
     {
         $finalList = new MetadataList([]);
         $day = $query->getStartDate()->modify('midnight');
@@ -131,21 +147,24 @@ class MetadataDownloader
         return $finalList;
     }
 
-    public function newQueryWithSeconds(Query $query, int $startSec, int $endSec): Query
+    public function newQueryWithSeconds(QueryByFilters $query, int $startSec, int $endSec): QueryByFilters
     {
-        return (clone $query)
-            ->setStartDate($this->buildDateWithDayAndSeconds($query->getStartDate(), $startSec))
-            ->setEndDate($this->buildDateWithDayAndSeconds($query->getEndDate(), $endSec));
+        return (clone $query)->setPeriod(
+            $this->buildDateWithDayAndSeconds($query->getStartDate(), $startSec),
+            $this->buildDateWithDayAndSeconds($query->getEndDate(), $endSec)
+        );
     }
 
     /**
-     * @param Query $query
+     * @param QueryInterface $query
      * @return MetadataList
      * @throws SatHttpGatewayException
+     * @see QueryResolver
      */
-    public function resolveQuery(Query $query): MetadataList
+    public function resolveQuery(QueryInterface $query): MetadataList
     {
-        return $this->getQueryResolver()->resolve($query);
+        $inputs = $this->createInputsFromQuery($query);
+        return $this->getQueryResolver()->resolve($inputs);
     }
 
     public function buildDateWithDayAndSeconds(DateTimeImmutable $day, int $seconds): DateTimeImmutable
@@ -159,5 +178,35 @@ class MetadataDownloader
             return;
         }
         call_user_func($this->onFiveHundred, $date);
+    }
+
+    public function createInputsFromQuery(QueryInterface $query): InputsInterface
+    {
+        if ($query instanceof QueryByFilters) {
+            if ($query->getDownloadType()->isEmitidos()) {
+                return new InputsByFiltersIssued($query);
+            }
+            return new InputsByFiltersReceived($query);
+        }
+        if ($query instanceof QueryByUuid) {
+            return new InputsByUuid($query);
+        }
+        throw LogicException::generic(sprintf('Unable to create input filters from query type %s', get_class($query)));
+    }
+
+    /**
+     * Generates a clone of this query splitted by day
+     *
+     * @param QueryByFilters $query
+     * @return Traversable<QueryByFilters>|QueryByFilters[]
+     */
+    public function splitQueryByFiltersByDays(QueryByFilters $query)
+    {
+        $endDate = $query->getEndDate();
+        for ($date = $query->getStartDate(); $date <= $endDate; $date = $date->modify('midnight +1 day')) {
+            $partial = clone $query;
+            $partial->setPeriod($date, min($date->setTime(23, 59, 59), $endDate));
+            yield $partial;
+        }
     }
 }

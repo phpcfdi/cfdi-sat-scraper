@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Internal;
 
-use PhpCfdi\CfdiSatScraper\Contracts\Filters;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
-use PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
-use PhpCfdi\CfdiSatScraper\Filters\FiltersReceived;
+use PhpCfdi\CfdiSatScraper\Inputs\InputsInterface;
 use PhpCfdi\CfdiSatScraper\MetadataList;
-use PhpCfdi\CfdiSatScraper\Query;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 
 /**
+ * This class is a method extraction for MetadataDownloader::resolveQuery
+ * The entry point is the resolve method.
+ *
+ * @see QueryResolver::resolve()
  * @internal
  */
 class QueryResolver
@@ -26,30 +27,39 @@ class QueryResolver
     }
 
     /**
-     * @param Query $query
+     * @param InputsInterface $inputs
      * @return MetadataList
      * @throws SatHttpGatewayException
      */
-    public function resolve(Query $query): MetadataList
+    public function resolve(InputsInterface $inputs): MetadataList
     {
-        $filters = $this->createFiltersFromQuery($query); // create filters from query
-        $url = $query->getDownloadType()->url(); // define url by download type
+        $url = $inputs->getUrl();
+        $ajaxFilters = $inputs->getAjaxInputs();
 
+        // access to download type page, it returns the hole set of inputs
         $baseInputs = $this->inputFieldsFromInitialPage($url);
-        $lastViewStates = $this->inputFieldsFromSelectDownloadType($url, $baseInputs, $filters);
-        $htmlWithMetadata = $this->htmlFromExecuteQuery($url, array_merge($baseInputs, $lastViewStates), $filters);
 
-        return (new MetadataExtractor())->extract($htmlWithMetadata);
+        // select query type (uuid or filters), it returns only a subset of inputs
+        $post = array_merge($baseInputs, $ajaxFilters);
+        $lastViewStates = $this->inputFieldsFromSelectDownloadType($url, $post);
+
+        // execute search
+        $post = array_merge($baseInputs, $ajaxFilters, $lastViewStates, $inputs->getQueryAsInputs());
+        $htmlWithMetadata = $this->htmlFromExecuteQuery($url, $post);
+
+        // extract metadata from search results
+        $metadataList = (new MetadataExtractor())->extract($htmlWithMetadata);
+        return $metadataList;
     }
 
     /**
      * @param string $url
-     * @return array
+     * @return array<string, string>
      * @throws SatHttpGatewayException
      */
     protected function inputFieldsFromInitialPage(string $url): array
     {
-        $completePage = $this->satHttpGateway->getPortalPage($url);
+        $completePage = $this->getSatHttpGateway()->getPortalPage($url);
         $completePage = str_replace('charset=utf-16', 'charset=utf-8', $completePage); // quick and dirty hack
         $htmlFormInputExtractor = new HtmlForm($completePage, 'form', ['/^ctl00\$MainContent\$Btn.+/', '/^seleccionador$/']);
         $baseInputs = $htmlFormInputExtractor->getFormValues();
@@ -58,40 +68,28 @@ class QueryResolver
 
     /**
      * @param string $url
-     * @param array $baseInputs
-     * @param Filters $filters
-     * @return array
+     * @param array<string, string> $post
+     * @return array<string, string>
      * @throws SatHttpGatewayException
      */
-    protected function inputFieldsFromSelectDownloadType(string $url, array $baseInputs, Filters $filters): array
+    protected function inputFieldsFromSelectDownloadType(string $url, array $post): array
     {
-        $post = array_merge($baseInputs, $filters->getInitialFilters());
-        $html = $this->satHttpGateway->postAjaxSearch($url, $post); // this html is used to update __VARIABLES
+        $html = $this->getSatHttpGateway()->postAjaxSearch($url, $post); // this html is used to update __VARIABLES
         $lastViewStateValues = (new ParserFormatSAT())->getFormValues($html);
         return $lastViewStateValues;
     }
 
     /**
      * @param string $url
-     * @param array $baseInputs
-     * @param Filters $filters
+     * @param array<string, string> $post
      * @return string
      * @throws SatHttpGatewayException
      */
-    protected function htmlFromExecuteQuery(string $url, array $baseInputs, Filters $filters): string
+    protected function htmlFromExecuteQuery(string $url, array $post): string
     {
         // consume search using search filters
-        $post = array_merge($baseInputs, $filters->getRequestFilters());
-        $htmlWithMetadataContent = $this->satHttpGateway->postAjaxSearch($url, $post);
+        $htmlWithMetadataContent = $this->getSatHttpGateway()->postAjaxSearch($url, $post);
         return $htmlWithMetadataContent;
-    }
-
-    public function createFiltersFromQuery(Query $query): Filters
-    {
-        if ($query->getDownloadType()->isEmitidos()) {
-            return new FiltersIssued($query);
-        }
-        return new FiltersReceived($query);
     }
 
     public function getSatHttpGateway(): SatHttpGateway

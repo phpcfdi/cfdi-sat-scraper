@@ -95,14 +95,14 @@ de enviar a procesarla.
 ```php
 <?php declare(strict_types=1);
 
-use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOption;
 
 // se crea con un rango de fechas específico
-$query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
+$query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $query
     ->setDownloadType(DownloadType::recibidos())                // en lugar de emitidos
     ->setStateVoucher(StatesVoucherOption::vigentes())          // en lugar de todos
@@ -117,14 +117,14 @@ $query
 <?php declare(strict_types=1);
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
-use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\SatSessionData;
 
 /** @var CaptchaResolverInterface $captchaResolver */
 $satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
 
-$query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
+$query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->listByPeriod($query);
 
 // impresión de cada uno de los metadata
@@ -176,7 +176,7 @@ que le puede ayudar a considerar este escenario.
 ```php
 <?php declare(strict_types=1);
 
-use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\SatSessionData;
@@ -193,7 +193,7 @@ $onFiveHundred = function (DateTimeImmutable $date) {
  */
 $satScraper = new SatScraper($sessionData, $httpGateway, $onFiveHundred);
 
-$query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
+$query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->listByPeriod($query);
 echo json_encode($list);
 ```
@@ -208,14 +208,14 @@ Si ocurrió un error con alguna de las descargas dicho error será ignorado.
 <?php declare(strict_types=1);
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
-use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\SatSessionData;
 
 /** @var CaptchaResolverInterface $captchaResolver */
 $satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
 
-$query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
+$query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->listByPeriod($query);
 
 // $downloadedUuids contiene un listado de UUID que fueron procesados correctamente, 50 descargas simultáneas
@@ -245,7 +245,7 @@ use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloadHandlerInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadError;
 use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadResponseError;
 use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadRequestExceptionError;
-use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\SatSessionData;
 use Psr\Http\Message\ResponseInterface;
@@ -253,7 +253,7 @@ use Psr\Http\Message\ResponseInterface;
 /** @var CaptchaResolverInterface $captchaResolver */
 $satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
 
-$query = new Query(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
+$query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
 $list = $satScraper->listByPeriod($query);
 

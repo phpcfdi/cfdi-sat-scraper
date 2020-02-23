@@ -40,9 +40,11 @@ class SatScraper
     }
 
     /**
-     * Create a new configured instance of MetadataDownloader
+     * Create a new configured instance of MetadataDownloader.
+     * Is a protected method because is not intended to be used from the outside.
      *
      * @return MetadataDownloader
+     * @internal
      */
     public function metadataDownloader(): MetadataDownloader
     {
@@ -111,7 +113,7 @@ class SatScraper
     /**
      * Retrieve the MetadataList using specific UUIDS to download
      *
-     * @param array $uuids
+     * @param string[] $uuids
      * @param DownloadType $downloadType
      * @return MetadataList
      * @throws LoginException
@@ -126,12 +128,12 @@ class SatScraper
     /**
      * Retrieve the MetadataList based on the query, but uses full days on dates (without time parts)
      *
-     * @param Query $query
+     * @param QueryByFilters $query
      * @return MetadataList
      * @throws LoginException
      * @throws SatHttpGatewayException
      */
-    public function listByPeriod(Query $query): MetadataList
+    public function listByPeriod(QueryByFilters $query): MetadataList
     {
         $this->confirmSessionIsAlive();
         return $this->metadataDownloader()->downloadByDate($query);
@@ -140,12 +142,12 @@ class SatScraper
     /**
      * Retrieve the MetadataList based on the query, but uses the period considering dates and times
      *
-     * @param Query $query
+     * @param QueryByFilters $query
      * @return MetadataList
      * @throws LoginException
      * @throws SatHttpGatewayException
      */
-    public function listByDateTime(Query $query): MetadataList
+    public function listByDateTime(QueryByFilters $query): MetadataList
     {
         $this->confirmSessionIsAlive();
         return $this->metadataDownloader()->downloadByDateTime($query);

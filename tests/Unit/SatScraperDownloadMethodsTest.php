@@ -1,15 +1,19 @@
 <?php
+/**
+ * @noinspection PhpUnhandledExceptionInspection
+ */
 
 declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
+use DateTimeImmutable;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
 use PhpCfdi\CfdiSatScraper\Internal\SatSessionManager;
 use PhpCfdi\CfdiSatScraper\MetadataList;
-use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\SatSessionData;
@@ -20,7 +24,7 @@ final class SatScraperDownloadMethodsTest extends TestCase
 {
     public function testCreationOfMetadataDownloaderHasSatScraperProperties(): void
     {
-        $callable = function (\DateTimeImmutable $date): void {
+        $callable = function (DateTimeImmutable $date): void {
         };
         $satHttpGateway = $this->createMock(SatHttpGateway::class);
         $captcha = $this->createMock(CaptchaResolverInterface::class);
@@ -72,7 +76,7 @@ final class SatScraperDownloadMethodsTest extends TestCase
         // MetadataDownloader::downloadByDate must be called once
         $metadataDownloader->expects($c = $this->once())->method('downloadByDate')->willReturn(new MetadataList([]));
 
-        $scraper->listByPeriod($this->createMock(Query::class));
+        $scraper->listByPeriod($this->createMock(QueryByFilters::class));
         $this->assertTrue($a->hasBeenInvoked());
         $this->assertTrue($b->hasBeenInvoked());
         $this->assertTrue($c->hasBeenInvoked());
@@ -96,7 +100,7 @@ final class SatScraperDownloadMethodsTest extends TestCase
         // MetadataDownloader::downloadByDateTime must be called once
         $metadataDownloader->expects($c = $this->once())->method('downloadByDateTime')->willReturn(new MetadataList([]));
 
-        $scraper->listByDateTime($this->createMock(Query::class));
+        $scraper->listByDateTime($this->createMock(QueryByFilters::class));
         $this->assertTrue($a->hasBeenInvoked());
         $this->assertTrue($b->hasBeenInvoked());
         $this->assertTrue($c->hasBeenInvoked());

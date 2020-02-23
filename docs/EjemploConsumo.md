@@ -25,7 +25,7 @@ use GuzzleHttp\Cookie\FileCookieJar;
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\ConsoleCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
-use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\SatSessionData;
@@ -40,7 +40,7 @@ $captchaResolver = new ConsoleCaptchaResolver();
 
 $satScraper = new SatScraper(new SatSessionData($rfc, $claveCiec, $captchaResolver), $gateway);
 
-$query = new Query(new DateTimeImmutable('2019-12-01'), new DateTimeImmutable('2019-12-31'));
+$query = new QueryByFilters(new DateTimeImmutable('2019-12-01'), new DateTimeImmutable('2019-12-31'));
 $query->setDownloadType(DownloadType::recibidos()) // default: emitidos
     ->setStateVoucher(StatesVoucherOption::vigentes());   // default: todos
 

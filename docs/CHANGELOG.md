@@ -14,6 +14,36 @@ que nombraremos así: ` Breaking . Feature . Fix `, donde:
 **Importante:** Las reglas de SEMVER no aplican si estás usando una rama (por ejemplo `master-dev`)
 o estás usando una versión cero (por ejemplo `0.18.4`).
 
+## UNRELEASED 2020-02-23
+
+En este release se cambió totalmente la librería, tanto en el exterior como en el funcionamiento interno.
+
+Los cambios más importantes para los usuarios de la librería son:
+
+- La consulta por filtros ya no usa `Query`, que dejó de existir, ahora se llama `QueryByFilters`.
+- Los métodos para obtener el *metadata* han cambiado a `listByUuids`, `listByPeriod` y `listByDateTime`.
+- El método para crear el descargador de XML ahora se llama `xmlDownloader` y recibe optionalmente todos los parámetros.
+- Si se quiere personalizar el descargador se debe hacer implementando la interfaz `XmlDownloadHandlerInterface`.
+- Los datos para poder autenticarse con el SAT se almacenan en un objeto `SatSessionData`.
+- Se crea toda una estructura para excepciones:
+    - Todas implementan la interfaz `SatException`.
+    - Las excepciones usan las SPL de PHP: `RuntimeException`, `InvalidArgumentException` y `LogicException`.
+    - Las excepciones lógicas indican que debes tener un error en la forma en que estás usando la aplicación.
+    - Las excepciones de tiempo de ejecución es porque algo inesperado ha ocurrido pero no necesariamente es
+      por un error en la implementación.
+    - Los problemas relacionados con el proceso de autenticación son `LoginException`.
+    - Los problemas relacionados con las transacciones HTTP con el SAT son `SatHttpGatewayException`,
+      con dos especializaciones: `SatHttpGatewayClientException` y `SatHttpGatewayResponseException`.
+    - Los problemas relacionados con la ejecución de la descarga de XML se son `XmlDownloadError`,
+      con dos especializaciones: `XmlDownloadRequestExceptionError` y `XmlDownloadResponseError`.
+
+Los cambios importantes al interior de la librería son:
+
+- La estructura para obtener el listado de metadata ahora pasa por: `SatScraper` crea y ejecuta un `MetadataDownloader`
+  que crea y ejecuta un `QueryResolver` que crea y ejecuta un `MetadataExtractor`.
+- La generación de los datos que se envían por POST para seleccionar el tipo de consulta y ejecutarla se cambian
+  a objetos `Input`. Estos objetos son especializaciones que a partir de la consulta generan los inputs adecuados.
+
 ## UNRELEASED 2020-02-14
 
 Estos son algunos de los cambios más importantes relacionados con la compatibilidad si está usando una versión previa.

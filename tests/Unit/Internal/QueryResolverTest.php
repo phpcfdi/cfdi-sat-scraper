@@ -1,14 +1,17 @@
 <?php
+/**
+ * @noinspection PhpUnhandledExceptionInspection
+ */
 
 declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Internal;
 
+use DateTimeImmutable;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
-use PhpCfdi\CfdiSatScraper\Filters\FiltersIssued;
-use PhpCfdi\CfdiSatScraper\Filters\FiltersReceived;
+use PhpCfdi\CfdiSatScraper\Inputs\InputsByFiltersReceived;
 use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
-use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use PhpCfdi\CfdiSatScraper\URLS;
@@ -32,17 +35,6 @@ final class QueryResolverTest extends TestCase
     public function testResolverConstruction(): void
     {
         $this->assertSame($this->satHttpGateway, $this->resolver->getSatHttpGateway());
-    }
-
-    public function testCreateFiltersFromQuery(): void
-    {
-        $now = new \DateTimeImmutable();
-        $this->assertInstanceOf(FiltersIssued::class, $this->resolver->createFiltersFromQuery(
-            (new Query($now, $now))->setDownloadType(DownloadType::emitidos())
-        ));
-        $this->assertInstanceOf(FiltersReceived::class, $this->resolver->createFiltersFromQuery(
-            (new Query($now, $now))->setDownloadType(DownloadType::recibidos())
-        ));
     }
 
     public function testUrlFromDownloadType(): void
@@ -76,11 +68,12 @@ final class QueryResolverTest extends TestCase
         $resolver = new QueryResolver($satHttpGateway);
 
         // given a query (not important since it will not contact real server)
-        $now = new \DateTimeImmutable();
-        $query = (new Query($now, $now))->setDownloadType(DownloadType::recibidos());
+        $now = new DateTimeImmutable();
+        $query = new QueryByFilters($now, $now, DownloadType::recibidos());
+        $inputs = new InputsByFiltersReceived($query);
 
         // obtain results
-        $list = $resolver->resolve($query);
+        $list = $resolver->resolve($inputs);
 
         // check expected result count
         $this->assertCount(7, $list);

@@ -176,20 +176,10 @@ class SatSessionManager
         return $response;
     }
 
-    /**
-     * @throws LoginException
-     */
     public function logout(): void
     {
-        // TODO: if cookie is removed, is there any need to make logout process??
-        try {
-            $this->httpGateway->getPortalPage('https://portalcfdi.facturaelectronica.sat.gob.mx/logout.aspx?salir=y');
-            $this->httpGateway->getPortalPage('https://cfdiau.sat.gob.mx/nidp/app/logout?locale=es');
-        } catch (SatHttpGatewayException $exception) {
-            throw LoginException::connectionException('closing session', $this->sessionData, $exception);
-        } finally {
-            $this->httpGateway->clearCookieJar();
-        }
+        // there is no need to touch logout urls, clearing the cookie jar must be enought
+        $this->httpGateway->clearCookieJar();
     }
 
     public function getSessionData(): SatSessionData

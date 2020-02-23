@@ -1,4 +1,8 @@
 <?php
+/**
+ * @noinspection PhpDocMissingThrowsInspection
+ *@noinspection PhpUnhandledExceptionInspection
+ */
 
 declare(strict_types=1);
 
@@ -6,7 +10,7 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
-use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\QueryByFilters;
 
 class RetrieveByCfdiStateTest extends IntegrationTestCase
 {
@@ -27,7 +31,7 @@ class RetrieveByCfdiStateTest extends IntegrationTestCase
         }
 
         $scraper = $this->getSatScraper();
-        $query = (new Query($repository->getSinceDate(), $repository->getUntilDate()))
+        $query = (new QueryByFilters($repository->getSinceDate(), $repository->getUntilDate()))
             ->setDownloadType($downloadType)
             ->setStateVoucher($state);
         $list = $scraper->listByDateTime($query);
@@ -52,7 +56,7 @@ class RetrieveByCfdiStateTest extends IntegrationTestCase
         }
 
         $scraper = $this->getSatScraper();
-        $query = (new Query($repository->getSinceDate(), $repository->getUntilDate()))
+        $query = (new QueryByFilters($repository->getSinceDate(), $repository->getUntilDate()))
             ->setDownloadType($downloadType)
             ->setStateVoucher($state);
         $list = $scraper->listByDateTime($query);
