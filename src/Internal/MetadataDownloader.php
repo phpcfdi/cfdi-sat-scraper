@@ -88,8 +88,13 @@ class MetadataDownloader
      */
     public function downloadByDate(QueryByFilters $query): MetadataList
     {
+        /** @var DateTimeImmutable $startDate set this type definition as setTime can return FALSE */
+        $startDate = $query->getStartDate()->setTime(0, 0, 0);
+        /** @var DateTimeImmutable $endDate set this type definition as setTime can return FALSE */
+        $endDate = $query->getEndDate()->setTime(23, 59, 59);
+        
         $query = clone $query;
-        $query->setPeriod($query->getStartDate()->setTime(0, 0, 0), $query->getEndDate()->setTime(23, 59, 59));
+        $query->setPeriod($startDate, $endDate);
         return $this->downloadByDateTime($query);
     }
 
@@ -205,7 +210,9 @@ class MetadataDownloader
         $endDate = $query->getEndDate();
         for ($date = $query->getStartDate(); $date <= $endDate; $date = $date->modify('midnight +1 day')) {
             $partial = clone $query;
-            $partial->setPeriod($date, min($date->setTime(23, 59, 59), $endDate));
+            /** @var DateTimeImmutable $dateOnLastSecond set this type definition as setTime can return FALSE */
+            $dateOnLastSecond = $date->setTime(23, 59, 59);
+            $partial->setPeriod($date, min($dateOnLastSecond, $endDate));
             yield $partial;
         }
     }
