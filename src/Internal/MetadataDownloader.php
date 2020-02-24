@@ -92,7 +92,7 @@ class MetadataDownloader
         $startDate = $query->getStartDate()->setTime(0, 0, 0);
         /** @var DateTimeImmutable $endDate set this type definition as setTime can return FALSE */
         $endDate = $query->getEndDate()->setTime(23, 59, 59);
-        
+
         $query = clone $query;
         $query->setPeriod($startDate, $endDate);
         return $this->downloadByDateTime($query);
