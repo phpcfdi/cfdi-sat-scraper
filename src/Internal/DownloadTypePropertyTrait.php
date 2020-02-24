@@ -13,7 +13,7 @@ trait DownloadTypePropertyTrait
 
     protected function getDefaultDownloadType(?DownloadType $downloadType = null): DownloadType
     {
-        return $downloadType ?? DownloadType::recibidos();
+        return $downloadType ?? DownloadType::emitidos();
     }
 
     public function getDownloadType(): DownloadType
