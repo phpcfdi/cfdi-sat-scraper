@@ -1,6 +1,7 @@
 # phpcfdi/cfdi-sat-scraper
 
 [![Source Code][badge-source]][source]
+[![Discord][badge-discord]][discord]
 [![Latest Version][badge-release]][release]
 [![Software License][badge-license]][license]
 [![Build Status][badge-build]][build]
@@ -26,18 +27,18 @@ requiere identificarse con RFC, Clave CIEC y de la resolución de un *captcha*.
 
 Una vez dentro del sitio se pueden consultar facturas emitidas y facturas recibidas. Ya sea por UUID o por filtro.
 
-Criterios:
-    - Tipo: Emitidas o recibidas
+- Criterios:
+    - Tipo: Emitidas o recibidas.
     - Filtro: UUID o consulta.
 
-Consulta de emitidas:
-    - Fecha de emisión
-    - Fecha de recepción
+- Consulta de emitidas:
+    - Fecha y hora de emisión.
+    - Fecha y hora de recepción.
     - RFC Receptor.
     - Estado del comprobante (cualquiera, vigente o cancelado).
     - Tipo de comprobante (si contiene un complemento específico).
 
-Consulta de recibidas:
+- Consulta de recibidas:
     - Fecha de emisión.
     - Hora inicial y hora final (dentro de la fecha de emisión).
     - RFC Emisor.
@@ -52,13 +53,15 @@ Una vez con el listado el sitio ofrece ligas para poder descargar el archivo XML
 ## Implementación del funcionamiento del sitio en la librería
 
 El objeto principal de trabajo se llama `SatScraper` con el que se pueden realizar consultas por rango de fecha o
-por UUIDS específicos y obtener resultados. La consulta se llama `Query` y el resultado es un `MetadataList`.
+por UUIDS específicos y obtener resultados.
+La consulta por UUID (uno o varios) se ejecuta con el método `listByUuids` y el resultado es un `MetadataList`.
+La consulta por filtros se llama `QueryByFilters`, se ejecuta con los métodos `listByPeriod` y `listByDateTime` y el resultado es un `MetadataList`.
 
 Una vez con los resultados `MetadataList` se puede solicitar una descarga a una carpeta específica o bien por medio
 de un objeto *handler*. El proceso de descarga permite hacer varias descargas en forma simultánea.
 
 Para generar los resultados del `MetadataList` la librería cuenta con una estrategia de división.
-Si se trata de una consulta de CFDI recibidos automáticamente se divide por día.
+Si se trata de una consulta de CFDI por filtros automáticamente se divide por día.
 En caso de que en el periodo consultado se encuentren 500 o más registros entonces la búsqueda se va subdividiendo
 en diferentes periodos, hasta llegar a la consulta mínima de 1 segundo. Luego los resultados son nuevamente unidos.
 
@@ -80,9 +83,10 @@ Y una vez con el `MetadataList` se crea un objeto descargador y se le pide que e
 Si se llega a la consulta mínima de 1 segundo y se obtuvieron 500 o más registros entonces adicionalmente
 se llama a un *callback* (opcional) para reportar este hecho.
 
-No contamos con un método para resolver captchas, sin embargo, se puede utilizar un servicio externo como *DeCaptcher*.
+No contamos con un método propio para resolver captchas, pero se puede utilizar un servicio externo como *DeCaptcher*.
 Si cuentas con un servicio diferente solo debes implementar la interfaz `CaptchaResolverInterface`.
-Aceptamos PR de nuevas implementaciones.
+Aceptamos PR de nuevas implementaciones. La recomendación es crear un paquete diferente que permita
+conectarse con un servicio externo, por ejemplo: `tu-vendor/cfdi-sat-scraper-mi-servicio-captcha-resolver`.
 
 Esta librería está basada en [Guzzle](https://github.com/guzzle/guzzle), por lo que puedes configurar el cliente
 a tus propias necesidades como configurar un proxy o depurar las llamadas HTTP.
@@ -290,7 +294,7 @@ En caso de que los certificados del SAT usados en HTTPS fallen, será necerario 
 de los mismos. Esto se puede lograr creando el cliente de Guzzle con la negación de la opción `verify`.
 
 No es una práctica recomendada pero tal vez necesaria ante los problemas a los que el SAT se ve expuesto.
-Tenga en cuenta que esto podría facilitar significativamente un ataque que provoque que la pérdida de su clave CIEC.
+Considera que esto podría facilitar significativamente un ataque que provoque que la pérdida de su clave CIEC.
 
 ```php
 <?php declare(strict_types=1);
@@ -346,8 +350,8 @@ and licensed for use under the MIT License (MIT). Please see [LICENSE][] for mor
 [coverage]: https://scrutinizer-ci.com/g/phpcfdi/cfdi-sat-scraper/code-structure/master/code-coverage/src/
 [downloads]: https://packagist.org/packages/phpcfdi/cfdi-sat-scraper
 
-[badge-source]: https://img.shields.io/badge/source-phpcfdi/cfdi--sat--scraper--blue?style=flat-square
-[badge-discord]: https://img.shields.io/discord/459860554090283019?logo=discord&style=flat-square
+[badge-source]: https://img.shields.io/badge/source-phpcfdi/cfdi--sat--scraper-blue?style=flat-square
+[badge-discord]: https://img.shields.io/discord/459860554090283019?style=flat-square
 [badge-release]: https://img.shields.io/github/release/phpcfdi/cfdi-sat-scraper?style=flat-square
 [badge-license]: https://img.shields.io/github/license/phpcfdi/cfdi-sat-scraper?style=flat-square
 [badge-build]: https://img.shields.io/travis/com/phpcfdi/cfdi-sat-scraper/master?style=flat-square
