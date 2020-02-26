@@ -23,7 +23,7 @@ final class QueryByFiltersTest extends TestCase
     public function testDefaultOptions(): void
     {
         $query = new Query(new DateTimeImmutable('2019-01-01'), new DateTimeImmutable('2019-01-31'));
-        $this->assertTrue($query->getDownloadType()->isRecibidos());
+        $this->assertTrue($query->getDownloadType()->isEmitidos());
         $this->assertTrue($query->getComplement()->isTodos());
         $this->assertTrue($query->getStateVoucher()->isTodos());
     }
