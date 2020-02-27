@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Tests;
 
 use DateTimeImmutable;
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\MetadataList;
-use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\Tests\Integration\Factory;
 use Throwable;
 
@@ -37,18 +37,18 @@ exit(call_user_func(new class() {
             $until = new DateTimeImmutable($arguments[1] ?? '');
 
             $scraper = (new Factory('no-repository-file'))->createSatScraper();
-            $this->rfc = $scraper->getRfc();
+            $this->rfc = $scraper->getSatSessionData()->getRfc();
 
             $list = new MetadataList([]);
 
             $list = $list->merge(
-                $scraper->downloadPeriod(
-                    (new Query($since, $until))->setDownloadType(DownloadTypesOption::recibidos())
+                $scraper->listByPeriod(
+                    (new QueryByFilters($since, $until))->setDownloadType(DownloadType::recibidos())
                 )
             );
             $list = $list->merge(
-                $scraper->downloadPeriod(
-                    (new Query($since, $until))->setDownloadType(DownloadTypesOption::emitidos())
+                $scraper->listByPeriod(
+                    (new QueryByFilters($since, $until))->setDownloadType(DownloadType::emitidos())
                 )
             );
             $this->printList($list);

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Filters\Options;
 
 use Eclipxe\Enum\Enum;
-use PhpCfdi\CfdiSatScraper\Contracts\Filters\FilterOption;
+use PhpCfdi\CfdiSatScraper\Contracts\FilterOption;
 
 /**
  * This is a common use case enum sample

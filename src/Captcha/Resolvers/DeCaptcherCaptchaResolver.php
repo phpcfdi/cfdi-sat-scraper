@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Captcha\Resolvers;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 
 class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
@@ -42,6 +43,11 @@ class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
         $this->password = $password;
     }
 
+    /**
+     * @param string $image
+     * @return string
+     * @throws GuzzleException if an error on http transaction
+     */
     public function decode(string $image): string
     {
         $response = $this->client->request(
@@ -75,13 +81,12 @@ class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
                     ],
                 ],
             ]
-        )->getBody()->getContents();
-
-        $parts = explode('|', $response);
+        );
+        $parts = explode('|', strval($response->getBody()));
         if (0 !== (int) $parts[0]) { // bad answer
             return '';
         }
 
-        return trim((string) end($parts));
+        return trim(end($parts) ?: '');
     }
 }

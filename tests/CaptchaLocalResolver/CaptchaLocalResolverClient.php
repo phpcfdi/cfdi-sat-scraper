@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
@@ -36,6 +37,15 @@ class CaptchaLocalResolverClient
         $this->httpClient = $httpClient;
     }
 
+    /**
+     * @param string $image
+     * @return string
+     * @throws RuntimeException if unable to get an answer after <timeout> seconds
+     * @throws RuntimeException if unable to send image
+     * @throws RuntimeException if code does not exists
+     * @throws RuntimeException if unable to check code
+     * @throws RuntimeException if http transaction error occurs
+     */
     public function resolveImage(string $image): string
     {
         $code = $this->sendImage($image);
@@ -57,6 +67,12 @@ class CaptchaLocalResolverClient
         return $result;
     }
 
+    /**
+     * @param string $image
+     * @return string
+     * @throws RuntimeException if unable to send image
+     * @throws RuntimeException if http transaction error occurs
+     */
     public function sendImage(string $image): string
     {
         $uri = $this->buildUri('send-image'); // TODO
@@ -64,11 +80,18 @@ class CaptchaLocalResolverClient
         if (200 !== $response->getStatusCode()) {
             throw new RuntimeException("Unable to send image to $uri");
         }
-        $contents = $response->getBody()->getContents();
+        $contents = strval($response->getBody());
         $data = json_decode($contents, true);
         return strval($data['code'] ?? '');
     }
 
+    /**
+     * @param string $code
+     * @return string
+     * @throws RuntimeException if code does not exists
+     * @throws RuntimeException if unable to check code
+     * @throws RuntimeException if http transaction error occurs
+     */
     public function checkCode(string $code): string
     {
         $uri = $this->buildUri('obtain-decoded');
@@ -89,12 +112,22 @@ class CaptchaLocalResolverClient
         return sprintf('http://%s:%d/%s', $this->getHost(), $this->getPort(), $action);
     }
 
+    /**
+     * @param string $uri
+     * @param array $data
+     * @return ResponseInterface
+     * @throws RuntimeException if http transaction error occurs
+     */
     private function post(string $uri, array $data): ResponseInterface
     {
-        return $this->getHttpClient()->request('POST', $uri, [
-            'form_params' => $data,
-            'timeout' => $this->getTimeout(),
-        ]);
+        try {
+            return $this->getHttpClient()->request('POST', $uri, [
+                'form_params' => $data,
+                'timeout' => $this->getTimeout(),
+            ]);
+        } catch (GuzzleException $exception) {
+            throw new RuntimeException(sprintf('Error sending data to %s: %s', $uri, print_r($data, true)), 0, $exception);
+        }
     }
 
     public function getHost(): string

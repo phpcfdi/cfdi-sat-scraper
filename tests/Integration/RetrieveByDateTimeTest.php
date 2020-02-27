@@ -1,19 +1,23 @@
 <?php
+/**
+ * @noinspection PhpDocMissingThrowsInspection
+ * @noinspection PhpUnhandledExceptionInspection
+ */
 
 declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
-use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
+use PhpCfdi\CfdiSatScraper\QueryByFilters;
 
 class RetrieveByDateTimeTest extends IntegrationTestCase
 {
     /**
-     * @param DownloadTypesOption $downloadType
+     * @param DownloadType $downloadType
      * @dataProvider providerEmitidosRecibidos
      */
-    public function testRetrieveByDateTime(DownloadTypesOption $downloadType): void
+    public function testRetrieveByDateTime(DownloadType $downloadType): void
     {
         $repository = $this->getRepository()->filterByType($downloadType);
         $typeText = $this->getDownloadTypeText($downloadType);
@@ -28,8 +32,8 @@ class RetrieveByDateTimeTest extends IntegrationTestCase
         }
 
         $scraper = $this->getSatScraper();
-        $query = (new Query($since, $until))->setDownloadType($downloadType);
-        $list = $scraper->downloadByDateTime($query);
+        $query = (new QueryByFilters($since, $until))->setDownloadType($downloadType);
+        $list = $scraper->listByDateTime($query);
 
         $this->assertRepositoryEqualsMetadataList($repository, $list);
     }

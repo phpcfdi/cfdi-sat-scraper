@@ -6,19 +6,18 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
-use PhpCfdi\CfdiSatScraper\SATScraper;
+use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
-use PhpCfdi\CfdiSatScraper\URLS;
 
 final class SatScraperPropertiesTest extends TestCase
 {
-    private function createScraper(): SATScraper
+    private function createSatScraper(?SatSessionData $sessionData = null, ?SatHttpGateway $satHttpGateway = null, ?callable $onFiveHundred = null): SatScraper
     {
-        return new SATScraper(
-            'rfc',
-            'ciec',
-            $this->createCaptchaResolver(),
-            $this->createSatHttpGateway()
+        return new SatScraper(
+            $sessionData ?? new SatSessionData('rfc', 'ciec', $this->createCaptchaResolver()),
+            $satHttpGateway,
+            $onFiveHundred
         );
     }
 
@@ -34,66 +33,37 @@ final class SatScraperPropertiesTest extends TestCase
         return $captcha;
     }
 
-    public function testRfc(): void
+    public function testSatSessionData(): void
     {
-        $this->assertSame('rfc', $this->createScraper()->getRfc());
-    }
-
-    public function testLoginUrl(): void
-    {
-        $scraper = $this->createScraper();
-        $this->assertSame(URLS::SAT_URL_LOGIN, $scraper->getLoginUrl(), 'Default loginUrl not found');
-        $newUrl = 'https://foo/bar';
-        $this->assertSame($scraper, $scraper->setLoginUrl($newUrl), 'Expected fluent method');
-        $this->assertSame($newUrl, $scraper->getLoginUrl());
-    }
-
-    public function testLoginUrlWithInvalidUrl(): void
-    {
-        $scraper = $this->createScraper();
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The provided url is invalid');
-        $scraper->setLoginUrl('');
-    }
-
-    public function testCaptchaResolver(): void
-    {
-        $captcha = $this->createCaptchaResolver();
-        $scraper = $this->createScraper();
-        $this->assertSame($scraper, $scraper->setCaptchaResolver($captcha), 'Expected fluent method');
-        $this->assertSame($captcha, $scraper->getCaptchaResolver());
-    }
-
-    public function testOnFiveHundred(): void
-    {
-        $scraper = $this->createScraper();
-        $this->assertNull($scraper->getOnFiveHundred(), 'Default OnFiveHundred should be NULL');
-        $callable = function (): void {
-        };
-        $this->assertSame($callable, $scraper->setOnFiveHundred($callable)->getOnFiveHundred());
-        $this->assertNull($scraper->setOnFiveHundred(null)->getOnFiveHundred());
+        $data = new SatSessionData('rfc', 'ciec', $this->createCaptchaResolver());
+        $scraper = $this->createSatScraper($data);
+        $this->assertSame($data, $scraper->getSatSessionData());
     }
 
     public function testSatHttpGateway(): void
     {
-        $scraper = $this->createScraper();
         $satHttpGateway = $this->createSatHttpGateway();
-        $this->assertSame($satHttpGateway, $scraper->setSatHttpGateway($satHttpGateway)->getSatHttpGateway());
+        $scraper = $this->createSatScraper(null, $satHttpGateway);
+        $this->assertSame($satHttpGateway, $scraper->getSatHttpGateway());
     }
 
-    public function testMaxTriesCaptcha(): void
+    public function testSatHttpGatewayDefault(): void
     {
-        $scraper = $this->createScraper();
-        $this->assertSame(3, $scraper->getMaxTriesCaptcha(), 'Default MaxTriesCaptcha did not match');
-        $tries = 6;
-        $this->assertSame($tries, $scraper->setMaxTriesCaptcha($tries)->getMaxTriesCaptcha());
+        $scraper = $this->createSatScraper();
+        $this->assertInstanceOf(SatHttpGateway::class, $scraper->getSatHttpGateway());
     }
 
-    public function testMaxTriesLogin(): void
+    public function testOnFiveHundred(): void
     {
-        $scraper = $this->createScraper();
-        $this->assertSame(3, $scraper->getMaxTriesLogin(), 'Default MaxTriesCaptcha did not match');
-        $tries = 6;
-        $this->assertSame($tries, $scraper->setMaxTriesLogin($tries)->getMaxTriesLogin());
+        $callable = function (): void {
+        };
+        $scraper = $this->createSatScraper(null, null, $callable);
+        $this->assertSame($callable, $scraper->getOnFiveHundred(), 'Given OnFiveHundred was not the same');
+    }
+
+    public function testOnFiveHundredDefault(): void
+    {
+        $scraper = $this->createSatScraper();
+        $this->assertNull($scraper->getOnFiveHundred(), 'Default OnFiveHundred should be NULL');
     }
 }

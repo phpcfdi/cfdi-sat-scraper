@@ -4,10 +4,17 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
+use ArrayIterator;
+use Countable;
+use IteratorAggregate;
+use JsonSerializable;
+use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
+use Traversable;
+
 /**
  * @implements \IteratorAggregate<Metadata>
  */
-class MetadataList implements \Countable, \IteratorAggregate, \JsonSerializable
+class MetadataList implements Countable, IteratorAggregate, JsonSerializable
 {
     /** @var Metadata[] */
     private $list = [];
@@ -55,31 +62,56 @@ class MetadataList implements \Countable, \IteratorAggregate, \JsonSerializable
         return new self(array_diff_key($this->list, $uuids));
     }
 
+    /**
+     * Return a new list with only the Metadata wich has an url to download the corresponding XML
+     *
+     * @return self
+     */
+    public function filterWithDownloadLink(): self
+    {
+        return new self(array_filter($this->list, function (Metadata $metadata): bool {
+            return $metadata->hasXmlDownloadUrl();
+        }));
+    }
+
     public function has(string $uuid): bool
     {
         return isset($this->list[strtolower($uuid)]);
     }
 
+    /**
+     * Retrieve a Metadata by UUID, if the metadata object does not exists returns NULL
+     *
+     * @param string $uuid
+     * @return Metadata|null
+     */
     public function find(string $uuid): ?Metadata
     {
         return $this->list[strtolower($uuid)] ?? null;
     }
 
+    /**
+     * Obtain a Metadata by UUID, the metadata object must exists in the collection
+     *
+     * @param string $uuid
+     * @return Metadata
+     * @throws LogicException when UUID is not found
+     */
     public function get(string $uuid): Metadata
     {
         $values = $this->find($uuid);
         if (null === $values) {
-            throw new \RuntimeException(sprintf('UUID %s not found', $uuid));
+            throw LogicException::generic("UUID $uuid not found");
         }
         return $values;
     }
 
     /**
-     * @return \Traversable|Metadata[]
+     * @return Traversable|Metadata[]
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->list);
+        return new ArrayIterator($this->list);
     }
 
     public function count(): int

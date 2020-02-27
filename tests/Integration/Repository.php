@@ -1,4 +1,7 @@
 <?php
+/**
+ * @noinspection PhpUnhandledExceptionInspection
+ */
 
 declare(strict_types=1);
 
@@ -9,8 +12,10 @@ use Countable;
 use DateTimeImmutable;
 use IteratorAggregate;
 use JsonSerializable;
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
+use RuntimeException;
+use Traversable;
 
 /**
  * Class Repository to be able to perform tests
@@ -29,10 +34,11 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
 
     public static function fromFile(string $filename): self
     {
+        /** @noinspection PhpUsageOfSilenceOperatorInspection */
         $content = strval(@file_get_contents($filename));
         $decoded = json_decode($content, true);
         if (! is_array($decoded)) {
-            throw new \RuntimeException('JSON decoded contents from %s is not an array');
+            throw new RuntimeException('JSON decoded contents from %s is not an array');
         }
         return static::fromArray($decoded);
     }
@@ -63,7 +69,7 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
         );
     }
 
-    public function filterByType(DownloadTypesOption $type): self
+    public function filterByType(DownloadType $type): self
     {
         $itemType = $type->isEmitidos() ? 'E' : 'R'; // E - emitido, R - recibido
         return new self(
@@ -115,7 +121,7 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
             $date = min($item->getDate(), $date ?? $item->getDate());
         }
         if (null === $date) {
-            throw new \RuntimeException('It was not possible to get the *since* date');
+            throw new RuntimeException('It was not possible to get the *since* date');
         }
         return $date;
     }
@@ -127,13 +133,13 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
             $date = max($item->getDate(), $date ?? $item->getDate());
         }
         if (null === $date) {
-            throw new \RuntimeException('It was not possible to get the *until* date');
+            throw new RuntimeException('It was not possible to get the *until* date');
         }
         return $date;
     }
 
     /**
-     * @return \Traversable<RepositoryItem>|RepositoryItem[]
+     * @return Traversable<RepositoryItem>|RepositoryItem[]
      */
     public function getIterator()
     {

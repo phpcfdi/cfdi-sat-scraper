@@ -29,5 +29,6 @@
     - Travis-CI: construir usando 7.2, 7.3 y 7.4.
     - Scrutinizer-CI: análisis de código y code coverage.
     - Herramientas de desarrollo usando phive o descargando directamente de github, no en composer.json.
+
 - 2020-01-28: Revisión de archivo README, documentación, explicación y ejemplos.
 

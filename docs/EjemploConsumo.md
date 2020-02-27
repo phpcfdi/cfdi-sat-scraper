@@ -20,16 +20,15 @@ Y se espera que:
 
 declare(strict_types=1);
 
-require __DIR__ . '/../vendor/autoload.php';
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\FileCookieJar;
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\ConsoleCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\Filters\Options\DownloadTypesOption;
+use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
-use PhpCfdi\CfdiSatScraper\Query;
+use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
-use PhpCfdi\CfdiSatScraper\SATScraper;
+use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
 
 $rfc = strval(getenv('SAT_AUTH_RFC'));
 $claveCiec = strval(getenv('SAT_AUTH_CIEC'));
@@ -39,16 +38,16 @@ $downloadsPath = sprintf('%s/build/cfdis/%s', getcwd(), $rfc);
 $gateway = new SatHttpGateway(new Client(), new FileCookieJar($cookieJarPath, true));
 $captchaResolver = new ConsoleCaptchaResolver();
 
-$satScraper = new SATScraper($rfc, $claveCiec, $captchaResolver, $gateway);
+$satScraper = new SatScraper(new SatSessionData($rfc, $claveCiec, $captchaResolver), $gateway);
 
-$query = new Query(new DateTimeImmutable('2019-12-01'), new DateTimeImmutable('2019-12-31'));
-$query->setDownloadType(DownloadTypesOption::recibidos()) // default: emitidos
+$query = new QueryByFilters(new DateTimeImmutable('2019-12-01'), new DateTimeImmutable('2019-12-31'));
+$query->setDownloadType(DownloadType::recibidos()) // default: emitidos
     ->setStateVoucher(StatesVoucherOption::vigentes());   // default: todos
 
-$list = $satScraper->downloadPeriod($query);
+$list = $satScraper->listByPeriod($query);
 printf("\nSe encontraron %d registros", $list->count());
 
-$satScraper->downloader($list)->saveTo($downloadsPath, true);
+$satScraper->xmlDownloader($list)->saveTo($downloadsPath, true);
 foreach ($list as $item) {
     echo PHP_EOL, $item->uuid(), ': ',
     var_export(file_exists(sprintf('%s/%s.xml', $downloadsPath, $item->uuid())), true);

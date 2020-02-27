@@ -1,4 +1,7 @@
 <?php
+/**
+ * @noinspection PhpUnhandledExceptionInspection
+ */
 
 declare(strict_types=1);
 
@@ -12,16 +15,18 @@ use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\ConsoleCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
-use PhpCfdi\CfdiSatScraper\SATScraper;
+use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
 use PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver\CaptchaLocalResolver;
 use PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver\CaptchaLocalResolverClient;
+use RuntimeException;
 
 class Factory
 {
     /** @var string */
     private $repositoryPath;
 
-    /** @var SATScraper|null */
+    /** @var SatScraper|null */
     private $scraper;
 
     /** @var Repository|null */
@@ -59,25 +64,34 @@ class Factory
             );
         }
 
-        throw new \RuntimeException('Unable to create resolver');
+        throw new RuntimeException('Unable to create resolver');
     }
 
-    public function createSatScraper(): SATScraper
+    /** @noinspection PhpUnhandledExceptionInspection */
+    public function createSatSessionData(): SatSessionData
     {
         $rfc = strval(getenv('SAT_AUTH_RFC'));
         if ('' === $rfc) {
-            throw new \RuntimeException('The is no environment variable SAT_AUTH_RFC');
+            throw new RuntimeException('The is no environment variable SAT_AUTH_RFC');
         }
 
         $ciec = strval(getenv('SAT_AUTH_CIEC'));
         if ('' === $ciec) {
-            throw new \RuntimeException('The is no environment variable SAT_AUTH_CIEC');
+            throw new RuntimeException('The is no environment variable SAT_AUTH_CIEC');
         }
 
-        $cookieFile = __DIR__ . '/../../build/cookie-' . strtolower($rfc) . '.json';
+        $resolver = static::createCaptchaResolver();
+
+        return new SatSessionData($rfc, $ciec, $resolver);
+    }
+
+    public function createSatScraper(): SatScraper
+    {
+        $sessionData = $this->createSatSessionData();
+        $cookieFile = __DIR__ . '/../../build/cookie-' . strtolower($sessionData->getRfc()) . '.json';
         $cookieJar = new FileCookieJar($cookieFile, true);
         $satHttpGateway = new SatHttpGateway($this->createGuzzleClient(), $cookieJar);
-        return new SATScraper($rfc, $ciec, static::createCaptchaResolver(), $satHttpGateway);
+        return new SatScraper($sessionData, $satHttpGateway);
     }
 
     public function createGuzzleClient(): Client
@@ -91,12 +105,12 @@ class Factory
     public function createRepository(string $filename): Repository
     {
         if (! file_exists($filename)) {
-            throw new \RuntimeException(sprintf('The repository file %s was not found', $filename));
+            throw new RuntimeException(sprintf('The repository file %s was not found', $filename));
         }
         return Repository::fromFile($filename);
     }
 
-    public function getSatScraper(): SATScraper
+    public function getSatScraper(): SatScraper
     {
         if (null === $this->scraper) {
             $this->scraper = $this->createSatScraper();

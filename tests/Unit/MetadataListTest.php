@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
+use JsonSerializable;
+use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
@@ -46,7 +48,7 @@ final class MetadataListTest extends TestCase
     public function testGetMethodWithoutUuid(): Void
     {
         $list = new MetadataList([]);
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessage('UUID x-foo not found');
         $list->get('x-foo');
     }
@@ -60,11 +62,7 @@ final class MetadataListTest extends TestCase
         ]);
 
         $list = new MetadataList($contents);
-        $arrayList = [];
-        foreach ($list as $uuid => $values) {
-            $arrayList[$uuid] = $values;
-        }
-        $this->assertSame($contents, $arrayList);
+        $this->assertSame($contents, iterator_to_array($list));
     }
 
     public function testMerge(): void
@@ -132,6 +130,24 @@ final class MetadataListTest extends TestCase
         $this->assertSame($expectedFiltered, iterator_to_array($filtered->getIterator()), 'List does not contains the same elements');
     }
 
+    public function testFilterWithDownloadLink(): void
+    {
+        $faker = $this->fakes()->faker();
+        $withXmlUrl = $this->createMetadataArrayUsingUuids(...[ // 3 items
+            $faker->uuid,
+            $faker->uuid,
+            $faker->uuid,
+        ]);
+        $metadatas = $withXmlUrl + [  // + 2 items withour url
+            $uuid = $faker->uuid => new Metadata($uuid),
+            $uuid = $faker->uuid => new Metadata($uuid),
+        ];
+        shuffle($metadatas);
+        $metadataList = new MetadataList($metadatas);
+        $filtered = $metadataList->filterWithDownloadLink();
+        $this->assertEquals($withXmlUrl, iterator_to_array($filtered));
+    }
+
     public function testOnlyContainsMetadataEvenWhenNullIsPassed(): void
     {
         /** @var Metadata[] $source */
@@ -151,12 +167,10 @@ final class MetadataListTest extends TestCase
         }
     }
 
-    private function createMetadataArrayUsingUuids(string ...$uuids): array
+    public function testJsonSerializable(): void
     {
-        $contents = array_map(function (string $uuid): Metadata {
-            return new Metadata($uuid);
-        }, $uuids);
-        $contents = array_combine($uuids, $contents);
-        return $contents ?: [];
+        $metadata = $this->fakes()->doMetadataList(10);
+        $this->assertInstanceOf(JsonSerializable::class, $metadata);
+        $this->assertSame($metadata->jsonSerialize(), iterator_to_array($metadata));
     }
 }
