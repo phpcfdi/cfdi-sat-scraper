@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Exceptions;
 
-use RuntimeException;
+use RuntimeException as SplRuntimeException;
 use Throwable;
 
 /**
@@ -16,7 +16,7 @@ use Throwable;
  * @see XmlDownloadResponseError
  * @see XmlDownloadRequestExceptionError
  */
-class XmlDownloadError extends RuntimeException implements SatException
+class XmlDownloadError extends SplRuntimeException implements SatException
 {
     /** @var string */
     private $uuid;

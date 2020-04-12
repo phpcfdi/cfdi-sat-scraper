@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Exceptions;
 
-use RuntimeException;
+use RuntimeException as SplRuntimeException;
 use Throwable;
 
 /**
@@ -15,7 +15,7 @@ use Throwable;
  * @see SatHttpGatewayClientException
  * @see SatHttpGatewayResponseException
  */
-abstract class SatHttpGatewayException extends RuntimeException implements SatException
+abstract class SatHttpGatewayException extends SplRuntimeException implements SatException
 {
     /** @var string */
     private $url;

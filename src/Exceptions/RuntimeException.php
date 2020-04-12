@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Exceptions;
 
+use RuntimeException as SplRuntimeException;
 use Throwable;
 
-class RuntimeException extends \RuntimeException implements SatException
+class RuntimeException extends SplRuntimeException implements SatException
 {
     protected function __construct(string $message, Throwable $previous = null)
     {
