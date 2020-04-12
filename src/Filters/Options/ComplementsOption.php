@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Filters\Options;
 
 use Eclipxe\Enum\Enum;
+use Eclipxe\MicroCatalog\MicroCatalog;
 use PhpCfdi\CfdiSatScraper\Contracts\FilterOption;
 
 /**
@@ -92,57 +93,82 @@ use PhpCfdi\CfdiSatScraper\Contracts\FilterOption;
  * @method bool isValesDespensa()
  * @method bool isVehiculoUsado()
  * @method bool isVentaVehiculos()
+ *
+ * @method string getInput()
+ * @method string getDescription()
  */
-class ComplementsOption extends Enum implements FilterOption
+class ComplementsOption extends MicroCatalog implements FilterOption
 {
-    protected static function overrideValues(): array
+    protected const VALUES = [
+        'todos' => ['input' => '-1', 'description' => 'Cualquier complemento'],
+        'sinComplemento' => ['input' => '8', 'description' => 'Sin complemento'],
+        'acreditamientoIeps' => ['input' => '4294967296', 'description' => 'Acreditamiento de IEPS'],
+        'aerolineas' => ['input' => '8388608', 'description' => 'Aerolíneas'],
+        'certificadoDestruccion' => ['input' => '1073741824', 'description' => 'Certificado de destrucción'],
+        'comercioExterior' => ['input' => '17179869184', 'description' => 'Comercio exterior 1.0'],
+        'comercioExterior11' => ['input' => '274877906944', 'description' => 'Comercio exterior 1.1'],
+        'compraVentaDivisas' => ['input' => '4', 'description' => 'Compra venta de divisas'],
+        'consumoCombustibles' => ['input' => '16777216', 'description' => 'Consumo de combustibles 1.0'],
+        'consumoCombustibles11' => ['input' => '8796093022208', 'description' => 'Consumo de combustibles 1.1'],
+        'donatarias' => ['input' => '64', 'description' => 'Donatarias'],
+        'estadoCuentaBancario' => ['input' => '256', 'description' => 'Estado de cuenta bancario'],
+        'estadoCuentaCombustibles12' => ['input' => '4398046511104', 'description' => 'Estado de cuenta combustibles 1.2'],
+        'estadoCuentaCombustiblesMonederoElectronico' => ['input' => '8589934592', 'description' => 'Estado de cuenta combustibles monedero electrónico'],
+        'gastosHidrocarburos' => ['input' => '17592186044416', 'description' => 'Gastos contrato de hidrocarburos'],
+        'ine11' => ['input' => '68719476736', 'description' => 'INE 1.1'],
+        'ingresosHidrocarburos' => ['input' => '35184372088832', 'description' => 'Ingresos contrato de hidrocarburos'],
+        'institucionesEducativasPrivadas' => ['input' => '1024', 'description' => 'Instituciones educativas privadas'],
+        'leyendasFiscales' => ['input' => '4096', 'description' => 'Leyendas fiscales'],
+        'misCuentas' => ['input' => '524288', 'description' => 'Mis cuentas'],
+        'notariosPublicos' => ['input' => '67108864', 'description' => 'Notarios públicos'],
+        'obraArtesAntiguedades' => ['input' => '536870912', 'description' => 'Obras de artes plásticas y antigüedades'],
+        'otrosDerechosImpuestos' => ['input' => '2048', 'description' => 'Otros derechos e impuestos'],
+        'pagoEspecie' => ['input' => '4194304', 'description' => 'Pago en especie'],
+        'personaFisicaIntegranteCoordinado' => ['input' => '8192', 'description' => 'Personas físicas integrantes de coordinados'],
+        'recepcionPagos' => ['input' => '549755813888', 'description' => 'Complemento para recepción de pagos'],
+        'reciboDonativo' => ['input' => '128', 'description' => 'Recibo de donativo'],
+        'reciboPagoSalarios' => ['input' => '1048576', 'description' => 'Nómina 1.1'],
+        'reciboPagoSalarios12' => ['input' => '137438953472', 'description' => 'Nómina 1.2'],
+        'sectorVentasDetalle' => ['input' => '32', 'description' => 'Facturas del sector de ventas al detalle'],
+        'serviciosConstruccion' => ['input' => '268435456', 'description' => 'Servicios parciales de construcción'],
+        'speiTerceroTercero' => ['input' => '16384', 'description' => 'SPEI Tercero a Tercero'],
+        'sustitucionRenovacionVehicular' => ['input' => '2147483648', 'description' => 'Renovación y sustitución vehicular'],
+        'terceros1' => ['input' => '32768', 'description' => 'Concepto por cuenta de terceros 1.1'],
+        'terceros2' => ['input' => '65536', 'description' => 'Concepto por cuenta de terceros 2.0'],
+        'timbreFiscalDigital' => ['input' => '2199023255552', 'description' => 'Timbre Fiscal Digital'],
+        'turistaPasajeroExtranjero' => ['input' => '16', 'description' => 'Turista pasajero extranjero'],
+        'valesDespensa' => ['input' => '33554432', 'description' => 'Vales de despensa'],
+        'vehiculoUsado' => ['input' => '134217728', 'description' => 'Vehiculos usados'],
+        'ventaVehiculos' => ['input' => '2097152', 'description' => 'Venta de vehiculos nuevos'],
+    ];
+
+    /**
+     * @param string $name
+     * @param mixed $arguments
+     * @return self
+     */
+    public static function __callStatic(string $name, $arguments)
     {
-        return [
-            'todos' => '-1',
-            'sinComplemento' => '8',
-            'acreditamientoIeps' => '4294967296',
-            'aerolineas' => '8388608',
-            'certificadoDestruccion' => '1073741824',
-            'comercioExterior' => '17179869184',
-            'comercioExterior11' => '274877906944',
-            'compraVentaDivisas' => '4',
-            'consumoCombustibles' => '16777216',
-            'consumoCombustibles11' => '8796093022208',
-            'donatarias' => '64',
-            'estadoCuentaBancario' => '256',
-            'estadoCuentaCombustibles12' => '4398046511104',
-            'estadoCuentaCombustiblesMonederoElectronico' => '8589934592',
-            'gastosHidrocarburos' => '17592186044416',
-            'ine11' => '68719476736',
-            'ingresosHidrocarburos' => '35184372088832',
-            'institucionesEducativasPrivadas' => '1024',
-            'leyendasFiscales' => '4096',
-            'misCuentas' => '524288',
-            'notariosPublicos' => '67108864',
-            'obraArtesAntiguedades' => '536870912',
-            'otrosDerechosImpuestos' => '2048',
-            'pagoEspecie' => '4194304',
-            'personaFisicaIntegranteCoordinado' => '8192',
-            'recepcionPagos' => '549755813888',
-            'reciboDonativo' => '128',
-            'reciboPagoSalarios' => '1048576',
-            'reciboPagoSalarios12' => '137438953472',
-            'sectorVentasDetalle' => '32',
-            'serviciosConstruccion' => '268435456',
-            'speiTerceroTercero' => '16384',
-            'sustitucionRenovacionVehicular' => '2147483648',
-            'terceros1' => '32768',
-            'terceros2' => '65536',
-            'timbreFiscalDigital' => '2199023255552',
-            'turistaPasajeroExtranjero' => '16',
-            'valesDespensa' => '33554432',
-            'vehiculoUsado' => '134217728',
-            'ventaVehiculos' => '2097152',
-        ];
+        return new self($name);
+    }
+
+    public static function getEntriesArray(): array
+    {
+        return self::VALUES;
+    }
+
+    public function getEntryValueOnUndefined()
+    {
+        return ['input' => '', 'description' => 'Valor desconocido'];
     }
 
     public function nameIndex(): string
     {
         return 'ctl00$MainContent$ddlComplementos';
+    }
+
+    public function value(): string
+    {
+        return $this->getInput();
     }
 }
