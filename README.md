@@ -9,7 +9,7 @@
 [![Coverage Status][badge-coverage]][coverage]
 [![Total Downloads][badge-downloads]][downloads]
 
-Obtiene las facturas emitidias, recibidas, vigentes y cancelados por medio de web scraping desde la pagina del SAT.
+Obtiene las facturas emitidas, recibidas, vigentes y cancelados por medio de web scraping desde la página del SAT.
 
 **Importante:**
 Actualmente no hay liberada una versión estable, una vez liberada se utilizará SEMVER para actualizar de forma segura.
