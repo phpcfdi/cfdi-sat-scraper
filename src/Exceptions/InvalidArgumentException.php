@@ -19,4 +19,9 @@ class InvalidArgumentException extends \InvalidArgumentException implements SatE
             sprintf('The start date %s is greater than the end date %s', $start->format('Y-m-d H:i:s'), $end->format('Y-m-d H:i:s'))
         );
     }
+
+    public static function complementsOptionInvalidKey(string $key): self
+    {
+        return new self("The key '$key' is not registered as a valid option for ComplementsOption");
+    }
 }

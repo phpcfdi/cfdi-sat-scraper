@@ -14,6 +14,14 @@ que nombraremos así: ` Breaking . Feature . Fix `, donde:
 **Importante:** Las reglas de SEMVER no aplican si estás usando una rama (por ejemplo `master-dev`)
 o estás usando una versión cero (por ejemplo `0.18.4`).
 
+## UNRELEASED 2020-04-12
+
+- El filtro por complemento `ComplementsOption` ya no es un `Enum`, ahora es un `MicroCatalog`.
+  De esta forma se puede tener mucha más información relacionada con el complemento y por ejemplo
+  poder ofrecer una lista de opciones de catálogos.
+- La modificación de `ComplementsOption` es compatible con la versión anterior que implementaba enumeradores,
+  con la diferencia de que si ahora se crea un complemento que no está en la lista no se retornará una excepción.
+
 ## UNRELEASED 2020-02-23
 
 En este release se cambió totalmente la librería, tanto en el exterior como en el funcionamiento interno.
