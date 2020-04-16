@@ -277,9 +277,9 @@ class ComplementsOption extends MicroCatalog implements FilterOption
         return self::VALUES;
     }
 
-    public function getEntryValueOnUndefined()
+    public function getEntryValueOnUndefined(): void
     {
-        return ['input' => '', 'description' => 'Valor desconocido'];
+        throw InvalidArgumentException::complementsOptionInvalidKey((string) $this->getEntryIndex());
     }
 
     public function nameIndex(): string
