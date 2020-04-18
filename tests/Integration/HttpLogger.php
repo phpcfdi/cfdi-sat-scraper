@@ -84,15 +84,17 @@ class HttpLogger extends ArrayObject
 
     public function slugify(string $text): string
     {
+        // replace anything that is not (any kind of letter from any language or any digit) to dash
         $text = (string) preg_replace('~[^\pL\d]+~u', '-', $text);
+        // transliterate to ascii
         $text = (string) iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+        // remove anything that is not (dash or word character)
         $text = (string) preg_replace('~[^\w\-]+~', '', $text);
-        $text = trim($text, '-');
+        // replace consecutive dashes to only one
         $text = (string) preg_replace('~-+~', '-', $text);
-        $text = strtolower($text);
-        return $text;
+        // final result with timmed dash and lowercase
+        return strtolower(trim($text, '-'));
     }
-
     public function entryToJson(RequestInterface $request, ResponseInterface $response): string
     {
         $json = json_encode(
