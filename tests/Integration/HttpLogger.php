@@ -95,20 +95,21 @@ class HttpLogger extends ArrayObject
         // final result with timmed dash and lowercase
         return strtolower(trim($text, '-'));
     }
+
     public function entryToJson(RequestInterface $request, ResponseInterface $response): string
     {
         $json = json_encode(
             [
-                    'uri' => sprintf('%s: %s', $request->getMethod(), (string)$request->getUri()),
-                    'request' => [
-                        'headers' => $request->getHeaders(),
-                        'body' => $this->bodyToVars((string)$request->getBody()),
-                    ],
-                    'response' => [
-                        'headers' => $response->getHeaders(),
-                        'body' => $this->bodyToVars((string)$request->getBody()),
-                    ],
+                'uri' => sprintf('%s: %s', $request->getMethod(), (string) $request->getUri()),
+                'request' => [
+                    'headers' => $request->getHeaders(),
+                    'body' => $this->bodyToVars((string) $request->getBody()),
                 ],
+                'response' => [
+                    'headers' => $response->getHeaders(),
+                    'body' => $this->bodyToVars((string) $request->getBody()),
+                ],
+            ],
             JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_LINE_TERMINATORS
         ) . PHP_EOL;
         $request->getBody()->rewind();
