@@ -1,4 +1,8 @@
 <?php
+/**
+ * @noinspection PhpDocMissingThrowsInspection
+ * @noinspection PhpUnhandledExceptionInspection
+ */
 
 declare(strict_types=1);
 
@@ -54,7 +58,7 @@ class RetrieveByUuidTest extends IntegrationTestCase
         foreach ($repository->getIterator() as $uuid => $item) {
             $filename = strtolower(sprintf('%s/%s.xml', $tempDir, $uuid));
             if ('Cancelado' !== $item->getState()) {
-                $this->assertFileNotExists($filename, sprintf('The cfdi file with uuid %s does not exists: %s', $uuid, $filename));
+                $this->assertFileDoesNotExist($filename, sprintf('The cfdi file with uuid %s does not exists: %s', $uuid, $filename));
             } else {
                 $this->assertFileExists($filename, sprintf('The cfdi file with uuid %s does not exists: %s', $uuid, $filename));
                 $this->assertCfdiHasUuid($uuid, file_get_contents($filename) ?: '');
