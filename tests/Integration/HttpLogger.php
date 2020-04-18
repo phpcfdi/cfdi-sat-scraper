@@ -86,7 +86,7 @@ class HttpLogger extends ArrayObject
     {
         $text = (string) preg_replace('~[^\pL\d]+~u', '-', $text);
         $text = (string) iconv('utf-8', 'us-ascii//TRANSLIT', $text);
-        $text = (string) preg_replace('~[^-\w]+~', '', $text);
+        $text = (string) preg_replace('~[^\w\-]+~', '', $text);
         $text = trim($text, '-');
         $text = (string) preg_replace('~-+~', '-', $text);
         $text = strtolower($text);
