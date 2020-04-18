@@ -2,11 +2,11 @@
 
 Este ejemplo está documentado con las siguientes consideraciones:
 
-- El RFC está en el entorno en la variable SAT_AUTH_RFC
-- La clave CIEC está en el entorno en la variable SAT_AUTH_CIEC
+- El RFC está en el entorno en la variable `SAT_AUTH_RFC`
+- La clave CIEC está en el entorno en la variable `SAT_AUTH_CIEC`
 - Desde donde se está llamando al código existen las carpetas `build/cookies/` y `build/cfdis/`
 - Se está usando el `ConsoleCaptchaResolver` así que se espera que si se le solicita un captcha lo
-  resuelva y escriba su contenido. El capta está en `captcha.png`
+  resuelva y escriba su contenido. El captcha está en `captcha.png`
 
 Y se espera que:
 

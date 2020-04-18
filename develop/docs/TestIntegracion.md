@@ -1,10 +1,10 @@
 # Test de integración
 
-Los test de integración realizan consultas al sitio web del SAT y por lo tanto, como utiliza datos de RFC y Clave CIEC
+Los tests de integración realizan consultas al sitio web del SAT y por lo tanto, como utiliza datos de RFC y Clave CIEC
 personales, entonces no pueden funcionar igual para todos.
 
-Por lo anterior, partimos de que los test de integración deben adecuarse a probar con flexibilidad sobre
-una *fuente de verdad*, así entonces, los test de integración van a verificar que efectivamente se esté
+Por lo anterior, partimos de que los tests de integración deben adecuarse a probar con flexibilidad sobre
+una *fuente de verdad*, así entonces, los tests de integración van a verificar que efectivamente se esté
 realizando una tarea en particular (como descargar un CFDI por UUID) tomando como fuente de verdad como
 los datos esperados.
 
@@ -39,7 +39,7 @@ Considera los siguientes requisitos:
 
 * `uuid` es el UUID del CFDI.
 * `issuer` debe contener el RFC emisor.
-* `receiver` debe debe contener el RFC receptor.
+* `receiver` debe contener el RFC receptor.
 * `date` debe ser una expresión como `2020-01-13 14:15:16`.
 * `state` debe ser `C` para cancelado, cualquier otra será tomada como `Activo`.
 * `type` debe ser `E` para emitido, cualquier otra será tomada como `Recibido`.
@@ -52,11 +52,11 @@ Puedes usar el archivo `tests/generate-repository.php` para generar la lista, po
 php tests/generate-repository.php "2020-01-01 00:00:00" "2020-01-31 29:59:59" > tests/repository.json
 ```
 
-## Ejecución de los test de integración
+## Ejecución de los tests de integración
 
-Una vez que se ha configurado el entorno y el repositorio entonces se pueden ejecutar los test de integración
+Una vez que se ha configurado el entorno y el repositorio entonces se pueden ejecutar los tests de integración
 usando PHPUnit. El problema viene con el *captcha* del SAT, pues como se generan consultas reales es necesario
-poder resolverlo. Te recomiendo usar <https://github.com/eclipxe13/captcha-local-resolver> para que tu
+poder resolverlo. Te recomiendo usar <https://github.com/eclipxe13/captcha-local-resolver> para que tú
 directamente puedas resolver los captchas desde un navegador.
 
 ## Ejecución con `eclipxe/captcha-local-resolver`
@@ -65,5 +65,21 @@ Lee la documentación de <https://github.com/eclipxe13/captcha-local-resolver>.
 
 - Ejecuta el servicio con un host y puerto.
 - Abre tu navegador apuntando a la dirección donde ejecutaste el servicio.
-- Configura el entorno para conectar los test con el resolvedor.
-- Corre los test, en cuando se requiera un captcha lo debes ver en el navegador, lo resuelves y listo.
+- Configura el entorno para conectar los tests con el resolvedor.
+- Corre los tests, en cuando se requiera un captcha lo debes ver en el navegador, lo resuelves y listo.
+
+Con la siguiente configuración:
+
+```dotenv
+CAPTCHA_LOCAL_HOST="localhost"
+CAPTCHA_LOCAL_PORT="9595"
+CAPTCHA_LOCAL_TIMEOUT="30"
+```
+
+la ejecución sería de la siguiente manera:
+
+```shell
+cd ../captcha-local-resolver/
+php bin/service.php 127.0.0.1 9595
+xdg-open http://127.0.0.1:9595
+```

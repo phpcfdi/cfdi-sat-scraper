@@ -18,14 +18,14 @@ composer dev:install
 
 ## Tests
 
-Un buen paso podría ser iniciar ejecutando los test unitarios
+Un buen paso podría ser iniciar ejecutando los tests unitarios
 
 ```shell
 # ejecutando phpunit
 vendor/bin/phpunit tests/Unit --testdox --verbose
 ```
 
-Y después los test de integración, sin embargo es probable que necesites configurar el archivo `tests/.env`.
+Y después los tests de integración, sin embargo es probable que necesites configurar el archivo `tests/.env`.
 Revisa la información en [TestIntegracion](TestIntegracion.md)
 
 ```shell
@@ -35,7 +35,7 @@ vendor/bin/phpunit tests/Integration --testdox --verbose
 
 ## Recomendaciones de cambios
 
-Si estás solucionando un problema que haz encontrado, lo mejor es escribir un test para demostrar que el problema
+Si estás solucionando un problema que has encontrado, lo mejor es escribir un test para demostrar que el problema
 existe y hacer las correcciones, esperando que el test pase correctamente.
 
 Si quieres agregar nuevas funcionalidades te recomiendo que primero abras un issue o entres al canal de la comunidad

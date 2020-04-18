@@ -11,7 +11,7 @@ Recibidos por UUID, Recibidos por filtros, Emitidos por UUID y Emitidos por filt
 Sin embargo, se simplifica porque el portal del SAT funciona casi igual para recibidos y emitidos, por lo que se puede
 reducir a 3 tipos: Por UUID (recibidos/emitidos), Recibidos por filtro, Emitidos por filtro.
 
-Cuando se le pide a `SatScraper` listar, todos los UUID son se un mismo origen: todos emitidos o todos recibidos.
+Cuando se le pide a `SatScraper` listar, todos los UUID son de un mismo origen: todos emitidos o todos recibidos.
 Al invocar a `listByUuids`, para cada UUID se genera una consulta `QueryByUuid`.
 Los otros métodos esperan recibir una consulta por filtros `QueryByFilters`.
 
