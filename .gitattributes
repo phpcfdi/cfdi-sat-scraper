@@ -18,5 +18,5 @@
 /phpcs.xml.dist         export-ignore
 /phpunit.xml.dist       export-ignore
 
-# do not count these files on github code language
-/tests/_files           linguist-detectable=false
+# Do not count these files on github code language
+/tests/_files/**        linguist-detectable=false

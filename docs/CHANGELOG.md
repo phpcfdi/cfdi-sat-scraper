@@ -14,13 +14,20 @@ que nombraremos así: ` Breaking . Feature . Fix `, donde:
 **Importante:** Las reglas de SEMVER no aplican si estás usando una rama (por ejemplo `master-dev`)
 o estás usando una versión cero (por ejemplo `0.18.4`).
 
+## Version 1.0.0
+
+- Se establece la versión mínima de PHP a 7.3.
+- Se revisan las expresiones regulares y `json_encode`/`json_decode` con el paso a 7.3.
+- Se cambia la versión de PHPUnit a 9.1.
+- Se corrige `linguist-detectable=false` para los archivos en `tests/_files` que estaba mal puesto.
+
 ## UNRELEASED 2020-04-12
 
 - El filtro por complemento `ComplementsOption` ya no es un `Enum`, ahora es un `MicroCatalog`.
   De esta forma se puede tener mucha más información relacionada con el complemento y por ejemplo
   poder ofrecer una lista de opciones de catálogos.
-- La modificación de `ComplementsOption` es compatible con la versión anterior que implementaba enumeradores,
-  con la diferencia de que si ahora se crea un complemento que no está en la lista no se retornará una excepción.
+- La modificación de `ComplementsOption` es compatible con la forma de crear los objetos y de comprobar si es
+  de un tipo en especial (por ejemplo: `ComplementsOption::todos()` y `ComplementsOption::isTodos()`).
 
 ## UNRELEASED 2020-02-23
 
