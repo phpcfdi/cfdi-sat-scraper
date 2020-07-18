@@ -16,6 +16,12 @@ o estás usando una versión cero (por ejemplo `0.18.4`).
 
 ## UNRELEASED
 
+- Se actualizan dependencias:
+    - `symfony/dom-crawler` de `^4.2|^5.0` a `5.1`.
+    - `symfony/css-selector` de `^4.2|^5.0` a `5.1`.
+    - `guzzlehttp/guzzle` de `^6.3` a `7.0`.
+- Se corrigen las descripciones de las clases `DownloadType`, `ComplementsOption`, `RfcOption`, `StatesVoucherOption`
+  y `UuidOption`.
 - Se agregó una sección en el README *Verificar datos de autenticación sin hacer una consulta* (issue #35).
 - Se cambia en desarrollo la inicialización de `Dotenv` porque se deprecó la forma anterior en `symfony/dotenv: ^5.1`.
 - Se cambia en desarrollo la dependencia de `symfony/dotenv` de `^4.2|^5.0` a `^5.1`.
