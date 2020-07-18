@@ -3,6 +3,8 @@
 ## Pendientes
 
 - Core:
+    - Actualizar Guzzle de versión 6 a versión 7.
+    - Eliminar componentes de Symfony menores a 5.1.
     - Clases que vienen de Enum deberían ser finales.
     - Incrementar las pruebas unitarias a un mínimo de 80%.
 - Documentación:
