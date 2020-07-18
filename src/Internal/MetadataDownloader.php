@@ -33,7 +33,7 @@ class MetadataDownloader
     private $queryResolver;
 
     /** @var callable|null */
-    private $onFiveHundred = null;
+    private $onFiveHundred;
 
     public function __construct(QueryResolver $queryResolver, ?callable $onFiveHundred)
     {
