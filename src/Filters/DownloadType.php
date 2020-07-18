@@ -9,6 +9,8 @@ use LogicException;
 use PhpCfdi\CfdiSatScraper\URLS;
 
 /**
+ * Download type enumerator: recibidos & emitidos.
+ *
  * @method static self recibidos()
  * @method static self emitidos()
  *
