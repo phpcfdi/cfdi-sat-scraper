@@ -6,6 +6,9 @@ namespace PhpCfdi\CfdiSatScraper\Filters\Options;
 
 use PhpCfdi\CfdiSatScraper\Contracts\FilterOption;
 
+/**
+ * UUID option
+ */
 class UuidOption implements FilterOption
 {
     /** @var string */

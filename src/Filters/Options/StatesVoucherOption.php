@@ -8,8 +8,7 @@ use Eclipxe\Enum\Enum;
 use PhpCfdi\CfdiSatScraper\Contracts\FilterOption;
 
 /**
- * This is a common use case enum sample
- * source: tests/Fixtures/Stages.php
+ * voucher state option enumerator: todos, cancelados & vigentes.
  *
  * @method static self todos()
  * @method static self cancelados()
@@ -21,6 +20,7 @@ use PhpCfdi\CfdiSatScraper\Contracts\FilterOption;
  */
 class StatesVoucherOption extends Enum implements FilterOption
 {
+    /** @noinspection PhpMissingParentCallCommonInspection */
     protected static function overrideValues(): array
     {
         return [
