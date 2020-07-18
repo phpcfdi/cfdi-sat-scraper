@@ -14,6 +14,11 @@ que nombraremos así: ` Breaking . Feature . Fix `, donde:
 **Importante:** Las reglas de SEMVER no aplican si estás usando una rama (por ejemplo `master-dev`)
 o estás usando una versión cero (por ejemplo `0.18.4`).
 
+## UNRELEASED
+
+- Se cambia en desarrollo la inicialización de `Dotenv` porque se deprecó la forma anterior en `symfony/dotenv: ^5.1`.
+- Se cambia en desarrollo la dependencia de `symfony/dotenv` de `^4.2|^5.0` a `^5.1`.
+
 ## Version 1.0.0
 
 - Se establece la versión mínima de PHP a 7.3.
