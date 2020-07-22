@@ -6,6 +6,9 @@ namespace PhpCfdi\CfdiSatScraper\Filters\Options;
 
 use PhpCfdi\CfdiSatScraper\Contracts\FilterOption;
 
+/**
+ * RFC Option
+ */
 class RfcOption implements FilterOption
 {
     /** @var string */

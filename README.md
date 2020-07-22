@@ -288,6 +288,33 @@ $downloadedUuids = $satScraper->xmlDownloader($list)->download($myHandler);
 echo json_encode($downloadedUuids);
 ```
 
+## Verificar datos de autenticación sin hacer una consulta
+
+El siguiente ejemplo muestra cómo usar el método `SatScraper::confirmSessionIsAlive` para verificar que
+los datos de sesión sean (o continuen siendo) correctos. El funcionamiento interno del scraper es:
+Si la sesión no se inicializó previamente entonces se intentará hacer el proceso de autenticación,
+además se verificará que la sesión (`cookie`) se encuentre vigente.
+
+Se hacen los dos pasos para evitar consumir el servicio de resolución de captcha en forma innecesaria.
+
+```php
+<?php declare(strict_types=1);
+
+use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
+use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
+use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
+
+/** @var CaptchaResolverInterface $captchaResolver */
+$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+try {
+    $satScraper->confirmSessionIsAlive();
+} catch (LoginException $exception) {
+    echo 'ERROR: ', $exception->getMessage(), PHP_EOL;
+    return;
+}
+```
+
 ## Quitar la verificación de certificados del SAT
 
 En caso de que los certificados del SAT usados en HTTPS fallen, será necerario que desactive la verificación

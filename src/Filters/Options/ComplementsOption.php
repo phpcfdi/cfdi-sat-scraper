@@ -9,8 +9,7 @@ use PhpCfdi\CfdiSatScraper\Contracts\FilterOption;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 
 /**
- * This is a common use case enum sample
- * source: tests/Fixtures/Stages.php
+ * Complement option, as a catalog of complements.
  *
  * @method static self todos()
  * @method static self sinComplemento()

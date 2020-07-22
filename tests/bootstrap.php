@@ -16,8 +16,9 @@ call_user_func(new class() {
         if (! $this->environmentFileExists($environmentFile)) {
             return;
         }
-        $dotDevUsePutenv = true;
-        (new Symfony\Component\Dotenv\Dotenv($dotDevUsePutenv))->load($environmentFile);
+        $dotenv = new Symfony\Component\Dotenv\Dotenv();
+        $dotenv->usePutenv();
+        $dotenv->load($environmentFile);
     }
 
     public function environmentFileExists(string $environmentFile): bool

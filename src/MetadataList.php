@@ -17,7 +17,7 @@ use Traversable;
 class MetadataList implements Countable, IteratorAggregate, JsonSerializable
 {
     /** @var Metadata[] */
-    private $list = [];
+    private $list;
 
     /** @param Metadata[] $list */
     public function __construct(array $list)
