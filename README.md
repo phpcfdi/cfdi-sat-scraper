@@ -17,7 +17,7 @@ Actualmente no hay liberada una versión estable, una vez liberada se utilizará
 ## Instalacion por composer
 
 ```shell
-composer require phpcfdi/cfdi-sat-scraper:master-dev
+composer require phpcfdi/cfdi-sat-scraper
 ```
 
 ## Funcionamiento
