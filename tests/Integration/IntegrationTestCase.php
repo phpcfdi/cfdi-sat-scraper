@@ -9,7 +9,6 @@ use DOMAttr;
 use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
-use InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\MetadataList;
@@ -33,23 +32,23 @@ class IntegrationTestCase extends TestCase
         return static::$factory;
     }
 
+    /** @noinspection PhpInconsistentReturnPointsInspection PhpStorm does not understand PHPUnit control flow */
     protected function getSatScraper(): SatScraper
     {
         try {
             return $this->getFactory()->getSatScraper();
         } catch (Throwable $exception) {
-            $this->markTestSkipped($exception->getMessage()); // this will stop execution
-            throw new InvalidArgumentException('no satscraper', 0, $exception);
+            $this->markTestSkipped($exception->getMessage());
         }
     }
 
+    /** @noinspection PhpInconsistentReturnPointsInspection PhpStorm does not understand PHPUnit control flow */
     protected function getRepository(): Repository
     {
         try {
             return $this->getFactory()->getRepository();
         } catch (Throwable $exception) {
-            $this->markTestSkipped($exception->getMessage()); // this will stop execution
-            throw new InvalidArgumentException('no repository', 0, $exception);
+            $this->markTestSkipped($exception->getMessage());
         }
     }
 
@@ -68,7 +67,6 @@ class IntegrationTestCase extends TestCase
             $metadata = $list->find($item->getUuid());
             if (null === $metadata) {
                 self::fail("The metadata list does not contain the UUID {$item->getUuid()}");
-                return;
             }
             self::assertRepositoryItemEqualsMetadata($item, $metadata);
         }
