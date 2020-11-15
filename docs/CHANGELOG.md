@@ -14,6 +14,14 @@ que nombraremos así: ` Breaking . Feature . Fix `, donde:
 **Importante:** Las reglas de SEMVER no aplican si estás usando una rama (por ejemplo `master-dev`)
 o estás usando una versión cero (por ejemplo `0.18.4`).
 
+## UNRELEASED 2020-10-14
+
+Este cambio no afecta la versión liberada y no requiere de un nuevo release.
+
+- La construcción en Travis-CI se rompió porque PHPStan version 0.12.55 ya entiende las estructuras de control
+  de PHPUnit, por lo que sabe que el código subsecuente es código muerto. Se corrigieron las pruebas con problemas.
+- Se actualizó la herramienta `develop/install-development-tools`
+
 ## Version 1.0.1
 
 - Se actualizan dependencias:
