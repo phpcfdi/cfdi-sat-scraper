@@ -41,6 +41,8 @@ class MetadataExtractor
                     return null;
                 }
                 $metadata['urlXml'] = $this->obtainUrlXml($row);
+                $metadata['urlPdf'] = $this->obtainUrlPdf($row);
+                $metadata['urlCancellationVoucher'] = $this->obtainUrlCancellationVoucher($row);
                 return new Metadata($metadata['uuid'], $metadata);
             }
         );
@@ -109,26 +111,47 @@ class MetadataExtractor
 
     public function obtainUrlXml(Crawler $row): string
     {
-        try {
-            $spansBtnDownload = $row->filter('span#BtnDescarga');
-        } catch (RuntimeException $exception) {
-            return '';
-        }
-
-        if (0 === $spansBtnDownload->count()) { // button not found
-            return '';
-        }
-
-        $onClickAttribute = $spansBtnDownload->first()->attr('onclick') ?? '';
-        if ('' === $onClickAttribute) { // button without text
-            return '';
-        }
-
-        // change javascript call and replace it with complete url
+        $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnDescarga');
         return str_replace(
             ["return AccionCfdi('", "','Recuperacion');"],
             [URLS::SAT_URL_PORTAL_CFDI, ''],
             $onClickAttribute
         );
+    }
+
+    public function obtainUrlPdf(Crawler $row): string
+    {
+        $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnRI');
+        return str_replace(
+            ["recuperaRepresentacionImpresa('", "');"],
+            [URLS::SAT_URL_PORTAL_CFDI . 'RepresentacionImpresa.aspx?Datos=', ''],
+            $onClickAttribute
+        );
+    }
+
+    public function obtainUrlCancellationVoucher(Crawler $row): string
+    {
+        $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnRecuperaAcuseFinal');
+        // change javascript call and replace it with complete url
+        return str_replace(
+            ["javascript:window.location.href='", "';"],
+            [URLS::SAT_URL_PORTAL_CFDI, ''],
+            $onClickAttribute
+        );
+    }
+
+    private function obtainOnClickFromElement(Crawler $crawler, string $elementFilter): string
+    {
+        try {
+            $filteredElements = $crawler->filter($elementFilter);
+        } catch (RuntimeException $exception) {
+            return '';
+        }
+
+        if (0 === $filteredElements->count()) { // button not found
+            return '';
+        }
+
+        return $filteredElements->first()->attr('onclick') ?? '';
     }
 }
