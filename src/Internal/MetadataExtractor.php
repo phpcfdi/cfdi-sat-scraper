@@ -42,6 +42,7 @@ class MetadataExtractor
                 }
                 $metadata['urlXml'] = $this->obtainUrlXml($row);
                 $metadata['urlPdf'] = $this->obtainUrlPdf($row);
+                $metadata['urlCancellationRequest'] = $this->obtainUrlCancellationRequest($row);
                 $metadata['urlCancellationVoucher'] = $this->obtainUrlCancellationVoucher($row);
                 return new Metadata($metadata['uuid'], $metadata);
             }
@@ -125,6 +126,16 @@ class MetadataExtractor
         return str_replace(
             ["recuperaRepresentacionImpresa('", "');"],
             [URLS::SAT_URL_PORTAL_CFDI . 'RepresentacionImpresa.aspx?Datos=', ''],
+            $onClickAttribute
+        );
+    }
+
+    public function obtainUrlCancellationRequest(Crawler $row): string
+    {
+        $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnRecuperaAcuse');
+        return str_replace(
+            ["AccionCfdi('", "','Acuse');"],
+            [URLS::SAT_URL_PORTAL_CFDI, ''],
             $onClickAttribute
         );
     }

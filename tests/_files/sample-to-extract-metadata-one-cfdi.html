@@ -789,24 +789,44 @@
 		</tr>
         <tr>
             <td>
-                <div
-                    style="width:150px; display:block;text-align:center;vertical-align:middle; position: relative;">
+                <div style="width:150px; display:block;text-align:rigth;vertical-align:middle; position: relative;">
                     <table>
                         <tbody>
                         <tr>
-                            <td style="width:14.2%;">&nbsp;</td>
-                            <td style="width:14.2%;"><span id="BtnRecuperaAcuseFinal"
-                                                           name="BtnRecuperaAcuse" height="25"
-                                                           width="25"
-                                                           class="glyphicon glyphicon-bookmark Interactivo"
-                                                           onclick="javascript:window.location.href='AcuseSolicitudCancelacion.aspx?Datos=BORk2H7+XxIT7Av3LU+j3UNfE+IbROQabYYZ6ziVdU9/3aA9Yq7IfVWHqtTGf3RFKFwFXFybIW482EYIH2uE0G6RmRcO/E932xvju96EZc8ZoaczA7/3wK4xkNSl2QfQ3qFP5ZDu+f/PwKZqcd3FfDygDTYxz6xrlw0++eT7lyscpRrjxel9GU3yOz9BWag/AGsjSRd1ZF5MmdejRSwiH5Iu0XCSqM2368ClXXKiSaIW+skP6jRadhzHnskv13UEc+g2+5o1V3j4Hwkcr3SE0vhR28sBO3VoeccxpvgHkFBmsdkmST8E3NeGNjyUrF5etAH3VU9Rkg1WaDjd14ZQePH35V7QnYNKzWrXfkrR+y5KQ4dOpcAFtsYQStgT78EPJsJlqK1bz+LQ5YcsjFQRuGHco/GZILo8efugERislOmbNPsy7AehaAa8Vd4uE5n5Sld3C2gRJPzh1YRUE6gpgITEN4dNAdoV9iBVi6pEdH08lMwfXMgbC/9Cnnv35upJ2HYlKX2qu03VRPK7XYmulnpYYXOLfNbaa48mUpbZIVDmxMgIx2IEioPvXSMn4X0oinFHw+ACzo4vpxzsz8jtJoJE5m4dejqc0f8QKthwuqTK+H8FjYGUSEO8RsmZcIHGJNw1ERIIIpa4EmJYcB6yVaqVCZq+mTeoc0EtCtiJJZ9hs2i/hKcqlbGh2FfVVQejDuPBGecsTQKfVd1G6nKB6g==';"
-                                                           title="Recuperar acuse estatus final"></span>
+                            <td style="width:14.2%;">
+                                <div style="width:10px;"><input id="ListaFolios" title="Seleccionar" name="ListaFolios"
+                                                                type="checkbox"
+                                                                style="display:inline-block; float:left;"
+                                                                value="A1481BC4-928D-4A7E-99E2-723B1BFFAE03"
+                                                                class="ListaFolios" onclick="validaseleccion();"><input
+                                    type="hidden" id="ListaFoliosUrl" name="ListaFoliosUrl"
+                                    value="Dd13mjb34kSl2lJiOiyuOoHRAldlWxGhGcqlennZp0w50r6hcJfvXQ5PyHeL1AD8HgZIv+16o9m4QBMA+JCOIeyTf6Q8cqvSpIrxk4RGdbJddetxuAO8cEH6mkMckVXY/f7Y+a4k/cBNktYP2+Oeh4YgfhadAQ9+O7iNk6te19HM3uEKbxN7HmykUncbh2FiUF2UHSLLloTeFDvA2o2syG3n9lbyUj1sSqjvqUDMAsIYv1ZjySiNGTMq7zdXMbwXvUJdJQ/hb/wH8ooBcaZtbpNLidKFhOUee1kjZulZ3aokvhEc9s8/k/xwtnMLbJEApmLiCvJwrJAqXP6/WDqOnpsTS6WkIxjuIfqemef/mINwcoC6sWqSDNVYiV/XqQjjL82iwEU/8a0tUtnrHFhkb4MUsmmiNwf8ilNPiA7+eoQQogQvD8KpdJc1/UvjGKHD">
+                                </div>
                             </td>
+                            <td style="width:14.2%;"><span id="BtnRecuperaAcuseFinal" name="BtnRecuperaAcuse"
+                                                           height="25" width="25"
+                                                           class="glyphicon glyphicon-bookmark Interactivo"
+                                                           onclick="javascript:window.location.href='AcuseSolicitudCancelacion.aspx?Datos=MAJJhslrJYO06RcQ2GNfe/yf6QGKgWrqj7Hyf/eTRngMncOVk9/vnrUcQrDusrCgscULIP0M6NCffFfxk74I4UKBfebC7wg+KUkdTdB1szh0I8PTLDP4zDg5+yTqX4Z2eoxIBsuzWAd6Tb2qGrweCGZBCY0jxXDKTMP4KvYuSx+5AUqzWcA5tBiBTc95THh4DHSBuDZeaqNRCmSA5mOeUDwN8JN/nmgUuMmjY0qQmU5mKfgnJA+Hnv1AZ4iYRayNU+xgCaukN1VktYP48HJNEEQ53P+V6JcxnPLRHnBAtWDKMT3/kDkxbYNWxJLzB7t9Sgq9k29EYkjrgoaZNF7V9d1m8nazImEfBv/PyHOnBg4chvTb398k2dZX5qtpNG3QtWqDPKIgF25FeAnbRig6iK0NikbaN2lH1ZaQGkzPGx6Jr7Iee5uHTKfXeTBqjRTMLh/0O8Dv3iJnneP/40e2sFbc1XbCvlZcH+IU5/NJz7c+uni8ziX7zSoYUAxggRS/zP++S2qO5bsMviaCGBRtv+zrNPSqoRJiZGxAPH9oGo9o/nZFnxpyM/3ZT0j2jxQmEGpfXNIDsZYqJlzvrApHZrqf3LkfFLNh74Sx/3/WE2Zlb4HemEb0IsFqlN4Lq9EVDzjyFLMB1w+Mss7P3FBgG3iGeZGLBVqM30AM4Ox2v2T8mtugKcmB+sckIRvXe6tyYgc45+/9a0354Muqn45WOA==';"
+                                                           title="Recuperar acuse estatus final"></span></td>
+                            <td style="width:14.2%;"><span id="BtnRecuperaAcuse" name="BtnRecuperaAcuse" height="25"
+                                                           width="25" class="glyphicon glyphicon-eye-open Interactivo"
+                                                           onclick="AccionCfdi('AcuseCancelacion.aspx?Datos=Vcc/tG8AauU5iN4iWob/Eg3PZZlb7J+qslHbvGtIMIifVkXhe2ocjPj19MlzhCy5bi5whbhK6X5wY3ewO4uMDEpEjGE/cffk0/BMn96IwizohCFMrVCmTrrjcToqUvXzIzCAn9hgLMTBxG7lWgWCsVb/gT6e8m+UiKnSu6hUGKxmm8pFbzY8G1uFLK9JaBG/OZtwY/srrpFWmzBSXBci+7x3OQ3neoeZNurOl0XTMCvPyFqDleibVCf8STDR/TCWYL2vqLhjCiUwrOH+acEk039zQzuISqGnx42jNdoH/IMGjoYV5+RmQttzO8WdQqKkEpyirb4EDWmnVNDkz+rexAmjTfaDb6MsxLS2WPNnyJNgwnApYVEAASHZyden0B8cPkAO3KJ/AaG/bV38cpXkd1OszjUUmgPnURcPWr/3YO+/SQZXxT7230d4KDbszBBVyfL1XqQyHQMnovv6w2+5ByiUeOn9Q1cxoUygUi3Whz0vDoHOzgdyOvwK6g3/Xos4SfJY/hBwCWMZ7bn94YSSNnS4LtW21HR5YMN4lhwh7VfrzK8n0ali1r4aeujDH8edPMQcB8hNX0ozD9CTu4QlyA==','Acuse');"
+                                                           title="Recuperar acuse de solicitud cancelación"
+                                                           style="cursor:pointer"></span></td>
+                            <td style="width:14.2%;"><span id="BtnVerDetalle" name="BtnVerDetalle" height="25"
+                                                           width="25" class="glyphicon glyphicon-zoom-in Interactivo"
+                                                           onclick="AccionCfdi('Detalle.aspx?Datos=LFEZYSgXDxdwLmnRoK125sNAJ9wibDVMfauT10SXFjrcRCLKOhW997b3XlfVAUdC876YFryZtQIxecKp3OLzVnuqGdowh3Ge02io0nQQasyBD4qg5lDk6Dp3wOIoaZxP2de+LEkBN9DRBUmHAv06VsRd34pZ/iRVyyFQuu+ctjF47VVdHmz1I7yccBrKrnKXXjwqHwSX4jnzWjwDOtB72IvBZCfs/Wvtv6Q4X1kanLZqPFGzyQmgWQn3QwJTH+XL5qbjHLUN6281T8LfIS0pXqjziSI1G6jGPDYj1so6HWymROzyaXUyiFVj5cL4r95qpprNEp++Es1FghPBIUUiPbNPF9hpLyKdzDxWWqTV/hbx9p61RiRLjhyBENIjhmZzk0ATWsziMjxmYkQp6zYqKmxDKCpsROrnTR59peq1HSgeeGVEhfyk6JrQjJWdCrnCYovNeyLqCn11CBWgft+A3pk0dtBP3z26NMJ7C3CoVGwAkLjJKQVkPlHnwnA+u1eEraSqarczhV4OIrK0B91YZvvFe33gmmXIR5JOuAc2+gD2kl7t6YfTIInsRnme8W/e39DxNeMB/0k3BzNvoY9PqwEueUkP74bh5fzmgxJsE+7Ok9rh3OjFl9gyCMG9luF8RQWvxIcvHmU7YUoS2yde3Q==','Detalle');"
+                                                           title="Ver detalle" style="cursor:pointer"></span></td>
+                            <td style="width:14.2%;"><span id="BtnDescarga" name="BtnDescarga" height="25" width="25"
+                                                           class="glyphicon glyphicon-cloud-download Interactivo"
+                                                           onclick="return AccionCfdi('RecuperaCfdi.aspx?Datos=JGazgCfpZshEacEmrnvzHEw59PwS1HWi+/6ouE8ZPsurrNcT3Yei9hFXUsBXv/y5hB7RD/F2l6pNNe/l3tqaCUZXyo3kwcz622OQWz0jVzRwHf7uvVLMDbdwsnlKsO4bIw2wAqcTZzxROjEpTZ4ntXm8IUOcHwTNrHnMkN92UGleOKHu940VRS07qek0yAWKPxPGCDznChBrZU5MrtESksgnCwWypjkFZqia7EkS7Q+7MRvLz0I52gfZegJ6udqOuD92modJuNJBW75UmzdnPIiOX0De6zXvC1sEU0so8d7kbG578B5aGhvjINddNvPKqRwemPI6BJe79aVTkgpITvfL0ZTewjkXeG1FoVA/YruDMlogbAGp1KSOG8uhtDO+6m18HIE7buEPZb6RqlhgYj5xZYKR00vqUaVFC8uDfJElG7nrxzePqN/5vObGik2fJH9ZMzYhTzfLJiysXEu1i4s/Bmn/GO8TSpd9u4nP8mPAJzXkzwLe4Nd52sgwtLW4D3R69xla/o4pKTPbJixPrbkB7uAr11BDGReA5d8pPeGL8551GKDDayKR0aMteT3B+ZHKOJznAizEItjwFFT6EW5+e53wMCpTtWEWXyqJ2aJIUaE9/GMHF2cOjKDU7uFX','Recuperacion');"
+                                                           title="Descargar"></span></td>
+                            <td style="width:14.2%;"><span id="BtnRI" name="BtnRI" height="25" width="25"
+                                                           class="glyphicon glyphicon-file Interactivo"
+                                                           onclick="recuperaRepresentacionImpresa('Q0ftz0VqaGdjgvysS+LCiVj567nSe+7dZK2ZkDPTsub72rmbxg+YrneE7tqw/FST9mtAYULo4o1NApmY5raKG/CW34UoOVaa0IIocMNWtL2VPtFaTAlaluW0FrS7Xy1TKA5wFLDViSJWrPaZrVdRp60wXvtdu+15ZsmdoPoGde0P6sZt1kETjtBaIrDUthg6MucbglvYOMGDa4Y9XKks9KG7aZFxXF/COtVtuZ9wFiq11gbMxJYhjAMDs5oUbfsh75QV5A0mdWU9uSb+cgqVJng9L1vRlp4eRls8LfGdD3NZYKiOhBsBOVrixNITnldPYdymW9DcRz3UjhGrZvnnd5PWONIw1ODKBtlVr0HRnp2yvtQ3AW0z1lS0qPS4DB5DzCVtGnRvk4HIROdDmme6+8jZ2V7i4I3OYDv4S31mrybIUiGN9W5t215QKTOTSyY7Nb7x9GceERv9HSN8YFmc1TR1aoZz1CD1hOieyQY906z3LaYbJFCnxgeaVEYkkzet8a3hVon43XLSlZGTxCjHG/Sw+c6ZXW54fjz3VV6Oty0J9PzG3uUMOd4MPJdmPXpE2/jczVAtsYORmAIAhOKmWJj+xphRYqUaOCyqqSEjUK2UKPFdOYphUa8qxka9bgWg');"
+                                                           title="Recuperar Representación Impresa"
+                                                           style="cursor:pointer"></span></td>
                             <td style="width:14.2%;">&nbsp;</td>
-                            <td style="width:14.2%;">&nbsp;</td>
-                            <td style="width:14.2%;">&nbsp;</td>
-                            <td style="width:14.2%;">&nbsp;</td>
-                            <td style="width:14.2%;"></td>
                         </tr>
                         </tbody>
                     </table>
