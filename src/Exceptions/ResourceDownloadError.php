@@ -13,10 +13,10 @@ use Throwable;
  *
  * There are specializations, that stores reason with a specific type.
  *
- * @see XmlDownloadResponseError
- * @see XmlDownloadRequestExceptionError
+ * @see ResourceDownloadResponseError
+ * @see ResourceDownloadRequestExceptionError
  */
-class XmlDownloadError extends SplRuntimeException implements SatException
+class ResourceDownloadError extends SplRuntimeException implements SatException
 {
     /** @var string */
     private $uuid;
@@ -25,7 +25,7 @@ class XmlDownloadError extends SplRuntimeException implements SatException
     private $reason;
 
     /**
-     * XmlDownloadError constructor.
+     * ResourceDownloadError constructor.
      *
      * If the reason is a Throwable and previous was not defined then it set up previous as reason
      *

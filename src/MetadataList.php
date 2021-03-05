@@ -63,14 +63,15 @@ class MetadataList implements Countable, IteratorAggregate, JsonSerializable
     }
 
     /**
-     * Return a new list with only the Metadata wich has an url to download the corresponding XML
+     * Return a new list with only the Metadata wich has an url to download according to specified resource type
      *
+     * @param ResourceType $resourceType
      * @return self
      */
-    public function filterWithDownloadLink(): self
+    public function filterWithResourceLink(ResourceType $resourceType): self
     {
-        return new self(array_filter($this->list, function (Metadata $metadata): bool {
-            return $metadata->hasXmlDownloadUrl();
+        return new self(array_filter($this->list, function (Metadata $metadata) use ($resourceType): bool {
+            return $metadata->hasResource($resourceType);
         }));
     }
 

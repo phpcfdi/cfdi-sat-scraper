@@ -4,38 +4,51 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Internal;
 
-use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloadHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\ResourceDownloadHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\ResourceFileNamerInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Exceptions\RuntimeException;
-use PhpCfdi\CfdiSatScraper\Internal\XmlDownloadStoreInFolder;
+use PhpCfdi\CfdiSatScraper\Internal\ResourceDownloadStoreInFolder;
+use PhpCfdi\CfdiSatScraper\Internal\ResourceFileNamerByType;
+use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
-class XmlDownloadStoreInFolderTest extends TestCase
+class ResourceDownloadStoreInFolderTest extends TestCase
 {
+    private function createResourceDownloadStoreInFolder(string $folder, ResourceFileNamerInterface $namer = null): ResourceDownloadStoreInFolder
+    {
+        /** @var ResourceFileNamerInterface $namer */
+        $namer = $namer ?? $this->createMock(ResourceFileNamerInterface::class);
+        return new ResourceDownloadStoreInFolder($folder, $namer);
+    }
+
     public function testConstructWithDestinationFolder(): void
     {
-        $downloader = new XmlDownloadStoreInFolder('foo');
-        $this->assertInstanceOf(XmlDownloadHandlerInterface::class, $downloader);
-        $this->assertSame('foo', $downloader->getDestinationFolder());
+        $destinationFolder = 'foo';
+        $downloader = $this->createResourceDownloadStoreInFolder($destinationFolder);
+        $this->assertInstanceOf(ResourceDownloadHandlerInterface::class, $downloader);
+        $this->assertSame($destinationFolder, $downloader->getDestinationFolder());
+        $this->assertInstanceOf(ResourceFileNamerInterface::class, $downloader->getResouceFileNamer());
     }
 
     public function testConstructWithEmptyDestinationFolder(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('destination folder');
-        new XmlDownloadStoreInFolder('');
+        $this->createResourceDownloadStoreInFolder('');
     }
 
     public function testPathFor(): void
     {
-        $downloader = new XmlDownloadStoreInFolder('foo');
+        $namer = new ResourceFileNamerByType(ResourceType::xml());
+        $downloader = $this->createResourceDownloadStoreInFolder('foo', $namer);
         $this->assertSame('foo/uuid.xml', $downloader->pathFor('uuid'));
     }
 
     public function testCheckDestinationFolderWhenFolderExistsAndAskToNotCreate(): void
     {
-        $downloader = new XmlDownloadStoreInFolder(__DIR__);
+        $downloader = $this->createResourceDownloadStoreInFolder(__DIR__);
         /** @noinspection PhpUnhandledExceptionInspection */
         $downloader->checkDestinationFolder(false);
         $this->assertTrue(true, 'checkDestinationFolder should not create any exception');
@@ -43,7 +56,7 @@ class XmlDownloadStoreInFolderTest extends TestCase
 
     public function testCheckDestinationFolderWhenFolderExistsAndAskToCreate(): void
     {
-        $downloader = new XmlDownloadStoreInFolder(__DIR__);
+        $downloader = $this->createResourceDownloadStoreInFolder(__DIR__);
         /** @noinspection PhpUnhandledExceptionInspection */
         $downloader->checkDestinationFolder(true);
         $this->assertTrue(true, 'checkDestinationFolder should not create any exception');
@@ -51,31 +64,25 @@ class XmlDownloadStoreInFolderTest extends TestCase
 
     public function testCheckDestinationFolderWhenFolderNotExistsAndAskToNotCreate(): void
     {
-        $destinationFolder = __DIR__ . '/non-existent';
-        $downloader = new XmlDownloadStoreInFolder($destinationFolder);
+        $downloader = $this->createResourceDownloadStoreInFolder(__DIR__ . '/non-existent');
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('does not exists');
-        /** @noinspection PhpUnhandledExceptionInspection */
         $downloader->checkDestinationFolder(false);
     }
 
     public function testCheckDestinationFolderWhenFolderIsNotAFolderAndAskToNotCreate(): void
     {
-        $destinationFolder = __FILE__;
-        $downloader = new XmlDownloadStoreInFolder($destinationFolder);
+        $downloader = $this->createResourceDownloadStoreInFolder(__FILE__);
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('does not exists');
-        /** @noinspection PhpUnhandledExceptionInspection */
         $downloader->checkDestinationFolder(false);
     }
 
     public function testCheckDestinationFolderWhenFolderIsNotAFolderAndAskToCreate(): void
     {
-        $destinationFolder = __FILE__;
-        $downloader = new XmlDownloadStoreInFolder($destinationFolder);
+        $downloader = $this->createResourceDownloadStoreInFolder(__FILE__);
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('is not a folder');
-        /** @noinspection PhpUnhandledExceptionInspection */
         $downloader->checkDestinationFolder(true);
     }
 
@@ -83,7 +90,7 @@ class XmlDownloadStoreInFolderTest extends TestCase
     {
         $destinationFolder = $this->filePath(uniqid());
         try {
-            $downloader = new XmlDownloadStoreInFolder($destinationFolder);
+            $downloader = $this->createResourceDownloadStoreInFolder($destinationFolder);
             /** @noinspection PhpUnhandledExceptionInspection */
             $downloader->checkDestinationFolder(true);
             $this->assertDirectoryExists($destinationFolder);
@@ -97,7 +104,8 @@ class XmlDownloadStoreInFolderTest extends TestCase
     public function testOnSuccessStoresContentsToFile(): void
     {
         $destinationFolder = $this->filePath();
-        $downloader = new XmlDownloadStoreInFolder($destinationFolder);
+        $namer = new ResourceFileNamerByType(ResourceType::xml());
+        $downloader = $this->createResourceDownloadStoreInFolder($destinationFolder, $namer);
 
         $uuid = $this->fakes()->faker()->uuid;
         $expectedFile = $downloader->pathFor($uuid);
@@ -111,7 +119,7 @@ class XmlDownloadStoreInFolderTest extends TestCase
         $downloader->onSuccess($uuid, $contents, $response);
 
         try {
-            $this->assertStringEqualsFile($expectedFile, $contents, '');
+            $this->assertStringEqualsFile($expectedFile, $contents);
         } finally {
             /** @noinspection PhpUsageOfSilenceOperatorInspection */
             @unlink($expectedFile);

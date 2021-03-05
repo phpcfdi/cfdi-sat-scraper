@@ -5,15 +5,16 @@ Este ejemplo está documentado con las siguientes consideraciones:
 - El RFC está en el entorno en la variable `SAT_AUTH_RFC`
 - La clave CIEC está en el entorno en la variable `SAT_AUTH_CIEC`
 - Desde donde se está llamando al código existen las carpetas `build/cookies/` y `build/cfdis/`
-- Se está usando el `ConsoleCaptchaResolver` así que se espera que si se le solicita un captcha lo
-  resuelva y escriba su contenido. El captcha está en `captcha.png`
+- Se está usando el objeto `ConsoleCaptchaResolver`, así que se espera que si se le solicita un captcha lo
+  resuelva y escriba su contenido. El captcha está en el archivo `captcha.png`.
 
 Y se espera que:
 
-- Se pueda reutilizar la cookie si no ha expirado en el cliente o en el servidor y
-  así no tener que volver a resolver un captcha.
+- Se pueda reutilizar la `cookie` si no ha expirado y así no tener que volver a resolver un captcha.
 - Se carge una lista de CFDI recibidos y vigentes entre 2019-12-01 y 2019-12-31.
 - Se descarguen los XML correspondientes a dichos registros.
+
+La rutina de descarga intentará hasta que haya descargado todos los archivos.
 
 ```php
 <?php
@@ -26,6 +27,7 @@ use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\ConsoleCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
+use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\SatSessionData;
@@ -47,10 +49,15 @@ $query->setDownloadType(DownloadType::recibidos()) // default: emitidos
 $list = $satScraper->listByPeriod($query);
 printf("\nSe encontraron %d registros", $list->count());
 
-$satScraper->xmlDownloader($list)->saveTo($downloadsPath, true);
-foreach ($list as $item) {
-    echo PHP_EOL, $item->uuid(), ': ',
-    var_export(file_exists(sprintf('%s/%s.xml', $downloadsPath, $item->uuid())), true);
+$list = $list->filterWithResourceLink(ResourceType::xml());
+printf("\nPero solamente %d contienen archivos XML", $list->count());
+while ($list->count() > 0) {
+    printf("\nIntentando descargar %d archivos: ", $list->count());
+    $downloadedUuids = $satScraper->resourceDownloader(ResourceType::xml())
+        ->setMetadataList($list)
+        ->setConcurrency(20)
+        ->saveTo($downloadsPath, true);
+    printf("%d descargados: ", count($downloadedUuids));
+    $list = $list->filterWithOutUuids($downloadedUuids);
 }
-echo PHP_EOL;
 ```

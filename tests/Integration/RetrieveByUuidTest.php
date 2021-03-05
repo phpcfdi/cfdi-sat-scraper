@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
+use PhpCfdi\CfdiSatScraper\ResourceType;
 
 class RetrieveByUuidTest extends IntegrationTestCase
 {
@@ -54,7 +55,7 @@ class RetrieveByUuidTest extends IntegrationTestCase
                 unlink($filename);
             }
         }
-        $scraper->xmlDownloader($list)->saveTo($tempDir);
+        $scraper->resourceDownloader(ResourceType::xml(), $list)->saveTo($tempDir);
         foreach ($repository->getIterator() as $uuid => $item) {
             $filename = strtolower(sprintf('%s/%s.xml', $tempDir, $uuid));
             if ('Cancelado' !== $item->getState()) {

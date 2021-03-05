@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Internal;
 
 use PhpCfdi\CfdiSatScraper\Internal\MetadataExtractor;
+use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -89,10 +90,25 @@ final class MetadataExtractorTest extends TestCase
             . 'eG76AGZt4HGu+CfDbAZOkbsuoPgTAwB+CkqfwjRgrdhC7LbkGsgKUh4tfkx2+42lfolYjUrp/fF8QPR1bGno0D'
             . 'eEvatg1s3OX57nZakGjE/8bVBrLE+FzxYYJFLBoHTx6CyIN4amjXlkemD7Makzjn7JCXuWP9dyyMoXBOa3+fND'
             . '1kV1iV2k2KWFAErpA=';
-        $urlCancellationRequest = 'https://portalcfdi.facturaelectronica.sat.gob.mx/'
-            . 'AcuseCancelacion.aspx?Datos=Vcc/tG8AauU5iN4iWob/Eg3PZZlb7J+qslHbvGtIMIifVkXhe2ocjPj19MlzhCy5bi5whbhK6X5wY3ewO4uMDEpEjGE/cffk0/BMn96IwizohCFMrVCmTrrjcToqUvXzIzCAn9hgLMTBxG7lWgWCsVb/gT6e8m+UiKnSu6hUGKxmm8pFbzY8G1uFLK9JaBG/OZtwY/srrpFWmzBSXBci+7x3OQ3neoeZNurOl0XTMCvPyFqDleibVCf8STDR/TCWYL2vqLhjCiUwrOH+acEk039zQzuISqGnx42jNdoH/IMGjoYV5+RmQttzO8WdQqKkEpyirb4EDWmnVNDkz+rexAmjTfaDb6MsxLS2WPNnyJNgwnApYVEAASHZyden0B8cPkAO3KJ/AaG/bV38cpXkd1OszjUUmgPnURcPWr/3YO+/SQZXxT7230d4KDbszBBVyfL1XqQyHQMnovv6w2+5ByiUeOn9Q1cxoUygUi3Whz0vDoHOzgdyOvwK6g3/Xos4SfJY/hBwCWMZ7bn94YSSNnS4LtW21HR5YMN4lhwh7VfrzK8n0ali1r4aeujDH8edPMQcB8hNX0ozD9CTu4QlyA==';
-        $urlCancellationVoucher = 'https://portalcfdi.facturaelectronica.sat.gob.mx/'
-            . 'AcuseSolicitudCancelacion.aspx?Datos=MAJJhslrJYO06RcQ2GNfe/yf6QGKgWrqj7Hyf/eTRngMncOVk9/vnrUcQrDusrCgscULIP0M6NCffFfxk74I4UKBfebC7wg+KUkdTdB1szh0I8PTLDP4zDg5+yTqX4Z2eoxIBsuzWAd6Tb2qGrweCGZBCY0jxXDKTMP4KvYuSx+5AUqzWcA5tBiBTc95THh4DHSBuDZeaqNRCmSA5mOeUDwN8JN/nmgUuMmjY0qQmU5mKfgnJA+Hnv1AZ4iYRayNU+xgCaukN1VktYP48HJNEEQ53P+V6JcxnPLRHnBAtWDKMT3/kDkxbYNWxJLzB7t9Sgq9k29EYkjrgoaZNF7V9d1m8nazImEfBv/PyHOnBg4chvTb398k2dZX5qtpNG3QtWqDPKIgF25FeAnbRig6iK0NikbaN2lH1ZaQGkzPGx6Jr7Iee5uHTKfXeTBqjRTMLh/0O8Dv3iJnneP/40e2sFbc1XbCvlZcH+IU5/NJz7c+uni8ziX7zSoYUAxggRS/zP++S2qO5bsMviaCGBRtv+zrNPSqoRJiZGxAPH9oGo9o/nZFnxpyM/3ZT0j2jxQmEGpfXNIDsZYqJlzvrApHZrqf3LkfFLNh74Sx/3/WE2Zlb4HemEb0IsFqlN4Lq9EVDzjyFLMB1w+Mss7P3FBgG3iGeZGLBVqM30AM4Ox2v2T8mtugKcmB+sckIRvXe6tyYgc45+/9a0354Muqn45WOA==';
+        $urlCancelRequest = 'https://portalcfdi.facturaelectronica.sat.gob.mx/'
+            . 'AcuseCancelacion.aspx?Datos=Vcc/tG8AauU5iN4iWob/Eg3PZZlb7J+qslHbvGtIMIifVkXhe2ocjPj19M'
+            . 'lzhCy5bi5whbhK6X5wY3ewO4uMDEpEjGE/cffk0/BMn96IwizohCFMrVCmTrrjcToqUvXzIzCAn9hgLMTBxG7l'
+            . 'WgWCsVb/gT6e8m+UiKnSu6hUGKxmm8pFbzY8G1uFLK9JaBG/OZtwY/srrpFWmzBSXBci+7x3OQ3neoeZNurOl0'
+            . 'XTMCvPyFqDleibVCf8STDR/TCWYL2vqLhjCiUwrOH+acEk039zQzuISqGnx42jNdoH/IMGjoYV5+RmQttzO8Wd'
+            . 'QqKkEpyirb4EDWmnVNDkz+rexAmjTfaDb6MsxLS2WPNnyJNgwnApYVEAASHZyden0B8cPkAO3KJ/AaG/bV38cp'
+            . 'Xkd1OszjUUmgPnURcPWr/3YO+/SQZXxT7230d4KDbszBBVyfL1XqQyHQMnovv6w2+5ByiUeOn9Q1cxoUygUi3W'
+            . 'hz0vDoHOzgdyOvwK6g3/Xos4SfJY/hBwCWMZ7bn94YSSNnS4LtW21HR5YMN4lhwh7VfrzK8n0ali1r4aeujDH8'
+            . 'edPMQcB8hNX0ozD9CTu4QlyA==';
+        $urlCancelVoucher = 'https://portalcfdi.facturaelectronica.sat.gob.mx/'
+            . 'AcuseSolicitudCancelacion.aspx?Datos=MAJJhslrJYO06RcQ2GNfe/yf6QGKgWrqj7Hyf/eTRngMncOVk'
+            . '9/vnrUcQrDusrCgscULIP0M6NCffFfxk74I4UKBfebC7wg+KUkdTdB1szh0I8PTLDP4zDg5+yTqX4Z2eoxIBsu'
+            . 'zWAd6Tb2qGrweCGZBCY0jxXDKTMP4KvYuSx+5AUqzWcA5tBiBTc95THh4DHSBuDZeaqNRCmSA5mOeUDwN8JN/n'
+            . 'mgUuMmjY0qQmU5mKfgnJA+Hnv1AZ4iYRayNU+xgCaukN1VktYP48HJNEEQ53P+V6JcxnPLRHnBAtWDKMT3/kDk'
+            . 'xbYNWxJLzB7t9Sgq9k29EYkjrgoaZNF7V9d1m8nazImEfBv/PyHOnBg4chvTb398k2dZX5qtpNG3QtWqDPKIgF'
+            . '25FeAnbRig6iK0NikbaN2lH1ZaQGkzPGx6Jr7Iee5uHTKfXeTBqjRTMLh/0O8Dv3iJnneP/40e2sFbc1XbCvlZ'
+            . 'cH+IU5/NJz7c+uni8ziX7zSoYUAxggRS/zP++S2qO5bsMviaCGBRtv+zrNPSqoRJiZGxAPH9oGo9o/nZFnxpyM'
+            . '/3ZT0j2jxQmEGpfXNIDsZYqJlzvrApHZrqf3LkfFLNh74Sx/3/WE2Zlb4HemEb0IsFqlN4Lq9EVDzjyFLMB1w+'
+            . 'Mss7P3FBgG3iGeZGLBVqM30AM4Ox2v2T8mtugKcmB+sckIRvXe6tyYgc45+/9a0354Muqn45WOA==';
 
         $sample = $this->fileContentPath('sample-to-extract-metadata-one-cfdi.html');
         $extractor = new MetadataExtractor();
@@ -102,22 +118,22 @@ final class MetadataExtractorTest extends TestCase
 
         $this->assertSame(
             $urlXml,
-            $metadataCurrent->get('urlXml'),
+            $metadataCurrent->getResource(ResourceType::xml()),
             'The URL to download the CFDI XML was not found as expected'
         );
         $this->assertSame(
             $urlPdf,
-            $metadataCurrent->get('urlPdf'),
+            $metadataCurrent->getResource(ResourceType::pdf()),
             'The URL to download the CFDI PDF was not found as expected'
         );
         $this->assertSame(
-            $urlCancellationRequest,
-            $metadataCancelled->get('urlCancellationRequest'),
+            $urlCancelRequest,
+            $metadataCancelled->getResource(ResourceType::cancelRequest()),
             'The URL to download the CFDI cancellation request was not found as expected'
         );
         $this->assertSame(
-            $urlCancellationVoucher,
-            $metadataCancelled->get('urlCancellationVoucher'),
+            $urlCancelVoucher,
+            $metadataCancelled->getResource(ResourceType::cancelVoucher()),
             'The URL to download the CFDI cancellation voucher was not found as expected'
         );
     }

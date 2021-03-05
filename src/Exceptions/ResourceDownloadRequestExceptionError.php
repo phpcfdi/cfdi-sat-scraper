@@ -11,7 +11,7 @@ use GuzzleHttp\Exception\RequestException;
  *
  * @method RequestException getReason()
  */
-class XmlDownloadRequestExceptionError extends XmlDownloadError
+class ResourceDownloadRequestExceptionError extends ResourceDownloadError
 {
     public function __construct(string $message, string $uuid, RequestException $reason)
     {

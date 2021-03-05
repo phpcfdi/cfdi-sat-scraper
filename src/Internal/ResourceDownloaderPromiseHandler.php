@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Internal;
 
+use finfo;
 use GuzzleHttp\Exception\RequestException;
-use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloaderPromiseHandlerInterface;
-use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloadHandlerInterface;
-use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadError;
-use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadRequestExceptionError;
-use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadResponseError;
+use PhpCfdi\CfdiSatScraper\Contracts\ResourceDownloaderPromiseHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\ResourceDownloadHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Exceptions\ResourceDownloadError;
+use PhpCfdi\CfdiSatScraper\Exceptions\ResourceDownloadRequestExceptionError;
+use PhpCfdi\CfdiSatScraper\Exceptions\ResourceDownloadResponseError;
+use PhpCfdi\CfdiSatScraper\ResourceType;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
@@ -17,20 +19,24 @@ use Throwable;
  * This is a handler for \GuzzleHttp\Promise\EachPromise events fulfilled & rejected.
  *
  * It performs basic operations like validate the received response and call "onSuccess" method or
- * call "onError" method with a generic or specialized XmlDownloadError object.
+ * call "onError" method with a generic or specialized ResourceDownloadError object.
  *
  * @internal
  */
-final class XmlDownloaderPromiseHandler implements XmlDownloaderPromiseHandlerInterface
+final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromiseHandlerInterface
 {
-    /** @var XmlDownloadHandlerInterface */
+    /** @var ResourceType */
+    private $resourceType;
+
+    /** @var ResourceDownloadHandlerInterface */
     private $handler;
 
     /** @var string[] */
     private $fulfilledUuids = [];
 
-    public function __construct(XmlDownloadHandlerInterface $handler)
+    public function __construct(ResourceType $resourceType, ResourceDownloadHandlerInterface $handler)
     {
+        $this->resourceType = $resourceType;
         $this->handler = $handler;
     }
 
@@ -46,10 +52,10 @@ final class XmlDownloaderPromiseHandler implements XmlDownloaderPromiseHandlerIn
         try {
             $content = $this->validateResponse($response, $uuid);
             $this->handler->onSuccess($uuid, $content, $response);
-        } catch (XmlDownloadResponseError $exception) {
+        } catch (ResourceDownloadResponseError $exception) {
             return $this->handlerError($exception);
         } catch (Throwable $exception) {
-            return $this->handlerError(XmlDownloadResponseError::onSuccessException($response, $uuid, $exception));
+            return $this->handlerError(ResourceDownloadResponseError::onSuccessException($response, $uuid, $exception));
         }
 
         $this->fulfilledUuids[] = $uuid;
@@ -64,22 +70,29 @@ final class XmlDownloaderPromiseHandler implements XmlDownloaderPromiseHandlerIn
      * @param string $uuid
      * @return string
      *
-     * @throws XmlDownloadResponseError
+     * @throws ResourceDownloadResponseError
      */
     public function validateResponse(ResponseInterface $response, string $uuid): string
     {
         if (200 !== $response->getStatusCode()) {
-            throw XmlDownloadResponseError::invalidStatusCode($response, $uuid);
+            throw ResourceDownloadResponseError::invalidStatusCode($response, $uuid);
         }
 
         $content = strval($response->getBody());
 
         if ('' === $content) {
-            throw XmlDownloadResponseError::emptyContent($response, $uuid);
+            throw ResourceDownloadResponseError::emptyContent($response, $uuid);
         }
 
-        if (false === stripos($content, 'UUID="')) {
-            throw XmlDownloadResponseError::contentIsNotCfdi($response, $uuid);
+        if ($this->resourceType->fileTypeIsXml()) {
+            if (false === stripos($content, 'UUID="')) {
+                throw ResourceDownloadResponseError::contentIsNotCfdi($response, $uuid);
+            }
+        } elseif ($this->resourceType->fileTypeIsPdf()) {
+            $mimeType = strtolower((new finfo())->buffer($content, FILEINFO_MIME_TYPE) ?: '');
+            if ('application/pdf' !== $mimeType) {
+                throw ResourceDownloadResponseError::contentIsNotPdf($response, $uuid, $mimeType);
+            }
         }
 
         return $content;
@@ -95,19 +108,19 @@ final class XmlDownloaderPromiseHandler implements XmlDownloaderPromiseHandlerIn
     public function promiseRejected($reason, string $uuid)
     {
         if ($reason instanceof RequestException) {
-            return $this->handlerError(XmlDownloadRequestExceptionError::onRequestException($reason, $uuid));
+            return $this->handlerError(ResourceDownloadRequestExceptionError::onRequestException($reason, $uuid));
         }
 
-        return $this->handlerError(XmlDownloadError::onRejected($uuid, $reason));
+        return $this->handlerError(ResourceDownloadError::onRejected($uuid, $reason));
     }
 
     /**
      * Send the error to handler error method
      *
-     * @param XmlDownloadError $error
+     * @param ResourceDownloadError $error
      * @return null
      */
-    public function handlerError(XmlDownloadError $error)
+    public function handlerError(ResourceDownloadError $error)
     {
         $this->handler->onError($error);
         return null;
@@ -123,7 +136,12 @@ final class XmlDownloaderPromiseHandler implements XmlDownloaderPromiseHandlerIn
         return $this->fulfilledUuids;
     }
 
-    public function getHandler(): XmlDownloadHandlerInterface
+    public function getResourceType(): ResourceType
+    {
+        return $this->resourceType;
+    }
+
+    public function getHandler(): ResourceDownloadHandlerInterface
     {
         return $this->handler;
     }

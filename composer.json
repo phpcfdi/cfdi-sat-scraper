@@ -33,6 +33,7 @@
         "ext-dom": "*",
         "ext-json": "*",
         "ext-filter": "*",
+        "ext-fileinfo": "*",
         "psr/http-message": "^1.0",
         "guzzlehttp/guzzle": "^7.0",
         "guzzlehttp/promises": "^1.3",

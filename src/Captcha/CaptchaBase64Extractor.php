@@ -11,10 +11,8 @@ class CaptchaBase64Extractor
 {
     public const DEFAULT_SELECTOR = '#divCaptcha > img';
 
-    public function retrieve(string $htmlSource, string $selector = ''): string
+    public function retrieve(string $htmlSource, string $selector = self::DEFAULT_SELECTOR): string
     {
-        $selector = $selector ?: self::DEFAULT_SELECTOR;
-
         try {
             $images = (new Crawler($htmlSource))->filter($selector);
         } catch (RuntimeException $exception) {

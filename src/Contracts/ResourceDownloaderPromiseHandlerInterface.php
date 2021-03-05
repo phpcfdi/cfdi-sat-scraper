@@ -6,7 +6,7 @@ namespace PhpCfdi\CfdiSatScraper\Contracts;
 
 use Psr\Http\Message\ResponseInterface;
 
-interface XmlDownloaderPromiseHandlerInterface
+interface ResourceDownloaderPromiseHandlerInterface
 {
     /**
      * This method handles the each promise fulfilled event

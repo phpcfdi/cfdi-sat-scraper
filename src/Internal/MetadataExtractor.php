@@ -6,6 +6,7 @@ namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\MetadataList;
+use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\URLS;
 use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
@@ -40,10 +41,10 @@ class MetadataExtractor
                 if ('' === ($metadata['uuid'] ?? '')) {
                     return null;
                 }
-                $metadata['urlXml'] = $this->obtainUrlXml($row);
-                $metadata['urlPdf'] = $this->obtainUrlPdf($row);
-                $metadata['urlCancellationRequest'] = $this->obtainUrlCancellationRequest($row);
-                $metadata['urlCancellationVoucher'] = $this->obtainUrlCancellationVoucher($row);
+                $metadata[ResourceType::xml()->value()] = $this->obtainUrlXml($row);
+                $metadata[ResourceType::pdf()->value()] = $this->obtainUrlPdf($row);
+                $metadata[ResourceType::cancelRequest()->value()] = $this->obtainUrlCancelRequest($row);
+                $metadata[ResourceType::cancelVoucher()->value()] = $this->obtainUrlCancelVoucher($row);
                 return new Metadata($metadata['uuid'], $metadata);
             }
         );
@@ -130,7 +131,7 @@ class MetadataExtractor
         );
     }
 
-    public function obtainUrlCancellationRequest(Crawler $row): string
+    public function obtainUrlCancelRequest(Crawler $row): string
     {
         $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnRecuperaAcuse');
         return str_replace(
@@ -140,7 +141,7 @@ class MetadataExtractor
         );
     }
 
-    public function obtainUrlCancellationVoucher(Crawler $row): string
+    public function obtainUrlCancelVoucher(Crawler $row): string
     {
         $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnRecuperaAcuseFinal');
         // change javascript call and replace it with complete url

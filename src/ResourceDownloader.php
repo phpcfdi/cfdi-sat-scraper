@@ -6,29 +6,31 @@ namespace PhpCfdi\CfdiSatScraper;
 
 use GuzzleHttp\Promise\EachPromise;
 use GuzzleHttp\Promise\PromiseInterface;
-use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloaderPromiseHandlerInterface;
-use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloadHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\ResourceDownloaderPromiseHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\ResourceDownloadHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\ResourceFileNamerInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 use PhpCfdi\CfdiSatScraper\Exceptions\RuntimeException;
-use PhpCfdi\CfdiSatScraper\Internal\XmlDownloaderPromiseHandler;
-use PhpCfdi\CfdiSatScraper\Internal\XmlDownloadStoreInFolder;
+use PhpCfdi\CfdiSatScraper\Internal\ResourceDownloaderPromiseHandler;
+use PhpCfdi\CfdiSatScraper\Internal\ResourceDownloadStoreInFolder;
+use PhpCfdi\CfdiSatScraper\Internal\ResourceFileNamerByType;
 use Traversable;
 
 /**
  * Helper class to make concurrent downloads of CFDI files.
  *
- * It is based on a MetadataList on which each Metadata contains the link to download.
- * Be aware that it will only download a CFDI if the Metadata `urlXml` value exists.
+ * It is based on a MetadataList on which each Metadata contains the link to download depending on the resource type.
+ * Be aware that it will only download a CFDI if the Metadata link exists.
  *
- * You can use the method `saveTo` that will store all the downloaded files as destination/uuid.xml
+ * You can use the method `saveTo` that will store all the downloaded files on an specific folder.
  *
  * You can fine tune the download process (success & error) if you implement
- * the `XmlDownloadHandlerInterface` interface and use the `download` method.
+ * the `ResourceDownloadHandlerInterface` interface and use the `download` method.
  *
  * The concurrent downloads are based on Guzzle/Promises.
  */
-class XmlDownloader
+class ResourceDownloader
 {
     public const DEFAULT_CONCURRENCY = 10;
 
@@ -41,11 +43,29 @@ class XmlDownloader
     /** @var SatHttpGateway */
     private $satHttpGateway;
 
-    public function __construct(SatHttpGateway $satHttpGateway, ?MetadataList $list = null, int $concurrency = self::DEFAULT_CONCURRENCY)
-    {
+    /** @var ResourceType */
+    private $resourceType;
+
+    /** @var ResourceFileNamerInterface */
+    private $resourceFileNamer;
+
+    public function __construct(
+        SatHttpGateway $satHttpGateway,
+        ResourceType $resourceType,
+        ?MetadataList $list = null,
+        int $concurrency = self::DEFAULT_CONCURRENCY,
+        ?ResourceFileNamerInterface $resourceFileNamer = null
+    ) {
         $this->satHttpGateway = $satHttpGateway;
+        $this->resourceType = $resourceType;
         $this->list = $list;
         $this->setConcurrency($concurrency);
+        $this->setResourceFileNamer($resourceFileNamer ?? new ResourceFileNamerByType($resourceType));
+    }
+
+    public function getResourceType(): ResourceType
+    {
+        return $this->resourceType;
     }
 
     public function hasMetadataList(): bool
@@ -90,23 +110,40 @@ class XmlDownloader
         return $this;
     }
 
+    public function getResourceFileNamer(): ResourceFileNamerInterface
+    {
+        return $this->resourceFileNamer;
+    }
+
+    /**
+     * Set up the resource file namer
+     *
+     * @param ResourceFileNamerInterface $resourceFileNamer
+     * @return $this
+     */
+    public function setResourceFileNamer(ResourceFileNamerInterface $resourceFileNamer): self
+    {
+        $this->resourceFileNamer = $resourceFileNamer;
+        return $this;
+    }
+
     /**
      * Generate the promises to download all the elements on the metadata list that contains
      * a link to download the CFDI.
      *
-     * Then the download operation was successful it will call XmlDownloadHandlerInterface::onSuccess.
+     * Then the download operation was successful it will call ResourceDownloadHandlerInterface::onSuccess.
      * If some exception was raced when downloading, validating the response or calling onSuccess
-     * then it will call XmlDownloadHandlerInterface::onError.
+     * then it will call ResourceDownloadHandlerInterface::onError.
      *
      * The download will return an array that contains all the successful processed uuids.
      *
-     * @param XmlDownloadHandlerInterface $handler
+     * @param ResourceDownloadHandlerInterface $handler
      * @return string[]
      *
-     * @see XmlDownloaderPromiseHandler::promiseFulfilled()
-     * @see XmlDownloaderPromiseHandler::promiseRejected()
+     * @see ResourceDownloaderPromiseHandler::promiseFulfilled()
+     * @see ResourceDownloaderPromiseHandler::promiseRejected()
      */
-    public function download(XmlDownloadHandlerInterface $handler): array
+    public function download(ResourceDownloadHandlerInterface $handler): array
     {
         // wrap the privided handler into the main handler, to throw the expected exceptions
         $promisesHandler = $this->makePromiseHandler($handler);
@@ -125,15 +162,15 @@ class XmlDownloader
     }
 
     /**
-     * Factory method to make the default XmlDownloaderPromiseHandler,
-     * by extracting the creation it can be replaced with any XmlDownloaderPromiseHandlerInterface.
+     * Factory method to make the default ResourceDownloaderPromiseHandler,
+     * by extracting the creation it can be replaced with any ResourceDownloaderPromiseHandlerInterface.
      *
-     * @param XmlDownloadHandlerInterface $handler
-     * @return XmlDownloaderPromiseHandlerInterface
+     * @param ResourceDownloadHandlerInterface $handler
+     * @return ResourceDownloaderPromiseHandlerInterface
      */
-    protected function makePromiseHandler(XmlDownloadHandlerInterface $handler): XmlDownloaderPromiseHandlerInterface
+    protected function makePromiseHandler(ResourceDownloadHandlerInterface $handler): ResourceDownloaderPromiseHandlerInterface
     {
-        return new XmlDownloaderPromiseHandler($handler);
+        return new ResourceDownloaderPromiseHandler($this->getResourceType(), $handler);
     }
 
     /**
@@ -146,7 +183,7 @@ class XmlDownloader
     protected function makePromises(): Traversable
     {
         foreach ($this->getMetadataList() as $metadata) {
-            $link = $metadata->getXmlDownloadUrl();
+            $link = $metadata->getResource($this->getResourceType());
             if ('' === $link) {
                 continue;
             }
@@ -172,10 +209,12 @@ class XmlDownloader
      * @throws RuntimeException if didn't ask to create folder and path does not exists
      * @throws RuntimeException if ask to create folder path exists and is not a folder
      * @throws RuntimeException if unable to create folder
+     *
+     * @see \PhpCfdi\CfdiSatScraper\Internal\ResourceDownloadStoreInFolder
      */
     public function saveTo(string $destinationFolder, bool $createFolder = false, int $createMode = 0775): array
     {
-        $storeHandler = new XmlDownloadStoreInFolder($destinationFolder);
+        $storeHandler = new ResourceDownloadStoreInFolder($destinationFolder, $this->getResourceFileNamer());
         $storeHandler->checkDestinationFolder($createFolder, $createMode);
         return $this->download($storeHandler);
     }

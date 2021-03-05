@@ -7,6 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 use JsonSerializable;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Metadata;
+use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
 final class MetadataTest extends TestCase
@@ -43,18 +44,16 @@ final class MetadataTest extends TestCase
         new Metadata('');
     }
 
-    public function testXmlDownloadUrl(): void
+    public function testResourceDownloadXml(): void
     {
         $faker = $this->fakes()->faker();
         $uuid = $faker->uuid;
         $metadata = new Metadata($uuid);
-        $this->assertFalse($metadata->hasXmlDownloadUrl());
-        $this->assertSame('', $metadata->getXmlDownloadUrl());
+        $this->assertSame('', $metadata->get(ResourceType::xml()->value()));
 
         $url = $faker->url;
-        $metadata = new Metadata($uuid, ['urlXml' => $url]);
-        $this->assertTrue($metadata->hasXmlDownloadUrl());
-        $this->assertSame($url, $metadata->getXmlDownloadUrl());
+        $metadata = new Metadata($uuid, [ResourceType::xml()->value() => $url]);
+        $this->assertSame($url, $metadata->get(ResourceType::xml()->value()));
     }
 
     public function testJsonSerializable(): void
@@ -62,7 +61,7 @@ final class MetadataTest extends TestCase
         $faker = $this->fakes()->faker();
         $uuid = $faker->uuid;
         $values = [
-            'urlXml' => $faker->url, // this is expected
+            ResourceType::xml()->value() => $faker->url, // this is expected
             'foo' => 'bar', // this is extra
         ];
         $metadata = new Metadata($uuid, $values);

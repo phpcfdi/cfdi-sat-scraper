@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Tests;
 
 use PhpCfdi\CfdiSatScraper\Metadata;
+use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\Tests\FakesFactory\Fakes;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 
@@ -43,7 +44,7 @@ abstract class TestCase extends PHPUnitTestCase
     public static function createMetadataArrayUsingUuids(string ...$uuids): array
     {
         $contents = array_map(function (string $uuid): Metadata {
-            return new Metadata($uuid, ['urlXml' => 'http://example.com/' . $uuid]);
+            return new Metadata($uuid, [ResourceType::xml()->value() => 'http://example.com/' . $uuid]);
         }, $uuids);
         $contents = array_combine($uuids, $contents);
         return $contents ?: [];

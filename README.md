@@ -10,6 +10,8 @@
 [![Total Downloads][badge-downloads]][downloads]
 
 Obtiene las facturas emitidas, recibidas, vigentes y cancelados por medio de web scraping desde la página del SAT.
+Los recursos descargables son los archivos XML de CFDI y los archivos PDF de representación impresa,
+solicitud de cancelación y acuse de cancelación.
 
 ## Instalacion por composer
 
@@ -52,10 +54,8 @@ Una vez con el listado el sitio ofrece ligas para poder descargar el archivo XML
 El objeto principal de trabajo se llama `SatScraper` con el que se pueden realizar consultas por rango de fecha o
 por UUIDS específicos y obtener resultados.
 La consulta por UUID (uno o varios) se ejecuta con el método `listByUuids` y el resultado es un `MetadataList`.
-La consulta por filtros se llama `QueryByFilters`, se ejecuta con los métodos `listByPeriod` y `listByDateTime` y el resultado es un `MetadataList`.
-
-Una vez con los resultados `MetadataList` se puede solicitar una descarga a una carpeta específica o bien por medio
-de un objeto *handler*. El proceso de descarga permite hacer varias descargas en forma simultánea.
+La consulta por filtros se llama `QueryByFilters`, se ejecuta con los métodos `listByPeriod` y `listByDateTime`
+y el resultado es un `MetadataList`.
 
 Para generar los resultados del `MetadataList` la librería cuenta con una estrategia de división.
 Si se trata de una consulta de CFDI por filtros automáticamente se divide por día.
@@ -63,7 +63,18 @@ En caso de que en el periodo consultado se encuentren 500 o más registros enton
 en diferentes periodos, hasta llegar a la consulta mínima de 1 segundo. Luego los resultados son nuevamente unidos.
 
 Una vez que tienes un listado `MetadataList` se puede aplicar un filtro para obtener un nuevo listado con únicamente
-los objetos `Metadata` donde el UUID coincide.
+los objetos `Metadata` donde el UUID coincide; o bien, usar otros filtros como solo los que contienen un determinado
+recurso descargable.
+
+Una vez con los resultados `MetadataList` se puede solicitar una descarga a una carpeta específica o bien por medio
+de un objeto *handler*. El proceso de descarga permite hacer varias descargas en forma simultánea.
+
+La descarga puede ser de archivos de:
+
+- Archivos de CFDI (XML).
+- Representación impresa del CFDI (PDF).
+- Solicitud de cancelación (PDF).
+- Acuse de cancelación (PDF).
 
 Los métodos para ejecutar la descarga de metadata son:
 
@@ -71,14 +82,15 @@ Los métodos para ejecutar la descarga de metadata son:
 - Por filtros con días completos: `SatScraper::listByPeriod(Query $query): MetadataList`
 - Por filtros con fechas exactas: `SatScraper::listByDateTime(Query $query): MetadataList`
 
-Y una vez con el `MetadataList` se crea un objeto descargador y se le pide que ejecute las descargas.
+Y una vez con el objeto `MetadataList` se crea un objeto descargador de recursos `ResourceDownloader`
+y se le pide que ejecute las descargas por tipo de recurso.
 
-- Creación: `SatScraper::xmlDownloader(MetadataList $list = null, int $concurrency = 10): XmlDownloader`
-- Guardar a una carpeta: `XmlDownloader::saveTo(string $destination): void`
-- Guardar con un manejador: `XmlDownloader::download(XmlDownloadHandlerInterface $handler): void`
+- Creación: `SatScraper::resourceDownloader(ResourceType $resourceType, MetadataList $list = null, int $concurrency = 10): ResourceDownloader`
+- Guardar a una carpeta: `ResourceDownloader::saveTo(string $destination): void`
+- Guardar con un manejador: `ResourceDownloader::download(ResourceDownloadHandlerInterface $handler): void`
 
 Si se llega a la consulta mínima de 1 segundo y se obtuvieron 500 o más registros entonces adicionalmente
-se llama a un *callback* (opcional) para reportar este hecho.
+se llama a un *callback* (opcional) para reportar este acontecimiento.
 
 No contamos con un método propio para resolver captchas, pero se puede utilizar un servicio externo como *DeCaptcher*.
 Si cuentas con un servicio diferente solo debes implementar la interfaz `CaptchaResolverInterface`.
@@ -92,6 +104,8 @@ Gracias a esta librería podemos ofrecer descargas simultáneas de XML.
 La búsqueda siempre debe crearse con un rango de fechas, además en forma predeterminada, se busca por CFDI emitidos,
 con cualquier complemento y con cualquier estado (vigente o cancelado). Sin embargo puedes cambiar la búsqueda antes
 de enviar a procesarla.
+
+## Ejemplo de elaboración de consulta
 
 ```php
 <?php declare(strict_types=1);
@@ -119,6 +133,7 @@ $query
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
+use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\SatSessionData;
 
@@ -139,7 +154,7 @@ foreach ($list as $cfdi) {
 }
 
 // descarga de cada uno de los CFDI, reporta los descargados en $downloadedUuids
-$downloadedUuids = $satScraper->xmlDownloader($list)
+$downloadedUuids = $satScraper->resourceDownloader(ResourceType::xml(), $list)
     ->setConcurrency(50)                            // cambiar a 50 descargas simultáneas
     ->saveTo('/storage/downloads');                 // ejecutar la instrucción de descarga
 echo json_encode($downloadedUuids);
@@ -210,6 +225,7 @@ Si ocurrió un error con alguna de las descargas dicho error será ignorado.
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
+use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\SatSessionData;
 
@@ -220,34 +236,44 @@ $query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImm
 $list = $satScraper->listByPeriod($query);
 
 // $downloadedUuids contiene un listado de UUID que fueron procesados correctamente, 50 descargas simultáneas
-$downloadedUuids = $satScraper->xmlDownloader($list, 50)
+$downloadedUuids = $satScraper->resourceDownloader(ResourceType::xml(), $list, 50)
     ->saveTo('/storage/downloads', true, 0777);
 echo json_encode($downloadedUuids);
 ```
 
+De manera predeterminada, los archivos son almacenados en la carpeta como:
+
+- CFDI: `uuid` + `.xml`.
+- Representación impresa: `uuid` + `.pdf`.
+- Solicitud de cancelacion: `uuid` + `-cancel-request.pdf`.
+- Acuse de cancelacion: `uuid` + `-cancel-voucher.pdf`.
+
+Para cambiar los nombres de archivos, cree una implementacion de la interfaz `\PhpCfdi\CfdiSatScraper\Contracts\ResourceFileNamerInterface`
+y configura el descargador de recursos con el método `ResourceDownloader::setResourceFileNamer()`.
+
 ## Procesar de forma personalizada cada descarga de CFDI
 
-Ejecutar el método `download` devuelve un arreglo con los UUID que fueron efectivamente descargados.
+Ejecutar el método `ResourceDownloader::download` devuelve un arreglo con los UUID que fueron efectivamente descargados.
 Y permite configurar los eventos de descarga y manejo de errores.
 
-Si se desea ignorar los errores se puede simplemente especificar el método `XmlDownloadHandlerInterface::onError()`
+Si se desea ignorar los errores se puede simplemente especificar el método `ResourceDownloadHandlerInterface::onError()`
 sin contenido, entonces el error solamente se perderá. De todas maneras, gracias a que el método `download`
-devuelve un arreglo de UUID con los que fueron efectivamente descargados entonces se puede filtrar el `MetadataList`
-para extraer aquellos que no fueron descargados.
+devuelve un arreglo de UUID con los que fueron efectivamente descargados entonces se puede filtrar
+el objeto `MetadataList` para extraer aquellos que no fueron descargados.
 
-Vea la clase `PhpCfdi\CfdiSatScraper\Internal\XmlDownloadStoreInFolder` como ejemplo de implementación
-de la interfaz `XmlDownloadHandlerInterface`.
+Vea la clase `PhpCfdi\CfdiSatScraper\Internal\ResourceDownloadStoreInFolder` como ejemplo de implementación
+de la interfaz `ResourceDownloadHandlerInterface`.
 
 ```php
 <?php declare(strict_types=1);
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
-use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloadHandlerInterface;
-use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadError;
-use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadResponseError;
-use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadRequestExceptionError;
+use PhpCfdi\CfdiSatScraper\Contracts\ResourceDownloadHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Exceptions\ResourceDownloadError;
+use PhpCfdi\CfdiSatScraper\Exceptions\ResourceDownloadResponseError;
+use PhpCfdi\CfdiSatScraper\Exceptions\ResourceDownloadRequestExceptionError;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
-use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\ResourceType;use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\SatSessionData;
 use Psr\Http\Message\ResponseInterface;
 
@@ -258,22 +284,23 @@ $query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImm
 
 $list = $satScraper->listByPeriod($query);
 
-$myHandler = new class implements XmlDownloadHandlerInterface {
+$myHandler = new class implements ResourceDownloadHandlerInterface {
     public function onSuccess(string $uuid, string $content, ResponseInterface $response): void
     {
         $filename = '/storage/' . $uuid . '.xml';
         echo 'Saving ', $uuid, PHP_EOL;
         file_put_contents($filename, (string) $response->getBody());
     }
-    public function onError(XmlDownloadError $error) : void
+
+    public function onError(ResourceDownloadError $error) : void
     {
-        if ($error instanceof XmlDownloadRequestExceptionError) {
+        if ($error instanceof ResourceDownloadRequestExceptionError) {
             echo "Error getting {$error->getUuid()} from {$error->getReason()->getRequest()->getUri()}\n";
-        } elseif ($error instanceof XmlDownloadResponseError) {
+        } elseif ($error instanceof ResourceDownloadResponseError) {
             echo "Error getting {$error->getUuid()}, invalid response: {$error->getMessage()}\n";
             $response = $error->getReason(); // reason is a ResponseInterface
             print_r(['headers' => $response->getHeaders(), 'body' => $response->getBody()]);
-        } else { // XmlDownloadError
+        } else { // ResourceDownloadError
             echo "Error getting {$error->getUuid()}, reason: {$error->getMessage()}\n";
             print_r(['reason' => $error->getReason()]);
         }
@@ -281,7 +308,7 @@ $myHandler = new class implements XmlDownloadHandlerInterface {
 };
 
 // $downloadedUuids contiene un listado de UUID que fueron procesados correctamente
-$downloadedUuids = $satScraper->xmlDownloader($list)->download($myHandler);
+$downloadedUuids = $satScraper->resourceDownloader(ResourceType::xml(), $list)->download($myHandler);
 echo json_encode($downloadedUuids);
 ```
 
@@ -314,11 +341,13 @@ try {
 
 ## Quitar la verificación de certificados del SAT
 
-En caso de que los certificados del SAT usados en HTTPS fallen, será necerario que desactive la verificación
-de los mismos. Esto se puede lograr creando el cliente de Guzzle con la negación de la opción `verify`.
+En caso de que los certificados del SAT usados en HTTPS fallen, podría desactivar la verificación de los mismos.
+Esto se puede lograr creando el cliente de Guzzle con la negación de la opción `verify`.
 
 No es una práctica recomendada pero tal vez necesaria ante los problemas a los que el SAT se ve expuesto.
-Considera que esto podría facilitar significativamente un ataque que provoque que la pérdida de su clave CIEC.
+Considera que esto podría facilitar significativamente un ataque (*man in the middle*) que provoque que la pérdida de su clave CIEC.
+
+**Nota: No recomendamos esta práctica, solamente la exponemos por las constantes fallas que presenta el SAT.**
 
 ```php
 <?php declare(strict_types=1);
@@ -348,13 +377,13 @@ por lo que puedes usar esta librería sin temor a romper tu aplicación.
 ## Contribuciones
 
 Las contribuciones con bienvenidas. Por favor lee [CONTRIBUTING][] para más detalles
-y recuerda revisar el archivo de tareas pendientes [TODO][] y el [CHANGELOG][].
+y recuerda revisar el archivo de tareas pendientes [TODO][] y el archivo [CHANGELOG][].
 
 Documentación de desarrollo:
 
-  - [Entorno de desarrollo](https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/development/docs/EntornoDesarrollo.md)
-  - [Integración contínua](https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/development/docs/IntegracionContinua.md)
-  - [Test de integración](https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/development/docs/TestIntegracion.md)
+  - [Entorno de desarrollo](develop/docs/EntornoDesarrollo.md)
+  - [Integración contínua](develop/docs/IntegracionContinua.md)
+  - [Test de integración](develop/docs/TestIntegracion.md)
 
 ## Copyright and License
 
