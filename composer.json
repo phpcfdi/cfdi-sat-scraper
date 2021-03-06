@@ -45,7 +45,7 @@
     "require-dev": {
         "ext-iconv": "*",
         "symfony/dotenv": "^5.1",
-        "fzaninotto/faker": "^1.8",
+        "fakerphp/faker": "^1.13",
         "phpunit/phpunit": "^9.1"
     },
     "scripts": {
