@@ -2,21 +2,30 @@
 
 ## Acerca de los números de versiones
 
-Respetamos el estándar [Versionado Semántico 2.0.0](https://semver.org/lang/es/).
+Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta librería sin temor a romper tu aplicación.
 
-En resumen, [SemVer](https://semver.org/) es un sistema de versiones de tres componentes `X.Y.Z`
-que nombraremos así: ` Breaking . Feature . Fix `, donde:
+## Version 2.0.0
 
-- `Breaking`: Rompe la compatibilidad de código con versiones anteriores.
-- `Feature`: Agrega una nueva característica que es compatible con lo anterior.
-- `Fix`: Incluye algún cambio (generalmente correcciones) que no agregan nueva funcionalidad.
+### Descarga de diferentes tipos de recursos
 
-**Importante:** Las reglas de SEMVER no aplican si estás usando una rama (por ejemplo `master-dev`)
-o estás usando una versión cero (por ejemplo `0.18.4`).
+Hasta la versión `1.x` el scraper solo descargaba los archivos de CFDI de tipo XML.
+A partir de la versión `2.x` es posible descargar 4 tipos diferentes definidos en el enumerador `ResourceType`:
 
-## UNRELEASED 2020-10-14
+- El tipo `ResourceType::xml()` es para el archivo XML del CFDI.
+- El tipo `ResourceType::pdf()` es para la representación impresa en formato PDF del CFDI.
+- El tipo `ResourceType::cancelRequest()` es para la solicitud de cancelación del CFDI en formato PDF.
+- El tipo `ResourceType::cancelVoucher()` es para el acuse de cancelación del CFDI en formato PDF.
 
-Este cambio no afecta la versión liberada y no requiere de un nuevo release.
+El método `SatScraper::xmlDownloader` ha cambiado a `SatScraper::resourceDownloader`.
+
+Las clases llamadas `XmlDownload...` ahora se llaman `ResourceDownload...`.
+Esto incluye clases de la API, contratos, excepciones, clases internas, etc.
+
+Se actualizó la documentación y ejemplos para la nueva API.
+
+### Cambios desde 2020-10-14
+
+Este cambio no afectó la versión liberada y no requiere de un nuevo release.
 
 - La construcción en Travis-CI se rompió porque PHPStan version 0.12.55 ya entiende las estructuras de control
   de PHPUnit, por lo que sabe que el código subsecuente es código muerto. Se corrigieron las pruebas con problemas.

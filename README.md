@@ -371,8 +371,8 @@ $scraper = new SatScraper($sessionData, $gateway);
 Esta librería se mantendrá compatible con al menos la versión con
 [soporte activo de PHP](https://www.php.net/supported-versions.php) más reciente.
 
-También utilizamos [Versionado Semántico 2.0.0](https://semver.org/lang/es/)
-por lo que puedes usar esta librería sin temor a romper tu aplicación.
+También utilizamos [Versionado Semántico 2.0.0](docs/SEMVER.md) por lo que puedes usar esta librería
+sin temor a romper tu aplicación.
 
 ## Contribuciones
 
@@ -381,9 +381,10 @@ y recuerda revisar el archivo de tareas pendientes [TODO][] y el archivo [CHANGE
 
 Documentación de desarrollo:
 
-  - [Entorno de desarrollo](develop/docs/EntornoDesarrollo.md)
-  - [Integración contínua](develop/docs/IntegracionContinua.md)
-  - [Test de integración](develop/docs/TestIntegracion.md)
+- [Guía de contribuciones](CONTRIBUTING.md)
+- [Entorno de desarrollo](develop/docs/EntornoDesarrollo.md)
+- [Integración contínua](develop/docs/IntegracionContinua.md)
+- [Test de integración](develop/docs/TestIntegracion.md)
 
 ## Copyright and License
 
