@@ -16,6 +16,11 @@ use Symfony\Component\DomCrawler\Crawler;
  */
 class MetadataExtractor
 {
+    /**
+     * @param string $html
+     * @param array<string, string>|null $fieldsCaptions
+     * @return MetadataList
+     */
     public function extract(string $html, ?array $fieldsCaptions = null): MetadataList
     {
         if (null === $fieldsCaptions) {
@@ -53,6 +58,7 @@ class MetadataExtractor
         return new MetadataList($data);
     }
 
+    /** @return array<string, string> */
     public function defaultFieldsCaptions(): array
     {
         return [
@@ -73,29 +79,41 @@ class MetadataExtractor
         ];
     }
 
+    /**
+     * @param Crawler $headersRow
+     * @param array<string, string> $fieldsCaptions
+     * @return array<string, int>
+     */
     public function locateFieldsPositions(Crawler $headersRow, array $fieldsCaptions): array
     {
         try {
+            /** @var array<int, string> $headerCells */
             $headerCells = $headersRow->children()->each(
                 function (Crawler $cell) {
                     return trim($cell->text());
                 }
             );
         } catch (RuntimeException $exception) {
-            $headerCells = [];
+            return [];
         }
 
-        $headerPositions = $fieldsCaptions;
-        foreach ($headerPositions as $field => $label) {
-            $headerPositions[$field] = array_search($label, $headerCells);
-            if (false === $headerPositions[$field]) {
-                unset($headerPositions[$field]);
+        $headerPositions = [];
+        foreach ($fieldsCaptions as $field => $label) {
+            /** @var int|false $search */
+            $search = array_search($label, $headerCells);
+            if (false !== $search) {
+                $headerPositions[$field] = $search;
             }
         }
 
         return $headerPositions;
     }
 
+    /**
+     * @param Crawler $row
+     * @param array<string, int> $fieldsPositions
+     * @return array<string, string>
+     */
     public function obtainMetadataValues(Crawler $row, array $fieldsPositions): array
     {
         try {

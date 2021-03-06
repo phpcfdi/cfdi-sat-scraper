@@ -65,6 +65,10 @@ final class ParserFormatSatTest extends TestCase
         $this->assertSame($data, $parser->getFormValues($source));
     }
 
+    /**
+     * @param array<string, string> $values
+     * @return string
+     */
     public function buildFakeSourceData(array $values): string
     {
         return implode('', array_map(function ($fieldName, $fieldValue): string {

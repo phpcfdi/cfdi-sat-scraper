@@ -52,6 +52,7 @@ class IntegrationTestCase extends TestCase
         }
     }
 
+    /** @return mixed[] */
     public function providerEmitidosRecibidos(): array
     {
         return [

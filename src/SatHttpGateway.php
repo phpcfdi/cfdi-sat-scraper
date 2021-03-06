@@ -62,7 +62,7 @@ class SatHttpGateway
     }
 
     /**
-     * @param array $formData
+     * @param array<string, string> $formData
      * @return string
      * @throws SatHttpGatewayException
      */
@@ -73,7 +73,7 @@ class SatHttpGateway
 
     /**
      * @param string $loginUrl
-     * @param array $formParams
+     * @param array<string, string> $formParams
      * @return string
      * @throws SatHttpGatewayException
      */
@@ -95,7 +95,7 @@ class SatHttpGateway
 
     /**
      * @param string $url
-     * @param array $formParams
+     * @param array<string, string> $formParams
      * @return string
      * @throws SatHttpGatewayException
      */
@@ -157,8 +157,8 @@ class SatHttpGateway
      *
      * @param string $reason
      * @param string $url
-     * @param array $headers
-     * @param array $data
+     * @param array<string, mixed> $headers
+     * @param array<string, string> $data
      * @return string
      * @throws SatHttpGatewayException
      */

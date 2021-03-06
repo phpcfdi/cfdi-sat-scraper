@@ -16,6 +16,16 @@ class SatHttpGatewayClientException extends SatHttpGatewayException implements S
     /** @var GuzzleException */
     private $clientException;
 
+    /**
+     * SatHttpGatewayClientException constructor.
+     *
+     * @param string $message
+     * @param string $httpMethod
+     * @param string $url
+     * @param array<string, mixed> $requestHeaders
+     * @param array<string, mixed> $requestData
+     * @param GuzzleException $previous
+     */
     protected function __construct(
         string $message,
         string $httpMethod,
@@ -28,6 +38,17 @@ class SatHttpGatewayClientException extends SatHttpGatewayException implements S
         $this->clientException = $previous;
     }
 
+    /**
+     * Method factory
+     *
+     * @param string $when
+     * @param string $method
+     * @param string $url
+     * @param array<string, mixed> $requestHeaders
+     * @param array<string, mixed> $requestData
+     * @param GuzzleException $exception
+     * @return self
+     */
     public static function clientException(string $when, string $method, string $url, array $requestHeaders, array $requestData, GuzzleException $exception): self
     {
         return new self("HTTP client error when $when", $method, $url, $requestHeaders, $requestData, $exception);

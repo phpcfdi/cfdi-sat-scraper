@@ -43,6 +43,11 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
         return static::fromArray($decoded);
     }
 
+    /**
+     * @param array<array<string, string>> $dataItems
+     * @return self
+     * @throws \Exception
+     */
     public static function fromArray(array $dataItems): self
     {
         $items = [];
@@ -138,14 +143,13 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
         return $date;
     }
 
-    /**
-     * @return Traversable<RepositoryItem>|RepositoryItem[]
-     */
+    /** @return Traversable<RepositoryItem> */
     public function getIterator()
     {
         return new ArrayIterator($this->items);
     }
 
+    /** @return RepositoryItem[] */
     public function jsonSerialize(): array
     {
         return iterator_to_array($this->getIterator());

@@ -12,10 +12,10 @@ use PhpCfdi\CfdiSatScraper\MetadataList;
 
 final class FakeQueryResolver extends QueryResolver
 {
-    /** @var array */
+    /** @var array<array{date: DateTimeImmutable, list: MetadataList}> */
     private $fakeMoments = [];
 
-    /** @var array */
+    /** @var array<array{start: string, end: string, count: int}> */
     public $resolveCalls = [];
 
     /** @noinspection PhpMissingParentConstructorInspection */
@@ -23,6 +23,7 @@ final class FakeQueryResolver extends QueryResolver
     {
     }
 
+    /** @noinspection PhpMissingParentCallCommonInspection */
     public function resolve(InputsInterface $inputs): MetadataList
     {
         if ($inputs instanceof InputsByFilters) {

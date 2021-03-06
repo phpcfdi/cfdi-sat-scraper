@@ -55,6 +55,7 @@ final class FakeResourceDownloaderPromiseHandler implements ResourceDownloaderPr
         return $this->downloadedUuids;
     }
 
+    /** @return string[] */
     public function rejectedUuids(): array
     {
         return $this->rejectedUuids;

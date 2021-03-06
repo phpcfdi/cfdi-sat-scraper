@@ -114,7 +114,7 @@ class CaptchaLocalResolverClient
 
     /**
      * @param string $uri
-     * @param array $data
+     * @param array<string, string> $data
      * @return ResponseInterface
      * @throws RuntimeException if http transaction error occurs
      */
