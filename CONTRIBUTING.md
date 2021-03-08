@@ -64,6 +64,7 @@ Considera las siguientes directrices:
 ```shell
 # Actualiza tus dependencias
 composer update
+composer dev:install
 
 # Verificación de estilo de código
 composer dev:check-style
@@ -74,7 +75,7 @@ composer dev:fix-style
 # Ejecución de pruebas
 composer dev:test
 
-# Ejecución todo en uno, corregir estilo, verificar estilo y correr pruebas
+# Ejecución todo en uno: corregir estilo, verificar estilo y correr pruebas
 composer dev:build
 ```
 
