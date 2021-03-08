@@ -273,7 +273,8 @@ use PhpCfdi\CfdiSatScraper\Exceptions\ResourceDownloadError;
 use PhpCfdi\CfdiSatScraper\Exceptions\ResourceDownloadResponseError;
 use PhpCfdi\CfdiSatScraper\Exceptions\ResourceDownloadRequestExceptionError;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
-use PhpCfdi\CfdiSatScraper\ResourceType;use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\ResourceType;
+use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\SatSessionData;
 use Psr\Http\Message\ResponseInterface;
 
