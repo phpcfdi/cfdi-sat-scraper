@@ -7,7 +7,7 @@ build:
   dependencies:
     override:
       - composer self-update --no-interaction --no-progress
-      - composer install --no-interaction
+      - composer upgrade --no-interaction --prefer-dist
   nodes:
     analysis:
       tests:

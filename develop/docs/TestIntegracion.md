@@ -76,7 +76,7 @@ CAPTCHA_LOCAL_PORT="9595"
 CAPTCHA_LOCAL_TIMEOUT="30"
 ```
 
-la ejecución sería de la siguiente manera:
+La ejecución sería de la siguiente manera:
 
 ```shell
 cd ../captcha-local-resolver/

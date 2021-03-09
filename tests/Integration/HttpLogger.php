@@ -117,6 +117,10 @@ class HttpLogger extends ArrayObject
         return $json;
     }
 
+    /**
+     * @param string $body
+     * @return array<string, string[]>
+     */
     public function bodyToVars(string $body): array
     {
         $variables = [];

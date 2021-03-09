@@ -8,6 +8,7 @@ use JsonSerializable;
 use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\MetadataList;
+use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
 final class MetadataListTest extends TestCase
@@ -130,7 +131,7 @@ final class MetadataListTest extends TestCase
         $this->assertSame($expectedFiltered, iterator_to_array($filtered->getIterator()), 'List does not contains the same elements');
     }
 
-    public function testFilterWithDownloadLink(): void
+    public function testFilterWithResourceLink(): void
     {
         $faker = $this->fakes()->faker();
         $withXmlUrl = $this->createMetadataArrayUsingUuids(...[ // 3 items
@@ -138,13 +139,13 @@ final class MetadataListTest extends TestCase
             $faker->uuid,
             $faker->uuid,
         ]);
-        $metadatas = $withXmlUrl + [  // + 2 items withour url
+        $metadatas = $withXmlUrl + [  // + 2 items without url
             $uuid = $faker->uuid => new Metadata($uuid),
             $uuid = $faker->uuid => new Metadata($uuid),
         ];
         shuffle($metadatas);
         $metadataList = new MetadataList($metadatas);
-        $filtered = $metadataList->filterWithDownloadLink();
+        $filtered = $metadataList->filterWithResourceLink(ResourceType::xml());
         $this->assertEquals($withXmlUrl, iterator_to_array($filtered));
     }
 

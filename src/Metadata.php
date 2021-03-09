@@ -40,16 +40,6 @@ class Metadata implements JsonSerializable
         return $this->data['uuid'];
     }
 
-    public function getXmlDownloadUrl(): string
-    {
-        return $this->get('urlXml');
-    }
-
-    public function hasXmlDownloadUrl(): bool
-    {
-        return '' !== $this->getXmlDownloadUrl();
-    }
-
     public function get(string $key): string
     {
         return strval($this->data[$key] ?? '');
@@ -58,6 +48,16 @@ class Metadata implements JsonSerializable
     public function has(string $key): bool
     {
         return isset($this->data[$key]);
+    }
+
+    public function getResource(ResourceType $resourceType): string
+    {
+        return $this->get($resourceType->value());
+    }
+
+    public function hasResource(ResourceType $resourceType): bool
+    {
+        return $this->has($resourceType->value());
     }
 
     /** @return array<string, string> */

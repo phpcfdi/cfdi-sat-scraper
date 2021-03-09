@@ -4,34 +4,40 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Internal;
 
-use PhpCfdi\CfdiSatScraper\Contracts\XmlDownloadHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\ResourceDownloadHandlerInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\ResourceFileNamerInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
+use PhpCfdi\CfdiSatScraper\Exceptions\ResourceDownloadError;
 use PhpCfdi\CfdiSatScraper\Exceptions\RuntimeException;
-use PhpCfdi\CfdiSatScraper\Exceptions\XmlDownloadError;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
 /**
- * This is a class to perform the XmlDownloader::saveTo method.
- * @see \PhpCfdi\CfdiSatScraper\XmlDownloader::saveTo()
+ * This is a class to perform the ResourceDownloader::saveTo method.
+ *
+ * @see \PhpCfdi\CfdiSatScraper\ResourceDownloader::saveTo()
  */
-final class XmlDownloadStoreInFolder implements XmlDownloadHandlerInterface
+final class ResourceDownloadStoreInFolder implements ResourceDownloadHandlerInterface
 {
     /** @var string */
     private $destinationFolder;
 
+    /** @var ResourceFileNamerInterface */
+    private $resourceFileNamer;
+
     /**
-     * XmlDownloadStoreInFolder constructor.
+     * ResourceDownloadStoreInFolder constructor.
      *
      * @param string $destinationFolder
-     * @throws InvalidArgumentException if destination folder argument is empty
+     * @param ResourceFileNamerInterface $resourceFileNamer
      */
-    public function __construct(string $destinationFolder)
+    public function __construct(string $destinationFolder, ResourceFileNamerInterface $resourceFileNamer)
     {
         if ('' === $destinationFolder) {
             throw InvalidArgumentException::emptyInput('destination folder');
         }
         $this->destinationFolder = $destinationFolder;
+        $this->resourceFileNamer = $resourceFileNamer;
     }
 
     public function getDestinationFolder(): string
@@ -39,13 +45,18 @@ final class XmlDownloadStoreInFolder implements XmlDownloadHandlerInterface
         return $this->destinationFolder;
     }
 
+    public function getResouceFileNamer(): ResourceFileNamerInterface
+    {
+        return $this->resourceFileNamer;
+    }
+
     public function pathFor(string $uuid): string
     {
-        return $this->getDestinationFolder() . DIRECTORY_SEPARATOR . $uuid . '.xml';
+        return $this->getDestinationFolder() . DIRECTORY_SEPARATOR . $this->resourceFileNamer->nameFor($uuid);
     }
 
     /**
-     * This method is invoked from XmlDownloader::saveTo() to validate that the
+     * This method is invoked from ResourceDownloader::saveTo() to validate that the
      * destination folder exists or create it.
      *
      * @param bool $createDestinationFolder
@@ -58,15 +69,13 @@ final class XmlDownloadStoreInFolder implements XmlDownloadHandlerInterface
     public function checkDestinationFolder(bool $createDestinationFolder, int $createMode = 0755): void
     {
         $destinationFolder = $this->getDestinationFolder();
-        if (! $createDestinationFolder) {
-            if (! is_dir($destinationFolder)) {
-                throw RuntimeException::pathDoesNotExists($destinationFolder);
-            }
-            return;
-        }
 
         if (is_dir($destinationFolder)) {
             return;
+        }
+
+        if (! $createDestinationFolder) {
+            throw RuntimeException::pathDoesNotExists($destinationFolder);
         }
 
         if (file_exists($destinationFolder)) {
@@ -89,7 +98,7 @@ final class XmlDownloadStoreInFolder implements XmlDownloadHandlerInterface
     /**
      * @inheritDoc
      */
-    public function onError(XmlDownloadError $error): void
+    public function onError(ResourceDownloadError $error): void
     {
         // errors are just ignored
     }

@@ -7,11 +7,12 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
 use PhpCfdi\CfdiSatScraper\Internal\SatSessionManager;
 use PhpCfdi\CfdiSatScraper\MetadataList;
+use PhpCfdi\CfdiSatScraper\ResourceDownloader;
+use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\SatSessionData;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
-use PhpCfdi\CfdiSatScraper\XmlDownloader;
 
 final class SatScraperFactoryMethodsTest extends TestCase
 {
@@ -36,21 +37,21 @@ final class SatScraperFactoryMethodsTest extends TestCase
         $this->assertSame($scraper->getOnFiveHundred(), $downloader->getOnFiveHundred());
     }
 
-    public function testXmlDownloaderWithArguments(): void
+    public function testResourceDownloaderWithArguments(): void
     {
         $medatadaList = new MetadataList([]);
         $concurrency = 100;
         $scraper = new SatScraper($this->createMock(SatSessionData::class), $this->createMock(SatHttpGateway::class));
-        $downloader = $scraper->xmlDownloader($medatadaList, $concurrency);
+        $downloader = $scraper->resourceDownloader(ResourceType::xml(), $medatadaList, $concurrency);
         $this->assertSame($concurrency, $downloader->getConcurrency());
         $this->assertSame($medatadaList, $downloader->getMetadataList());
     }
 
-    public function testXmlDownloaderDefaults(): void
+    public function testResourceDownloaderDefaults(): void
     {
         $scraper = new SatScraper($this->createMock(SatSessionData::class), $this->createMock(SatHttpGateway::class));
-        $downloader = $scraper->xmlDownloader();
-        $this->assertSame(XmlDownloader::DEFAULT_CONCURRENCY, $downloader->getConcurrency());
+        $downloader = $scraper->resourceDownloader();
+        $this->assertSame(ResourceDownloader::DEFAULT_CONCURRENCY, $downloader->getConcurrency());
         $this->assertFalse($downloader->hasMetadataList());
     }
 

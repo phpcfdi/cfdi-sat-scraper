@@ -12,7 +12,7 @@ use Throwable;
  *
  * @method ResponseInterface getReason()
  */
-class XmlDownloadResponseError extends XmlDownloadError
+class ResourceDownloadResponseError extends ResourceDownloadError
 {
     public function __construct(string $message, string $uuid, ResponseInterface $response, Throwable $previous = null)
     {
@@ -36,6 +36,11 @@ class XmlDownloadResponseError extends XmlDownloadError
     public static function contentIsNotCfdi(ResponseInterface $response, string $uuid): self
     {
         return new self(sprintf('Download of CFDI %s return something that is not a CFDI', $uuid), $uuid, $response);
+    }
+
+    public static function contentIsNotPdf(ResponseInterface $response, string $uuid, string $mimeType): self
+    {
+        return new self(sprintf('Download of CFDI %s return something that is not a PDF (mime %s)', $uuid, $mimeType), $uuid, $response);
     }
 
     public static function onSuccessException(ResponseInterface $response, string $uuid, Throwable $throwable): self

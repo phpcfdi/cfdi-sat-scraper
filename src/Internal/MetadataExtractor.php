@@ -6,6 +6,7 @@ namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\MetadataList;
+use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\URLS;
 use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
@@ -15,6 +16,11 @@ use Symfony\Component\DomCrawler\Crawler;
  */
 class MetadataExtractor
 {
+    /**
+     * @param string $html
+     * @param array<string, string>|null $fieldsCaptions
+     * @return MetadataList
+     */
     public function extract(string $html, ?array $fieldsCaptions = null): MetadataList
     {
         if (null === $fieldsCaptions) {
@@ -40,7 +46,10 @@ class MetadataExtractor
                 if ('' === ($metadata['uuid'] ?? '')) {
                     return null;
                 }
-                $metadata['urlXml'] = $this->obtainUrlXml($row);
+                $metadata[ResourceType::xml()->value()] = $this->obtainUrlXml($row);
+                $metadata[ResourceType::pdf()->value()] = $this->obtainUrlPdf($row);
+                $metadata[ResourceType::cancelRequest()->value()] = $this->obtainUrlCancelRequest($row);
+                $metadata[ResourceType::cancelVoucher()->value()] = $this->obtainUrlCancelVoucher($row);
                 return new Metadata($metadata['uuid'], $metadata);
             }
         );
@@ -49,6 +58,7 @@ class MetadataExtractor
         return new MetadataList($data);
     }
 
+    /** @return array<string, string> */
     public function defaultFieldsCaptions(): array
     {
         return [
@@ -69,29 +79,41 @@ class MetadataExtractor
         ];
     }
 
+    /**
+     * @param Crawler $headersRow
+     * @param array<string, string> $fieldsCaptions
+     * @return array<string, int>
+     */
     public function locateFieldsPositions(Crawler $headersRow, array $fieldsCaptions): array
     {
         try {
+            /** @var array<int, string> $headerCells */
             $headerCells = $headersRow->children()->each(
                 function (Crawler $cell) {
                     return trim($cell->text());
                 }
             );
         } catch (RuntimeException $exception) {
-            $headerCells = [];
+            return [];
         }
 
-        $headerPositions = $fieldsCaptions;
-        foreach ($headerPositions as $field => $label) {
-            $headerPositions[$field] = array_search($label, $headerCells);
-            if (false === $headerPositions[$field]) {
-                unset($headerPositions[$field]);
+        $headerPositions = [];
+        foreach ($fieldsCaptions as $field => $label) {
+            /** @var int|false $search */
+            $search = array_search($label, $headerCells);
+            if (false !== $search) {
+                $headerPositions[$field] = $search;
             }
         }
 
         return $headerPositions;
     }
 
+    /**
+     * @param Crawler $row
+     * @param array<string, int> $fieldsPositions
+     * @return array<string, string>
+     */
     public function obtainMetadataValues(Crawler $row, array $fieldsPositions): array
     {
         try {
@@ -109,26 +131,57 @@ class MetadataExtractor
 
     public function obtainUrlXml(Crawler $row): string
     {
-        try {
-            $spansBtnDownload = $row->filter('span#BtnDescarga');
-        } catch (RuntimeException $exception) {
-            return '';
-        }
-
-        if (0 === $spansBtnDownload->count()) { // button not found
-            return '';
-        }
-
-        $onClickAttribute = $spansBtnDownload->first()->attr('onclick') ?? '';
-        if ('' === $onClickAttribute) { // button without text
-            return '';
-        }
-
-        // change javascript call and replace it with complete url
+        $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnDescarga');
         return str_replace(
             ["return AccionCfdi('", "','Recuperacion');"],
             [URLS::SAT_URL_PORTAL_CFDI, ''],
             $onClickAttribute
         );
+    }
+
+    public function obtainUrlPdf(Crawler $row): string
+    {
+        $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnRI');
+        return str_replace(
+            ["recuperaRepresentacionImpresa('", "');"],
+            [URLS::SAT_URL_PORTAL_CFDI . 'RepresentacionImpresa.aspx?Datos=', ''],
+            $onClickAttribute
+        );
+    }
+
+    public function obtainUrlCancelRequest(Crawler $row): string
+    {
+        $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnRecuperaAcuse');
+        return str_replace(
+            ["AccionCfdi('", "','Acuse');"],
+            [URLS::SAT_URL_PORTAL_CFDI, ''],
+            $onClickAttribute
+        );
+    }
+
+    public function obtainUrlCancelVoucher(Crawler $row): string
+    {
+        $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnRecuperaAcuseFinal');
+        // change javascript call and replace it with complete url
+        return str_replace(
+            ["javascript:window.location.href='", "';"],
+            [URLS::SAT_URL_PORTAL_CFDI, ''],
+            $onClickAttribute
+        );
+    }
+
+    private function obtainOnClickFromElement(Crawler $crawler, string $elementFilter): string
+    {
+        try {
+            $filteredElements = $crawler->filter($elementFilter);
+        } catch (RuntimeException $exception) {
+            return '';
+        }
+
+        if (0 === $filteredElements->count()) { // button not found
+            return '';
+        }
+
+        return $filteredElements->first()->attr('onclick') ?? '';
     }
 }
