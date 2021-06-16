@@ -44,9 +44,9 @@
     },
     "require-dev": {
         "ext-iconv": "*",
+        "phpunit/phpunit": "^9.5",
         "symfony/dotenv": "^5.1",
-        "fakerphp/faker": "^1.13",
-        "phpunit/phpunit": "^9.1"
+        "fakerphp/faker": "^1.13"
     },
     "scripts": {
         "dev:install": [
@@ -66,7 +66,7 @@
         ],
         "dev:tests": [
             "@dev:check-style",
-            "@php vendor/bin/phpunit tests/Unit --testdox --verbose",
+            "@php vendor/bin/phpunit --testdox --verbose",
             "@php tools/phpstan analyze --level max --no-progress --verbose src/ tests/"
         ]
     },

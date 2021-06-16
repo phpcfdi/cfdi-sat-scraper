@@ -83,3 +83,9 @@ cd ../captcha-local-resolver/
 php bin/service.php 127.0.0.1 9595
 xdg-open http://127.0.0.1:9595
 ```
+
+Y para ejecutar los tests:
+
+```
+php vendor/bin/phpunit --testsuite integration --verbose
+```

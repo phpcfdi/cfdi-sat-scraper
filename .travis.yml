@@ -15,7 +15,7 @@ before_script:
 script:
   - tools/php-cs-fixer fix --verbose --dry-run
   - tools/phpcs --colors -sp src/ tests/
-  - vendor/bin/phpunit tests/ --testdox --no-interaction --verbose
+  - vendor/bin/phpunit --testsuite complete --testdox --no-interaction --verbose
   - tools/phpstan analyze --level max --no-progress --verbose src/ tests/
 
 notifications:
