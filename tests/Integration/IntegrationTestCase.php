@@ -32,7 +32,6 @@ class IntegrationTestCase extends TestCase
         return static::$factory;
     }
 
-    /** @noinspection PhpInconsistentReturnPointsInspection PhpStorm does not understand PHPUnit control flow */
     protected function getSatScraper(): SatScraper
     {
         try {
@@ -42,7 +41,6 @@ class IntegrationTestCase extends TestCase
         }
     }
 
-    /** @noinspection PhpInconsistentReturnPointsInspection PhpStorm does not understand PHPUnit control flow */
     protected function getRepository(): Repository
     {
         try {

@@ -4,18 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Inputs;
 
-use PhpCfdi\CfdiSatScraper\QueryByFilters;
-
-/**
- * @method QueryByFilters getQuery()
- */
 class InputsByFiltersReceived extends InputsByFilters implements InputsInterface
 {
-    public function __construct(QueryByFilters $query)
-    {
-        parent::__construct($query);
-    }
-
     /** @return array<string, string> */
     public function getDateFilters(): array
     {

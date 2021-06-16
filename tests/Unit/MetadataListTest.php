@@ -90,23 +90,22 @@ final class MetadataListTest extends TestCase
     public function testFilterWithUuids(): void
     {
         $uuids = [
-            $uuid1 = $this->fakes()->faker()->uuid,
+            $uuid0 = $this->fakes()->faker()->uuid,
+            $this->fakes()->faker()->uuid,
             $uuid2 = $this->fakes()->faker()->uuid,
-            $uuid3 = $this->fakes()->faker()->uuid,
-            $uuid4 = $this->fakes()->faker()->uuid,
         ];
-        $uuidsFilter = [$uuid1, $uuid3];
+        $uuidsFilter = [$uuid0, $uuid2];
         $list = new MetadataList($this->createMetadataArrayUsingUuids(...$uuids));
         $expectedFiltered = [
-            $uuid1 => $list->get($uuid1),
-            $uuid3 => $list->get($uuid3),
+            $uuid0 => $list->get($uuid0),
+            $uuid2 => $list->get($uuid2),
         ];
 
         $filtered = $list->filterWithUuids($uuidsFilter);
 
         $this->assertNotSame($filtered, $list, 'A new instance was expected');
-        $this->assertTrue($filtered->has($uuid1), 'Expected filtered uuid was not found');
-        $this->assertSame($filtered->get($uuid1), $list->get($uuid1), 'Items from the filtered list must be the same instace');
+        $this->assertTrue($filtered->has($uuid0), 'Expected filtered uuid was not found');
+        $this->assertSame($filtered->get($uuid0), $list->get($uuid0), 'Items from the filtered list must be the same instace');
         $this->assertSame($expectedFiltered, iterator_to_array($filtered->getIterator()), 'List does not contains the same elements');
     }
 

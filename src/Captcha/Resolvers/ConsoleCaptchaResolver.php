@@ -8,9 +8,9 @@ use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 
 class ConsoleCaptchaResolver implements CaptchaResolverInterface
 {
-    public function decode(string $image): string
+    public function decode(string $base64Image): string
     {
-        $temporaryFile = $this->storeImage($image);
+        $temporaryFile = $this->storeImage($base64Image);
         $this->writeLine("\nResolve the captcha stored on file $temporaryFile: ");
         $decoded = $this->readLine();
         if (file_exists($temporaryFile)) {

@@ -33,7 +33,6 @@ class RepositoryItem implements JsonSerializable
     /**
      * @param array<string, string> $item
      * @return self
-     * @throws Exception
      */
     public static function fromArray(array $item): self
     {

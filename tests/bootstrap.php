@@ -16,13 +16,19 @@ call_user_func(new class() {
         if (! $this->environmentFileExists($environmentFile)) {
             return;
         }
-        $dotenv = new Symfony\Component\Dotenv\Dotenv();
-        $dotenv->usePutenv();
-        $dotenv->load($environmentFile);
+
+        $this->loadEnvironmentFile($environmentFile);
     }
 
     public function environmentFileExists(string $environmentFile): bool
     {
         return file_exists($environmentFile) && ! is_dir($environmentFile) && is_readable($environmentFile);
+    }
+
+    public function loadEnvironmentFile(string $environmentFile): void
+    {
+        $dotenv = new Symfony\Component\Dotenv\Dotenv();
+        $dotenv->usePutenv();
+        $dotenv->load($environmentFile);
     }
 });
