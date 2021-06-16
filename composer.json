@@ -2,6 +2,7 @@
     "name": "phpcfdi/cfdi-sat-scraper",
     "type": "library",
     "description": "Web Scraping para extraer facturas electrónicas desde la página del SAT",
+    "keywords": ["sat", "cfdi", "scrap", "mexico"],
     "license": "MIT",
     "authors": [
         {
