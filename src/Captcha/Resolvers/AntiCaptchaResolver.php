@@ -4,22 +4,53 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Captcha\Resolvers;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\AntiCaptchaTinyClient\AntiCaptchaTinyClient;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use RuntimeException;
 
 class AntiCaptchaResolver implements CaptchaResolverInterface
 {
+    public const DEFAULT_TIMEOUT = 30;
+
     /** @var AntiCaptchaTinyClient */
     private $antiCaptcha;
 
     /** @var int */
     private $timeout;
 
-    public function __construct(AntiCaptchaTinyClient $antiCaptcha, int $timeout = 30)
+    public function __construct(AntiCaptchaTinyClient $antiCaptcha, int $timeout)
     {
         $this->antiCaptcha = $antiCaptcha;
-        $this->timeout = max(1, $timeout);
+        $this->timeout = $timeout;
+    }
+
+    /**
+     * Factory method with defaults
+     *
+     * @param string $clientKey
+     * @param ClientInterface|null $httpClient
+     * @param int $timeout
+     * @return self
+     */
+    public static function create(
+        string $clientKey,
+        ClientInterface $httpClient = null,
+        int $timeout = self::DEFAULT_TIMEOUT
+    ): self {
+        $httpClient = $httpClient ?? new Client();
+        return new self(new AntiCaptchaTinyClient($httpClient, $clientKey), $timeout);
+    }
+
+    public function getTimeout(): int
+    {
+        return $this->timeout;
+    }
+
+    public function getAntiCaptchaClient(): AntiCaptchaTinyClient
+    {
+        return $this->antiCaptcha;
     }
 
     /**

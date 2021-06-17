@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Captcha\Resolvers;
 
+use GuzzleHttp\ClientInterface;
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\AntiCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\AntiCaptchaTinyClient\AntiCaptchaTinyClient;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
@@ -15,6 +16,41 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 final class AntiCaptchaResolverTest extends TestCase
 {
+    public function testConstruct(): void
+    {
+        $antiCaptchaClient = $this->createMock(AntiCaptchaTinyClient::class);
+
+        $resolver = new AntiCaptchaResolver($antiCaptchaClient, AntiCaptchaResolver::DEFAULT_TIMEOUT);
+
+        $this->assertSame($antiCaptchaClient, $resolver->getAntiCaptchaClient());
+        $this->assertSame(AntiCaptchaResolver::DEFAULT_TIMEOUT, $resolver->getTimeout());
+    }
+
+    public function testCreateWithDefaults(): void
+    {
+        $clientKey = 'CLIENT-KEY';
+
+        $resolver = AntiCaptchaResolver::create($clientKey);
+
+        $this->assertSame($clientKey, $resolver->getAntiCaptchaClient()->getClientKey());
+        $this->assertInstanceOf(ClientInterface::class, $resolver->getAntiCaptchaClient()->getClient());
+        $this->assertSame(AntiCaptchaResolver::DEFAULT_TIMEOUT, $resolver->getTimeout());
+    }
+
+    public function testCreateWithArguments(): void
+    {
+        $clientKey = 'CLIENT-KEY';
+        /** @var ClientInterface $antiCaptchaClient*/
+        $antiCaptchaClient = $this->createMock(ClientInterface::class);
+        $timeout = 10;
+
+        $resolver = AntiCaptchaResolver::create($clientKey, $antiCaptchaClient, $timeout);
+
+        $this->assertSame($clientKey, $resolver->getAntiCaptchaClient()->getClientKey());
+        $this->assertSame($antiCaptchaClient, $resolver->getAntiCaptchaClient()->getClient());
+        $this->assertSame($timeout, $resolver->getTimeout());
+    }
+
     public function testDecode(): void
     {
         /*
