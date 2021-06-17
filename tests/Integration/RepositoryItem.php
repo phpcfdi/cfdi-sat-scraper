@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 
 use DateTimeImmutable;
-use Exception;
 use JsonSerializable;
 
 class RepositoryItem implements JsonSerializable

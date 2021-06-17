@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpUnhandledExceptionInspection */
+<?php
+
+/** @noinspection PhpUnhandledExceptionInspection */
 
 declare(strict_types=1);
 
@@ -46,7 +48,7 @@ final class AntiCaptchaTinyClientTest extends TestCase
      */
     public function createResponse(array $responseData): Response
     {
-        return new Response(200, ['Content-Type', 'application/json'], json_encode($responseData));
+        return new Response(200, ['Content-Type', 'application/json'], json_encode($responseData) ?: '');
     }
 
     public function testCreateTaskReturnId(): void
@@ -137,7 +139,6 @@ final class AntiCaptchaTinyClientTest extends TestCase
         $this->expectExceptionMessage("Unknown status 'FOO' for task");
         $this->client->getTaskResult('TASK-ID');
     }
-
 
     public function testGetBalance(): void
     {
