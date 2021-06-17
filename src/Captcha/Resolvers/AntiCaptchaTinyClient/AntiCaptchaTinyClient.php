@@ -31,6 +31,16 @@ class AntiCaptchaTinyClient
         $this->clientKey = $clientKey;
     }
 
+    public function getClientKey(): string
+    {
+        return $this->clientKey;
+    }
+
+    public function getClient(): ClientInterface
+    {
+        return $this->client;
+    }
+
     /**
      * @param string $base64Image
      * @return string

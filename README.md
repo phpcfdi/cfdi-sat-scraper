@@ -92,18 +92,22 @@ y se le pide que ejecute las descargas por tipo de recurso.
 Si se llega a la consulta mínima de 1 segundo y se obtuvieron 500 o más registros entonces adicionalmente
 se llama a un *callback* (opcional) para reportar este acontecimiento.
 
-No contamos con un método propio para resolver captchas, pero se puede utilizar un servicio externo como *DeCaptcher*.
-Si cuentas con un servicio diferente solo debes implementar la interfaz `CaptchaResolverInterface`.
-Aceptamos PR de nuevas implementaciones. La recomendación es crear un paquete diferente que permita
-conectarse con un servicio externo, por ejemplo: `tu-vendor/cfdi-sat-scraper-mi-servicio-captcha-resolver`.
+La búsqueda siempre debe crearse con un rango de fechas, además en forma predeterminada, se busca por CFDI emitidos,
+con cualquier complemento y con cualquier estado (vigente o cancelado). Sin embargo puedes cambiar la búsqueda antes
+de enviar a procesarla.
 
 Esta librería está basada en [Guzzle](https://github.com/guzzle/guzzle), por lo que puedes configurar el cliente
 a tus propias necesidades como configurar un proxy o depurar las llamadas HTTP.
 Gracias a esta librería podemos ofrecer descargas simultáneas de XML.
 
-La búsqueda siempre debe crearse con un rango de fechas, además en forma predeterminada, se busca por CFDI emitidos,
-con cualquier complemento y con cualquier estado (vigente o cancelado). Sin embargo puedes cambiar la búsqueda antes
-de enviar a procesarla.
+No contamos con un método propio para resolver captchas, pero se puede utilizar un servicio externo como
+[*DeCaptcher*](https://de-captcher.com/) o [*Anti-Captcha*](https://anti-captcha.com). Para testeo puedes
+usar [`eclipxe/captcha-local-resolver](https://github.com/eclipxe13/captcha-local-resolver) donde tú mismo
+serás el que resuelve los captchas, las tres implementaciones están creadas.
+
+Si cuentas con un servicio diferente solo debes implementar la interfaz `CaptchaResolverInterface`.
+Aceptamos PR de nuevas implementaciones. La recomendación es crear un paquete diferente que permita
+conectarse con un servicio externo, por ejemplo: `tu-vendor/cfdi-sat-scraper-mi-servicio-captcha-resolver`.
 
 ## Ejemplo de elaboración de consulta
 
@@ -186,8 +190,7 @@ echo json_encode($list);
 
 El servicio ofrecido por el SAT tiene límites, entre ellos, no se pueden obtener más de 500 registros
 en un rango de fechas. Esta librería trata de reducir el rango para obtener todos los datos, sin embargo,
-si se presenta que en un mismo segundo existen 500 o más CFDI, entonces se puede invocar una función
-que le puede ayudar a considerar este escenario.
+si se presenta este caso, entonces se puede invocar una función que le puede ayudar a considerar este escenario.
 
 ```php
 <?php declare(strict_types=1);
@@ -311,6 +314,35 @@ $myHandler = new class implements ResourceDownloadHandlerInterface {
 // $downloadedUuids contiene un listado de UUID que fueron procesados correctamente
 $downloadedUuids = $satScraper->resourceDownloader(ResourceType::xml(), $list)->download($myHandler);
 echo json_encode($downloadedUuids);
+```
+
+## Usar el servicio *De-Captcher*
+
+```php
+<?php declare(strict_types=1);
+
+use GuzzleHttp\Client;
+use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
+use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
+
+$captchaResolver = new DeCaptcherCaptchaResolver(new Client(), 'decaptcher-user', 'decaptcher-password');
+
+$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+```
+
+## Usar el servicio *Anti-Captcha*
+
+```php
+<?php declare(strict_types=1);
+
+use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\AntiCaptchaResolver;
+use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
+
+$captchaResolver = AntiCaptchaResolver::create('anticaptcha-client-key');
+
+$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
 ```
 
 ## Verificar datos de autenticación sin hacer una consulta
