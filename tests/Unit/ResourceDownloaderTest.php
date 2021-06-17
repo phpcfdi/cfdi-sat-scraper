@@ -122,13 +122,15 @@ final class ResourceDownloaderTest extends TestCase
     {
         // given this metadataList
         $metadataList = new MetadataList($this->createMetadataArrayUsingUuids(...[
-            $uuidWithUrlXml1 = $this->fakes()->faker()->uuid,
+            $uuidWithUrlXml0 = $this->fakes()->faker()->uuid,
+            $this->fakes()->faker()->uuid,
             $uuidWithUrlXml2 = $this->fakes()->faker()->uuid,
-            $uuidWithUrlXml3 = $this->fakes()->faker()->uuid,
         ]));
 
         // given a well known behavior for a fake ResourceDownloaderPromiseHandlerInterface
+        // the behavior is that only even entries are downloaded, odd entries are rejected
         $downloader = new class(new SatHttpGateway(), ResourceType::xml()) extends ResourceDownloader {
+            /** @noinspection PhpMissingParentCallCommonInspection */
             public function makePromiseHandler(ResourceDownloadHandlerInterface $handler): ResourceDownloaderPromiseHandlerInterface
             {
                 return new FakeResourceDownloaderPromiseHandler();
@@ -138,12 +140,12 @@ final class ResourceDownloaderTest extends TestCase
         $downloader->setConcurrency(1);
 
         // when running download
-        /** @var ResourceDownloadHandlerInterface|MockObject $downloadHandler */
+        /** @var ResourceDownloadHandlerInterface&MockObject $downloadHandler */
         $downloadHandler = $this->createMock(ResourceDownloadHandlerInterface::class);
         $downloaded = $downloader->download($downloadHandler);
 
         // then will get only the odd uuids
-        $expectedUuids = [$uuidWithUrlXml1, $uuidWithUrlXml3];
+        $expectedUuids = [$uuidWithUrlXml0, $uuidWithUrlXml2];
         $this->assertSame($expectedUuids, $downloaded);
     }
 }

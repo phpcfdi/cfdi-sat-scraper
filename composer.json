@@ -2,11 +2,16 @@
     "name": "phpcfdi/cfdi-sat-scraper",
     "type": "library",
     "description": "Web Scraping para extraer facturas electrónicas desde la página del SAT",
+    "keywords": ["sat", "cfdi", "scrap", "mexico"],
     "license": "MIT",
     "authors": [
         {
             "name": "Cesar Aguilera",
             "email": "cesargnu29@gmail.com"
+        },
+        {
+            "name": "Carlos C Soto",
+            "email": "eclipxe13@gmail.com"
         }
     ],
     "config": {
@@ -44,9 +49,9 @@
     },
     "require-dev": {
         "ext-iconv": "*",
+        "phpunit/phpunit": "^9.5",
         "symfony/dotenv": "^5.1",
-        "fakerphp/faker": "^1.13",
-        "phpunit/phpunit": "^9.1"
+        "fakerphp/faker": "^1.13"
     },
     "scripts": {
         "dev:install": [
@@ -58,16 +63,16 @@
         ],
         "dev:check-style": [
             "@php tools/php-cs-fixer fix --dry-run --verbose",
-            "@php tools/phpcs --colors -sp src/ tests/"
+            "@php tools/phpcs --colors -sp"
         ],
         "dev:fix-style": [
             "@php tools/php-cs-fixer fix --verbose",
-            "@php tools/phpcbf --colors -sp src/ tests/"
+            "@php tools/phpcbf --colors -sp"
         ],
         "dev:tests": [
             "@dev:check-style",
-            "@php vendor/bin/phpunit tests/Unit --testdox --verbose",
-            "@php tools/phpstan analyze --level max --no-progress --verbose src/ tests/"
+            "@php vendor/bin/phpunit --testdox --verbose",
+            "@php tools/phpstan analyze --no-progress --verbose"
         ]
     },
     "scripts-descriptions": {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use DateTimeImmutable;
+use Generator;
 use PhpCfdi\CfdiSatScraper\Contracts\QueryInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
@@ -17,7 +18,6 @@ use PhpCfdi\CfdiSatScraper\Inputs\InputsInterface;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\QueryByUuid;
-use Traversable;
 
 /**
  * Class MetadataDownloader contains the logic to manipulate queries to obtain metadata
@@ -203,7 +203,7 @@ class MetadataDownloader
      * Generates a clone of this query splitted by day
      *
      * @param QueryByFilters $query
-     * @return Traversable<QueryByFilters>|QueryByFilters[]
+     * @return Generator<QueryByFilters>
      */
     public function splitQueryByFiltersByDays(QueryByFilters $query)
     {

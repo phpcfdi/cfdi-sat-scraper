@@ -46,7 +46,6 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
     /**
      * @param array<array<string, string>> $dataItems
      * @return self
-     * @throws \Exception
      */
     public static function fromArray(array $dataItems): self
     {

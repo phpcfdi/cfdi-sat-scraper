@@ -17,10 +17,10 @@ class CaptchaLocalResolver implements CaptchaResolverInterface
         $this->client = $client;
     }
 
-    public function decode(string $image): string
+    public function decode(string $base64Image): string
     {
         try {
-            return $this->client->resolveImage($image);
+            return $this->client->resolveImage($base64Image);
         } catch (RuntimeException $exception) {
             return '';
         }

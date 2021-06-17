@@ -1,2 +1,5 @@
 parameters:
-    inferPrivatePropertyTypeFromConstructor: false
+    level: max
+    paths:
+        - src
+        - tests

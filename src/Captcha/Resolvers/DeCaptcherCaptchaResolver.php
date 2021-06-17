@@ -44,11 +44,11 @@ class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
     }
 
     /**
-     * @param string $image
+     * @param string $base64Image
      * @return string
      * @throws GuzzleException if an error on http transaction
      */
-    public function decode(string $image): string
+    public function decode(string $base64Image): string
     {
         $response = $this->client->request(
             'POST',
@@ -57,7 +57,7 @@ class DeCaptcherCaptchaResolver implements CaptchaResolverInterface
                 'multipart' => [
                     [
                         'name' => 'pict',
-                        'contents' => fopen("data://text/plain;base64,{$image}", 'r'),
+                        'contents' => fopen("data://text/plain;base64,{$base64Image}", 'r'),
                     ],
                     [
                         'name' => 'function',

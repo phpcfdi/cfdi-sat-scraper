@@ -117,6 +117,7 @@ final class SatScraperDownloadMethodsTest extends TestCase
             /** @var SatSessionManager */
             public $sessionManager;
 
+            /** @noinspection PhpMissingParentCallCommonInspection */
             protected function createSessionManager(): SatSessionManager
             {
                 return $this->sessionManager;

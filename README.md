@@ -345,7 +345,7 @@ try {
 En caso de que los certificados del SAT usados en HTTPS fallen, podría desactivar la verificación de los mismos.
 Esto se puede lograr creando el cliente de Guzzle con la negación de la opción `verify`.
 
-No es una práctica recomendada pero tal vez necesaria ante los problemas a los que el SAT se ve expuesto.
+No es una práctica recomendada, pero tal vez necesaria ante los problemas a los que el SAT se ve expuesto.
 Considera que esto podría facilitar significativamente un ataque (*man in the middle*) que provoque que la pérdida de su clave CIEC.
 
 **Nota: No recomendamos esta práctica, solamente la exponemos por las constantes fallas que presenta el SAT.**
@@ -367,7 +367,7 @@ $gateway = new SatHttpGateway($insecureClient);
 $scraper = new SatScraper($sessionData, $gateway);
 ```
 
-## Compatilibilidad
+## Compatibilidad
 
 Esta librería se mantendrá compatible con al menos la versión con
 [soporte activo de PHP](https://www.php.net/supported-versions.php) más reciente.

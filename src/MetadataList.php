@@ -108,7 +108,7 @@ class MetadataList implements Countable, IteratorAggregate, JsonSerializable
     }
 
     /**
-     * @return Traversable|Metadata[]
+     * @return Traversable<Metadata>
      */
     public function getIterator()
     {
