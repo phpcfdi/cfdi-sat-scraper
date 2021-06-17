@@ -6,14 +6,13 @@ filter:
 build:
   dependencies:
     override:
-      - composer self-update --no-interaction --no-progress
       - composer upgrade --no-interaction --prefer-dist
   nodes:
-    analysis:
+    analysis: # see https://scrutinizer-ci.com/docs/tools/php/php-scrutinizer/
+      project_setup: { override: true }
       tests:
         override:
           - php-scrutinizer-run --enable-security-analysis
-          - command: vendor/bin/phpunit --testdox --no-interaction --verbose --coverage-clover=coverage.clover
-            coverage:
-              file: coverage.clover
-              format: clover
+
+tools:
+  external_code_coverage: true

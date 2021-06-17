@@ -1,6 +1,5 @@
 <?php
 /**
- * @noinspection PhpDocMissingThrowsInspection
  * @noinspection PhpUnhandledExceptionInspection
  */
 
@@ -32,17 +31,19 @@ class HttpLogger extends ArrayObject
     }
 
     /**
-     * @param mixed $entry
+     * @inheritDoc
+     * @param mixed $value
      */
-    public function append($entry): void
+    public function append($value): void
     {
-        $this->write($entry);
-        parent::append($entry);
+        $this->write($value);
+        parent::append($value);
     }
 
     /**
      * @param int|string|null $index
      * @param mixed $entry
+     * @noinspection PhpParameterNameChangedDuringInheritanceInspection
      */
     public function offsetSet($index, $entry): void
     {
@@ -77,7 +78,7 @@ class HttpLogger extends ArrayObject
             $time->format('c'),
             $time->format('u'),
             strtolower($request->getMethod()),
-            $this->slugify((string) sprintf('%s%s', $request->getUri()->getHost(), $request->getUri()->getPath()))
+            $this->slugify(sprintf('%s%s', $request->getUri()->getHost(), $request->getUri()->getPath()))
         );
         file_put_contents($file, $this->entryToJson($request, $response), FILE_APPEND);
     }

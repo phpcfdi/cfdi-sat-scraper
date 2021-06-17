@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Inputs;
 
-use PhpCfdi\CfdiSatScraper\QueryByFilters;
-
-/**
- * @method QueryByFilters getQuery()
- */
 class InputsByFiltersIssued extends InputsByFilters implements InputsInterface
 {
     /** @return array<string, string> */

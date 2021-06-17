@@ -92,18 +92,22 @@ y se le pide que ejecute las descargas por tipo de recurso.
 Si se llega a la consulta mínima de 1 segundo y se obtuvieron 500 o más registros entonces adicionalmente
 se llama a un *callback* (opcional) para reportar este acontecimiento.
 
-No contamos con un método propio para resolver captchas, pero se puede utilizar un servicio externo como *DeCaptcher*.
-Si cuentas con un servicio diferente solo debes implementar la interfaz `CaptchaResolverInterface`.
-Aceptamos PR de nuevas implementaciones. La recomendación es crear un paquete diferente que permita
-conectarse con un servicio externo, por ejemplo: `tu-vendor/cfdi-sat-scraper-mi-servicio-captcha-resolver`.
+La búsqueda siempre debe crearse con un rango de fechas, además en forma predeterminada, se busca por CFDI emitidos,
+con cualquier complemento y con cualquier estado (vigente o cancelado). Sin embargo puedes cambiar la búsqueda antes
+de enviar a procesarla.
 
 Esta librería está basada en [Guzzle](https://github.com/guzzle/guzzle), por lo que puedes configurar el cliente
 a tus propias necesidades como configurar un proxy o depurar las llamadas HTTP.
 Gracias a esta librería podemos ofrecer descargas simultáneas de XML.
 
-La búsqueda siempre debe crearse con un rango de fechas, además en forma predeterminada, se busca por CFDI emitidos,
-con cualquier complemento y con cualquier estado (vigente o cancelado). Sin embargo puedes cambiar la búsqueda antes
-de enviar a procesarla.
+No contamos con un método propio para resolver captchas, pero se puede utilizar un servicio externo como
+[*DeCaptcher*](https://de-captcher.com/) o [*Anti-Captcha*](https://anti-captcha.com). Para testeo puedes
+usar [`eclipxe/captcha-local-resolver](https://github.com/eclipxe13/captcha-local-resolver) donde tú mismo
+serás el que resuelve los captchas, las tres implementaciones están creadas.
+
+Si cuentas con un servicio diferente solo debes implementar la interfaz `CaptchaResolverInterface`.
+Aceptamos PR de nuevas implementaciones. La recomendación es crear un paquete diferente que permita
+conectarse con un servicio externo, por ejemplo: `tu-vendor/cfdi-sat-scraper-mi-servicio-captcha-resolver`.
 
 ## Ejemplo de elaboración de consulta
 
@@ -186,8 +190,7 @@ echo json_encode($list);
 
 El servicio ofrecido por el SAT tiene límites, entre ellos, no se pueden obtener más de 500 registros
 en un rango de fechas. Esta librería trata de reducir el rango para obtener todos los datos, sin embargo,
-si se presenta que en un mismo segundo existen 500 o más CFDI, entonces se puede invocar una función
-que le puede ayudar a considerar este escenario.
+si se presenta este caso, entonces se puede invocar una función que le puede ayudar a considerar este escenario.
 
 ```php
 <?php declare(strict_types=1);
@@ -313,6 +316,35 @@ $downloadedUuids = $satScraper->resourceDownloader(ResourceType::xml(), $list)->
 echo json_encode($downloadedUuids);
 ```
 
+## Usar el servicio *De-Captcher*
+
+```php
+<?php declare(strict_types=1);
+
+use GuzzleHttp\Client;
+use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
+use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
+
+$captchaResolver = new DeCaptcherCaptchaResolver(new Client(), 'decaptcher-user', 'decaptcher-password');
+
+$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+```
+
+## Usar el servicio *Anti-Captcha*
+
+```php
+<?php declare(strict_types=1);
+
+use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\AntiCaptchaResolver;
+use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\SatSessionData;
+
+$captchaResolver = AntiCaptchaResolver::create('anticaptcha-client-key');
+
+$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+```
+
 ## Verificar datos de autenticación sin hacer una consulta
 
 El siguiente ejemplo muestra cómo usar el método `SatScraper::confirmSessionIsAlive` para verificar que
@@ -345,7 +377,7 @@ try {
 En caso de que los certificados del SAT usados en HTTPS fallen, podría desactivar la verificación de los mismos.
 Esto se puede lograr creando el cliente de Guzzle con la negación de la opción `verify`.
 
-No es una práctica recomendada pero tal vez necesaria ante los problemas a los que el SAT se ve expuesto.
+No es una práctica recomendada, pero tal vez necesaria ante los problemas a los que el SAT se ve expuesto.
 Considera que esto podría facilitar significativamente un ataque (*man in the middle*) que provoque que la pérdida de su clave CIEC.
 
 **Nota: No recomendamos esta práctica, solamente la exponemos por las constantes fallas que presenta el SAT.**
@@ -367,7 +399,7 @@ $gateway = new SatHttpGateway($insecureClient);
 $scraper = new SatScraper($sessionData, $gateway);
 ```
 
-## Compatilibilidad
+## Compatibilidad
 
 Esta librería se mantendrá compatible con al menos la versión con
 [soporte activo de PHP](https://www.php.net/supported-versions.php) más reciente.
@@ -400,7 +432,7 @@ and licensed for use under the MIT License (MIT). Please see [LICENSE][] for mor
 [discord]: https://discord.gg/aFGYXvX
 [release]: https://github.com/phpcfdi/cfdi-sat-scraper/releases
 [license]: https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/LICENSE
-[build]: https://travis-ci.com/phpcfdi/cfdi-sat-scraper?branch=master
+[build]: https://github.com/phpcfdi/cfdi-sat-scraper/actions/workflows/build.yml?query=branch:master
 [quality]: https://scrutinizer-ci.com/g/phpcfdi/cfdi-sat-scraper/
 [coverage]: https://scrutinizer-ci.com/g/phpcfdi/cfdi-sat-scraper/code-structure/master/code-coverage/src/
 [downloads]: https://packagist.org/packages/phpcfdi/cfdi-sat-scraper
@@ -409,7 +441,7 @@ and licensed for use under the MIT License (MIT). Please see [LICENSE][] for mor
 [badge-discord]: https://img.shields.io/discord/459860554090283019?style=flat-square
 [badge-release]: https://img.shields.io/github/release/phpcfdi/cfdi-sat-scraper?style=flat-square
 [badge-license]: https://img.shields.io/github/license/phpcfdi/cfdi-sat-scraper?style=flat-square
-[badge-build]: https://img.shields.io/travis/com/phpcfdi/cfdi-sat-scraper/master?style=flat-square
+[badge-build]: https://img.shields.io/github/workflow/status/phpcfdi/sat-estado-retenciones/build/master?style=flat-square
 [badge-quality]: https://img.shields.io/scrutinizer/g/phpcfdi/cfdi-sat-scraper/master?style=flat-square
 [badge-coverage]: https://img.shields.io/scrutinizer/coverage/g/phpcfdi/cfdi-sat-scraper/master?style=flat-square
 [badge-downloads]: https://img.shields.io/packagist/dt/phpcfdi/cfdi-sat-scraper?style=flat-square

@@ -4,6 +4,17 @@
 
 Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta librería sin temor a romper tu aplicación.
 
+## Version 2.1.0
+
+Se agrega la implementación para resolver el *captcha* en la clase `AntiCaptchaResolver`,
+que a su vez usa la clase `AntiCaptchaTinyClient` como un cliente de conectividad mínimo.
+
+Se modifica el entorno de desarrollo y bloques de documentación de PHP para asegurar la construcción del proyecto.
+Estos cambios no son importantes si estás usando la librería y son con respecto a desarrollo interno.
+
+Los flujos de pruebas de integración contínua ahora se migraron a GitHub Actions,
+Travis-CI ha sido de gran ayuda en el desarrollo de este proyecto.
+
 ## Version 2.0.0
 
 ### Descarga de diferentes tipos de recursos

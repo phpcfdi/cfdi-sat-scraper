@@ -19,6 +19,7 @@ final class MetadataExtractorTest extends TestCase
             'rfcEmisor' => 'RFC Emisor',
         ];
 
+        /** @noinspection PhpUnhandledExceptionInspection */
         $firstRow = (new Crawler(
             '<tr><th>Alpha</th><th>Folio Fiscal</th><th>RFC Emisor</th></tr>'
         ))->filter('tr')->first();
@@ -40,6 +41,7 @@ final class MetadataExtractorTest extends TestCase
             'bar' => 1, // bravo
         ];
 
+        /** @noinspection PhpUnhandledExceptionInspection */
         $row = (new Crawler(
             '<tr><td>Alpha</td><td>Bravo</td><td>Charlie</td><td>Delta</td><td>Echo</td></tr>'
         ))->filter('tr')->first();
@@ -56,6 +58,7 @@ final class MetadataExtractorTest extends TestCase
 
     public function testObtainMetadataValuesWithEmptyRow(): void
     {
+        /** @noinspection PhpUnhandledExceptionInspection */
         $row = (new Crawler('<tr></tr>'))->filter('tr')->first();
         $extractor = new MetadataExtractor();
         $values = $extractor->obtainMetadataValues($row, ['uuid' => 1]);
@@ -65,6 +68,7 @@ final class MetadataExtractorTest extends TestCase
 
     public function testObtainUrlWithoutButton(): void
     {
+        /** @noinspection PhpUnhandledExceptionInspection */
         $row = (new Crawler('<tr></tr>'))->filter('tr')->first();
         $extractor = new MetadataExtractor();
         $this->assertEmpty($extractor->obtainUrlXml($row));

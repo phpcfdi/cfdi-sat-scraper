@@ -4,7 +4,7 @@ Los tests de integración realizan consultas al sitio web del SAT y por lo tanto
 personales, entonces no pueden funcionar igual para todos.
 
 Por lo anterior, partimos de que los tests de integración deben adecuarse a probar con flexibilidad sobre
-una *fuente de verdad*, así entonces, los tests de integración van a verificar que efectivamente se esté
+una *fuente de verdad*. Así entonces, los tests de integración van a verificar que efectivamente se esté
 realizando una tarea en particular (como descargar un CFDI por UUID) tomando como fuente de verdad como
 los datos esperados.
 
@@ -66,7 +66,7 @@ Lee la documentación de <https://github.com/eclipxe13/captcha-local-resolver>.
 - Ejecuta el servicio con un host y puerto.
 - Abre tu navegador apuntando a la dirección donde ejecutaste el servicio.
 - Configura el entorno para conectar los tests con el resolvedor.
-- Corre los tests, en cuando se requiera un captcha lo debes ver en el navegador, lo resuelves y listo.
+- Corre los tests, en cuando se requiera un captcha lo verás en el navegador, lo resuelves y listo.
 
 Con la siguiente configuración:
 
@@ -82,4 +82,10 @@ La ejecución sería de la siguiente manera:
 cd ../captcha-local-resolver/
 php bin/service.php 127.0.0.1 9595
 xdg-open http://127.0.0.1:9595
+```
+
+Y para ejecutar los tests:
+
+```
+php vendor/bin/phpunit --testsuite integration --verbose
 ```

@@ -1,0 +1,73 @@
+name: build
+on:
+  pull_request:
+    branches:
+      - "master"
+  push:
+    branches:
+      - "master"
+  schedule:
+    - cron: '0 16 * * 0' # sunday 16:00
+
+jobs:
+  build:
+    name: PHP ${{ matrix.php-versions }}
+    runs-on: "ubuntu-latest"
+
+    strategy:
+      matrix:
+        php-versions: ['7.3', '7.4', '8.0']
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # see https://github.com/marketplace/actions/setup-php-action
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: curl, libxml, simplexml, dom, json, filter, fileinfo, iconv
+          coverage: xdebug
+          tools: composer:v2, cs2pr, phpcs, php-cs-fixer, phpstan
+        env:
+          fail-fast: true
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install project dependencies
+        run: composer upgrade --no-interaction --no-progress --prefer-dist
+
+      - name: Code style (phpcs)
+        run: phpcs -q --report=checkstyle | cs2pr
+
+      - name: Code style (php-cs-fixer)
+        run: php-cs-fixer fix --dry-run --format=checkstyle | cs2pr
+
+      - name: Tests (phpunit)
+        run: vendor/bin/phpunit --testdox --verbose
+        if: ${{ matrix.php-versions != '8.0' }}
+
+      - name: Tests (phpunit with code coverage)
+        run: vendor/bin/phpunit --testdox --verbose --coverage-clover=build/coverage-clover.xml
+        if: ${{ matrix.php-versions == '8.0' }}
+
+      - name: Code analysis (phpstan)
+        run: phpstan analyse --no-progress --verbose
+
+      # see https://github.com/marketplace/actions/action-scrutinizer
+      - name: Upload code coverage to scrutinizer
+        uses: sudo-bot/action-scrutinizer@latest
+        with:
+          cli-args: "--format=php-clover build/coverage-clover.xml"
+        if: ${{ matrix.php-versions == '8.0' }}

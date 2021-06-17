@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 
 use DateTimeImmutable;
-use Exception;
 use JsonSerializable;
 
 class RepositoryItem implements JsonSerializable
@@ -33,7 +32,6 @@ class RepositoryItem implements JsonSerializable
     /**
      * @param array<string, string> $item
      * @return self
-     * @throws Exception
      */
     public static function fromArray(array $item): self
     {
