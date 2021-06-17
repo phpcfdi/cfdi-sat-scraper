@@ -11,6 +11,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\FileCookieJar;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\AntiCaptchaResolver;
+use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\AntiCaptchaTinyClient\AntiCaptchaTinyClient;
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\ConsoleCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
@@ -61,6 +63,15 @@ class Factory
                 new Client(),
                 strval(getenv('DECAPTCHER_USERNAME')),
                 strval(getenv('DECAPTCHER_PASSWORD'))
+            );
+        }
+
+        if ('anticaptcha' === $resolver) {
+            return new AntiCaptchaResolver(
+                new AntiCaptchaTinyClient(
+                    new Client(),
+                    strval(getenv('ANTICAPTCHA_CLIENT_KEY'))
+                )
             );
         }
 
