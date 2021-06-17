@@ -432,7 +432,7 @@ and licensed for use under the MIT License (MIT). Please see [LICENSE][] for mor
 [discord]: https://discord.gg/aFGYXvX
 [release]: https://github.com/phpcfdi/cfdi-sat-scraper/releases
 [license]: https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/LICENSE
-[build]: https://travis-ci.com/phpcfdi/cfdi-sat-scraper?branch=master
+[build]: https://github.com/phpcfdi/cfdi-sat-scraper/actions/workflows/build.yml?query=branch:master
 [quality]: https://scrutinizer-ci.com/g/phpcfdi/cfdi-sat-scraper/
 [coverage]: https://scrutinizer-ci.com/g/phpcfdi/cfdi-sat-scraper/code-structure/master/code-coverage/src/
 [downloads]: https://packagist.org/packages/phpcfdi/cfdi-sat-scraper
@@ -441,7 +441,7 @@ and licensed for use under the MIT License (MIT). Please see [LICENSE][] for mor
 [badge-discord]: https://img.shields.io/discord/459860554090283019?style=flat-square
 [badge-release]: https://img.shields.io/github/release/phpcfdi/cfdi-sat-scraper?style=flat-square
 [badge-license]: https://img.shields.io/github/license/phpcfdi/cfdi-sat-scraper?style=flat-square
-[badge-build]: https://img.shields.io/travis/com/phpcfdi/cfdi-sat-scraper/master?style=flat-square
+[badge-build]: https://img.shields.io/github/workflow/status/phpcfdi/sat-estado-retenciones/build/master?style=flat-square
 [badge-quality]: https://img.shields.io/scrutinizer/g/phpcfdi/cfdi-sat-scraper/master?style=flat-square
 [badge-coverage]: https://img.shields.io/scrutinizer/coverage/g/phpcfdi/cfdi-sat-scraper/master?style=flat-square
 [badge-downloads]: https://img.shields.io/packagist/dt/phpcfdi/cfdi-sat-scraper?style=flat-square
