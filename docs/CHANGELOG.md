@@ -4,6 +4,12 @@
 
 Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta librería sin temor a romper tu aplicación.
 
+## Cambios aún no liberados en una versión.
+
+- 2021-07-05: Tests: En las pruebas de `AntiCaptchaTinyClient` las respuestas preparadas no tenían correctamente
+  formados los `HEADERS`.
+- 2021-07-05: CI: Se permite que falle la subida del archivo de cobertura de código a Scrutinizer-CI.
+
 ## Version 2.1.0
 
 Se agrega la implementación para resolver el *captcha* en la clase `AntiCaptchaResolver`,

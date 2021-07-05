@@ -48,7 +48,7 @@ final class AntiCaptchaTinyClientTest extends TestCase
      */
     public function createResponse(array $responseData): Response
     {
-        return new Response(200, ['Content-Type', 'application/json'], json_encode($responseData) ?: '');
+        return new Response(200, ['Content-Type' => 'application/json'], json_encode($responseData) ?: '');
     }
 
     public function testCreateTaskReturnId(): void

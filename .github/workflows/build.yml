@@ -71,3 +71,4 @@ jobs:
         with:
           cli-args: "--format=php-clover build/coverage-clover.xml"
         if: ${{ matrix.php-versions == '8.0' }}
+        continue-on-error: true
