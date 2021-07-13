@@ -428,7 +428,7 @@ and licensed for use under the MIT License (MIT). Please see [LICENSE][] for mor
 [changelog]: https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/docs/CHANGELOG.md
 [todo]: https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/docs/TODO.md
 
-[source]: https://github.com/phpcfdi/scfdi-sat-scraper
+[source]: https://github.com/phpcfdi/cfdi-sat-scraper
 [discord]: https://discord.gg/aFGYXvX
 [release]: https://github.com/phpcfdi/cfdi-sat-scraper/releases
 [license]: https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/LICENSE
