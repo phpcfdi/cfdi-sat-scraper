@@ -117,10 +117,10 @@ class AntiCaptchaTinyClient
         }
 
         $result = json_decode($response);
-        $errorId = strval($result->errorId ?? '');
-        if ('' !== $errorId) {
+        $errorId = intval($result->errorId ?? 0);
+        if (0 !== $errorId) {
             throw new RuntimeException(
-                sprintf('Anti-Captcha Error (%s): %s', $errorId, strval($result->errorDescription ?? ''))
+                sprintf('Anti-Captcha Error (%s): %s', $errorId, strval($result->errorDescription ?? '(unknown)'))
             );
         }
 
