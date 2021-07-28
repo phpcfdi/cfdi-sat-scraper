@@ -6,8 +6,16 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión.
 
+No hay cambios pendientes por liberar.
+
+## Version 2.1.1
+
+Se corrige un bug al consumir el servicio de Anti-Captcha donde estaba asumiendo que el código de error
+era un string vacío cuando en realidad es un número entero.
+
 - 2021-07-05: Tests: En las pruebas de `AntiCaptchaTinyClient` las respuestas preparadas no tenían correctamente
   formados los `HEADERS`.
+
 - 2021-07-05: CI: Se permite que falle la subida del archivo de cobertura de código a Scrutinizer-CI.
 
 ## Version 2.1.0
