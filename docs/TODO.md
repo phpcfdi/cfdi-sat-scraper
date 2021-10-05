@@ -3,8 +3,6 @@
 ## Pendientes
 
 - Core:
-    - Actualizar Guzzle de versión 6 a versión 7.
-    - Eliminar componentes de Symfony menores a 5.1.
     - Clases que vienen de Enum deberían ser finales.
     - Incrementar las pruebas unitarias a un mínimo de 80%.
 - Documentación:
@@ -20,6 +18,10 @@
   y permitir también la autenticación por FIEL.
 
 ## Realizadas
+
+- 2020-07-18:
+    - Se actualizó `guzzlehttp/guzzle` a `^7.0`.
+    - Se actualizó `symfony/dom-crawler` y `symfony/css-selector` a `^5.1`.
 
 - 2020-04-18:
     - Se actualizaron las versiones a `php:>=7.3` y `phpunit:^9.1`.
