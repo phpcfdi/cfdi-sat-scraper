@@ -8,6 +8,7 @@
 - Documentación:
     - Todos los puntos de entrada deben tener phpdoc.
 - Entorno de desarrollo:
+    - Sustituir el uso de `getenv` por `$_SERVER`.
     - CodeStyle: Subir a PSR-12.
     - Definir el estilo de código de la coma final en un listado de parámetros.
 
