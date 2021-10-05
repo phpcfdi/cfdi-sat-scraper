@@ -5,6 +5,7 @@
 - Core:
     - Clases que vienen de Enum deberían ser finales.
     - Incrementar las pruebas unitarias a un mínimo de 80%.
+    - Implementar `phpcfdi/image-captcha-resolver`.
 - Documentación:
     - Todos los puntos de entrada deben tener phpdoc.
 - Entorno de desarrollo:
