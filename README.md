@@ -139,10 +139,10 @@ use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+$satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
 
 $query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->listByPeriod($query);
@@ -172,10 +172,10 @@ echo json_encode($downloadedUuids);
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+$satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
 
 $uuids = [
     '5cc88a1a-8672-11e6-ae22-56b6b6499611',
@@ -198,7 +198,7 @@ si se presenta este caso, entonces se puede invocar una función que le puede ay
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 
 // define onFiveHundred callback
 $onFiveHundred = function (DateTimeImmutable $date) {
@@ -207,10 +207,10 @@ $onFiveHundred = function (DateTimeImmutable $date) {
 
 // create scraper using the callback
 /**
- * @var SatSessionData $sessionData
+ * @var SessionManager $sessionManager
  * @var SatHttpGateway $httpGateway
  */
-$satScraper = new SatScraper($sessionData, $httpGateway, $onFiveHundred);
+$satScraper = new SatScraper($sessionManager, $httpGateway, $onFiveHundred);
 
 $query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->listByPeriod($query);
@@ -230,10 +230,10 @@ use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+$satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
 
 $query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->listByPeriod($query);
@@ -278,11 +278,11 @@ use PhpCfdi\CfdiSatScraper\Exceptions\ResourceDownloadRequestExceptionError;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
 use Psr\Http\Message\ResponseInterface;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+$satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
 
 $query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
@@ -324,11 +324,11 @@ echo json_encode($downloadedUuids);
 use GuzzleHttp\Client;
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
 
 $captchaResolver = new DeCaptcherCaptchaResolver(new Client(), 'decaptcher-user', 'decaptcher-password');
 
-$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+$satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
 ```
 
 ## Usar el servicio *Anti-Captcha*
@@ -338,11 +338,11 @@ $satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver)
 
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\AntiCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
 
 $captchaResolver = AntiCaptchaResolver::create('anticaptcha-client-key');
 
-$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+$satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
 ```
 
 ## Verificar datos de autenticación sin hacer una consulta
@@ -360,10 +360,10 @@ Se hacen los dos pasos para evitar consumir el servicio de resolución de captch
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+$satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
 try {
     $satScraper->confirmSessionIsAlive();
 } catch (LoginException $exception) {
@@ -388,15 +388,15 @@ use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 
 $insecureClient = new Client([
     RequestOptions::VERIFY => false
 ]);
 $gateway = new SatHttpGateway($insecureClient);
 
-/** @var SatSessionData $sessionData */
-$scraper = new SatScraper($sessionData, $gateway);
+/** @var SessionManager $sessionManager */
+$scraper = new SatScraper($sessionManager, $gateway);
 ```
 
 ## Compatibilidad

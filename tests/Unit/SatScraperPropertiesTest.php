@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
 final class SatScraperPropertiesTest extends TestCase
 {
-    private function createSatScraper(?SatSessionData $sessionData = null, ?SatHttpGateway $satHttpGateway = null, ?callable $onFiveHundred = null): SatScraper
+    private function createSatScraper(?SessionManager $sessionManager = null, ?SatHttpGateway $satHttpGateway = null, ?callable $onFiveHundred = null): SatScraper
     {
         return new SatScraper(
-            $sessionData ?? new SatSessionData('rfc', 'ciec', $this->createCaptchaResolver()),
+            $sessionManager ?? $this->createMock(SessionManager::class),
             $satHttpGateway,
             $onFiveHundred
         );
@@ -26,21 +25,14 @@ final class SatScraperPropertiesTest extends TestCase
         return new SatHttpGateway();
     }
 
-    private function createCaptchaResolver(): CaptchaResolverInterface
+    public function testSessionManagerProperty(): void
     {
-        /** @var CaptchaResolverInterface $captcha */
-        $captcha = $this->createMock(CaptchaResolverInterface::class);
-        return $captcha;
+        $sessionManager = $this->createMock(SessionManager::class);
+        $scraper = $this->createSatScraper($sessionManager);
+        $this->assertSame($sessionManager, $scraper->getSessionManager());
     }
 
-    public function testSatSessionData(): void
-    {
-        $data = new SatSessionData('rfc', 'ciec', $this->createCaptchaResolver());
-        $scraper = $this->createSatScraper($data);
-        $this->assertSame($data, $scraper->getSatSessionData());
-    }
-
-    public function testSatHttpGateway(): void
+    public function testSatHttpGatewayProperty(): void
     {
         $satHttpGateway = $this->createSatHttpGateway();
         $scraper = $this->createSatScraper(null, $satHttpGateway);

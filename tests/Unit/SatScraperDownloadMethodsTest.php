@@ -11,12 +11,13 @@ use DateTimeImmutable;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
-use PhpCfdi\CfdiSatScraper\Internal\SatSessionManager;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -28,7 +29,8 @@ final class SatScraperDownloadMethodsTest extends TestCase
         };
         $satHttpGateway = $this->createMock(SatHttpGateway::class);
         $captcha = $this->createMock(CaptchaResolverInterface::class);
-        $scraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captcha), $satHttpGateway, $callable);
+        $sessionManager = new CiecSessionManager(new CiecSessionData('rfc', 'ciec', $captcha));
+        $scraper = new SatScraper($sessionManager, $satHttpGateway, $callable);
         $downloader = $scraper->metadataDownloader();
 
         $this->assertSame($callable, $downloader->getOnFiveHundred());
@@ -108,22 +110,17 @@ final class SatScraperDownloadMethodsTest extends TestCase
 
     public function testConfirmSessionIsAlive(): void
     {
-        /** @var SatSessionManager&MockObject $sessionManager */
-        $sessionManager = $this->createMock(SatSessionManager::class);
-        $sessionManager->expects($this->once())->method('initSession');
+        /** @var SatHttpGateway&MockObject $httpGateway */
+        $httpGateway = $this->createMock(SatHttpGateway::class);
 
-        // prepare an scraper with custom session manager
-        $scraper = new class($this->createMock(SatSessionData::class), $this->createMock(SatHttpGateway::class)) extends SatScraper {
-            /** @var SatSessionManager */
-            public $sessionManager;
+        /** @var SessionManager&MockObject $sessionManager */
+        $sessionManager = $this->createMock(SessionManager::class);
+        $sessionManager->expects($this->once())->method('setHttpGateway')->with($httpGateway);
+        $sessionManager->expects($this->once())->method('hasLogin')->willReturn(true);
+        $sessionManager->expects($this->once())->method('registerOnPortalMainPage');
 
-            /** @noinspection PhpMissingParentCallCommonInspection */
-            protected function createSessionManager(): SatSessionManager
-            {
-                return $this->sessionManager;
-            }
-        };
-        $scraper->sessionManager = $sessionManager;
+        // prepare a scraper with custom session manager
+        $scraper = new SatScraper($sessionManager, $httpGateway);
 
         $this->assertSame($scraper, $scraper->confirmSessionIsAlive(), 'confirmSessionIsAlive is a fluent method');
     }

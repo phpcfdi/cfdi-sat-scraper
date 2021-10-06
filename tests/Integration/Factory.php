@@ -17,7 +17,9 @@ use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 use PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver\CaptchaLocalResolver;
 use PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver\CaptchaLocalResolverClient;
 use RuntimeException;
@@ -76,8 +78,13 @@ class Factory
         throw new RuntimeException('Unable to create resolver');
     }
 
+    public function createSessionManager(): SessionManager
+    {
+        return new CiecSessionManager($this->createSatSessionData());
+    }
+
     /** @noinspection PhpUnhandledExceptionInspection */
-    public function createSatSessionData(): SatSessionData
+    public function createSatSessionData(): CiecSessionData
     {
         $rfc = strval(getenv('SAT_AUTH_RFC'));
         if ('' === $rfc) {
@@ -91,16 +98,16 @@ class Factory
 
         $resolver = static::createCaptchaResolver();
 
-        return new SatSessionData($rfc, $ciec, $resolver);
+        return new CiecSessionData($rfc, $ciec, $resolver);
     }
 
     public function createSatScraper(): SatScraper
     {
-        $sessionData = $this->createSatSessionData();
-        $cookieFile = __DIR__ . '/../../build/cookie-' . strtolower($sessionData->getRfc()) . '.json';
+        $sessionManager = $this->createSessionManager();
+        $cookieFile = __DIR__ . '/../../build/cookie-' . strtolower($sessionManager->getRfc()) . '.json';
         $cookieJar = new FileCookieJar($cookieFile, true);
         $satHttpGateway = new SatHttpGateway($this->createGuzzleClient(), $cookieJar);
-        return new SatScraper($sessionData, $satHttpGateway);
+        return new SatScraper($sessionManager, $satHttpGateway);
     }
 
     public function createGuzzleClient(): Client
