@@ -2,86 +2,73 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Internal;
+namespace PhpCfdi\CfdiSatScraper\Sessions;
 
+use LogicException;
 use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
-use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
+use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
+use PhpCfdi\CfdiSatScraper\Exceptions\CiecLoginException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
+use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
 use PhpCfdi\CfdiSatScraper\URLS;
 use Throwable;
 
-/**
- * This class is an extraction for SatScraper authentication.
- * The entry point is SatSessionManager::initSession()
- *
- * @see SatSessionManager::initSession()
- * @internal
- */
-class SatSessionManager
+final class CiecSessionManager implements SessionManager
 {
-    /** @var SatSessionData */
+    /** @var CiecSessionData */
     private $sessionData;
 
-    /** @var SatHttpGateway */
+    /** @var SatHttpGateway|null */
     private $httpGateway;
 
-    public function __construct(SatSessionData $sessionData, SatHttpGateway $httpGateway)
+    public function __construct(CiecSessionData $sessionData)
     {
-        $this->httpGateway = $httpGateway;
         $this->sessionData = $sessionData;
     }
 
-    /**
-     * Initializates session on SAT, if it fails then will throw an exception
-     * It only perform login if is not currently logged.
-     *
-     * @throws LoginException
-     */
-    public function initSession(): void
+    public static function create(string $rfc, string $ciec, CaptchaResolverInterface $resolver): self
     {
-        if (! $this->hasLogin()) {
-            $this->login(1);
-        }
-        $this->registerOnPortalMainPage();
+        $sessionData = new CiecSessionData($rfc, $ciec, $resolver);
+        return new self($sessionData);
     }
 
     /**
-     * @throws LoginException
+     * @throws CiecLoginException
      */
     public function registerOnPortalMainPage(): void
     {
+        $satHttpGateway = $this->getHttpGateway();
         try {
-            $htmlMainPage = $this->httpGateway->getPortalMainPage();
+            $htmlMainPage = $satHttpGateway->getPortalMainPage();
             $inputs = (new HtmlForm($htmlMainPage, 'form'))->getFormValues();
             if (count($inputs) > 0) {
-                $htmlMainPage = $this->httpGateway->postPortalMainPage($inputs);
+                $htmlMainPage = $satHttpGateway->postPortalMainPage($inputs);
             }
         } catch (SatHttpGatewayException $exception) {
-            throw LoginException::connectionException('registering on login page', $this->sessionData, $exception);
+            throw CiecLoginException::connectionException('registering on login page', $this->sessionData, $exception);
         }
 
         if (false === strpos($htmlMainPage, 'RFC Autenticado: ' . $this->sessionData->getRfc())) {
-            throw LoginException::notRegisteredAfterLogin($this->sessionData, $htmlMainPage); // 'The session is authenticated but main page does not contains your RFC'
+            throw CiecLoginException::notRegisteredAfterLogin($this->sessionData, $htmlMainPage); // 'The session is authenticated but main page does not contains your RFC'
         }
     }
 
     /**
      * @return string
-     * @throws LoginException
+     * @throws CiecLoginException
      */
     public function requestCaptchaImage(): string
     {
         try {
-            $html = $this->httpGateway->getAuthLoginPage(URLS::SAT_URL_LOGIN);
+            $html = $this->getHttpGateway()->getAuthLoginPage(URLS::SAT_URL_LOGIN);
         } catch (SatHttpGatewayException $exception) {
-            throw LoginException::connectionException('getting captcha image', $this->sessionData, $exception);
+            throw CiecLoginException::connectionException('getting captcha image', $this->sessionData, $exception);
         }
         $captchaBase64Extractor = new CaptchaBase64Extractor();
         $imageBase64 = $captchaBase64Extractor->retrieve($html);
         if ('' === $imageBase64) {
-            throw LoginException::noCaptchaImageFound($this->sessionData, $html);
+            throw CiecLoginException::noCaptchaImageFound($this->sessionData, $html);
         }
         return $imageBase64;
     }
@@ -89,7 +76,7 @@ class SatSessionManager
     /**
      * @param int $attempt
      * @return string
-     * @throws LoginException
+     * @throws CiecLoginException
      */
     public function getCaptchaValue(int $attempt): string
     {
@@ -97,7 +84,7 @@ class SatSessionManager
         try {
             $result = $this->sessionData->getCaptchaResolver()->decode($imageBase64);
             if ('' === $result) {
-                throw LoginException::captchaWithoutAnswer($this->sessionData, $imageBase64);
+                throw CiecLoginException::captchaWithoutAnswer($this->sessionData, $imageBase64);
             }
             return $result;
         } catch (Throwable $exception) {
@@ -105,25 +92,22 @@ class SatSessionManager
                 return $this->getCaptchaValue($attempt + 1);
             }
 
-            if (! $exception instanceof LoginException) {
-                $exception = LoginException::captchaWithoutAnswer($this->sessionData, $imageBase64, $exception);
+            if (! $exception instanceof CiecLoginException) {
+                $exception = CiecLoginException::captchaWithoutAnswer($this->sessionData, $imageBase64, $exception);
             }
-            /** @var LoginException $exception */
+            /** @var CiecLoginException $exception */
             throw $exception;
         }
     }
 
-    /**
-     * @return bool
-     * @throws LoginException
-     */
     public function hasLogin(): bool
     {
+        $httpGateway = $this->getHttpGateway();
         // check login on cfdiau
         try {
-            $html = $this->httpGateway->getAuthLoginPage(URLS::SAT_URL_LOGIN);
+            $html = $httpGateway->getAuthLoginPage(URLS::SAT_URL_LOGIN);
         } catch (SatHttpGatewayException $exception) {
-            throw LoginException::connectionException('getting login page', $this->sessionData, $exception);
+            throw CiecLoginException::connectionException('getting login page', $this->sessionData, $exception);
         }
         if (false === strpos($html, 'https://cfdiau.sat.gob.mx/nidp/app?sid=0')) {
             $this->logout();
@@ -132,9 +116,9 @@ class SatSessionManager
 
         // check main page
         try {
-            $html = $this->httpGateway->getPortalMainPage();
+            $html = $httpGateway->getPortalMainPage();
         } catch (SatHttpGatewayException $exception) {
-            throw LoginException::connectionException('getting portal main page', $this->sessionData, $exception);
+            throw CiecLoginException::connectionException('getting portal main page', $this->sessionData, $exception);
         }
         if (false !== strpos($html, urlencode('https://portalcfdi.facturaelectronica.sat.gob.mx/logout.aspx?salir=y'))) {
             $this->logout();
@@ -144,12 +128,17 @@ class SatSessionManager
         return true;
     }
 
+    public function login(): void
+    {
+        $this->loginInternal(1);
+    }
+
     /**
      * @param int $attempt
      * @return string
-     * @throws LoginException
+     * @throws CiecLoginException
      */
-    public function login(int $attempt): string
+    public function loginInternal(int $attempt): string
     {
         $captchaValue = $this->getCaptchaValue(1);
         $postData = [
@@ -160,17 +149,17 @@ class SatSessionManager
             'userCaptcha' => $captchaValue,
         ];
         try {
-            $response = $this->httpGateway->postLoginData(URLS::SAT_URL_LOGIN, $postData);
+            $response = $this->getHttpGateway()->postLoginData(URLS::SAT_URL_LOGIN, $postData);
         } catch (SatHttpGatewayException $exception) {
-            throw LoginException::connectionException('sending login data', $this->sessionData, $exception);
+            throw CiecLoginException::connectionException('sending login data', $this->sessionData, $exception);
         }
 
         if (false !== strpos($response, 'Ecom_User_ID')) {
             if ($attempt < $this->sessionData->getMaxTriesLogin()) {
-                return $this->login($attempt + 1);
+                return $this->loginInternal($attempt + 1);
             }
 
-            throw LoginException::incorrectLoginData($this->sessionData, $response, $postData);
+            throw CiecLoginException::incorrectLoginData($this->sessionData, $response, $postData);
         }
 
         return $response;
@@ -179,16 +168,29 @@ class SatSessionManager
     public function logout(): void
     {
         // there is no need to touch logout urls, clearing the cookie jar must be enought
-        $this->httpGateway->clearCookieJar();
+        $this->getHttpGateway()->clearCookieJar();
     }
 
-    public function getSessionData(): SatSessionData
+    public function getSessionData(): CiecSessionData
     {
         return $this->sessionData;
     }
 
     public function getHttpGateway(): SatHttpGateway
     {
+        if (null === $this->httpGateway) {
+            throw new LogicException('Must set http gateway property before use');
+        }
         return $this->httpGateway;
+    }
+
+    public function setHttpGateway(SatHttpGateway $httpGateway): void
+    {
+        $this->httpGateway = $httpGateway;
+    }
+
+    public function getRfc(): string
+    {
+        return $this->sessionData->getRfc();
     }
 }

@@ -4,38 +4,38 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
+use PhpCfdi\CfdiSatScraper\Exceptions\CiecLoginException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
 use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
-use PhpCfdi\CfdiSatScraper\Internal\SatSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 
 class SatScraper
 {
-    /** @var SatSessionData */
-    private $satSessionData;
-
     /** @var callable|null */
     protected $onFiveHundred;
 
     /** @var SatHttpGateway */
     private $satHttpGateway;
 
+    /** @var SessionManager */
+    private $sessionManager;
+
     /**
      * SatScraper constructor.
      *
-     * @param SatSessionData $sessionData
+     * @param SessionManager $sessionManager
      * @param SatHttpGateway|null $satHttpGateway
      * @param callable|null $onFiveHundred
      */
     public function __construct(
-        SatSessionData $sessionData,
+        SessionManager $sessionManager,
         ?SatHttpGateway $satHttpGateway = null,
         ?callable $onFiveHundred = null
     ) {
+        $this->sessionManager = $sessionManager;
         $this->satHttpGateway = $satHttpGateway ?? $this->createDefaultSatHttpGateway();
-        $this->satSessionData = $sessionData;
         $this->onFiveHundred = $onFiveHundred;
     }
 
@@ -81,17 +81,6 @@ class SatScraper
     }
 
     /**
-     * Method factory to create a SatSessionManager
-     *
-     * @internal
-     * @return SatSessionManager
-     */
-    protected function createSessionManager(): SatSessionManager
-    {
-        return new SatSessionManager($this->satSessionData, $this->getSatHttpGateway());
-    }
-
-    /**
      * Method factory to create a QueryResolver
      *
      * @internal
@@ -106,11 +95,17 @@ class SatScraper
      * Initializates session on SAT
      *
      * @return SatScraper
-     * @throws LoginException if session is not alive
+     * @throws CiecLoginException if session is not alive
      */
     public function confirmSessionIsAlive(): self
     {
-        $this->createSessionManager()->initSession();
+        $sessionManager = $this->getSessionManager();
+
+        $sessionManager->setHttpGateway($this->getSatHttpGateway());
+        if (! $sessionManager->hasLogin()) {
+            $sessionManager->login();
+        }
+        $sessionManager->registerOnPortalMainPage();
 
         return $this;
     }
@@ -121,7 +116,7 @@ class SatScraper
      * @param string[] $uuids
      * @param DownloadType $downloadType
      * @return MetadataList
-     * @throws LoginException
+     * @throws CiecLoginException
      * @throws SatHttpGatewayException
      */
     public function listByUuids(array $uuids, DownloadType $downloadType): MetadataList
@@ -135,7 +130,7 @@ class SatScraper
      *
      * @param QueryByFilters $query
      * @return MetadataList
-     * @throws LoginException
+     * @throws CiecLoginException
      * @throws SatHttpGatewayException
      */
     public function listByPeriod(QueryByFilters $query): MetadataList
@@ -149,7 +144,7 @@ class SatScraper
      *
      * @param QueryByFilters $query
      * @return MetadataList
-     * @throws LoginException
+     * @throws CiecLoginException
      * @throws SatHttpGatewayException
      */
     public function listByDateTime(QueryByFilters $query): MetadataList
@@ -158,9 +153,9 @@ class SatScraper
         return $this->metadataDownloader()->downloadByDateTime($query);
     }
 
-    public function getSatSessionData(): SatSessionData
+    public function getSessionManager(): SessionManager
     {
-        return $this->satSessionData;
+        return $this->sessionManager;
     }
 
     public function getSatHttpGateway(): SatHttpGateway
