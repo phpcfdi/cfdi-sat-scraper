@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Sessions;
+namespace PhpCfdi\CfdiSatScraper\Sessions\Ciec;
 
 use LogicException;
 use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
-use PhpCfdi\CfdiSatScraper\Exceptions\CiecLoginException;
+use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
-use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
+use PhpCfdi\CfdiSatScraper\Sessions\AbstractSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 use PhpCfdi\CfdiSatScraper\URLS;
 use Throwable;
 
-final class CiecSessionManager implements SessionManager
+final class CiecSessionManager extends AbstractSessionManager implements SessionManager
 {
     /** @var CiecSessionData */
     private $sessionData;
@@ -31,27 +32,6 @@ final class CiecSessionManager implements SessionManager
     {
         $sessionData = new CiecSessionData($rfc, $ciec, $resolver);
         return new self($sessionData);
-    }
-
-    /**
-     * @throws CiecLoginException
-     */
-    public function registerOnPortalMainPage(): void
-    {
-        $satHttpGateway = $this->getHttpGateway();
-        try {
-            $htmlMainPage = $satHttpGateway->getPortalMainPage();
-            $inputs = (new HtmlForm($htmlMainPage, 'form'))->getFormValues();
-            if (count($inputs) > 0) {
-                $htmlMainPage = $satHttpGateway->postPortalMainPage($inputs);
-            }
-        } catch (SatHttpGatewayException $exception) {
-            throw CiecLoginException::connectionException('registering on login page', $this->sessionData, $exception);
-        }
-
-        if (false === strpos($htmlMainPage, 'RFC Autenticado: ' . $this->sessionData->getRfc())) {
-            throw CiecLoginException::notRegisteredAfterLogin($this->sessionData, $htmlMainPage); // 'The session is authenticated but main page does not contains your RFC'
-        }
     }
 
     /**
@@ -103,6 +83,12 @@ final class CiecSessionManager implements SessionManager
     public function hasLogin(): bool
     {
         $httpGateway = $this->getHttpGateway();
+
+        // if cookie is empty, then it will not be able to detect a session anyway
+        if ($httpGateway->isCookieJarEmpty()) {
+            return false;
+        }
+
         // check login on cfdiau
         try {
             $html = $httpGateway->getAuthLoginPage(URLS::SAT_URL_LOGIN);
@@ -138,7 +124,7 @@ final class CiecSessionManager implements SessionManager
      * @return string
      * @throws CiecLoginException
      */
-    public function loginInternal(int $attempt): string
+    private function loginInternal(int $attempt): string
     {
         $captchaValue = $this->getCaptchaValue(1);
         $postData = [
@@ -165,12 +151,6 @@ final class CiecSessionManager implements SessionManager
         return $response;
     }
 
-    public function logout(): void
-    {
-        // there is no need to touch logout urls, clearing the cookie jar must be enought
-        $this->getHttpGateway()->clearCookieJar();
-    }
-
     public function getSessionData(): CiecSessionData
     {
         return $this->sessionData;
@@ -192,5 +172,15 @@ final class CiecSessionManager implements SessionManager
     public function getRfc(): string
     {
         return $this->sessionData->getRfc();
+    }
+
+    protected function createExceptionConnection(string $when, SatHttpGatewayException $exception): LoginException
+    {
+        return CiecLoginException::connectionException('registering on login page', $this->sessionData, $exception);
+    }
+
+    public function createExceptionNotAuthenticated(string $html): LoginException
+    {
+        return CiecLoginException::notRegisteredAfterLogin($this->sessionData, $html);
     }
 }

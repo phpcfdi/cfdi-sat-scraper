@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use PhpCfdi\CfdiSatScraper\Exceptions\CiecLoginException;
+use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
@@ -95,7 +95,7 @@ class SatScraper
      * Initializates session on SAT
      *
      * @return SatScraper
-     * @throws CiecLoginException if session is not alive
+     * @throws LoginException if session is not alive
      */
     public function confirmSessionIsAlive(): self
     {
@@ -116,7 +116,7 @@ class SatScraper
      * @param string[] $uuids
      * @param DownloadType $downloadType
      * @return MetadataList
-     * @throws CiecLoginException
+     * @throws LoginException
      * @throws SatHttpGatewayException
      */
     public function listByUuids(array $uuids, DownloadType $downloadType): MetadataList
@@ -130,7 +130,7 @@ class SatScraper
      *
      * @param QueryByFilters $query
      * @return MetadataList
-     * @throws CiecLoginException
+     * @throws LoginException
      * @throws SatHttpGatewayException
      */
     public function listByPeriod(QueryByFilters $query): MetadataList
@@ -144,7 +144,7 @@ class SatScraper
      *
      * @param QueryByFilters $query
      * @return MetadataList
-     * @throws CiecLoginException
+     * @throws LoginException
      * @throws SatHttpGatewayException
      */
     public function listByDateTime(QueryByFilters $query): MetadataList

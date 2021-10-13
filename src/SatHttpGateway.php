@@ -9,12 +9,15 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Cookie\CookieJarInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\RequestOptions;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayClientException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayResponseException;
 use PhpCfdi\CfdiSatScraper\Internal\Headers;
+use PhpCfdi\CfdiSatScraper\Internal\MetaRefreshInspector;
+use Psr\Http\Message\ResponseInterface;
 
 class SatHttpGateway
 {
@@ -24,6 +27,9 @@ class SatHttpGateway
     /** @var CookieJarInterface */
     private $cookieJar;
 
+    /** @var string */
+    private $effectiveUri;
+
     public function __construct(?ClientInterface $client = null, ?CookieJarInterface $cookieJar = null)
     {
         // create a new client (if not set) with the given cookie (if set)
@@ -31,7 +37,10 @@ class SatHttpGateway
 
         // if the cookieJar was set on the client but not in the configuration
         if (null === $cookieJar) {
-            /** @var mixed $cookieJar */
+            /**
+             * @noinspection PhpDeprecationInspection
+             * @var mixed $cookieJar
+             */
             $cookieJar = $client->getConfig(RequestOptions::COOKIES);
             if (! $cookieJar instanceof CookieJarInterface) {
                 $cookieJar = new CookieJar();
@@ -44,12 +53,13 @@ class SatHttpGateway
 
     /**
      * @param string $url
+     * @param string $referer
      * @return string
      * @throws SatHttpGatewayException
      */
-    public function getAuthLoginPage(string $url): string
+    public function getAuthLoginPage(string $url, string $referer = ''): string
     {
-        return $this->get('get login page', $url);
+        return $this->get('get login page', $url, $referer);
     }
 
     /**
@@ -76,11 +86,24 @@ class SatHttpGateway
      * @param array<string, string> $formParams
      * @return string
      * @throws SatHttpGatewayException
+     * @todo rename to postCiecLoginData
      */
     public function postLoginData(string $loginUrl, array $formParams): string
     {
         $headers = Headers::post(parse_url(URLS::SAT_URL_LOGIN, PHP_URL_HOST), URLS::SAT_URL_LOGIN);
         return $this->post('post login data', $loginUrl, $headers, $formParams);
+    }
+
+    /**
+     * @param string $loginUrl
+     * @param array<string, string> $formParams
+     * @return string
+     * @throws SatHttpGatewayException
+     */
+    public function postFielLoginData(string $loginUrl, array $formParams): string
+    {
+        $headers = Headers::post((string) parse_url($loginUrl, PHP_URL_HOST), $loginUrl);
+        return $this->post('post fiel login data', $loginUrl, $headers, $formParams);
     }
 
     /**
@@ -125,31 +148,27 @@ class SatHttpGateway
         $this->cookieJar->clear();
     }
 
+    public function isCookieJarEmpty(): bool
+    {
+        return [] === $this->cookieJar->toArray();
+    }
+
     /**
      * Helper to make a GET request
      *
      * @param string $reason
      * @param string $url
+     * @param string $referer
      * @return string
-     * @throws SatHttpGatewayException
+     * @throws SatHttpGatewayClientException
+     * @throws SatHttpGatewayResponseException
      */
-    private function get(string $reason, string $url): string
+    private function get(string $reason, string $url, string $referer = ''): string
     {
-        $headers = Headers::get();
         $options = [
-            RequestOptions::HEADERS => $headers,
-            RequestOptions::COOKIES => $this->cookieJar,
+            RequestOptions::HEADERS => Headers::get($referer),
         ];
-        try {
-            $response = $this->client->request('GET', $url, $options);
-        } catch (GuzzleException $exception) {
-            throw SatHttpGatewayClientException::clientException($reason, 'GET', $url, $headers, [], $exception);
-        }
-        $contents = strval($response->getBody());
-        if ('' === $contents) {
-            throw SatHttpGatewayResponseException::unexpectedEmptyResponse($reason, $response, 'GET', $url, $headers);
-        }
-        return $contents;
+        return $this->request('GET', $url, $options, $reason);
     }
 
     /**
@@ -166,18 +185,82 @@ class SatHttpGateway
     {
         $options = [
             RequestOptions::HEADERS => $headers,
-            RequestOptions::COOKIES => $this->cookieJar,
             RequestOptions::FORM_PARAMS => $data,
         ];
+        return $this->request('POST', $url, $options, $reason);
+    }
+
+    /**
+     * @param string $method
+     * @param string $uri
+     * @param array<string, mixed> $options
+     * @param string $reason
+     * @return string
+     * @throws SatHttpGatewayClientException
+     * @throws SatHttpGatewayResponseException
+     */
+    private function request(string $method, string $uri, array $options, string $reason): string
+    {
+        $options = [
+            RequestOptions::COOKIES => $this->cookieJar,
+            RequestOptions::ALLOW_REDIRECTS => ['trackredirects' => true],
+        ] + $options;
+
+        $this->effectiveUri = $uri;
         try {
-            $response = $this->client->request('POST', $url, $options);
+            $response = $this->client->request($method, $uri, $options);
         } catch (GuzzleException $exception) {
-            throw SatHttpGatewayClientException::clientException($reason, 'POST', $url, $headers, $data, $exception);
+            if ($exception instanceof RequestException && null !== $exception->getResponse()) {
+                $this->setEffectiveUriFromResponse($exception->getResponse(), $uri);
+            } else {
+                $this->effectiveUri = $uri;
+            }
+            throw SatHttpGatewayClientException::clientException($reason, 'GET', $uri, $options[RequestOptions::HEADERS], [], $exception);
         }
+        $this->setEffectiveUriFromResponse($response, $uri);
+
         $contents = strval($response->getBody());
         if ('' === $contents) {
-            throw SatHttpGatewayResponseException::unexpectedEmptyResponse($reason, $response, 'POST', $url, $headers, $data);
+            throw SatHttpGatewayResponseException::unexpectedEmptyResponse($reason, $response, 'GET', $uri, $options[RequestOptions::HEADERS]);
         }
+
         return $contents;
+    }
+
+    /**
+     * @throws SatHttpGatewayClientException
+     * @throws SatHttpGatewayResponseException
+     */
+    public function getLogout(): string
+    {
+        $metaRefresh = new MetaRefreshInspector();
+
+        $html = $this->get('logout', URLS::SAT_URL_LOGOUT);
+        $previousUrl = $this->getEffectiveUri();
+
+        while (true) {
+            $urlRedirect = $metaRefresh->obtainUrl($html, $previousUrl);
+            if ('' === $urlRedirect) {
+                break;
+            }
+            $html = $this->get('logout redirect by meta', $urlRedirect, $previousUrl);
+            $previousUrl = $this->getEffectiveUri();
+        }
+
+        $this->clearCookieJar();
+
+        return $html;
+    }
+
+    private function getEffectiveUri(): string
+    {
+        return $this->effectiveUri;
+    }
+
+    private function setEffectiveUriFromResponse(ResponseInterface $response, string $previousUri): void
+    {
+        $history = $response->getHeader('X-Guzzle-Redirect-History');
+        $effectiveUri = (string) end($history);
+        $this->effectiveUri = $effectiveUri ?: $previousUri;
     }
 }

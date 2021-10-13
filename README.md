@@ -139,7 +139,7 @@ use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
 
 /** @var CaptchaResolverInterface $captchaResolver */
 $satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
@@ -172,7 +172,7 @@ echo json_encode($downloadedUuids);
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
 
 /** @var CaptchaResolverInterface $captchaResolver */
 $satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
@@ -230,7 +230,7 @@ use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
 
 /** @var CaptchaResolverInterface $captchaResolver */
 $satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
@@ -278,7 +278,7 @@ use PhpCfdi\CfdiSatScraper\Exceptions\ResourceDownloadRequestExceptionError;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
 use Psr\Http\Message\ResponseInterface;
 
 /** @var CaptchaResolverInterface $captchaResolver */
@@ -324,7 +324,7 @@ echo json_encode($downloadedUuids);
 use GuzzleHttp\Client;
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
 
 $captchaResolver = new DeCaptcherCaptchaResolver(new Client(), 'decaptcher-user', 'decaptcher-password');
 
@@ -338,7 +338,7 @@ $satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaR
 
 use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\AntiCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
 
 $captchaResolver = AntiCaptchaResolver::create('anticaptcha-client-key');
 
@@ -360,7 +360,7 @@ Se hacen los dos pasos para evitar consumir el servicio de resolución de captch
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
 
 /** @var CaptchaResolverInterface $captchaResolver */
 $satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
