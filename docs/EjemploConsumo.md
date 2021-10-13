@@ -30,7 +30,7 @@ use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
 
 $rfc = strval(getenv('SAT_AUTH_RFC'));
 $claveCiec = strval(getenv('SAT_AUTH_CIEC'));

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
+namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Sessions\Ciec;
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
-use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionData;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
-final class SatSessionDataTest extends TestCase
+final class CiecSessionDataTest extends TestCase
 {
     private function createDefaultSessionData(): CiecSessionData
     {

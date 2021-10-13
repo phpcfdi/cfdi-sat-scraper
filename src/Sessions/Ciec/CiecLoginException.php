@@ -2,18 +2,16 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Exceptions;
+namespace PhpCfdi\CfdiSatScraper\Sessions\Ciec;
 
-use PhpCfdi\CfdiSatScraper\Sessions\CiecSessionData;
+use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
+use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
 use Throwable;
 
 class CiecLoginException extends LoginException
 {
     /** @var CiecSessionData */
     private $sessionData;
-
-    /** @var string */
-    private $contents;
 
     /** @var array<string, string> */
     private $postedData;
@@ -29,9 +27,8 @@ class CiecLoginException extends LoginException
      */
     public function __construct(string $message, CiecSessionData $sessionData, string $contents, array $post = [], Throwable $previous = null)
     {
-        parent::__construct($message, 0, $previous);
+        parent::__construct($message, $contents, $previous);
         $this->sessionData = $sessionData;
-        $this->contents = $contents;
         $this->postedData = $post;
     }
 
@@ -70,11 +67,6 @@ class CiecLoginException extends LoginException
     public function getSessionData(): CiecSessionData
     {
         return $this->sessionData;
-    }
-
-    public function getContents(): string
-    {
-        return $this->contents;
     }
 
     /** @return array<string, string> */

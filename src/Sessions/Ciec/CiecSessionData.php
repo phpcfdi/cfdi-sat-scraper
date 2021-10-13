@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Sessions;
+namespace PhpCfdi\CfdiSatScraper\Sessions\Ciec;
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;

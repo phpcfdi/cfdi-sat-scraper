@@ -13,4 +13,6 @@ final class URLS
     public const SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR = 'https://portalcfdi.facturaelectronica.sat.gob.mx/ConsultaReceptor.aspx';
 
     public const SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR = 'https://portalcfdi.facturaelectronica.sat.gob.mx/ConsultaEmisor.aspx';
+
+    public const SAT_URL_LOGOUT = 'https://portalcfdi.facturaelectronica.sat.gob.mx/logout.aspx';
 }
