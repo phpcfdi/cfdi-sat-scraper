@@ -23,10 +23,6 @@ class HttpLogger extends ArrayObject
     public function __construct(string $destinationDir)
     {
         parent::__construct();
-        // if is not empty and is not an absolute path, prepend project dir
-        if ('' !== $destinationDir && ! in_array(substr($destinationDir, 0, 1), ['/', '\\'], true)) {
-            $destinationDir = dirname(__DIR__, 3) . '/' . $destinationDir;
-        }
         $this->destinationDir = $destinationDir;
     }
 
@@ -69,7 +65,10 @@ class HttpLogger extends ArrayObject
         }
         /** @var RequestInterface $request */
         $request = $entry['request'];
-        /** @var ResponseInterface $response */
+        if (null === $entry['response']) {
+            print_r($entry);
+        }
+        /** @var ResponseInterface|null $response */
         $response = $entry['response'];
         $time = new DateTimeImmutable();
         $file = sprintf(
@@ -97,7 +96,7 @@ class HttpLogger extends ArrayObject
         return strtolower(trim($text, '-'));
     }
 
-    public function entryToJson(RequestInterface $request, ResponseInterface $response): string
+    public function entryToJson(RequestInterface $request, ?ResponseInterface $response): string
     {
         $json = json_encode(
             [
@@ -106,15 +105,17 @@ class HttpLogger extends ArrayObject
                     'headers' => $request->getHeaders(),
                     'body' => $this->bodyToVars((string) $request->getBody()),
                 ],
-                'response' => [
+                'response' => ($response) ? [
                     'headers' => $response->getHeaders(),
                     'body' => $this->bodyToVars((string) $request->getBody()),
-                ],
+                ] : '(no response)',
             ],
             JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_LINE_TERMINATORS
         ) . PHP_EOL;
         $request->getBody()->rewind();
-        $response->getBody()->rewind();
+        if (null !== $response) {
+            $response->getBody()->rewind();
+        }
         return $json;
     }
 
