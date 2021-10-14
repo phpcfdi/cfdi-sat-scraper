@@ -22,7 +22,8 @@ composer require phpcfdi/cfdi-sat-scraper
 ## Funcionamiento
 
 El servicio de descarga de CFDI del SAT que se encuentra en <https://portalcfdi.facturaelectronica.sat.gob.mx/>
-requiere identificarse con RFC, Clave CIEC y de la resolución de un *captcha*.
+requiere identificarse con RFC, Clave CIEC y de la resolución de un *captcha*
+o bien utilizando el certificado y llave privada FIEL.
 
 Una vez dentro del sitio se pueden consultar facturas emitidas y facturas recibidas. Ya sea por UUID o por filtro.
 
@@ -98,9 +99,35 @@ de enviar a procesarla.
 
 Esta librería está basada en [Guzzle](https://github.com/guzzle/guzzle), por lo que puedes configurar el cliente
 a tus propias necesidades como configurar un proxy o depurar las llamadas HTTP.
-Gracias a esta librería podemos ofrecer descargas simultáneas de XML.
+Gracias a esta librería podemos ofrecer descargas simultáneas de XML y hacer el proceso de comunicación mucho
+más veloz que si se estuviera utilizando un navegador completo.
 
-No contamos con un método propio para resolver captchas, pero se puede utilizar un servicio externo como
+## Autenticación
+
+Esta librería permite identificarse ante el SAT utilizando alguno de dos mecanismos: Clave CIEC o FIEL.
+
+### Autenticación por FIEL
+
+Para identificarse utilizando la FIEL se necesita usar el manejador de sesiones `FielSessionManager`,
+con el respectivo certificado, llave privada y contraseña de la llave privada.
+
+La ventaja de este método es que no requiere de un resolvedor de captchas.
+La desventaja es que es riesgoso trabajar con la FIEL.
+
+Advertencia: No utilice este mecanismo a menos que se trate de su propia FIEL.
+La FIEL en México está regulada por la "Ley de Firma Electrónica Avanzada".
+Su uso es extenso y no está limitado al SAT, con ella se pueden realizar múltiples operaciones legales.
+En PhpCfdi no recomendamos que almacene o use la FIEL de terceras personas.
+
+### Autenticación por clave CIEC
+
+Para identificarse utilizando la clave CIEC se necesita usar el manejador de sesiones `CiecSessionManager`,
+con los datos de RFC, Clave CIEC y un resolvedor de captchas.
+
+La ventaja de este método es que no se requiere la FIEL.
+La desventaja es que se requiere un resolvedor de captchas.
+
+No contamos con un método propio para resolver los captchas, pero se puede utilizar un servicio externo como
 [*DeCaptcher*](https://de-captcher.com/) o [*Anti-Captcha*](https://anti-captcha.com). Para testeo puedes
 usar [`eclipxe/captcha-local-resolver](https://github.com/eclipxe13/captcha-local-resolver) donde tú mismo
 serás el que resuelve los captchas, las tres implementaciones están creadas.
@@ -372,13 +399,41 @@ try {
 }
 ```
 
+## Ejemplo de autenticación con FIEL
+
+El siguiente ejemplo utiliza una FIEL donde los archivos de certificado y llave privada están cargados
+en memoria y se encuentran vigentes. Puede obtener más información de cómo formar la credencial en
+el proyecto [`phpcfdi/credentials`](https://github.com/phpcfdi/credentials).
+
+```php
+<?php declare(strict_types=1);
+
+use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\Sessions\Fiel\FielSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\Fiel\FielSessionData;
+use PhpCfdi\Credentials\Credential;
+
+/**
+ * @var string $certificate contenido del certificado
+ * @var string $privateKey contenido de la llave privada
+ * @var string $passPhrase contraseña de la llave privada
+ */
+
+// crear la credencial
+$credential = Credential::create($certificate, $privateKey, $passPhrase);
+
+// crear el objeto scraper usando la FIEL
+$satScraper = new SatScraper(FielSessionManager::create($credential));
+```
+
 ## Quitar la verificación de certificados del SAT
 
 En caso de que los certificados del SAT usados en HTTPS fallen, podría desactivar la verificación de los mismos.
 Esto se puede lograr creando el cliente de Guzzle con la negación de la opción `verify`.
 
 No es una práctica recomendada, pero tal vez necesaria ante los problemas a los que el SAT se ve expuesto.
-Considera que esto podría facilitar significativamente un ataque (*man in the middle*) que provoque que la pérdida de su clave CIEC.
+Considera que esto podría facilitar significativamente un ataque (*man in the middle*)
+que provoque que la pérdida de su clave CIEC.
 
 **Nota: No recomendamos esta práctica, solamente la exponemos por las constantes fallas que presenta el SAT.**
 
