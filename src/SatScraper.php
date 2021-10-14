@@ -105,7 +105,7 @@ class SatScraper
         if (! $sessionManager->hasLogin()) {
             $sessionManager->login();
         }
-        $sessionManager->registerOnPortalMainPage();
+        $sessionManager->accessPortalMainPage();
 
         return $this;
     }

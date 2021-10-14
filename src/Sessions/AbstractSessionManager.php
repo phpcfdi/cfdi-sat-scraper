@@ -19,7 +19,7 @@ abstract class AbstractSessionManager implements SessionManager
         $this->getHttpGateway()->getLogout();
     }
 
-    public function registerOnPortalMainPage(): void
+    public function accessPortalMainPage(): void
     {
         $satHttpGateway = $this->getHttpGateway();
         try {
@@ -33,7 +33,6 @@ abstract class AbstractSessionManager implements SessionManager
         }
 
         if (false === strpos($htmlMainPage, 'RFC Autenticado: ' . $this->getRfc())) {
-            // TODO: change to static method
             throw $this->createExceptionNotAuthenticated($htmlMainPage);
         }
     }
