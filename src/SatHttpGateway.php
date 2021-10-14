@@ -90,7 +90,7 @@ class SatHttpGateway
      */
     public function postLoginData(string $loginUrl, array $formParams): string
     {
-        $headers = Headers::post(parse_url(URLS::SAT_URL_LOGIN, PHP_URL_HOST), URLS::SAT_URL_LOGIN);
+        $headers = Headers::post($this->urlHost(URLS::SAT_URL_LOGIN), URLS::SAT_URL_LOGIN);
         return $this->post('post login data', $loginUrl, $headers, $formParams);
     }
 
@@ -102,7 +102,7 @@ class SatHttpGateway
      */
     public function postFielLoginData(string $loginUrl, array $formParams): string
     {
-        $headers = Headers::post((string) parse_url($loginUrl, PHP_URL_HOST), $loginUrl);
+        $headers = Headers::post($this->urlHost($loginUrl), $loginUrl);
         return $this->post('post fiel login data', $loginUrl, $headers, $formParams);
     }
 
@@ -124,7 +124,7 @@ class SatHttpGateway
      */
     public function postAjaxSearch(string $url, array $formParams): string
     {
-        $headers = Headers::postAjax(parse_url(URLS::SAT_URL_PORTAL_CFDI, PHP_URL_HOST), $url);
+        $headers = Headers::postAjax($this->urlHost(URLS::SAT_URL_PORTAL_CFDI), $url);
         return $this->post('query search page', $url, $headers, $formParams);
     }
 
@@ -263,5 +263,9 @@ class SatHttpGateway
         $effectiveUri = (string) end($history);
         $this->effectiveUri = $effectiveUri ?: $previousUri;
     }
-}
+
+    private function urlHost(string $url): string
+    {
+        return (string) parse_url($url, PHP_URL_HOST);
+    }
 }
