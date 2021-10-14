@@ -117,7 +117,7 @@ final class SatScraperDownloadMethodsTest extends TestCase
         $sessionManager = $this->createMock(SessionManager::class);
         $sessionManager->expects($this->once())->method('setHttpGateway')->with($httpGateway);
         $sessionManager->expects($this->once())->method('hasLogin')->willReturn(true);
-        $sessionManager->expects($this->once())->method('registerOnPortalMainPage');
+        $sessionManager->expects($this->once())->method('accessPortalMainPage');
 
         // prepare a scraper with custom session manager
         $scraper = new SatScraper($sessionManager, $httpGateway);
