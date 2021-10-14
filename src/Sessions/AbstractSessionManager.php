@@ -16,11 +16,7 @@ abstract class AbstractSessionManager implements SessionManager
 
     public function logout(): void
     {
-        try {
-            $this->getHttpGateway()->getLogout();
-        } catch (SatHttpGatewayException $exception) {
-            unset($exception);
-        }
+        $this->getHttpGateway()->getLogout();
     }
 
     public function registerOnPortalMainPage(): void
