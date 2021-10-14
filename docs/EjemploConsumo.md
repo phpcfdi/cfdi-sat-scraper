@@ -32,8 +32,8 @@ use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
 
-$rfc = strval(getenv('SAT_AUTH_RFC'));
-$claveCiec = strval(getenv('SAT_AUTH_CIEC'));
+$rfc = strval($_SERVER['SAT_AUTH_RFC'] ?? '');
+$claveCiec = strval($_SERVER['SAT_AUTH_CIEC'] ?? '');
 $cookieJarPath = sprintf('%s/build/cookies/%s.json', getcwd(), $rfc);
 $downloadsPath = sprintf('%s/build/cfdis/%s', getcwd(), $rfc);
 
