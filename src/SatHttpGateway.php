@@ -227,29 +227,31 @@ class SatHttpGateway
         return $contents;
     }
 
-    /**
-     * @throws SatHttpGatewayClientException
-     * @throws SatHttpGatewayResponseException
-     */
     public function getLogout(): string
     {
         $metaRefresh = new MetaRefreshInspector();
 
-        $html = $this->get('logout', URLS::PORTAL_CFDI_LOGOUT);
-        $previousUrl = $this->getEffectiveUri();
+        $destination = URLS::PORTAL_CFDI_LOGOUT;
+        $referer = URLS::PORTAL_CFDI;
 
-        while (true) {
-            $urlRedirect = $metaRefresh->obtainUrl($html, $previousUrl);
-            if ('' === $urlRedirect || $urlRedirect === $previousUrl) {
-                break;
-            }
-            $html = $this->get('logout redirect by meta', $urlRedirect, $previousUrl);
-            $previousUrl = $this->getEffectiveUri();
-        }
+        do {
+            $html = $this->getLogoutWithoutException($destination, $referer);
+            $referer = $this->getEffectiveUri(); // it can be redirected several
+            $destination = $metaRefresh->obtainUrl($html, $referer);
+        } while ('' !== $destination && $destination !== $referer);
 
         $this->clearCookieJar();
 
         return $html;
+    }
+
+    private function getLogoutWithoutException(string $destination, string $referer): string
+    {
+        try {
+            return $this->get('logout', $destination, $referer);
+        } catch (SatHttpGatewayException $exception) {
+            return '';
+        }
     }
 
     private function getEffectiveUri(): string
