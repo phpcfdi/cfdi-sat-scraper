@@ -235,7 +235,7 @@ class SatHttpGateway
     {
         $metaRefresh = new MetaRefreshInspector();
 
-        $html = $this->get('logout', URLS::SAT_URL_LOGOUT);
+        $html = $this->get('logout', URLS::SAT_URL_PORTAL_CFDI_LOGOUT);
         $previousUrl = $this->getEffectiveUri();
 
         while (true) {
@@ -263,4 +263,5 @@ class SatHttpGateway
         $effectiveUri = (string) end($history);
         $this->effectiveUri = $effectiveUri ?: $previousUri;
     }
+}
 }
