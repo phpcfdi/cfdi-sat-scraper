@@ -40,11 +40,11 @@ final class QueryResolverTest extends TestCase
     public function testUrlFromDownloadType(): void
     {
         $this->assertSame(
-            URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR,
+            URLS::PORTAL_CFDI_CONSULTA_RECEPTOR,
             DownloadType::recibidos()->url()
         );
         $this->assertSame(
-            URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR,
+            URLS::PORTAL_CFDI_CONSULTA_EMISOR,
             DownloadType::emitidos()->url()
         );
     }

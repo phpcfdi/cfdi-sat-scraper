@@ -68,7 +68,7 @@ class SatHttpGateway
      */
     public function getPortalMainPage(): string
     {
-        return $this->get('get portal main page', URLS::SAT_URL_PORTAL_CFDI);
+        return $this->get('get portal main page', URLS::PORTAL_CFDI);
     }
 
     /**
@@ -78,7 +78,7 @@ class SatHttpGateway
      */
     public function postPortalMainPage(array $formData): string
     {
-        return $this->post('post to portal main page', URLS::SAT_URL_PORTAL_CFDI, Headers::post('', ''), $formData);
+        return $this->post('post to portal main page', URLS::PORTAL_CFDI, Headers::post('', ''), $formData);
     }
 
     /**
@@ -90,7 +90,7 @@ class SatHttpGateway
      */
     public function postLoginData(string $loginUrl, array $formParams): string
     {
-        $headers = Headers::post($this->urlHost(URLS::SAT_URL_LOGIN), URLS::SAT_URL_LOGIN);
+        $headers = Headers::post($this->urlHost(URLS::AUTH_LOGIN), URLS::AUTH_LOGIN);
         return $this->post('post login data', $loginUrl, $headers, $formParams);
     }
 
@@ -124,7 +124,7 @@ class SatHttpGateway
      */
     public function postAjaxSearch(string $url, array $formParams): string
     {
-        $headers = Headers::postAjax($this->urlHost(URLS::SAT_URL_PORTAL_CFDI), $url);
+        $headers = Headers::postAjax($this->urlHost(URLS::PORTAL_CFDI), $url);
         return $this->post('query search page', $url, $headers, $formParams);
     }
 
@@ -235,7 +235,7 @@ class SatHttpGateway
     {
         $metaRefresh = new MetaRefreshInspector();
 
-        $html = $this->get('logout', URLS::SAT_URL_PORTAL_CFDI_LOGOUT);
+        $html = $this->get('logout', URLS::PORTAL_CFDI_LOGOUT);
         $previousUrl = $this->getEffectiveUri();
 
         while (true) {

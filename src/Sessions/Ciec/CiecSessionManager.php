@@ -41,7 +41,7 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
     public function requestCaptchaImage(): string
     {
         try {
-            $html = $this->getHttpGateway()->getAuthLoginPage(URLS::SAT_URL_LOGIN);
+            $html = $this->getHttpGateway()->getAuthLoginPage(URLS::AUTH_LOGIN);
         } catch (SatHttpGatewayException $exception) {
             throw CiecLoginException::connectionException('getting captcha image', $this->sessionData, $exception);
         }
@@ -91,7 +91,7 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
 
         // check login on cfdiau
         try {
-            $html = $httpGateway->getAuthLoginPage(URLS::SAT_URL_LOGIN);
+            $html = $httpGateway->getAuthLoginPage(URLS::AUTH_LOGIN);
         } catch (SatHttpGatewayException $exception) {
             throw CiecLoginException::connectionException('getting login page', $this->sessionData, $exception);
         }
@@ -135,7 +135,7 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
             'userCaptcha' => $captchaValue,
         ];
         try {
-            $response = $this->getHttpGateway()->postLoginData(URLS::SAT_URL_LOGIN, $postData);
+            $response = $this->getHttpGateway()->postLoginData(URLS::AUTH_LOGIN, $postData);
         } catch (SatHttpGatewayException $exception) {
             throw CiecLoginException::connectionException('sending login data', $this->sessionData, $exception);
         }
