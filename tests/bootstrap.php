@@ -28,7 +28,6 @@ call_user_func(new class() {
     public function loadEnvironmentFile(string $environmentFile): void
     {
         $dotenv = new Symfony\Component\Dotenv\Dotenv();
-        $dotenv->usePutenv();
         $dotenv->load($environmentFile);
     }
 });
