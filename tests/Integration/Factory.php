@@ -180,12 +180,12 @@ class Factory
         return $this->repository;
     }
 
-    private function env(string $variable): string
+    public function env(string $variable): string
     {
         return strval($_SERVER[$variable] ?? '');
     }
 
-    private function path(string $path): string
+    public function path(string $path): string
     {
         // if is not empty and is not an absolute path, prepend project dir
         if ('' !== $path && ! in_array(substr($path, 0, 1), ['/', '\\'], true)) {
