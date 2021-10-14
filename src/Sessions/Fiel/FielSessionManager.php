@@ -64,14 +64,14 @@ final class FielSessionManager extends AbstractSessionManager implements Session
             $httpGateway->getPortalMainPage();
 
             // previous page will try to redirect to access by password using post
-            $httpGateway->postLoginData(URLS::SAT_URL_CIEC_LOGIN, []);
+            $httpGateway->postLoginData(URLS::AUTH_LOGIN_CIEC, []);
 
             // change to fiel login page and get challenge
-            $html = $httpGateway->getAuthLoginPage(URLS::SAT_URL_FIEL_LOGIN, URLS::SAT_URL_CIEC_LOGIN);
+            $html = $httpGateway->getAuthLoginPage(URLS::AUTH_LOGIN_FIEL, URLS::AUTH_LOGIN_CIEC);
 
             // resolve and submit challenge, it returns an autosubmit form
             $inputs = $this->resolveChallengeUsingFiel($html);
-            $html = $httpGateway->postFielLoginData(URLS::SAT_URL_FIEL_LOGIN, $inputs);
+            $html = $httpGateway->postFielLoginData(URLS::AUTH_LOGIN_FIEL, $inputs);
 
             // submit login credentials to portalcfdi
             $form = new HtmlForm($html, 'form');

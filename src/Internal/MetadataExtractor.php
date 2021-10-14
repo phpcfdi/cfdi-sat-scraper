@@ -134,7 +134,7 @@ class MetadataExtractor
         $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnDescarga');
         return str_replace(
             ["return AccionCfdi('", "','Recuperacion');"],
-            [URLS::SAT_URL_PORTAL_CFDI, ''],
+            [URLS::PORTAL_CFDI, ''],
             $onClickAttribute
         );
     }
@@ -144,7 +144,7 @@ class MetadataExtractor
         $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnRI');
         return str_replace(
             ["recuperaRepresentacionImpresa('", "');"],
-            [URLS::SAT_URL_PORTAL_CFDI . 'RepresentacionImpresa.aspx?Datos=', ''],
+            [URLS::PORTAL_CFDI . 'RepresentacionImpresa.aspx?Datos=', ''],
             $onClickAttribute
         );
     }
@@ -154,7 +154,7 @@ class MetadataExtractor
         $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnRecuperaAcuse');
         return str_replace(
             ["AccionCfdi('", "','Acuse');"],
-            [URLS::SAT_URL_PORTAL_CFDI, ''],
+            [URLS::PORTAL_CFDI, ''],
             $onClickAttribute
         );
     }
@@ -165,7 +165,7 @@ class MetadataExtractor
         // change javascript call and replace it with complete url
         return str_replace(
             ["javascript:window.location.href='", "';"],
-            [URLS::SAT_URL_PORTAL_CFDI, ''],
+            [URLS::PORTAL_CFDI, ''],
             $onClickAttribute
         );
     }
