@@ -65,9 +65,6 @@ class HttpLogger extends ArrayObject
         }
         /** @var RequestInterface $request */
         $request = $entry['request'];
-        if (null === $entry['response']) {
-            print_r($entry);
-        }
         /** @var ResponseInterface|null $response */
         $response = $entry['response'];
         $time = new DateTimeImmutable();
