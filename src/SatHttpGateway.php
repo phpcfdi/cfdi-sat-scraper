@@ -240,7 +240,7 @@ class SatHttpGateway
 
         while (true) {
             $urlRedirect = $metaRefresh->obtainUrl($html, $previousUrl);
-            if ('' === $urlRedirect) {
+            if ('' === $urlRedirect || $urlRedirect === $previousUrl) {
                 break;
             }
             $html = $this->get('logout redirect by meta', $urlRedirect, $previousUrl);
