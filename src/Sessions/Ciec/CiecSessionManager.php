@@ -152,6 +152,7 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
     {
         return $this->sessionData;
     }
+
     public function getRfc(): string
     {
         return $this->sessionData->getRfc();

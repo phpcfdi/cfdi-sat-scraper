@@ -100,8 +100,8 @@ class SatScraper
     public function confirmSessionIsAlive(): self
     {
         $sessionManager = $this->getSessionManager();
-
         $sessionManager->setHttpGateway($this->getSatHttpGateway());
+
         if (! $sessionManager->hasLogin()) {
             $sessionManager->login();
         }
