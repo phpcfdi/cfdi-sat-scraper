@@ -9,7 +9,7 @@ use Throwable;
 final class LoginUsingFielTest extends IntegrationTestCase
 {
     /** @noinspection PhpUnhandledExceptionInspection */
-    public function testLogin(): void
+    public function testLoginAndLogout(): void
     {
         $factory = $this->getFactory();
         try {
