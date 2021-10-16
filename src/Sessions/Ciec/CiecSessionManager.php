@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Sessions\Ciec;
 
-use LogicException;
 use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
-use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\Sessions\AbstractSessionManager;
 use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 use PhpCfdi\CfdiSatScraper\URLS;
@@ -19,9 +17,6 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
 {
     /** @var CiecSessionData */
     private $sessionData;
-
-    /** @var SatHttpGateway|null */
-    private $httpGateway;
 
     public function __construct(CiecSessionData $sessionData)
     {
@@ -157,20 +152,6 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
     {
         return $this->sessionData;
     }
-
-    public function getHttpGateway(): SatHttpGateway
-    {
-        if (null === $this->httpGateway) {
-            throw new LogicException('Must set http gateway property before use');
-        }
-        return $this->httpGateway;
-    }
-
-    public function setHttpGateway(SatHttpGateway $httpGateway): void
-    {
-        $this->httpGateway = $httpGateway;
-    }
-
     public function getRfc(): string
     {
         return $this->sessionData->getRfc();

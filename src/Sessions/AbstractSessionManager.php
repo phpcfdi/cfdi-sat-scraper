@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Sessions;
 
+use LogicException;
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
 use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
+use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 
 abstract class AbstractSessionManager implements SessionManager
 {
+    /** @var SatHttpGateway|null */
+    private $httpGateway;
+
     abstract protected function createExceptionConnection(string $when, SatHttpGatewayException $exception): LoginException;
 
     abstract protected function createExceptionNotAuthenticated(string $html): LoginException;
@@ -35,5 +40,18 @@ abstract class AbstractSessionManager implements SessionManager
         if (false === strpos($htmlMainPage, 'RFC Autenticado: ' . $this->getRfc())) {
             throw $this->createExceptionNotAuthenticated($htmlMainPage);
         }
+    }
+
+    public function getHttpGateway(): SatHttpGateway
+    {
+        if (null === $this->httpGateway) {
+            throw new LogicException('Must set http gateway property before use');
+        }
+        return $this->httpGateway;
+    }
+
+    public function setHttpGateway(SatHttpGateway $httpGateway): void
+    {
+        $this->httpGateway = $httpGateway;
     }
 }
