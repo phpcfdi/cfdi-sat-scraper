@@ -103,8 +103,9 @@ class HttpLogger extends ArrayObject
                     'body' => $this->bodyToVars((string) $request->getBody()),
                 ],
                 'response' => ($response) ? [
+                    'code' => $response->getStatusCode(),
                     'headers' => $response->getHeaders(),
-                    'body' => $this->bodyToVars((string) $request->getBody()),
+                    'body' => (string) $response->getBody(),
                 ] : '(no response)',
             ],
             JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_LINE_TERMINATORS
