@@ -93,34 +93,8 @@ final class FielSessionManager extends AbstractSessionManager implements Session
      */
     private function resolveChallengeUsingFiel(string $html): array
     {
-        // extract the challenge
-        $inputs = (new HtmlForm($html, '#certform'))->getFormValues();
-        $tokenUuid = ($inputs[''] ?? $inputs['guid'] ?? '') ?: '';
-        // build the form data to send
-        return [
-            'token' => $this->createTokenFromTokenUuid($tokenUuid),
-            'credentialsRequired' => 'CERT',
-            'guid' => $tokenUuid,
-            'ks' => 'null',
-            'seeder' => '',
-            'arc' => '',
-            'tan' => '',
-            'placer' => '',
-            'secuence' => '',
-            'urlApplet' => 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATx509Custom',
-            'fert' => $this->sessionData->getValidTo(),
-        ];
-    }
-
-    private function createTokenFromTokenUuid(string $tokenuuid): string
-    {
-        $fiel = $this->sessionData;
-
-        $rfc = $fiel->getRfc();
-        $serial = $fiel->getSerialNumber();
-        $sourceString = "$tokenuuid|$rfc|$serial";
-        $signature = base64_encode(base64_encode($fiel->sign($sourceString, OPENSSL_ALGO_SHA1)));
-        return base64_encode(base64_encode($sourceString) . '#' . $signature);
+        $resolver = ChallengeResolver::createFromHtml($html, $this->getSessionData());
+        return $resolver->obtainFormFields();
     }
 
     protected function createExceptionConnection(string $when, SatHttpGatewayException $exception): LoginException
