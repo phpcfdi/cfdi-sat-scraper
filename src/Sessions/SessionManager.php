@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Sessions;
 
+use LogicException;
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 
@@ -35,7 +36,10 @@ interface SessionManager
      */
     public function accessPortalMainPage(): void;
 
-    /** Get HTTP Gateway property */
+    /**
+     * Get HTTP Gateway property
+     * @throws LogicException when property has not been set
+     */
     public function getHttpGateway(): SatHttpGateway;
 
     /**

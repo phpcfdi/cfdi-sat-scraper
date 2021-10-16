@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Sessions\Fiel;
 
-use LogicException;
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
 use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
-use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\Sessions\AbstractSessionManager;
 use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 use PhpCfdi\CfdiSatScraper\URLS;
@@ -18,9 +16,6 @@ final class FielSessionManager extends AbstractSessionManager implements Session
 {
     /** @var FielSessionData */
     private $sessionData;
-
-    /** @var SatHttpGateway|null */
-    private $httpGateway;
 
     public function __construct(FielSessionData $fielSessionData)
     {
@@ -85,19 +80,6 @@ final class FielSessionManager extends AbstractSessionManager implements Session
     public function getSessionData(): FielSessionData
     {
         return $this->sessionData;
-    }
-
-    public function getHttpGateway(): SatHttpGateway
-    {
-        if (null === $this->httpGateway) {
-            throw new LogicException('Must set http gateway property before use');
-        }
-        return $this->httpGateway;
-    }
-
-    public function setHttpGateway(SatHttpGateway $httpGateway): void
-    {
-        $this->httpGateway = $httpGateway;
     }
 
     public function getRfc(): string
