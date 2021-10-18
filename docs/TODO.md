@@ -11,6 +11,8 @@
 - Entorno de desarrollo:
     - CodeStyle: Subir a PSR-12.
     - Definir el estilo de código de la coma final en un listado de parámetros.
+    - Crear un entorno disponible en el workflow de CI para correr pruebas de integración
+      con un FIEL, CIEC, resolvedor de captchas y repositorio.
 
 ## Wishlist
 
