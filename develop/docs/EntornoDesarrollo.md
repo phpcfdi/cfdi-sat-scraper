@@ -6,7 +6,7 @@ Para crear un entorno de desarrollo es necesario obtener el repositorio, instala
 librerías e instalar las dependencias de desarrollo.
 
 ```shell
-# clonacion del proyecto
+# clonación del proyecto
 git clone https://github.com/phpcfdi/cfdi-sat-scraper.git
 # posicionarse en la carpeta del proyecto
 cd cfdi-sat-scraper

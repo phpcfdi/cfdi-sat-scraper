@@ -400,9 +400,9 @@ use PhpCfdi\CfdiSatScraper\Sessions\Fiel\FielSessionData;
 use PhpCfdi\Credentials\Credential;
 
 /**
- * @var string $certificate contenido del certificado
- * @var string $privateKey contenido de la llave privada
- * @var string $passPhrase contraseña de la llave privada
+ * @var string $certificate Contenido del certificado
+ * @var string $privateKey Contenido de la llave privada
+ * @var string $passPhrase Contraseña de la llave privada
  */
 
 // crear la credencial
@@ -459,7 +459,6 @@ Documentación de desarrollo:
 
 - [Guía de contribuciones](CONTRIBUTING.md)
 - [Entorno de desarrollo](develop/docs/EntornoDesarrollo.md)
-- [Integración contínua](develop/docs/IntegracionContinua.md)
 - [Test de integración](develop/docs/TestIntegracion.md)
 
 ## Copyright and License

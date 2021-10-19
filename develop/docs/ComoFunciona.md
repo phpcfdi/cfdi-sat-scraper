@@ -20,10 +20,10 @@ con la consulta. Si la consulta es por varios UUID se realiza sobre los uuid ún
 se subdivide en consultas por día.
 
 Para ejecutar la consulta se usa el objeto `QueryResolver` recibiendo un objeto `InputsInterface`.
-El `InputsInterface` es un encapsulador de la consulta, que contiene la consulta y los métodos necesarios
-para crear los inputs (datos de las llamadas HTTP POST) basados en la consulta. `MetaDownloader` es el encargado
-de definir cuál es la implementación de `InputsInterface` que utilizará: `InputsByUuid`, `InputsByFiltersReceived`
-y `InputsByFiltersIssued`.
+El objeto `InputsInterface` es un encapsulador de la consulta, que contiene la consulta y los métodos necesarios
+para crear los inputs (datos de las llamadas HTTP POST) basados en la consulta. El objeto `MetaDownloader` es el
+encargado de definir cuál es la implementación de `InputsInterface` que utilizará: `InputsByUuid`,
+`InputsByFiltersReceived` y `InputsByFiltersIssued`.
 
 ```
 - interface InputsInterface

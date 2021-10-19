@@ -77,7 +77,7 @@ Este cambio no afectó la versión liberada y no requiere de un nuevo release.
 
 ## UNRELEASED 2020-04-12
 
-- El filtro por complemento `ComplementsOption` ya no es un `Enum`, ahora es un `MicroCatalog`.
+- El filtro por complemento `ComplementsOption` ya no es un `Enum`, ahora es un `MicroCatalog`. 
   De esta forma se puede tener mucha más información relacionada con el complemento y por ejemplo
   poder ofrecer una lista de opciones de catálogos.
 - La modificación de `ComplementsOption` es compatible con la forma de crear los objetos y de comprobar si es
@@ -98,7 +98,7 @@ Los cambios más importantes para los usuarios de la librería son:
     - Todas implementan la interfaz `SatException`.
     - Las excepciones usan las SPL de PHP: `RuntimeException`, `InvalidArgumentException` y `LogicException`.
     - Las excepciones lógicas indican que debes tener un error en la forma en que estás usando la aplicación.
-    - Las excepciones de tiempo de ejecución es porque algo inesperado ha ocurrido pero no necesariamente es
+    - Las excepciones de tiempo de ejecución es porque algo inesperado ha ocurrido, pero no necesariamente es
       por un error en la implementación.
     - Los problemas relacionados con el proceso de autenticación son `LoginException`.
     - Los problemas relacionados con las transacciones HTTP con el SAT son `SatHttpGatewayException`,
@@ -117,7 +117,7 @@ Los cambios importantes al interior de la librería son:
 
 Estos son algunos de los cambios más importantes relacionados con la compatibilidad si está usando una versión previa.
 
-- Se crea el `SatHttpGateway` que encierra las comunicaciones con el SAT, es éste el que utiliza
+- Se crea el `SatHttpGateway` que encierra las comunicaciones con el SAT, es este el que utiliza
   el cliente de Guzzle (`GuzzleInterface`).
 - Se cambió el constructor del `SatScraper`, ahora el tercer parámetro es el resolvedor de captchas
   y el cuarto parámetro es un `SatHttpGateway` y es opcional (por si la cookie es solo de memoria).
@@ -127,7 +127,7 @@ Estos son algunos de los cambios más importantes relacionados con la compatibil
 - Se cambió el inicio de sesión en el SAT después de revisar el funcionamiento actual, ahora es más limpio
   y con menos llamadas.
 - Los filtros solamente llenan los input que deberían llenar.
-- El `DownloadTypesOption` ya no es un filtro, pero sigue siendo un `Enum`
+- La clase `DownloadTypesOption` ya no es un filtro, pero sigue siendo un `Enum`.
 - Se removieron las constantes `URLS::SAT_HOST_CFDI_AUTH`, `URLS::SAT_HOST_PORTAL_CFDI` y `URLS::SAT_URL_PORTAL_CFDI_CONSULTA`
 - Se movieron las clases internas al espacio de nombres interno.
 
@@ -143,7 +143,7 @@ Estos son algunos de los cambios más importantes relacionados con la compatibil
 - Se corrigió un bug que no permitía descargar por UUID
 - Se cambió el objeto `\PhpCfdi\CfdiSatScraper\Filters\Options\RfcReceptorOption` a
   `PhpCfdi\CfdiSatScraper\Filters\Options\RfcOption`.
-- Se agregaron test de integración con información basada en un *único punto de verdad*.
+- Se agregaron test de integración con información basada en un *único punto de verdad*. 
   Consulta la guía en `develop/docs/TestIntegracion.md`.
 - Se agregó integración contínua con Travis-CI & Scrutinizer.
 - Se establece análisis de código a `phpstan level 5`.
