@@ -8,6 +8,7 @@
 
 # Do not put this files on a distribution package
 /.github/                   export-ignore
+/.phive/                    export-ignore
 /build/                     export-ignore
 /develop/                   export-ignore
 /tests/                     export-ignore
