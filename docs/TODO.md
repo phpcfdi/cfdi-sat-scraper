@@ -5,7 +5,6 @@
 - Core:
     - Clases que vienen de Enum deberían ser finales.
     - Incrementar las pruebas unitarias a un mínimo de 80%.
-    - Implementar `phpcfdi/image-captcha-resolver`.
 - Documentación:
     - Todos los puntos de entrada deben tener phpdoc.
 - Entorno de desarrollo:
@@ -17,10 +16,12 @@
 ## Wishlist
 
 - Code coverage 100%.
-- Se comentó en el canal de discord que podría servir procurar la integración no solo por clave CIEC,
-  y permitir también la autenticación por FIEL.
 
 ## Realizadas
+
+- 2021-10-01: Versión 3.
+    - Se agrega el registro en el portal del SAT usando FIEL.
+    - Se usa la librería *Image Captcha Resolver* en lugar de los conectores en esta misma librería.
 
 - 2020-07-18:
     - Se actualizó `guzzlehttp/guzzle` a `^7.0`.
