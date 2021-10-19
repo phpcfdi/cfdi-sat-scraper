@@ -18,7 +18,7 @@ use PhpCfdi\CfdiSatScraper\Contracts\FilterOption;
  * @method bool isCancelados()
  * @method bool isVigentes()
  */
-class StatesVoucherOption extends Enum implements FilterOption
+final class StatesVoucherOption extends Enum implements FilterOption
 {
     /** @noinspection PhpMissingParentCallCommonInspection */
     protected static function overrideValues(): array

@@ -3,7 +3,6 @@
 ## Pendientes
 
 - Core:
-    - Clases que vienen de Enum deberían ser finales.
     - Incrementar las pruebas unitarias a un mínimo de 80%.
 - Documentación:
     - Todos los puntos de entrada deben tener phpdoc.

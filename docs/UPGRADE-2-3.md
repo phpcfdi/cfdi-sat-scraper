@@ -50,6 +50,7 @@ Estos cambios son importantes solo si estás desarrollando o extendiendo esta li
   en la clase abstracta `AbstractSessionManager`.
 - Se han agregado nuevos métodos a `SatHttpGateway`.
 - Las constantes de URL han sido renombradas para mayor simplicidad.
+- Las clases `Enum` ahora son finales.
 
 Se ha cambiado el archivo de entorno de pruebas `tests/.env-example` agregando nuevas variables.
 Para correr los test de integración se recomienda configurar tanto la Clave CIEC como la FIEL.
