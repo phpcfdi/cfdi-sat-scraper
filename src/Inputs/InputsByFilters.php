@@ -29,7 +29,7 @@ abstract class InputsByFilters extends InputsGeneric implements InputsInterface
     {
         return array_merge(
             parent::getQueryAsInputs(),
-            $this->getDateFilters()
+            $this->getDateFilters(),
         );
     }
 

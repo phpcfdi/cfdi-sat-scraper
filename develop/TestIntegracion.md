@@ -1,14 +1,15 @@
 # Test de integración
 
-Los tests de integración realizan consultas al sitio web del SAT y por lo tanto, como utiliza datos de RFC y Clave CIEC
-personales, entonces no pueden funcionar igual para todos.
+Las pruebas de integración realizan consultas al sitio web del SAT y por lo tanto,
+como utiliza datos de RFC y Clave CIEC, o bien, utiliza la llave FIEL,
+entonces no pueden funcionar igual para todos.
 
 Por lo anterior, partimos de que los tests de integración deben adecuarse a probar con flexibilidad sobre
 una *fuente de verdad*. Así entonces, los tests de integración van a verificar que efectivamente se esté
 realizando una tarea en particular (como descargar un CFDI por UUID) tomando como fuente de verdad como
 los datos esperados.
 
-La configuración de RFC y Clave CIEC se guardan en variables de entorno.
+La configuración de RFC y Clave CIEC o llave FIEL se guardan en variables de entorno.
 
 La *fuente de verdad* le llamamos repositorio y se almacena en una estructura específica en un archivo.
 
@@ -71,16 +72,14 @@ Lee la documentación de <https://github.com/eclipxe13/captcha-local-resolver>.
 Con la siguiente configuración:
 
 ```dotenv
-CAPTCHA_LOCAL_HOST="localhost"
-CAPTCHA_LOCAL_PORT="9595"
-CAPTCHA_LOCAL_TIMEOUT="30"
+CAPTCHA_LOCAL_URL="localhost:9595"
 ```
 
 La ejecución sería de la siguiente manera:
 
 ```shell
 cd ../captcha-local-resolver/
-php bin/service.php 127.0.0.1 9595
+php bin/service.php 127.0.0.1:9595
 xdg-open http://127.0.0.1:9595
 ```
 

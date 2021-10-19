@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @noinspection PhpUnhandledExceptionInspection
  */
@@ -37,7 +38,7 @@ final class MetadataDownloaderTest extends TestCase
             $resolver,
             function (DateTimeImmutable $date) use (&$dateOnCallable): void {
                 $dateOnCallable = $date;
-            }
+            },
         );
 
         $expectedDate = new DateTimeImmutable();

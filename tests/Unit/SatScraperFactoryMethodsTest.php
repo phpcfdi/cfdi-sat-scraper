@@ -21,7 +21,7 @@ final class SatScraperFactoryMethodsTest extends TestCase
         };
         $sessionManager = $this->createMock(SessionManager::class);
         $httpGateway = $this->createMock(SatHttpGateway::class);
-        $scraper = new class($sessionManager, $httpGateway, $onFiveHundred) extends SatScraper {
+        $scraper = new class ($sessionManager, $httpGateway, $onFiveHundred) extends SatScraper {
             public function createQueryResolver(): QueryResolver
             {
                 static $queryResolver = null;
@@ -56,7 +56,7 @@ final class SatScraperFactoryMethodsTest extends TestCase
 
     public function testCreateCreateQueryResolverIsCreatedWithCorrectProperties(): void
     {
-        $scraper = new class($this->createMock(SessionManager::class)) extends SatScraper {
+        $scraper = new class ($this->createMock(SessionManager::class)) extends SatScraper {
             public function createQueryResolver(): QueryResolver
             {
                 return parent::createQueryResolver();

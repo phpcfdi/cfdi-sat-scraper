@@ -14,7 +14,7 @@ use Throwable;
 
 require __DIR__ . '/bootstrap.php';
 
-exit(call_user_func(new class() {
+exit(call_user_func(new class () {
     /** @var string */
     private $rfc;
 
@@ -43,13 +43,13 @@ exit(call_user_func(new class() {
 
             $list = $list->merge(
                 $scraper->listByPeriod(
-                    (new QueryByFilters($since, $until))->setDownloadType(DownloadType::recibidos())
-                )
+                    (new QueryByFilters($since, $until))->setDownloadType(DownloadType::recibidos()),
+                ),
             );
             $list = $list->merge(
                 $scraper->listByPeriod(
-                    (new QueryByFilters($since, $until))->setDownloadType(DownloadType::emitidos())
-                )
+                    (new QueryByFilters($since, $until))->setDownloadType(DownloadType::emitidos()),
+                ),
             );
             $this->printList($list);
             return 0;

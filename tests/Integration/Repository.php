@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @noinspection PhpUnhandledExceptionInspection
  */
@@ -68,8 +69,8 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
                 $this->items,
                 function (RepositoryItem $item) use ($itemState): bool {
                     return $item->getState() == $itemState;
-                }
-            )
+                },
+            ),
         );
     }
 
@@ -81,8 +82,8 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
                 $this->items,
                 function (RepositoryItem $item) use ($itemType): bool {
                     return $item->getDownloadType() == $itemType;
-                }
-            )
+                },
+            ),
         );
     }
 
@@ -109,7 +110,7 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
             function (RepositoryItem $item): string {
                 return $item->getUuid();
             },
-            $this->items
+            $this->items,
         );
     }
 

@@ -21,7 +21,7 @@ final class MetadataExtractorTest extends TestCase
 
         /** @noinspection PhpUnhandledExceptionInspection */
         $firstRow = (new Crawler(
-            '<tr><th>Alpha</th><th>Folio Fiscal</th><th>RFC Emisor</th></tr>'
+            '<tr><th>Alpha</th><th>Folio Fiscal</th><th>RFC Emisor</th></tr>',
         ))->filter('tr')->first();
         $extractor = new MetadataExtractor();
         $fieldsPositions = $extractor->locateFieldsPositions($firstRow, $fieldsCaptions);
@@ -43,7 +43,7 @@ final class MetadataExtractorTest extends TestCase
 
         /** @noinspection PhpUnhandledExceptionInspection */
         $row = (new Crawler(
-            '<tr><td>Alpha</td><td>Bravo</td><td>Charlie</td><td>Delta</td><td>Echo</td></tr>'
+            '<tr><td>Alpha</td><td>Bravo</td><td>Charlie</td><td>Delta</td><td>Echo</td></tr>',
         ))->filter('tr')->first();
         $extractor = new MetadataExtractor();
         $values = $extractor->obtainMetadataValues($row, $fieldsPositions);
@@ -123,22 +123,22 @@ final class MetadataExtractorTest extends TestCase
         $this->assertSame(
             $urlXml,
             $metadataCurrent->getResource(ResourceType::xml()),
-            'The URL to download the CFDI XML was not found as expected'
+            'The URL to download the CFDI XML was not found as expected',
         );
         $this->assertSame(
             $urlPdf,
             $metadataCurrent->getResource(ResourceType::pdf()),
-            'The URL to download the CFDI PDF was not found as expected'
+            'The URL to download the CFDI PDF was not found as expected',
         );
         $this->assertSame(
             $urlCancelRequest,
             $metadataCancelled->getResource(ResourceType::cancelRequest()),
-            'The URL to download the CFDI cancellation request was not found as expected'
+            'The URL to download the CFDI cancellation request was not found as expected',
         );
         $this->assertSame(
             $urlCancelVoucher,
             $metadataCancelled->getResource(ResourceType::cancelVoucher()),
-            'The URL to download the CFDI cancellation voucher was not found as expected'
+            'The URL to download the CFDI cancellation voucher was not found as expected',
         );
     }
 

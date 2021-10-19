@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @noinspection PhpDocMissingThrowsInspection
  * @noinspection PhpUnhandledExceptionInspection
@@ -38,7 +39,7 @@ class RetrieveByUuidTest extends IntegrationTestCase
         $minimal = (1 === $count) ? 1 : 2;
         if (count($uuids) < $minimal) {
             $this->markTestSkipped(
-                sprintf('It should be at least %d UUID on the repository (type %s)', $minimal, $typeText)
+                sprintf('It should be at least %d UUID on the repository (type %s)', $minimal, $typeText),
             );
         }
 

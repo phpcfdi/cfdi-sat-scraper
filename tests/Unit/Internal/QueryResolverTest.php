@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @noinspection PhpUnhandledExceptionInspection
  */
@@ -41,11 +42,11 @@ final class QueryResolverTest extends TestCase
     {
         $this->assertSame(
             URLS::PORTAL_CFDI_CONSULTA_RECEPTOR,
-            DownloadType::recibidos()->url()
+            DownloadType::recibidos()->url(),
         );
         $this->assertSame(
             URLS::PORTAL_CFDI_CONSULTA_EMISOR,
-            DownloadType::emitidos()->url()
+            DownloadType::emitidos()->url(),
         );
     }
 
@@ -57,11 +58,11 @@ final class QueryResolverTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $satHttpGateway->method('getPortalPage')->willReturn(
-            $this->fileContentPath('sample-response-receiver-form-page.html')
+            $this->fileContentPath('sample-response-receiver-form-page.html'),
         );
         $satHttpGateway->method('postAjaxSearch')->willReturn(
             $this->fileContentPath('sample-response-receiver-using-filters-initial.html'),
-            $this->fileContentPath('sample-response-receiver-using-filters-search.html')
+            $this->fileContentPath('sample-response-receiver-using-filters-search.html'),
         );
 
         // create resolver with prepared responses
