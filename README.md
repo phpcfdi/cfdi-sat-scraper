@@ -458,8 +458,8 @@ y recuerda revisar el archivo de tareas pendientes [TODO][] y el archivo [CHANGE
 Documentación de desarrollo:
 
 - [Guía de contribuciones](CONTRIBUTING.md)
-- [Entorno de desarrollo](develop/docs/EntornoDesarrollo.md)
-- [Test de integración](develop/docs/TestIntegracion.md)
+- [Entorno de desarrollo](develop/EntornoDesarrollo.md)
+- [Test de integración](develop/TestIntegracion.md)
 
 ## Copyright and License
 
