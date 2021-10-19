@@ -57,8 +57,7 @@ jobs:
         uses: shivammathur/setup-php@v2 # https://github.com/marketplace/actions/setup-php-action
         with:
           php-version: ${{ matrix.php-versions }}
-          extensions: curl, libxml, simplexml, dom, json, filter, fileinfo, iconv
-          coverage: none
+          coverage: xdebug
           tools: composer:v2
         env:
           fail-fast: true
@@ -84,7 +83,6 @@ jobs:
         uses: sudo-bot/action-scrutinizer@latest # see https://github.com/marketplace/actions/action-scrutinizer
         with:
           cli-args: "--format=php-clover build/coverage-clover.xml"
-        if: ${{ matrix.php-versions == '8.0' }}
         continue-on-error: true
 
   phpstan:
