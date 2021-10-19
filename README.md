@@ -424,24 +424,24 @@ Documentación de desarrollo:
 The `phpcfdi/cfdi-sat-scraper` library is copyright © [PhpCfdi](https://www.phpcfdi.com)
 and licensed for use under the MIT License (MIT). Please see [LICENSE][] for more information.
 
-[contributing]: https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/CONTRIBUTING.md
-[changelog]: https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/docs/CHANGELOG.md
-[todo]: https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/docs/TODO.md
+[contributing]: https://github.com/phpcfdi/cfdi-sat-scraper/blob/main/CONTRIBUTING.md
+[changelog]: https://github.com/phpcfdi/cfdi-sat-scraper/blob/main/docs/CHANGELOG.md
+[todo]: https://github.com/phpcfdi/cfdi-sat-scraper/blob/main/docs/TODO.md
 
 [source]: https://github.com/phpcfdi/cfdi-sat-scraper
 [discord]: https://discord.gg/aFGYXvX
 [release]: https://github.com/phpcfdi/cfdi-sat-scraper/releases
-[license]: https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/LICENSE
-[build]: https://github.com/phpcfdi/cfdi-sat-scraper/actions/workflows/build.yml?query=branch:master
+[license]: https://github.com/phpcfdi/cfdi-sat-scraper/blob/main/LICENSE
+[build]: https://github.com/phpcfdi/cfdi-sat-scraper/actions/workflows/build.yml?query=branch:main
 [quality]: https://scrutinizer-ci.com/g/phpcfdi/cfdi-sat-scraper/
-[coverage]: https://scrutinizer-ci.com/g/phpcfdi/cfdi-sat-scraper/code-structure/master/code-coverage/src/
+[coverage]: https://scrutinizer-ci.com/g/phpcfdi/cfdi-sat-scraper/code-structure/main/code-coverage/src/
 [downloads]: https://packagist.org/packages/phpcfdi/cfdi-sat-scraper
 
 [badge-source]: https://img.shields.io/badge/source-phpcfdi/cfdi--sat--scraper-blue?style=flat-square
 [badge-discord]: https://img.shields.io/discord/459860554090283019?style=flat-square
 [badge-release]: https://img.shields.io/github/release/phpcfdi/cfdi-sat-scraper?style=flat-square
 [badge-license]: https://img.shields.io/github/license/phpcfdi/cfdi-sat-scraper?style=flat-square
-[badge-build]: https://img.shields.io/github/workflow/status/phpcfdi/cfdi-sat-scraper/build/master?style=flat-square
-[badge-quality]: https://img.shields.io/scrutinizer/g/phpcfdi/cfdi-sat-scraper/master?style=flat-square
-[badge-coverage]: https://img.shields.io/scrutinizer/coverage/g/phpcfdi/cfdi-sat-scraper/master?style=flat-square
+[badge-build]: https://img.shields.io/github/workflow/status/phpcfdi/cfdi-sat-scraper/build/main?style=flat-square
+[badge-quality]: https://img.shields.io/scrutinizer/g/phpcfdi/cfdi-sat-scraper/main?style=flat-square
+[badge-coverage]: https://img.shields.io/scrutinizer/coverage/g/phpcfdi/cfdi-sat-scraper/main?style=flat-square
 [badge-downloads]: https://img.shields.io/packagist/dt/phpcfdi/cfdi-sat-scraper?style=flat-square

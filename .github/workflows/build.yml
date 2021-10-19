@@ -2,10 +2,10 @@ name: build
 on:
   pull_request:
     branches:
-      - "master"
+      - "main"
   push:
     branches:
-      - "master"
+      - "main"
   schedule:
     - cron: '0 16 * * 0' # sunday 16:00
 
