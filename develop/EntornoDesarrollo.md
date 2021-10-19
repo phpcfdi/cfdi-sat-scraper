@@ -45,11 +45,10 @@ No todo es código, también los cambios pueden hacerse a la documentación, eje
 
 ## Cambios en el proyecto
 
-La rama `master` es la rama de trabajo, antes de enviar una solicitud de cambio (Pull Request) asegúrate de
+La rama `main` es la rama de trabajo, antes de enviar una solicitud de cambio (Pull Request) asegúrate de
 que la estás haciendo sobre esa rama.
 
-La rama `master` no se considera una rama estable, se considera una rama de cambios.
-Lo que es estable son los tags que generan un nuevo release.
+La rama `main` se considera una rama estable y puede integrar cambios que aún no han sido liberados en un *release*.
 
 Asegúrate que nada esté roto con los cambios, para revisarlo actualiza las dependencias y apóyate en estos comandos:
 
