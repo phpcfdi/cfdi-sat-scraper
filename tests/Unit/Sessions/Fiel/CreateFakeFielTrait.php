@@ -13,7 +13,7 @@ trait CreateFakeFielTrait
         $credential = Credential::openFiles(
             $this->filePath('fake-fiel/EKU9003173C9.cer'),
             $this->filePath('fake-fiel/EKU9003173C9.key'),
-            trim($this->fileContentPath('fake-fiel/EKU9003173C9.pwd'))
+            trim($this->fileContentPath('fake-fiel/EKU9003173C9.pwd')),
         );
         return $credential;
     }

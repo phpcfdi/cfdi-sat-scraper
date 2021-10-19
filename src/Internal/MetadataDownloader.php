@@ -156,7 +156,7 @@ class MetadataDownloader
     {
         return (clone $query)->setPeriod(
             $this->buildDateWithDayAndSeconds($query->getStartDate(), $startSec),
-            $this->buildDateWithDayAndSeconds($query->getEndDate(), $endSec)
+            $this->buildDateWithDayAndSeconds($query->getEndDate(), $endSec),
         );
     }
 

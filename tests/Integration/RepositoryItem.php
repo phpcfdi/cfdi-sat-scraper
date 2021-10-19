@@ -41,7 +41,7 @@ class RepositoryItem implements JsonSerializable
             strval($item['uuid'] ?? ''),
             $dateTime,
             strval($item['state'] ?? ''),
-            strval($item['type'] ?? '')
+            strval($item['type'] ?? ''),
         );
     }
 

@@ -24,7 +24,7 @@ class ResourceDownloadResponseError extends ResourceDownloadError
         return new self(
             sprintf('Download of CFDI %s return an invalid status code %d', $uuid, $response->getStatusCode()),
             $uuid,
-            $response
+            $response,
         );
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @noinspection PhpDocMissingThrowsInspection
  * @noinspection PhpUnhandledExceptionInspection

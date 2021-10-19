@@ -51,7 +51,7 @@ class MetadataExtractor
                 $metadata[ResourceType::cancelRequest()->value()] = $this->obtainUrlCancelRequest($row);
                 $metadata[ResourceType::cancelVoucher()->value()] = $this->obtainUrlCancelVoucher($row);
                 return new Metadata($metadata['uuid'], $metadata);
-            }
+            },
         );
 
         // build metadata using uuid as key
@@ -91,7 +91,7 @@ class MetadataExtractor
             $headerCells = $headersRow->children()->each(
                 function (Crawler $cell) {
                     return trim($cell->text());
-                }
+                },
             );
         } catch (RuntimeException $exception) {
             return [];
@@ -135,7 +135,7 @@ class MetadataExtractor
         return str_replace(
             ["return AccionCfdi('", "','Recuperacion');"],
             [URLS::PORTAL_CFDI, ''],
-            $onClickAttribute
+            $onClickAttribute,
         );
     }
 
@@ -145,7 +145,7 @@ class MetadataExtractor
         return str_replace(
             ["recuperaRepresentacionImpresa('", "');"],
             [URLS::PORTAL_CFDI . 'RepresentacionImpresa.aspx?Datos=', ''],
-            $onClickAttribute
+            $onClickAttribute,
         );
     }
 
@@ -155,7 +155,7 @@ class MetadataExtractor
         return str_replace(
             ["AccionCfdi('", "','Acuse');"],
             [URLS::PORTAL_CFDI, ''],
-            $onClickAttribute
+            $onClickAttribute,
         );
     }
 
@@ -166,7 +166,7 @@ class MetadataExtractor
         return str_replace(
             ["javascript:window.location.href='", "';"],
             [URLS::PORTAL_CFDI, ''],
-            $onClickAttribute
+            $onClickAttribute,
         );
     }
 

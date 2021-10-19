@@ -1,7 +1,8 @@
 <?php
+
 /**
  * @noinspection PhpDocMissingThrowsInspection
- *@noinspection PhpUnhandledExceptionInspection
+ * @noinspection PhpUnhandledExceptionInspection
  */
 
 declare(strict_types=1);
@@ -26,7 +27,7 @@ class RetrieveByCfdiStateTest extends IntegrationTestCase
         $repository = $repository->filterByState($state);
         if (0 === $repository->count()) {
             $this->markTestSkipped(
-                sprintf('The repository does not have CFDI %s with state Cancelado', $typeText)
+                sprintf('The repository does not have CFDI %s with state Cancelado', $typeText),
             );
         }
 
@@ -51,7 +52,7 @@ class RetrieveByCfdiStateTest extends IntegrationTestCase
         $repository = $repository->filterByState($state);
         if (0 === $repository->count()) {
             $this->markTestSkipped(
-                sprintf('The repository does not have CFDI %s with state Vigente', $typeText)
+                sprintf('The repository does not have CFDI %s with state Vigente', $typeText),
             );
         }
 

@@ -7,8 +7,6 @@
 - Documentación:
     - Todos los puntos de entrada deben tener phpdoc.
 - Entorno de desarrollo:
-    - CodeStyle: Subir a PSR-12.
-    - Definir el estilo de código de la coma final en un listado de parámetros.
     - Crear un entorno disponible en el workflow de CI para correr pruebas de integración
       con un FIEL, CIEC, resolvedor de captchas y repositorio.
 
@@ -21,6 +19,8 @@
 - 2021-10-01: Versión 3.
     - Se agrega el registro en el portal del SAT usando FIEL.
     - Se usa la librería *Image Captcha Resolver* en lugar de los conectores en esta misma librería.
+    - CodeStyle: Subir a PSR-12.
+    - Definir el estilo de código de la coma final en un listado de parámetros.
 
 - 2020-07-18:
     - Se actualizó `guzzlehttp/guzzle` a `^7.0`.

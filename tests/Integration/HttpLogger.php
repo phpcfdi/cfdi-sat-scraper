@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @noinspection PhpUnhandledExceptionInspection
  */
@@ -74,7 +75,7 @@ class HttpLogger extends ArrayObject
             $time->format('c'),
             $time->format('u'),
             strtolower($request->getMethod()),
-            $this->slugify(sprintf('%s%s', $request->getUri()->getHost(), $request->getUri()->getPath()))
+            $this->slugify(sprintf('%s%s', $request->getUri()->getHost(), $request->getUri()->getPath())),
         );
         file_put_contents($file, $this->entryToJson($request, $response), FILE_APPEND);
     }
@@ -108,7 +109,7 @@ class HttpLogger extends ArrayObject
                     'body' => (string) $response->getBody(),
                 ] : '(no response)',
             ],
-            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_LINE_TERMINATORS
+            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_LINE_TERMINATORS,
         ) . PHP_EOL;
         $request->getBody()->rewind();
         if (null !== $response) {
