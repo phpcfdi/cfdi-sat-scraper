@@ -47,7 +47,8 @@
         "symfony/css-selector": "^5.1",
         "eclipxe/enum": "^0.2.0",
         "eclipxe/micro-catalog": "^0.1.2",
-        "phpcfdi/credentials": "^1.1"
+        "phpcfdi/credentials": "^1.1",
+        "phpcfdi/image-captcha-resolver": "^0.2.0"
     },
     "require-dev": {
         "ext-iconv": "*",

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Sessions\Ciec;
 
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
+use PhpCfdi\ImageCaptchaResolver\CaptchaResolverInterface;
 
 /**
  * This immutable class is the store of the data required to login into SAT

@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Sessions\Ciec;
 
 use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
 use PhpCfdi\CfdiSatScraper\Sessions\AbstractSessionManager;
 use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 use PhpCfdi\CfdiSatScraper\URLS;
+use PhpCfdi\ImageCaptchaResolver\CaptchaImage;
+use PhpCfdi\ImageCaptchaResolver\CaptchaResolverInterface;
 use Throwable;
 
 final class CiecSessionManager extends AbstractSessionManager implements SessionManager
@@ -30,10 +31,9 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
     }
 
     /**
-     * @return string
      * @throws CiecLoginException
      */
-    public function requestCaptchaImage(): string
+    public function requestCaptchaImage(): CaptchaImage
     {
         try {
             $html = $this->getHttpGateway()->getAuthLoginPage(URLS::AUTH_LOGIN);
@@ -45,7 +45,7 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
         if ('' === $imageBase64) {
             throw CiecLoginException::noCaptchaImageFound($this->sessionData, $html);
         }
-        return $imageBase64;
+        return CaptchaImage::newFromBase64($imageBase64);
     }
 
     /**
@@ -55,20 +55,16 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
      */
     public function getCaptchaValue(int $attempt): string
     {
-        $imageBase64 = $this->requestCaptchaImage();
+        $captchaImage = $this->requestCaptchaImage();
         try {
-            $result = $this->sessionData->getCaptchaResolver()->decode($imageBase64);
-            if ('' === $result) {
-                throw CiecLoginException::captchaWithoutAnswer($this->sessionData, $imageBase64);
-            }
-            return $result;
+            $result = $this->sessionData->getCaptchaResolver()->resolve($captchaImage);
+            return $result->getValue();
         } catch (Throwable $exception) {
             if ($attempt < $this->sessionData->getMaxTriesCaptcha()) {
                 return $this->getCaptchaValue($attempt + 1);
             }
-
             if (! $exception instanceof CiecLoginException) {
-                $exception = CiecLoginException::captchaWithoutAnswer($this->sessionData, $imageBase64, $exception);
+                $exception = CiecLoginException::captchaWithoutAnswer($this->sessionData, $captchaImage, $exception);
             }
             /** @var CiecLoginException $exception */
             throw $exception;
@@ -84,7 +80,7 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
             return false;
         }
 
-        // check login on cfdiau
+        // check login on CFDIAU
         try {
             $html = $httpGateway->getAuthLoginPage(URLS::AUTH_LOGIN);
         } catch (SatHttpGatewayException $exception) {
@@ -163,7 +159,7 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
         return CiecLoginException::connectionException('registering on login page', $this->sessionData, $exception);
     }
 
-    public function createExceptionNotAuthenticated(string $html): LoginException
+    protected function createExceptionNotAuthenticated(string $html): LoginException
     {
         return CiecLoginException::notRegisteredAfterLogin($this->sessionData, $html);
     }

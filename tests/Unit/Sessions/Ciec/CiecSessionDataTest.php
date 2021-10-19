@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Sessions\Ciec;
 
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionData;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
+use PhpCfdi\ImageCaptchaResolver\CaptchaResolverInterface;
 
 final class CiecSessionDataTest extends TestCase
 {

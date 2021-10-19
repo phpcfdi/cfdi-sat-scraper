@@ -12,10 +12,6 @@ use GuzzleHttp\Cookie\FileCookieJar;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use LogicException;
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\AntiCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\ConsoleCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionData;
@@ -23,9 +19,11 @@ use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
 use PhpCfdi\CfdiSatScraper\Sessions\Fiel\FielSessionData;
 use PhpCfdi\CfdiSatScraper\Sessions\Fiel\FielSessionManager;
 use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
-use PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver\CaptchaLocalResolver;
-use PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver\CaptchaLocalResolverClient;
 use PhpCfdi\Credentials\Credential;
+use PhpCfdi\ImageCaptchaResolver\CaptchaResolverInterface;
+use PhpCfdi\ImageCaptchaResolver\Resolvers\AntiCaptchaResolver;
+use PhpCfdi\ImageCaptchaResolver\Resolvers\CaptchaLocalResolver;
+use PhpCfdi\ImageCaptchaResolver\Resolvers\ConsoleResolver;
 use RuntimeException;
 
 class Factory
@@ -49,33 +47,24 @@ class Factory
         $resolver = $this->env('CAPTCHA_RESOLVER');
 
         if ('console' === $resolver) {
-            return new ConsoleCaptchaResolver();
+            return new ConsoleResolver();
         }
 
         if ('local' === $resolver) {
-            return new CaptchaLocalResolver(
-                new CaptchaLocalResolverClient(
-                    $this->env('CAPTCHA_LOCAL_HOST'),
-                    intval($this->env('CAPTCHA_LOCAL_PORT')),
-                    intval($this->env('CAPTCHA_LOCAL_TIMEOUT')),
-                    new Client()
-                )
-            );
-        }
-
-        if ('decaptcher' === $resolver) {
-            return new DeCaptcherCaptchaResolver(
-                new Client(),
-                $this->env('DECAPTCHER_USERNAME'),
-                $this->env('DECAPTCHER_PASSWORD')
+            return CaptchaLocalResolver::create(
+                $this->env('CAPTCHA_LOCAL_URL'),
+                intval($this->env('CAPTCHA_LOCAL_INITIAL_WAIT')) ?: CaptchaLocalResolver::DEFAULT_INITIAL_WAIT,
+                intval($this->env('CAPTCHA_LOCAL_TIMEOUT')) ?: CaptchaLocalResolver::DEFAULT_TIMEOUT,
+                intval($this->env('CAPTCHA_LOCAL_WAIT')) ?: CaptchaLocalResolver::DEFAULT_WAIT,
             );
         }
 
         if ('anticaptcha' === $resolver) {
             return AntiCaptchaResolver::create(
                 $this->env('ANTICAPTCHA_CLIENT_KEY'),
-                new Client(),
-                intval($this->env('ANTICAPTCHA_CLIENT_TIMEOUT'))
+                intval($this->env('ANTICAPTCHA_INITIAL_WAIT')) ?: AntiCaptchaResolver::DEFAULT_INITIAL_WAIT,
+                intval($this->env('ANTICAPTCHA_TIMEOUT')) ?: AntiCaptchaResolver::DEFAULT_TIMEOUT,
+                intval($this->env('ANTICAPTCHA_WAIT')) ?: AntiCaptchaResolver::DEFAULT_WAIT,
             );
         }
 
