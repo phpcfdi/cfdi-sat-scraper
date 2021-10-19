@@ -10,7 +10,6 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\Sessions\AbstractSessionManager;
@@ -18,6 +17,8 @@ use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecLoginException;
 use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
 use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
+use PhpCfdi\ImageCaptchaResolver\CaptchaImage;
+use PhpCfdi\ImageCaptchaResolver\CaptchaResolverInterface;
 
 final class CiecSessionManagerTest extends TestCase
 {
@@ -91,7 +92,7 @@ final class CiecSessionManagerTest extends TestCase
         $httpGateway = new SatHttpGateway($client);
         $manager->setHttpGateway($httpGateway);
 
-        $expectedFileContents = base64_encode($this->fileContentPath('sample-captcha.png'));
-        $this->assertSame($expectedFileContents, $manager->requestCaptchaImage());
+        $expectedCaptchaImage = CaptchaImage::newFromFile($this->filePath('sample-captcha.png'));
+        $this->assertSame($expectedCaptchaImage->asBase64(), $manager->requestCaptchaImage()->asBase64());
     }
 }

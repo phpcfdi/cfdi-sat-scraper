@@ -22,6 +22,24 @@ Ahora la clase `LoginException` es abstracta, y hay especializaciones en
 `CiecLoginException` y `FielLoginException`, con ambas se pueden acceder a los
 objetos de datos de sesión.
 
+## Resolución de captchas
+
+Se cambió la extracción de captchas a la librería [`phpcfdi/image-captcha-resolver`](https://github.com/phpcfdi/image-captcha-resolver).
+
+Con este cambio, la interfaz de esta librería fue eliminada y ahora se usa la de *Image Captcha Resolver*.
+
+```diff
+- use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
++ use PhpCfdi\ImageCaptchaResolver\CaptchaResolverInterface;
+```
+
+El servicio de *DeCaptcher* ya no está soportado debido a malas experiencias de varios usuarios de la librería,
+si lo deseas, podríamos integrarlo en la librería de *Image Captcha Resolver*, por favor considera poder
+patrocinar una cuenta para poder ejecutar pruebas de integración.
+
+Anteriormente, en `LoginException` se ponía el captcha en `image`. En la nueva clase `CiecLoginException`
+se incluye el método `getCaptchaImage` con el último objeto `CaptchaImage` que no se pudo resolver.
+
 ## Cambios técnicos
 
 Estos cambios son importantes solo si estás desarrollando o extendiendo esta librería.

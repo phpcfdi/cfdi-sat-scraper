@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
 use DateTimeImmutable;
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
 use PhpCfdi\CfdiSatScraper\MetadataList;
@@ -19,6 +18,7 @@ use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionData;
 use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
 use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
+use PhpCfdi\ImageCaptchaResolver\CaptchaResolverInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 
 final class SatScraperDownloadMethodsTest extends TestCase
