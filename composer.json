@@ -33,11 +33,8 @@
     "require": {
         "php": ">=7.3",
         "ext-curl": "*",
-        "ext-libxml": "*",
-        "ext-simplexml": "*",
         "ext-dom": "*",
         "ext-json": "*",
-        "ext-filter": "*",
         "ext-fileinfo": "*",
         "ext-openssl": "*",
         "psr/http-message": "^1.0",
