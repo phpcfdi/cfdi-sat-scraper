@@ -17,7 +17,7 @@ use PhpCfdi\CfdiSatScraper\URLS;
  * @method bool isEmitidos()
  * @method bool isRecibidos()
  */
-class DownloadType extends Enum
+final class DownloadType extends Enum
 {
     private const URLS = [
         'recibidos' => URLS::PORTAL_CFDI_CONSULTA_RECEPTOR,
@@ -28,7 +28,7 @@ class DownloadType extends Enum
     {
         $url = self::URLS[$this->value()] ?? '';
         if ('' === $url) {
-            throw new LogicException(sprintf('Enum %s does not have the url for "%s"', static::class, $this->value()));
+            throw new LogicException(sprintf('Enum %s does not have the url for "%s"', self::class, $this->value()));
         }
         return $url;
     }
