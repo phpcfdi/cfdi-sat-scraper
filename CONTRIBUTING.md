@@ -82,5 +82,5 @@ composer dev:build
 [phpCfdi]:      https://github.com/phpcfdi/
 [project]:      https://github.com/phpcfdi/cfdi-sat-scraper
 [contributors]: https://github.com/phpcfdi/cfdi-sat-scraper/graphs/contributors
-[coc]:          https://github.com/phpcfdi/cfdi-sat-scraper/blob/master/CODE_OF_CONDUCT.md
+[coc]:          https://github.com/phpcfdi/cfdi-sat-scraper/blob/main/CODE_OF_CONDUCT.md
 [issues]:       https://github.com/phpcfdi/cfdi-sat-scraper/issues
