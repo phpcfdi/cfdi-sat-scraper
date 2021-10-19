@@ -3,15 +3,16 @@
 ## Pendientes
 
 - Core:
-    - Actualizar Guzzle de versión 6 a versión 7.
-    - Eliminar componentes de Symfony menores a 5.1.
     - Clases que vienen de Enum deberían ser finales.
     - Incrementar las pruebas unitarias a un mínimo de 80%.
+    - Implementar `phpcfdi/image-captcha-resolver`.
 - Documentación:
     - Todos los puntos de entrada deben tener phpdoc.
 - Entorno de desarrollo:
     - CodeStyle: Subir a PSR-12.
     - Definir el estilo de código de la coma final en un listado de parámetros.
+    - Crear un entorno disponible en el workflow de CI para correr pruebas de integración
+      con un FIEL, CIEC, resolvedor de captchas y repositorio.
 
 ## Wishlist
 
@@ -20,6 +21,10 @@
   y permitir también la autenticación por FIEL.
 
 ## Realizadas
+
+- 2020-07-18:
+    - Se actualizó `guzzlehttp/guzzle` a `^7.0`.
+    - Se actualizó `symfony/dom-crawler` y `symfony/css-selector` a `^5.1`.
 
 - 2020-04-18:
     - Se actualizaron las versiones a `php:>=7.3` y `phpunit:^9.1`.

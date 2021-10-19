@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS -->
+    <link href="../gobmx/assets/styles/main.css" rel="stylesheet">
+<title>SAT Autenticaci&oacute;n</title>
+</head>
+
+<body style="padding-top: 0px;">
+
+<!-- Contenido -->
+<main class="page">
+    <div class="container" style="width: 100%;" id="container">
+<ol id="breadcrumb" class="breadcrumb" hidden style="margin-left: 8px;"> </ol>
+        <div class="row">
+            <!-- Formulario horizontal, 2/3 como se indica en  GobMX-->
+            <div class="col-sm-8 bottom-buffer">
+                <!-- Titulo -->
+                <div class="bottom-buffer">
+                    <h3>Acceso por contrase&ntilde;a</h3>
+                </div>
+                <!-- Mensaje de error -->
+                <div class="row" style="display: none;" id="divMsgError">
+                    <div class="col-sm-12">
+                        <div class="alert alert-danger" id="msgError"></div>
+                    </div>
+                </div>
+                <!-- Formulario -->
+                <form role="form" id="IDPLogin" name="IDPLogin" enctype="application/x-www-for                                                                                                   m-urlencoded"
+                      method="POST"
+                      class="form-horizontal" autocomplete="off">
+                    <input type="hidden" name="option" value="credential">
+                    
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="rfc">RFC:</label>
+                        <div class="col-sm-8">
+                            <input
+                                    class="form-control"
+                                    id="rfc"
+                                    placeholder="RFC"
+                                    type="text"
+                                    name="Ecom_User_ID"
+                                    size="25"
+                                    value=""
+                                    onblur="javascript:this.value = this.value.toUpperCase();"
+                                    autocomplete="off"
+                            >
+                            <span id="msgErrorRfc"
+                                  style="display: none; color: red; font-size: 11px; font-weig                                                                                                   ht: initial;">Este campo es obligatorio.</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="password">
+                            Contrase&ntilde;a:
+                            <span style="left: -2px;" class="glyphicon glyphicon-question-sign                                                                                                   " aria-hidden="true"
+                                  data-toggle="tooltip" data-placement="right"
+                                  title="Esta contrase&ntilde;a es la misma de su CIEC o CIEC fortalecida"></span>
+                        </label>
+                        <div class="col-sm-8">
+                            <input
+                                    class="form-control"
+                                    id="password"
+                                    placeholder="Contrase&ntilde;a"
+                                    type="password"
+                                    name="Ecom_Password"
+                                    size="25"
+                                    maxlength="16"
+                                    autocomplete="off"
+                            >
+                            <span id="msgErrorPass"
+                                  style="display: none; color: red; font-size: 11px; font-weig                                                                                                   ht: initial;">Este campo es obligatorio.</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="claveDinamica">e.firma portable:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" disabled id="claveDinamica" placeholder="Clave din&aacute;mica"
+                                   type="password">
+                        </div>
+                    </div>
+
+<!--CAPTCHA-->
+
+        
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="userCaptcha" style="padding-top: 25px;">Captcha:</label>
+                        <label class="col-sm-3 control-label" id="divCaptcha">
+                            <img src="data:image/jpeg;base64,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">
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="userCaptcha" placeholder="Escriba la palabra del captcha" type="text" name="userCaptcha" size="25" maxlength="16" autocomplete="                                                                                                   off" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                            <span id="msgErrorCap" style="display: none; color: red; font-size                                                                                                   : 11px; font-weight: initial;">Este campo es obligatorio.</span>
+                        </div>
+                    </div>
+                    
+
+        <!--FIN CAPTCHA-->
+
+                    <div class="clearfix">
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-default" id="buttonFiel">e.firma</button>
+                            <input
+                                    class="btn btn-primary"
+                                    type="submit"
+                                    value="Enviar"
+                                    id="submit"
+                                    name="submit">
+                            </input>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <!--Inicio Aviso-->
+            <div class="col-sm-12">
+            <div class="row"></div>
+            <div style=
+            "background-color: #D9EDF7;
+            width: 100%;
+            border: 2px #BCE8F1;
+            padding: 20px;
+            margin: 2px;
+            font-size: 18px;
+            border-style: solid;
+            overflow: auto;">
+
+            <font color="#31708F"><center><b>Aviso de privacidad simplificado</b></center>
+            <center>El Servicio de Administración Tributaria, es el responsable del tratamiento de los datos personales que se recolectan a través de su portal de internet <a target="_blank" onclick="window.open('https://www.sat.gob.mx')">(https://www.sat.gob.mx)</a>, los cuales son protegidos conforme a lo dispuesto en la Ley General de Protección de Datos Personales en Posesión de Sujetos Obligados y la normatividad que resulte aplicable.</center>
+            <br style= "line-height: 20px;">
+            <center>Para mayor información acerca de este tema y de los derechos que puedes hacer valer, ponemos a tu disposición el Aviso de privacidad en el sitio: <a target="_blank" onclick="window.open('https://repositorio.cloudb.sat.gob.mx/FTP/avisoprivacidad/802_NV_aviso_integral.html')">https://repositorio.cloudb.sat.gob.mx/FTP/avisoprivacidad/802_NV_aviso_integral.html</a></center></font>
+            </div>
+            <br>
+            <br>
+            <!--Inicio Aviso-->
+            <div class="col-sm-4"><div class="row"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script type="text/javascript">
+    //Variables globales
+    var root = 'https://cfdiau.sat.gob.mx/';
+    var path = root + 'nidp/gobmx/assets/';
+    var imagesPath = path + 'images/';
+    var scriptsPath = path + 'scripts/';
+    var stylesPath = path + 'styles/';
+
+    var showEncabezado = false;
+    try {
+        window.parent.document
+        if (window.parent.document == undefined) {
+            showEncabezado = false;
+        } else {
+            showEncabezado = true;
+        }
+    } catch (e) {
+        showEncabezado = false;
+    }
+</script>
+
+<!-- JS -->
+        <script src="../gobmx/assets/scripts/respond.min.js"></script>
+        <script src="../gobmx/assets/scripts/jquery.min.js"></script>
+	<script src="../gobmx/assets/scripts/ie8.js"></script>
+        <script src="../gobmx/assets/scripts/gobmx.js"></script>
+
+<script>
+    $gmx(document).ready(function () {
+        //Validar error
+        var error = '';
+
+        if (error != "" || error.length != 0) {
+            $('#msgError').html('<strong>Error!</strong> ' + error);
+            $('#divMsgError').show();
+        }
+
+        //submit
+        $("#IDPLogin").submit(function (event) {
+            //Se validan los campos
+            if (validate()) {
+                $("#IDPLogin").submit();
+            } else {
+                event.preventDefault();
+            }
+        });
+
+        //Link para olvidaste tu contraseÃ±a
+        $('#linkPass').click(function () {
+            $(location).attr('href', 'https://www.siat.sat.gob.mx/PTSC/auth/faces/pages/restab                                                                                                   lecer/rc_inicio.jsf')
+        });
+        //Link para requisitos de e.firma portable
+        $('#linkeFirma').click(function () {
+            //cargar en un DIV como popup la liga de los requisitos
+            $("#reqEfirma").modal();
+            $("#reqEfirma").show();
+        });
+
+        //Boton FIEL
+        $('#buttonFiel').click(function () {
+            $(location).attr('href', '/nidp/app/login?id=SATx509Custom&sid=0&option=credential&sid=0')
+        });
+
+
+        //funcion para validar los campos
+        function validate() {
+            $('#msgErrorRfc').hide();
+            $('#msgErrorPass').hide();
+            $('#msgErrorCap').hide();
+            $('#rfc').css({'borderColor': '#ccc'});
+            $('#password').css({'borderColor': '#ccc'});
+            $('#userCaptcha').css({'borderColor': '#ccc'});
+
+            var continuar = true;
+            var rfcInput = $('#rfc').val();
+            var passwordInput = $('#password').val();
+                        var jcaptchaInput = $('#userCaptcha').val();
+
+            var error = '';
+            if (rfcInput == '') {
+                $('#rfc').css({'borderColor': '#D0021B'});
+                $('#msgErrorRfc').show();
+
+                $('#divMsgError').show();
+                $('#msgError').html('<strong>¡Error de registro!</strong> no ha llenado varios                                                                                                    campos requeridos. Por favor verifique.');
+                continuar = false;
+            }
+            if (passwordInput == '') {
+                $('#password').css({'borderColor': '#D0021B'});
+                $('#msgErrorPass').show();
+                continuar = false;
+                $('#divMsgError').show();
+                $('#msgError').html('<strong>¡Error de registro!</strong> no ha llenado varios                                                                                                    campos requeridos. Por favor verifique.');
+            }
+                        var vc = true;
+            var ce = false;
+            if(vc && !ce){
+                var jcaptchaInput = $('#userCaptcha').val();
+                if (jcaptchaInput == '') {
+                    $('#userCaptcha').css({'borderColor': '#D0021B'});
+                    $('#msgErrorCap').show();
+                    continuar = false;
+                    $('#divMsgError').show();
+                    $('#msgError').html('<strong>¡Error de registro!</strong> no ha llenado varios campos requeridos. Por favor verifique.');
+                }
+            }
+
+            return continuar;
+        }
+
+        //render captcha
+    });
+
+
+</script>
+
+</body>
+</html>
+
+
+

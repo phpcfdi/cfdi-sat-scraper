@@ -26,7 +26,7 @@ class Headers
             'Accept-Charset' => 'utf-8, iso-8859-15;q=0.5',
             'Connection' => 'keep-alive',
             'Referer' => $referer,
-            'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.5',
+            'User-Agent' => 'Mozilla/5.0 (Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0',
         ]);
     }
 

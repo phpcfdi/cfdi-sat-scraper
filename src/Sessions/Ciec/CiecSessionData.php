@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper;
+namespace PhpCfdi\CfdiSatScraper\Sessions\Ciec;
 
 use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
@@ -10,7 +10,7 @@ use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 /**
  * This immutable class is the store of the data required to login into SAT
  */
-class SatSessionData
+class CiecSessionData
 {
     public const DEFAULT_MAX_TRIES_CAPTCHA = 3;
 

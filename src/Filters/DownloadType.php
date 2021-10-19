@@ -20,8 +20,8 @@ use PhpCfdi\CfdiSatScraper\URLS;
 class DownloadType extends Enum
 {
     private const URLS = [
-        'recibidos' => URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR,
-        'emitidos' => URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR,
+        'recibidos' => URLS::PORTAL_CFDI_CONSULTA_RECEPTOR,
+        'emitidos' => URLS::PORTAL_CFDI_CONSULTA_EMISOR,
     ];
 
     public function url(): string
