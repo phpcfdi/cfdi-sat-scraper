@@ -23,7 +23,7 @@ use Traversable;
  * It is based on a MetadataList on which each Metadata contains the link to download depending on the resource type.
  * Be aware that it will only download a CFDI if the Metadata link exists.
  *
- * You can use the method `saveTo` that will store all the downloaded files on an specific folder.
+ * You can use the method `saveTo` that will store all the downloaded files on a specific folder.
  *
  * You can fine tune the download process (success & error) if you implement
  * the `ResourceDownloadHandlerInterface` interface and use the `download` method.
@@ -145,7 +145,7 @@ class ResourceDownloader
      */
     public function download(ResourceDownloadHandlerInterface $handler): array
     {
-        // wrap the privided handler into the main handler, to throw the expected exceptions
+        // wrap the provided handler into the main handler, to throw the expected exceptions
         $promisesHandler = $this->makePromiseHandler($handler);
         // create the promises iterator
         $promises = $this->makePromises();
@@ -175,7 +175,7 @@ class ResourceDownloader
 
     /**
      * Factory method to make a Promise iterator with each item in the Metadata in the MedataList
-     * that has an URL to download the XML.
+     * that has a URL to download the XML.
      * By extracting the creation it can be replaced with any iterable.
      *
      * @return Traversable<string, PromiseInterface>|PromiseInterface[]
@@ -193,7 +193,7 @@ class ResourceDownloader
 
     /**
      * Generic method to download all the elements on the metadata list that contains a link to download.
-     * Before download it checks that the destination directory exists, if it doesn't exists and call with
+     * Before download, it checks that the destination directory exists, if it doesn't exist and call with
      * true in $createDir then the directory will be created recursively using mode $mode.
      *
      * When one of the downloads fails it will throw an exception.
@@ -206,7 +206,7 @@ class ResourceDownloader
      * @return string[]
      *
      * @throws InvalidArgumentException if destination folder argument is empty
-     * @throws RuntimeException if didn't ask to create folder and path does not exists
+     * @throws RuntimeException if didn't ask to create folder and path does not exist
      * @throws RuntimeException if ask to create folder path exists and is not a folder
      * @throws RuntimeException if unable to create folder
      *

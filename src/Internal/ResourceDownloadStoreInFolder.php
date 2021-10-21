@@ -62,7 +62,7 @@ final class ResourceDownloadStoreInFolder implements ResourceDownloadHandlerInte
      * @param bool $createDestinationFolder
      * @param int $createMode
      *
-     * @throws RuntimeException if didn't ask to create folder and path does not exists
+     * @throws RuntimeException if didn't ask to create folder and path does not exist
      * @throws RuntimeException if ask to create folder path exists and is not a folder
      * @throws RuntimeException if unable to create folder
      */

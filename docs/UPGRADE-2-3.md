@@ -40,6 +40,48 @@ patrocinar una cuenta para poder ejecutar pruebas de integración.
 Anteriormente, en `LoginException` se ponía el captcha en `image`. En la nueva clase `CiecLoginException`
 se incluye el método `getCaptchaImage` con el último objeto `CaptchaImage` que no se pudo resolver.
 
+## Manejador del momento cuando se han alcanzado 500 registros
+
+Anteriormente se usaba una función `callable` con la firma `callable(DateTimeImmutable): void`.
+
+Ahora se requiere una implementación del *contrato* `MaximumRecordsHandler`.
+Si al crear el objeto `SatScraper` no se establece un manejador o se establece como `null` entonces se usará
+una instancia de `NullMaximumRecordsHandler` que, como su nombre lo indica, no realiza ninguna acción.
+
+Si no estaba utilizando esta característica no es necesario hacer nada.
+
+Este es un ejemplo de cómo puede modificar su código para pasar de `callable` a `MaximumRecordsHandler`:
+
+```php
+<?php declare(strict_types=1);
+
+use PhpCfdi\CfdiSatScraper\Contracts\MaximumRecordsHandler;
+use PhpCfdi\CfdiSatScraper\SatHttpGateway;
+use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
+
+// Antes
+$onFiveHundred = function (DateTimeImmutable $date) {
+    echo 'Se encontraron más de 500 CFDI en el segundo: ', $date->format('c'), PHP_EOL;
+};
+
+// Ahora
+class MyHandler implements MaximumRecordsHandler
+{
+    public function handle(DateTimeImmutable $moment) : void
+    {
+        echo 'Se encontraron más de 500 CFDI en el segundo: ', $date->format('c'), PHP_EOL;
+    }
+}
+$onFiveHundred = new MyHandler();
+
+/**
+ * @var SessionManager $sessionManager
+ * @var SatHttpGateway $httpGateway
+ */
+$satScraper = new SatScraper($sessionManager, $httpGateway, $onFiveHundred);
+```
+
 ## Cambios técnicos
 
 Estos cambios son importantes solo si estás desarrollando o extendiendo esta librería.
