@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
+use PhpCfdi\CfdiSatScraper\Contracts\MaximumRecordsHandler;
+use PhpCfdi\CfdiSatScraper\Internal\NullMaximumRecordsHandler;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
@@ -11,12 +13,15 @@ use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
 final class SatScraperPropertiesTest extends TestCase
 {
-    private function createSatScraper(?SessionManager $sessionManager = null, ?SatHttpGateway $satHttpGateway = null, ?callable $onFiveHundred = null): SatScraper
-    {
+    private function createSatScraper(
+        ?SessionManager $sessionManager = null,
+        ?SatHttpGateway $satHttpGateway = null,
+        ?MaximumRecordsHandler $maximumRecordsHandler = null
+    ): SatScraper {
         return new SatScraper(
             $sessionManager ?? $this->createMock(SessionManager::class),
             $satHttpGateway,
-            $onFiveHundred,
+            $maximumRecordsHandler,
         );
     }
 
@@ -45,17 +50,16 @@ final class SatScraperPropertiesTest extends TestCase
         $this->assertInstanceOf(SatHttpGateway::class, $scraper->getSatHttpGateway());
     }
 
-    public function testOnFiveHundred(): void
+    public function testMaximumRecordsHandler(): void
     {
-        $callable = function (): void {
-        };
-        $scraper = $this->createSatScraper(null, null, $callable);
-        $this->assertSame($callable, $scraper->getOnFiveHundred(), 'Given OnFiveHundred was not the same');
+        $handler = $this->createMock(MaximumRecordsHandler::class);
+        $scraper = $this->createSatScraper(null, null, $handler);
+        $this->assertSame($handler, $scraper->getMaximumRecordsHandler(), 'Given handler should be the same');
     }
 
-    public function testOnFiveHundredDefault(): void
+    public function testMaximumRecordsHandlerDefault(): void
     {
         $scraper = $this->createSatScraper();
-        $this->assertNull($scraper->getOnFiveHundred(), 'Default OnFiveHundred should be NULL');
+        $this->assertInstanceOf(NullMaximumRecordsHandler::class, $scraper->getMaximumRecordsHandler());
     }
 }

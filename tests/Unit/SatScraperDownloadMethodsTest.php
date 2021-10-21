@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
-use DateTimeImmutable;
+use PhpCfdi\CfdiSatScraper\Contracts\MaximumRecordsHandler;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
 use PhpCfdi\CfdiSatScraper\MetadataList;
@@ -26,15 +26,19 @@ final class SatScraperDownloadMethodsTest extends TestCase
 {
     public function testCreationOfMetadataDownloaderHasSatScraperProperties(): void
     {
-        $callable = function (DateTimeImmutable $date): void {
-        };
+        $handler = $this->createMock(MaximumRecordsHandler::class);
         $satHttpGateway = $this->createMock(SatHttpGateway::class);
         $captcha = $this->createMock(CaptchaResolverInterface::class);
         $sessionManager = new CiecSessionManager(new CiecSessionData('rfc', 'ciec', $captcha));
-        $scraper = new SatScraper($sessionManager, $satHttpGateway, $callable);
-        $downloader = $scraper->metadataDownloader();
+        $scraper = new class ($sessionManager, $satHttpGateway, $handler) extends SatScraper {
+            public function exposeCreateMetadataDownloader(): MetadataDownloader
+            {
+                return $this->createMetadataDownloader();
+            }
+        };
+        $downloader = $scraper->exposeCreateMetadataDownloader();
 
-        $this->assertSame($callable, $downloader->getOnFiveHundred());
+        $this->assertSame($handler, $downloader->getMaximumRecordsHandler());
     }
 
     /** @see SatScraper::listByUuids */
@@ -43,7 +47,7 @@ final class SatScraperDownloadMethodsTest extends TestCase
         /** @var SatScraper&MockObject $scraper */
         $scraper = $this->getMockBuilder(SatScraper::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['confirmSessionIsAlive', 'metadataDownloader'])
+            ->onlyMethods(['confirmSessionIsAlive', 'createMetadataDownloader'])
             ->getMock();
 
         // listByUuids must call confirmSessionIsAlive once
@@ -52,7 +56,7 @@ final class SatScraperDownloadMethodsTest extends TestCase
         // listByUuids must call metadataDownloader once
         $metadatalist = $this->createMock(MetadataList::class);
         $metadataDownloader = $this->createMock(MetadataDownloader::class);
-        $scraper->expects($this->once())->method('metadataDownloader')->willReturn($metadataDownloader);
+        $scraper->expects($this->once())->method('createMetadataDownloader')->willReturn($metadataDownloader);
 
         // MetadataDownloader::downloadByUuids must be called once
         $uuids = [];
@@ -71,7 +75,7 @@ final class SatScraperDownloadMethodsTest extends TestCase
         /** @var SatScraper&MockObject $scraper */
         $scraper = $this->getMockBuilder(SatScraper::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['confirmSessionIsAlive', 'metadataDownloader'])
+            ->onlyMethods(['confirmSessionIsAlive', 'createMetadataDownloader'])
             ->getMock();
 
         // listByPeriod must call confirmSessionIsAlive once
@@ -79,7 +83,7 @@ final class SatScraperDownloadMethodsTest extends TestCase
 
         // listByPeriod must call metadataDownloader once
         $metadataDownloader = $this->createMock(MetadataDownloader::class);
-        $scraper->expects($this->once())->method('metadataDownloader')->willReturn($metadataDownloader);
+        $scraper->expects($this->once())->method('createMetadataDownloader')->willReturn($metadataDownloader);
 
         // MetadataDownloader::downloadByDate must be called once
         $query = $this->createMock(QueryByFilters::class);
@@ -97,7 +101,7 @@ final class SatScraperDownloadMethodsTest extends TestCase
         /** @var SatScraper&MockObject $scraper */
         $scraper = $this->getMockBuilder(SatScraper::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['confirmSessionIsAlive', 'metadataDownloader'])
+            ->onlyMethods(['confirmSessionIsAlive', 'createMetadataDownloader'])
             ->getMock();
 
         // listByDateTime must call confirmSessionIsAlive once
@@ -105,7 +109,7 @@ final class SatScraperDownloadMethodsTest extends TestCase
 
         // listByDateTime must call metadataDownloader once
         $metadataDownloader = $this->createMock(MetadataDownloader::class);
-        $scraper->expects($this->once())->method('metadataDownloader')->willReturn($metadataDownloader);
+        $scraper->expects($this->once())->method('createMetadataDownloader')->willReturn($metadataDownloader);
 
         // MetadataDownloader::downloadByDateTime must be called once
         $query = $this->createMock(QueryByFilters::class);
@@ -140,7 +144,7 @@ final class SatScraperDownloadMethodsTest extends TestCase
     {
         /** @var SessionManager&MockObject $sessionManager */
         $sessionManager = $this->createMock(SessionManager::class);
-        // hasLogin will return true, so login should not me called
+        // hasLogin will return true, so login should not be called
         $sessionManager->expects($this->once())->method('hasLogin')->willReturn(true);
         $sessionManager->expects($loginSpy = $this->any())->method('login');
 

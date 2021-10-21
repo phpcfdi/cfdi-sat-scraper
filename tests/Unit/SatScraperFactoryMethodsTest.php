@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
+use PhpCfdi\CfdiSatScraper\Contracts\MaximumRecordsHandler;
+use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
 use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\ResourceDownloader;
@@ -15,25 +17,25 @@ use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
 final class SatScraperFactoryMethodsTest extends TestCase
 {
-    public function testMetadataDownloader(): void
+    public function testMetadataDownloaderHasPropertiesFromScraper(): void
     {
-        $onFiveHundred = function (): void {
-        };
+        $maximumRecordsHandler = $this->createMock(MaximumRecordsHandler::class);
         $sessionManager = $this->createMock(SessionManager::class);
         $httpGateway = $this->createMock(SatHttpGateway::class);
-        $scraper = new class ($sessionManager, $httpGateway, $onFiveHundred) extends SatScraper {
+        $scraper = new class ($sessionManager, $httpGateway, $maximumRecordsHandler) extends SatScraper {
+            public function createMetadataDownloader(): MetadataDownloader
+            {
+                return parent::createMetadataDownloader();
+            }
+
             public function createQueryResolver(): QueryResolver
             {
-                static $queryResolver = null;
-                if (null === $queryResolver) {
-                    $queryResolver = parent::createQueryResolver();
-                }
-                return $queryResolver;
+                return parent::createQueryResolver();
             }
         };
-        $downloader = $scraper->metadataDownloader();
-        $this->assertSame($scraper->createQueryResolver(), $downloader->getQueryResolver());
-        $this->assertSame($scraper->getOnFiveHundred(), $downloader->getOnFiveHundred());
+        $downloader = $scraper->createMetadataDownloader();
+        $this->assertEquals($scraper->createQueryResolver(), $downloader->getQueryResolver());
+        $this->assertSame($scraper->getMaximumRecordsHandler(), $downloader->getMaximumRecordsHandler());
     }
 
     public function testResourceDownloaderWithArguments(): void

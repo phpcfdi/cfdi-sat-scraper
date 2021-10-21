@@ -217,8 +217,12 @@ echo json_encode($list);
 ## Aviso de que existen más de 500 comprobantes en un mismo segundo
 
 El servicio ofrecido por el SAT tiene límites, entre ellos, no se pueden obtener más de 500 registros
-en un rango de fechas. Esta librería trata de reducir el rango para obtener todos los datos, sin embargo,
-si se presenta este caso, entonces se puede invocar una función que le puede ayudar a considerar este escenario.
+en un rango de fechas. Esta librería trata de reducir el rango hasta el mínimo de una consulta en un segundo
+para obtener todos los datos, sin embargo, si se presenta este caso, entonces se puede invocar a un manejador
+que le puede ayudar a registrar este escenario.
+
+Si al crear el objeto `SatScraper` no se establece un manejador o se establece como `null` entonces se usará
+una instancia de `NullMaximumRecordsHandler` que, como su nombre lo indica, no realiza ninguna acción.
 
 ```php
 <?php declare(strict_types=1);
@@ -228,17 +232,20 @@ use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 
-// define onFiveHundred callback
-$onFiveHundred = function (DateTimeImmutable $date) {
-    echo 'Se encontraron más de 500 CFDI en el segundo: ', $date->format('c'), PHP_EOL;
+// define handler
+$handler = new class () implements MaximumRecordsHandler {
+    public function handle(DateTimeImmutable $date): void
+    {
+        echo 'Se encontraron más de 500 CFDI en el segundo: ', $date->format('c'), PHP_EOL;
+    }
 };
 
-// create scraper using the callback
+// create scraper using the handler
 /**
  * @var SessionManager $sessionManager
  * @var SatHttpGateway $httpGateway
  */
-$satScraper = new SatScraper($sessionManager, $httpGateway, $onFiveHundred);
+$satScraper = new SatScraper($sessionManager, $httpGateway, $handler);
 
 $query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->listByPeriod($query);
