@@ -82,6 +82,13 @@ $onFiveHundred = new MyHandler();
 $satScraper = new SatScraper($sessionManager, $httpGateway, $onFiveHundred);
 ```
 
+## La clase `SatScraper` cumple con una interfaz
+
+La clase `SatScraper` pronto será marcada como final, y en esta versión se ha introducido la interfaz `SatScraperInterface`.
+
+Esta interfaz es útil para poder crear *mocks* y *stubs* para realizar pruebas unitarias en donde
+se esté implementando esta librería.
+
 ## Cambios técnicos
 
 Estos cambios son importantes solo si estás desarrollando o extendiendo esta librería.
@@ -93,6 +100,7 @@ Estos cambios son importantes solo si estás desarrollando o extendiendo esta li
 - Se han agregado nuevos métodos a `SatHttpGateway`.
 - Las constantes de URL han sido renombradas para mayor simplicidad.
 - Las clases `Enum` ahora son finales.
+- La clase `CaptchaBase64Extractor` ahora es interna y depende de `CaptchaImage`.
 
 Se ha cambiado el archivo de entorno de pruebas `tests/.env-example` agregando nuevas variables.
 Para correr los test de integración se recomienda configurar tanto la Clave CIEC como la FIEL.
