@@ -42,9 +42,9 @@ class CiecLoginException extends LoginException
         return new self($message, $data, $contents);
     }
 
-    public static function noCaptchaImageFound(CiecSessionData $data, string $contents): self
+    public static function noCaptchaImageFound(CiecSessionData $data, string $contents, Throwable $previous = null): self
     {
-        return new self('It was unable to find the captcha image', $data, $contents);
+        return new self('It was unable to find the captcha image', $data, $contents, [], $previous);
     }
 
     public static function captchaWithoutAnswer(CiecSessionData $data, CaptchaImage $captchaImage, Throwable $previous = null): self

@@ -6,36 +6,54 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Captcha;
 
 use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
+use RuntimeException;
 
 final class CaptchaBase64ExtractorTest extends TestCase
 {
+    private function getBase64Image(): string
+    {
+        return base64_encode($this->fileContentPath('sample-captcha.png'));
+    }
+
     public function testRetrieveWhenDefaultElementExists(): void
     {
-        $html = '<div id="divCaptcha">';
-        $html .= '<img src="data:image/jpeg;base64,test">';
-        $html .= '</div>';
+        $base64Image = $this->getBase64Image();
+        $html = <<< HTML
+            <div id="divCaptcha">
+                <img src="data:image/jpeg;base64,{$base64Image}">
+            </div>
+            HTML;
 
         $captchaExtractor = new CaptchaBase64Extractor();
-        $this->assertEquals('test', $captchaExtractor->retrieve($html));
+        $this->assertSame($base64Image, $captchaExtractor->retrieveCaptchaImage($html)->asBase64());
     }
 
     public function testRetrieveWhenDefaultElementNotExists(): void
     {
-        $html = '<div>';
-        $html .= '<img src="data:image/jpeg;base64,test">';
-        $html .= '</div>';
+        $base64Image = $this->getBase64Image();
+        $html = <<< HTML
+            <div>
+                <img src="data:image/jpeg;base64,{$base64Image}">
+            </div>
+            HTML;
 
         $captchaExtractor = new CaptchaBase64Extractor();
-        $this->assertSame('', $captchaExtractor->retrieve($html));
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage("Unable to find image using filter '#divCaptcha > img'");
+        $captchaExtractor->retrieveCaptchaImage($html)->asBase64();
     }
 
     public function testRetrieveBySelectorWhenElementExists(): void
     {
-        $html = '<div id="captcha">';
-        $html .= '<img src="data:image/jpeg;base64,test">';
-        $html .= '</div>';
+        $base64Image = $this->getBase64Image();
+        $html = <<< HTML
+            <div id="captcha">
+                <img src="data:image/jpeg;base64,{$base64Image}">
+            </div>
+            HTML;
 
         $captchaExtractor = new CaptchaBase64Extractor();
-        $this->assertEquals('test', $captchaExtractor->retrieve($html, '#captcha > img'));
+        $this->assertSame($base64Image, $captchaExtractor->retrieveCaptchaImage($html, '#captcha > img')->asBase64());
     }
 }

@@ -40,12 +40,15 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
         } catch (SatHttpGatewayException $exception) {
             throw CiecLoginException::connectionException('getting captcha image', $this->sessionData, $exception);
         }
-        $captchaBase64Extractor = new CaptchaBase64Extractor();
-        $imageBase64 = $captchaBase64Extractor->retrieve($html);
-        if ('' === $imageBase64) {
-            throw CiecLoginException::noCaptchaImageFound($this->sessionData, $html);
+
+        try {
+            $captchaBase64Extractor = new CaptchaBase64Extractor();
+            $captchaImage = $captchaBase64Extractor->retrieveCaptchaImage($html);
+        } catch (Throwable $exception) {
+            throw CiecLoginException::noCaptchaImageFound($this->sessionData, $html, $exception);
         }
-        return CaptchaImage::newFromBase64($imageBase64);
+
+        return $captchaImage;
     }
 
     /**
