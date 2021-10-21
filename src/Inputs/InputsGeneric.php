@@ -6,16 +6,21 @@ namespace PhpCfdi\CfdiSatScraper\Inputs;
 
 use PhpCfdi\CfdiSatScraper\Contracts\QueryInterface;
 
+/**
+ * @template TQuery of QueryInterface
+ */
 abstract class InputsGeneric implements InputsInterface
 {
-    /** @var QueryInterface */
+    /** @var TQuery */
     private $query;
 
+    /** @param TQuery $query */
     public function __construct(QueryInterface $query)
     {
         $this->query = $query;
     }
 
+    /** @return TQuery */
     public function getQuery(): QueryInterface
     {
         return $this->query;
