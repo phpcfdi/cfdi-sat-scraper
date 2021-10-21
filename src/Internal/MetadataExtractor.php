@@ -36,7 +36,7 @@ class MetadataExtractor
             return new MetadataList([]);
         }
 
-        // first tr is the only expected to have the th elements
+        // first row is the only expected to have the th elements
         $fieldsPositions = $this->locateFieldsPositions($rows->first(), $fieldsCaptions);
 
         // slice first row (headers), build data array as a collection of metadata

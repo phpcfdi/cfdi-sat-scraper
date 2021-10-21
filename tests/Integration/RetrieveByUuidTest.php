@@ -14,7 +14,7 @@ use PhpCfdi\CfdiSatScraper\ResourceType;
 
 class RetrieveByUuidTest extends IntegrationTestCase
 {
-    /** @return mixed[] */
+    /** @return array<string, array{DownloadType, int}> */
     public function providerRetrieveByUuid(): array
     {
         return [

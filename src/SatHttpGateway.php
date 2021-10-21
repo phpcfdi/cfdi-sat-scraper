@@ -129,7 +129,7 @@ class SatHttpGateway
     }
 
     /**
-     * Create a promise (asyncronic request) to perform an XML download.
+     * Create a promise (asynchronous request) to perform an XML download.
      *
      * @param string $link
      * @return PromiseInterface

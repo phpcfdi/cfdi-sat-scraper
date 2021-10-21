@@ -7,7 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Contracts;
 interface ResourceFileNamerInterface
 {
     /**
-     * A class that implements this interface should return the file name to store an specific uuid by resource type
+     * A class that implements this interface should return the file name to store a specific uuid by resource type
      *
      * @param string $uuid
      * @return string

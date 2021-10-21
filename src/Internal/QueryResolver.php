@@ -48,8 +48,7 @@ class QueryResolver
         $htmlWithMetadata = $this->htmlFromExecuteQuery($url, $post);
 
         // extract metadata from search results
-        $metadataList = (new MetadataExtractor())->extract($htmlWithMetadata);
-        return $metadataList;
+        return (new MetadataExtractor())->extract($htmlWithMetadata);
     }
 
     /**
@@ -62,8 +61,7 @@ class QueryResolver
         $completePage = $this->getSatHttpGateway()->getPortalPage($url);
         $completePage = str_replace('charset=utf-16', 'charset=utf-8', $completePage); // quick and dirty hack
         $htmlFormInputExtractor = new HtmlForm($completePage, 'form', ['/^ctl00\$MainContent\$Btn.+/', '/^seleccionador$/']);
-        $baseInputs = $htmlFormInputExtractor->getFormValues();
-        return $baseInputs;
+        return $htmlFormInputExtractor->getFormValues();
     }
 
     /**
@@ -75,8 +73,7 @@ class QueryResolver
     protected function inputFieldsFromSelectDownloadType(string $url, array $post): array
     {
         $html = $this->getSatHttpGateway()->postAjaxSearch($url, $post); // this html is used to update __VARIABLES
-        $lastViewStateValues = (new ParserFormatSAT())->getFormValues($html);
-        return $lastViewStateValues;
+        return (new ParserFormatSAT())->getFormValues($html);
     }
 
     /**
@@ -87,9 +84,7 @@ class QueryResolver
      */
     protected function htmlFromExecuteQuery(string $url, array $post): string
     {
-        // consume search using search filters
-        $htmlWithMetadataContent = $this->getSatHttpGateway()->postAjaxSearch($url, $post);
-        return $htmlWithMetadataContent;
+        return $this->getSatHttpGateway()->postAjaxSearch($url, $post);
     }
 
     public function getSatHttpGateway(): SatHttpGateway

@@ -31,7 +31,7 @@ interface InputsInterface
     public function getCentralFilter(): string;
 
     /**
-     * Return only the appropiate key-values to override based on the query
+     * Return only the appropriate key-values to override based on the query
      *
      * @return array<string, string>
      */
@@ -45,7 +45,7 @@ interface InputsInterface
     public function getAjaxInputs(): array;
 
     /**
-     * Return the URL which all http transactions will be send
+     * Return the URL which all http transactions will be sent
      *
      * @return string
      */

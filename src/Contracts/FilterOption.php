@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Contracts;
 
 /**
- * This interface defines a class that has a name and value describing an option to be send to get the list of uuids
+ * This interface defines a class that has a name and value describing an option to be sent to get the list of uuids
  * on the html post form.
  */
 interface FilterOption

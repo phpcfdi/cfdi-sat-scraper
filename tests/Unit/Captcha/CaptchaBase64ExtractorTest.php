@@ -20,7 +20,7 @@ final class CaptchaBase64ExtractorTest extends TestCase
         $base64Image = $this->getBase64Image();
         $html = <<< HTML
             <div id="divCaptcha">
-                <img src="data:image/jpeg;base64,{$base64Image}">
+                <img src="data:image/jpeg;base64,$base64Image">
             </div>
             HTML;
 
@@ -33,7 +33,7 @@ final class CaptchaBase64ExtractorTest extends TestCase
         $base64Image = $this->getBase64Image();
         $html = <<< HTML
             <div>
-                <img src="data:image/jpeg;base64,{$base64Image}">
+                <img src="data:image/jpeg;base64,$base64Image">
             </div>
             HTML;
 
@@ -49,7 +49,7 @@ final class CaptchaBase64ExtractorTest extends TestCase
         $base64Image = $this->getBase64Image();
         $html = <<< HTML
             <div id="captcha">
-                <img src="data:image/jpeg;base64,{$base64Image}">
+                <img src="data:image/jpeg;base64,$base64Image">
             </div>
             HTML;
 

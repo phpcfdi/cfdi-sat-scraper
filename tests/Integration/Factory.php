@@ -1,9 +1,5 @@
 <?php
 
-/**
- * @noinspection PhpUnhandledExceptionInspection
- */
-
 declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
@@ -111,7 +107,6 @@ class Factory
         return new CiecSessionManager($this->createCiecSessionData());
     }
 
-    /** @noinspection PhpUnhandledExceptionInspection */
     public function createCiecSessionData(): CiecSessionData
     {
         $rfc = $this->env('SAT_AUTH_RFC');
