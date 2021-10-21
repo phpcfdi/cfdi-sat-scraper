@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Captcha;
+namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use PhpCfdi\ImageCaptchaResolver\CaptchaImage;
 use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
 
+/** @internal */
 class CaptchaBase64Extractor
 {
     public const DEFAULT_SELECTOR = '#divCaptcha > img';

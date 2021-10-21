@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Captcha;
+namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Internal;
 
-use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
+use PhpCfdi\CfdiSatScraper\Internal\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use RuntimeException;
 

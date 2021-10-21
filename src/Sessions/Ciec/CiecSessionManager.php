@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Sessions\Ciec;
 
-use PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
+use PhpCfdi\CfdiSatScraper\Internal\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Sessions\AbstractSessionManager;
 use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 use PhpCfdi\CfdiSatScraper\URLS;
