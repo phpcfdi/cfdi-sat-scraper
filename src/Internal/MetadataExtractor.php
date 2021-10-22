@@ -12,6 +12,8 @@ use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
+ * Parses a web page to obtain all the Metadata records on it.
+ *
  * @internal
  */
 class MetadataExtractor

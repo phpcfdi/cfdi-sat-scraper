@@ -8,7 +8,11 @@ use PhpCfdi\CfdiSatScraper\Exceptions\RuntimeException;
 use PhpCfdi\ImageCaptchaResolver\CaptchaImage;
 use Symfony\Component\DomCrawler\Crawler;
 
-/** @internal */
+/**
+ * This is a class to extract the captcha from the log in web page.
+ *
+ * @internal
+ */
 class CaptchaBase64Extractor
 {
     public const DEFAULT_SELECTOR = '#divCaptcha > img';

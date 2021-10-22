@@ -26,6 +26,7 @@ use PhpCfdi\CfdiSatScraper\QueryByUuid;
  * Has a copy of callable to raise when limit is reached
  *
  * @see QueryResolver
+ * @internal
  */
 class MetadataDownloader
 {

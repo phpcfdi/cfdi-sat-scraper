@@ -7,6 +7,11 @@ namespace PhpCfdi\CfdiSatScraper\Internal;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\UriResolver;
 
+/**
+ * This is a class to inspect a web page and find if there is a http meta refresh instruction.
+ *
+ * @internal
+ */
 final class MetaRefreshInspector
 {
     public function obtainUrl(string $html, string $baseUri): string

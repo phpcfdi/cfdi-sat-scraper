@@ -6,6 +6,11 @@ namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 
+/**
+ * This trait contains the methods to insert a $downloadType property
+ *
+ * @internal
+ */
 trait DownloadTypePropertyTrait
 {
     /** @var DownloadType */

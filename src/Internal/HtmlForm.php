@@ -10,6 +10,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Utility class to extract data from an HTML form.
+ *
  * @internal
  */
 class HtmlForm
