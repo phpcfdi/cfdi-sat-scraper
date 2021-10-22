@@ -215,13 +215,27 @@ class SatHttpGateway
             } else {
                 $this->effectiveUri = $uri;
             }
-            throw SatHttpGatewayClientException::clientException($reason, 'GET', $uri, $options[RequestOptions::HEADERS], [], $exception);
+            throw SatHttpGatewayClientException::clientException(
+                $reason,
+                $method,
+                $uri,
+                $options[RequestOptions::HEADERS],
+                $options[RequestOptions::FORM_PARAMS] ?? [],
+                $exception,
+            );
         }
         $this->setEffectiveUriFromResponse($response, $uri);
 
         $contents = strval($response->getBody());
         if ('' === $contents) {
-            throw SatHttpGatewayResponseException::unexpectedEmptyResponse($reason, $response, 'GET', $uri, $options[RequestOptions::HEADERS]);
+            throw SatHttpGatewayResponseException::unexpectedEmptyResponse(
+                $reason,
+                $response,
+                $method,
+                $uri,
+                $options[RequestOptions::HEADERS],
+                $options[RequestOptions::FORM_PARAMS] ?? [],
+            );
         }
 
         return $contents;

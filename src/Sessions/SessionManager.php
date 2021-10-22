@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Sessions;
 
-use LogicException;
+use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 

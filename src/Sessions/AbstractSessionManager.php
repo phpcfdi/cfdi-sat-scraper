@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Sessions;
 
-use LogicException;
+use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
 use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
@@ -45,7 +45,7 @@ abstract class AbstractSessionManager implements SessionManager
     public function getHttpGateway(): SatHttpGateway
     {
         if (null === $this->httpGateway) {
-            throw new LogicException('Must set http gateway property before use');
+            throw LogicException::generic('Must set http gateway property before use');
         }
         return $this->httpGateway;
     }

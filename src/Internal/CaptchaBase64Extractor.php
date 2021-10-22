@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Internal;
 
+use PhpCfdi\CfdiSatScraper\Exceptions\RuntimeException;
 use PhpCfdi\ImageCaptchaResolver\CaptchaImage;
-use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
 
 /** @internal */
@@ -18,7 +18,7 @@ class CaptchaBase64Extractor
         $images = (new Crawler($htmlSource))->filter($selector);
 
         if (0 === $images->count()) {
-            throw new RuntimeException("Unable to find image using filter '$selector'");
+            throw RuntimeException::unableToFindCaptchaImage($selector);
         }
 
         $imageSource = (string) $images->attr('src');

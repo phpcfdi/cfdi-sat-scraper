@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Internal;
 
+use PhpCfdi\CfdiSatScraper\Exceptions\RuntimeException;
 use PhpCfdi\CfdiSatScraper\Internal\CaptchaBase64Extractor;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
-use RuntimeException;
 
 final class CaptchaBase64ExtractorTest extends TestCase
 {

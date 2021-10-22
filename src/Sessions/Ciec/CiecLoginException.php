@@ -26,14 +26,14 @@ class CiecLoginException extends LoginException
      * @param string $message
      * @param CiecSessionData $sessionData
      * @param string $contents
-     * @param array<string, mixed> $post
+     * @param array<string, mixed> $postedData
      * @param Throwable|null $previous
      */
-    public function __construct(string $message, CiecSessionData $sessionData, string $contents, array $post = [], Throwable $previous = null)
+    public function __construct(string $message, CiecSessionData $sessionData, string $contents, array $postedData = [], Throwable $previous = null)
     {
         parent::__construct($message, $contents, $previous);
         $this->sessionData = $sessionData;
-        $this->postedData = $post;
+        $this->postedData = $postedData;
     }
 
     public static function notRegisteredAfterLogin(CiecSessionData $data, string $contents): self
