@@ -88,7 +88,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          coverage: xdebug
+          coverage: none
           tools: composer:v2
         env:
           fail-fast: true
@@ -104,9 +104,4 @@ jobs:
       - name: Install project dependencies
         run: composer upgrade --no-interaction --no-progress --prefer-dist
       - name: Tests (phpunit)
-        run: vendor/bin/phpunit --testdox --verbose --coverage-clover=build/coverage-clover.xml
-      - name: Upload code coverage to scrutinizer
-        uses: sudo-bot/action-scrutinizer@latest
-        with:
-          cli-args: "--format=php-clover build/coverage-clover.xml"
-        continue-on-error: true
+        run: vendor/bin/phpunit --testdox --verbose
