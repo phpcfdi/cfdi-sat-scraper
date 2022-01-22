@@ -104,3 +104,51 @@ Estos cambios son importantes solo si estás desarrollando o extendiendo esta li
 
 Se ha cambiado el archivo de entorno de pruebas `tests/.env-example` agregando nuevas variables.
 Para correr los test de integración se recomienda configurar tanto la Clave CIEC como la FIEL.
+
+
+## Backwards incompatibility changes
+
+```text
+[BC] CHANGED: Class PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption became final
+[BC] CHANGED: Class PhpCfdi\CfdiSatScraper\Filters\DownloadType became final
+[BC] REMOVED: Constant PhpCfdi\CfdiSatScraper\URLS::SAT_URL_LOGIN was removed
+[BC] REMOVED: Constant PhpCfdi\CfdiSatScraper\URLS::SAT_URL_PORTAL_CFDI was removed
+[BC] REMOVED: Constant PhpCfdi\CfdiSatScraper\URLS::SAT_URL_PORTAL_CFDI_CONSULTA_RECEPTOR was removed
+[BC] REMOVED: Constant PhpCfdi\CfdiSatScraper\URLS::SAT_URL_PORTAL_CFDI_CONSULTA_EMISOR was removed
+[BC] CHANGED: PhpCfdi\CfdiSatScraper\Internal\ResourceDownloadStoreInFolder was marked "@internal"
+[BC] CHANGED: PhpCfdi\CfdiSatScraper\Internal\DownloadTypePropertyTrait was marked "@internal"
+[BC] CHANGED: The return type of PhpCfdi\CfdiSatScraper\Internal\DownloadTypePropertyTrait#setDownloadType() changed from no type to self
+[BC] CHANGED: The return type of PhpCfdi\CfdiSatScraper\Internal\DownloadTypePropertyTrait#setDownloadType() changed from no type to self
+[BC] CHANGED: The return type of PhpCfdi\CfdiSatScraper\Internal\DownloadTypePropertyTrait#setDownloadType() changed from no type to self
+[BC] CHANGED: The return type of PhpCfdi\CfdiSatScraper\MetadataList#getIterator() changed from no type to ArrayIterator
+[BC] REMOVED: Class PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface has been deleted
+[BC] CHANGED: Class PhpCfdi\CfdiSatScraper\Exceptions\LoginException became abstract
+[BC] REMOVED: Method PhpCfdi\CfdiSatScraper\Exceptions\LoginException::notRegisteredAfterLogin() was removed
+[BC] REMOVED: Method PhpCfdi\CfdiSatScraper\Exceptions\LoginException::noCaptchaImageFound() was removed
+[BC] REMOVED: Method PhpCfdi\CfdiSatScraper\Exceptions\LoginException::captchaWithoutAnswer() was removed
+[BC] REMOVED: Method PhpCfdi\CfdiSatScraper\Exceptions\LoginException::incorrectLoginData() was removed
+[BC] REMOVED: Method PhpCfdi\CfdiSatScraper\Exceptions\LoginException::connectionException() was removed
+[BC] REMOVED: Method PhpCfdi\CfdiSatScraper\Exceptions\LoginException#getSessionData() was removed
+[BC] REMOVED: Method PhpCfdi\CfdiSatScraper\Exceptions\LoginException#getPostedData() was removed
+[BC] CHANGED: The parameter $sessionData of PhpCfdi\CfdiSatScraper\Exceptions\LoginException#__construct() changed from PhpCfdi\CfdiSatScraper\SatSessionData to a non-contravariant string
+[BC] CHANGED: The parameter $contents of PhpCfdi\CfdiSatScraper\Exceptions\LoginException#__construct() changed from string to a non-contravariant Throwable|null
+[BC] CHANGED: The parameter $sessionData of PhpCfdi\CfdiSatScraper\Exceptions\LoginException#__construct() changed from PhpCfdi\CfdiSatScraper\SatSessionData to string
+[BC] CHANGED: The parameter $contents of PhpCfdi\CfdiSatScraper\Exceptions\LoginException#__construct() changed from string to Throwable|null
+[BC] CHANGED: Parameter 1 of PhpCfdi\CfdiSatScraper\Exceptions\LoginException#__construct() changed name from sessionData to contents
+[BC] CHANGED: Parameter 2 of PhpCfdi\CfdiSatScraper\Exceptions\LoginException#__construct() changed name from contents to previous
+[BC] REMOVED: Property PhpCfdi\CfdiSatScraper\SatScraper#$onFiveHundred was removed
+[BC] REMOVED: Method PhpCfdi\CfdiSatScraper\SatScraper#getSatSessionData() was removed
+[BC] REMOVED: Method PhpCfdi\CfdiSatScraper\SatScraper#getOnFiveHundred() was removed
+[BC] CHANGED: The parameter $sessionData of PhpCfdi\CfdiSatScraper\SatScraper#__construct() changed from PhpCfdi\CfdiSatScraper\SatSessionData to a non-contravariant PhpCfdi\CfdiSatScraper\Sessions\SessionManager
+[BC] CHANGED: The parameter $onFiveHundred of PhpCfdi\CfdiSatScraper\SatScraper#__construct() changed from callable|null to a non-contravariant PhpCfdi\CfdiSatScraper\Contracts\MaximumRecordsHandler|null
+[BC] CHANGED: The parameter $sessionData of PhpCfdi\CfdiSatScraper\SatScraper#__construct() changed from PhpCfdi\CfdiSatScraper\SatSessionData to PhpCfdi\CfdiSatScraper\Sessions\SessionManager
+[BC] CHANGED: The parameter $onFiveHundred of PhpCfdi\CfdiSatScraper\SatScraper#__construct() changed from callable|null to PhpCfdi\CfdiSatScraper\Contracts\MaximumRecordsHandler|null
+[BC] CHANGED: Parameter 0 of PhpCfdi\CfdiSatScraper\SatScraper#__construct() changed name from sessionData to sessionManager
+[BC] CHANGED: Parameter 2 of PhpCfdi\CfdiSatScraper\SatScraper#__construct() changed name from onFiveHundred to maximumRecordsHandler
+[BC] REMOVED: Class PhpCfdi\CfdiSatScraper\SatSessionData has been deleted
+[BC] REMOVED: Class PhpCfdi\CfdiSatScraper\Captcha\Resolvers\ConsoleCaptchaResolver has been deleted
+[BC] REMOVED: Class PhpCfdi\CfdiSatScraper\Captcha\Resolvers\AntiCaptchaResolver has been deleted
+[BC] REMOVED: Class PhpCfdi\CfdiSatScraper\Captcha\Resolvers\AntiCaptchaTinyClient\AntiCaptchaTinyClient has been deleted
+[BC] REMOVED: Class PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver has been deleted
+[BC] REMOVED: Class PhpCfdi\CfdiSatScraper\Captcha\CaptchaBase64Extractor has been deleted
+```

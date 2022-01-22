@@ -57,8 +57,9 @@ php tests/generate-repository.php "2020-01-01 00:00:00" "2020-01-31 29:59:59" > 
 
 Una vez que se ha configurado el entorno y el repositorio entonces se pueden ejecutar los tests de integración
 usando PHPUnit. El problema viene con el *captcha* del SAT, pues como se generan consultas reales es necesario
-poder resolverlo. Te recomiendo usar <https://github.com/eclipxe13/captcha-local-resolver> para que tú
-directamente puedas resolver los captchas desde un navegador.
+poder resolverlo.
+Te recomiendo usar [eclipxe13/captcha-local-resolver](https://github.com/eclipxe13/captcha-local-resolver)
+para que tú directamente puedas resolver los captchas desde un navegador.
 
 ## Ejecución con `eclipxe/captcha-local-resolver`
 

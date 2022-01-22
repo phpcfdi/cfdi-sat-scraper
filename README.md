@@ -21,9 +21,9 @@ composer require phpcfdi/cfdi-sat-scraper
 
 ## Funcionamiento
 
-El servicio de descarga de CFDI del SAT que se encuentra en <https://portalcfdi.facturaelectronica.sat.gob.mx/>
-requiere identificarse con RFC, Clave CIEC y de la resolución de un *captcha*
-o bien utilizando el certificado y llave privada FIEL.
+El servicio de descarga de CFDI del SAT que se encuentra en la dirección <https://portalcfdi.facturaelectronica.sat.gob.mx/>,
+requiere identificarse con RFC, Clave CIEC y de la resolución de un *captcha*,
+o bien, utilizando el certificado y llave privada FIEL.
 
 Una vez dentro del sitio se pueden consultar facturas emitidas y facturas recibidas. Ya sea por UUID o por filtro.
 
