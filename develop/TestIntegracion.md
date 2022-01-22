@@ -86,5 +86,9 @@ xdg-open http://127.0.0.1:9595
 Y para ejecutar los tests:
 
 ```
+# using .env config
 php vendor/bin/phpunit --testsuite integration --verbose
+
+# overriding SAT_AUTH_MODE (use CIEC or FIEL)
+SAT_AUTH_MODE="FIEL" php vendor/bin/phpunit --testsuite integration --verbose
 ```
