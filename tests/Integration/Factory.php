@@ -127,7 +127,9 @@ class Factory
     public function createSatScraper(?SessionManager $sessionManager = null): SatScraper
     {
         $sessionManager = $sessionManager ?? $this->createSessionManager();
-        $cookieFile = __DIR__ . '/../../build/cookie-' . strtolower($sessionManager->getRfc()) . '.json';
+        $suffix = basename(str_replace(['\\', 'sessionmanager'], ['/', ''], strtolower(get_class($sessionManager))));
+        $rfc = strtolower($sessionManager->getRfc());
+        $cookieFile = sprintf('%s/%s/cookie-%s-%s.json', __DIR__, '../../build', $rfc, $suffix);
         $cookieJar = new FileCookieJar($cookieFile, true);
         $satHttpGateway = new SatHttpGateway($this->createGuzzleClient(), $cookieJar);
         return new SatScraper($sessionManager, $satHttpGateway);
