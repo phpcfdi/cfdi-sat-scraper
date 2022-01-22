@@ -12,6 +12,8 @@ use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
+ * Parses a web page to obtain all the Metadata records on it.
+ *
  * @internal
  */
 class MetadataExtractor
@@ -36,7 +38,7 @@ class MetadataExtractor
             return new MetadataList([]);
         }
 
-        // first tr is the only expected to have the th elements
+        // first row is the only expected to have the th elements
         $fieldsPositions = $this->locateFieldsPositions($rows->first(), $fieldsCaptions);
 
         // slice first row (headers), build data array as a collection of metadata

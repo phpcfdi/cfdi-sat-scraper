@@ -18,9 +18,7 @@ final class CiecSessionDataTest extends TestCase
 
     private function createCaptchaResolver(): CaptchaResolverInterface
     {
-        /** @var CaptchaResolverInterface $captcha */
-        $captcha = $this->createMock(CaptchaResolverInterface::class);
-        return $captcha;
+        return $this->createMock(CaptchaResolverInterface::class);
     }
 
     public function testConstructWithEmptyRfc(): void

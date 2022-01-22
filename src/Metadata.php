@@ -8,10 +8,10 @@ use JsonSerializable;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 
 /**
- * The Metadata class is an storage of values retrieved from the list of documents obtained from
- * a seach on the SAT CFDI Portal.
+ * The Metadata class is a storage of values retrieved from the list of documents obtained from
+ * a search on the SAT CFDI Portal.
  *
- * It always has an UUID, all other properties are optional.
+ * It always has a UUID, all other properties are optional.
  */
 class Metadata implements JsonSerializable
 {

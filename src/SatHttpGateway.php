@@ -129,7 +129,7 @@ class SatHttpGateway
     }
 
     /**
-     * Create a promise (asyncronic request) to perform an XML download.
+     * Create a promise (asynchronous request) to perform an XML download.
      *
      * @param string $link
      * @return PromiseInterface
@@ -215,13 +215,35 @@ class SatHttpGateway
             } else {
                 $this->effectiveUri = $uri;
             }
-            throw SatHttpGatewayClientException::clientException($reason, 'GET', $uri, $options[RequestOptions::HEADERS], [], $exception);
+            /** @var array<string, mixed> $requestHeaders */
+            $requestHeaders = $options[RequestOptions::HEADERS];
+            /** @var array<string, mixed> $requestData */
+            $requestData = $options[RequestOptions::FORM_PARAMS] ?? [];
+            throw SatHttpGatewayClientException::clientException(
+                $reason,
+                $method,
+                $uri,
+                $requestHeaders,
+                $requestData,
+                $exception,
+            );
         }
         $this->setEffectiveUriFromResponse($response, $uri);
 
         $contents = strval($response->getBody());
         if ('' === $contents) {
-            throw SatHttpGatewayResponseException::unexpectedEmptyResponse($reason, $response, 'GET', $uri, $options[RequestOptions::HEADERS]);
+            /** @var array<string, mixed> $requestHeaders */
+            $requestHeaders = $options[RequestOptions::HEADERS];
+            /** @var array<string, mixed> $requestData */
+            $requestData = $options[RequestOptions::FORM_PARAMS] ?? [];
+            throw SatHttpGatewayResponseException::unexpectedEmptyResponse(
+                $reason,
+                $response,
+                $method,
+                $uri,
+                $requestHeaders,
+                $requestData,
+            );
         }
 
         return $contents;

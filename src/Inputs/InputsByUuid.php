@@ -7,7 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Inputs;
 use PhpCfdi\CfdiSatScraper\QueryByUuid;
 
 /**
- * @method QueryByUuid getQuery()
+ * @extends InputsGeneric<QueryByUuid>
  */
 class InputsByUuid extends InputsGeneric implements InputsInterface
 {

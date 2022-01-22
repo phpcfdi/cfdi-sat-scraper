@@ -9,14 +9,13 @@ use Countable;
 use IteratorAggregate;
 use JsonSerializable;
 use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
-use Traversable;
 
 /**
- * @implements \IteratorAggregate<Metadata>
+ * @implements IteratorAggregate<Metadata>
  */
 class MetadataList implements Countable, IteratorAggregate, JsonSerializable
 {
-    /** @var Metadata[] */
+    /** @var array<string, Metadata> */
     private $list;
 
     /** @param Metadata[] $list */
@@ -63,7 +62,7 @@ class MetadataList implements Countable, IteratorAggregate, JsonSerializable
     }
 
     /**
-     * Return a new list with only the Metadata wich has an url to download according to specified resource type
+     * Return a new list with only the Metadata which has an url to download according to specified resource type
      *
      * @param ResourceType $resourceType
      * @return self
@@ -92,7 +91,7 @@ class MetadataList implements Countable, IteratorAggregate, JsonSerializable
     }
 
     /**
-     * Obtain a Metadata by UUID, the metadata object must exists in the collection
+     * Obtain a Metadata by UUID, the metadata object must exist in the collection
      *
      * @param string $uuid
      * @return Metadata
@@ -107,10 +106,8 @@ class MetadataList implements Countable, IteratorAggregate, JsonSerializable
         return $values;
     }
 
-    /**
-     * @return Traversable<Metadata>
-     */
-    public function getIterator()
+    /** @return ArrayIterator<string, Metadata> */
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->list);
     }

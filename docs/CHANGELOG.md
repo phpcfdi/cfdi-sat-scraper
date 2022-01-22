@@ -8,6 +8,26 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 No hay cambios pendientes por liberar.
 
+## Version 3.0.0
+
+Vea la [Guía de actualización de `2.x` a `3.x`](UPGRADE-2-3.md).
+
+Este es el listado de cambios más relevantes:
+
+- A partir de esta versión se puede realizar la autenticación del cliente utilizando FIEL.
+- El método `SatScraper::registerOnPortalMainPage` fue renombrado a `SatScraper::accessPortalMainPage`.
+- Se cambió la extracción y resolución de captchas a la librería 
+  [`phpcfdi/image-captcha-resolver`](https://github.com/phpcfdi/image-captcha-resolver).
+- Se cambió el manejador de máximo de registros de una función *callable* `callable(DateTimeImmutable): void`
+  a una interfaz `MaximumRecordsHandler`.
+- Se eliminan las extensiones que estaban requeridas, pero no están más en uso: `libxml`, `simplexml` y `filter`.
+- Se actualiza toda la documentación del proyecto.
+
+Cambios relevantes en desarrollo:
+
+- Se cambia de `development/install-development-tools` a `phive`.
+- Se mejoraron los bloques `phpdoc`.
+
 ## Version 2.1.1
 
 Se corrige un bug al consumir el servicio de Anti-Captcha donde estaba asumiendo que el código de error

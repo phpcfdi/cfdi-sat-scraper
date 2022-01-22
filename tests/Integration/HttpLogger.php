@@ -1,20 +1,17 @@
 <?php
 
-/**
- * @noinspection PhpUnhandledExceptionInspection
- */
-
 declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 
+use ArrayAccess;
 use ArrayObject;
 use DateTimeImmutable;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * @extends ArrayObject<int, array>
+ * @extends ArrayObject<int|string, mixed>
  */
 class HttpLogger extends ArrayObject
 {
@@ -27,10 +24,6 @@ class HttpLogger extends ArrayObject
         $this->destinationDir = $destinationDir;
     }
 
-    /**
-     * @inheritDoc
-     * @param mixed $value
-     */
     public function append($value): void
     {
         $this->write($value);
@@ -39,7 +32,6 @@ class HttpLogger extends ArrayObject
 
     /**
      * @param int|string|null $index
-     * @param mixed $entry
      * @noinspection PhpParameterNameChangedDuringInheritanceInspection
      */
     public function offsetSet($index, $entry): void
@@ -50,12 +42,10 @@ class HttpLogger extends ArrayObject
         parent::offsetSet($index, $entry);
     }
 
-    /**
-     * @param mixed $entry
-     */
+    /** @param mixed $entry */
     public function write($entry): void
     {
-        if (! is_array($entry)) {
+        if (! is_array($entry) && ! $entry instanceof ArrayAccess) {
             return;
         }
         if ('' === $this->destinationDir) {
@@ -90,7 +80,7 @@ class HttpLogger extends ArrayObject
         $text = (string) preg_replace('~[^\w\-]+~', '', $text);
         // replace consecutive dashes to only one
         $text = (string) preg_replace('~-+~', '-', $text);
-        // final result with timmed dash and lowercase
+        // final result with trimmed dash and lowercase
         return strtolower(trim($text, '-'));
     }
 

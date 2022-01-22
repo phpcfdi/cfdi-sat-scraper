@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Internal;
 
 /**
- * Helper class to return the correct headers for different requests: post and ajax
+ * Helper class to return the correct headers for different requests: post and ajax.
+ *
  * @internal
  */
 class Headers

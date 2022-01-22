@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Exceptions;
 
-use RuntimeException as SplRuntimeException;
 use Throwable;
 
 /**
@@ -16,7 +15,7 @@ use Throwable;
  * @see ResourceDownloadResponseError
  * @see ResourceDownloadRequestExceptionError
  */
-class ResourceDownloadError extends SplRuntimeException implements SatException
+class ResourceDownloadError extends \RuntimeException implements SatException
 {
     /** @var string */
     private $uuid;
@@ -27,7 +26,7 @@ class ResourceDownloadError extends SplRuntimeException implements SatException
     /**
      * ResourceDownloadError constructor.
      *
-     * If the reason is a Throwable and previous was not defined then it set up previous as reason
+     * If the reason is a Throwable and previous was not defined, then it set up previous as reason.
      *
      * @param string $message
      * @param string $uuid

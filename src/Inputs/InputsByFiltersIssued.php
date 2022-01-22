@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Inputs;
 
+use PhpCfdi\CfdiSatScraper\QueryByFilters;
+
 class InputsByFiltersIssued extends InputsByFilters implements InputsInterface
 {
     /** @return array<string, string> */
     public function getDateFilters(): array
     {
-        $startDate = $this->getQuery()->getStartDate();
-        $endDate = $this->getQuery()->getEndDate();
+        /** @var QueryByFilters $query PhpStorm does not know correct type by template */
+        $query = $this->getQuery();
+        $startDate = $query->getStartDate();
+        $endDate = $query->getEndDate();
         return [
             'ctl00$MainContent$hfInicial' => $startDate->format('Y'),
             'ctl00$MainContent$CldFechaInicial2$Calendario_text' => $startDate->format('d/m/Y'),

@@ -38,8 +38,8 @@ La resolución de una consulta de `QueryResolver` consta de 3 pasos:
 
 1. Entrar a la página principal según el tipo de consulta (recibidos o emitidos) y obtener todos los inputs.
 1. Hacer la selección del tipo de consulta (por UUID o por filtros) y recapturar los inputs que hubieran cambiado.
-1. Hacer la consulta con los datos específicos (uuid, fechas, rfc, complemento, estado, etc)
-1. Generar el `MetadataList` a partir de los datos devueltos.
+1. Hacer la consulta con los datos específicos (uuid, fechas, rfc, complemento, estado, etc.)
+1. Generar el objeto `MetadataList` a partir de los datos devueltos.
 
 Por lo anterior, los pasos son:
 

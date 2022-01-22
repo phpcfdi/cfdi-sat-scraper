@@ -41,7 +41,7 @@ final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromis
     }
 
     /**
-     * This method handles the each promise fulfilled event
+     * This method handles each promise fulfilled event
      *
      * @param ResponseInterface $response
      * @param string $uuid
@@ -99,7 +99,7 @@ final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromis
     }
 
     /**
-     * This method handles the each promise rejected event
+     * This method handles each promise rejected event
      *
      * @param mixed $reason
      * @param string $uuid
@@ -127,7 +127,7 @@ final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromis
     }
 
     /**
-     * Return the list of succesfully processed UUIDS
+     * Return the list of successfully processed UUIDS
      *
      * @return string[]
      */

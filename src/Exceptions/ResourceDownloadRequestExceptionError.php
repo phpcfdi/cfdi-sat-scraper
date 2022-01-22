@@ -20,6 +20,6 @@ class ResourceDownloadRequestExceptionError extends ResourceDownloadError
 
     public static function onRequestException(RequestException $exception, string $uuid): self
     {
-        return new self('Download of CFDI %s fails when performing request', $uuid, $exception);
+        return new self(sprintf('Download of CFDI %s fails when performing request', $uuid), $uuid, $exception);
     }
 }

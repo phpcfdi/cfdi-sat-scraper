@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 interface ResourceDownloaderPromiseHandlerInterface
 {
     /**
-     * This method handles the each promise fulfilled event
+     * This method handles each promise fulfilled event
      *
      * @param ResponseInterface $response
      * @param string $uuid
@@ -18,7 +18,7 @@ interface ResourceDownloaderPromiseHandlerInterface
     public function promiseFulfilled(ResponseInterface $response, string $uuid);
 
     /**
-     * This method handles the each promise rejected event
+     * This method handles each promise rejected event
      *
      * @param mixed $reason
      * @param string $uuid
@@ -27,7 +27,7 @@ interface ResourceDownloaderPromiseHandlerInterface
     public function promiseRejected($reason, string $uuid);
 
     /**
-     * Return the list of succesfully processed UUIDS
+     * Return the list of successfully processed UUIDS
      *
      * @return string[]
      */

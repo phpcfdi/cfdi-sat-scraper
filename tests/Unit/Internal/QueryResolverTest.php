@@ -1,9 +1,5 @@
 <?php
 
-/**
- * @noinspection PhpUnhandledExceptionInspection
- */
-
 declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Internal;

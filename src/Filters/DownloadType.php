@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Filters;
 
 use Eclipxe\Enum\Enum;
-use LogicException;
+use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 use PhpCfdi\CfdiSatScraper\URLS;
 
 /**
@@ -28,7 +28,7 @@ final class DownloadType extends Enum
     {
         $url = self::URLS[$this->value()] ?? '';
         if ('' === $url) {
-            throw new LogicException(sprintf('Enum %s does not have the url for "%s"', self::class, $this->value()));
+            throw LogicException::generic(sprintf('Enum %s does not have the url for "%s"', self::class, $this->value()));
         }
         return $url;
     }

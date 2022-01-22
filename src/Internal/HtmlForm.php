@@ -10,6 +10,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Utility class to extract data from an HTML form.
+ *
  * @internal
  */
 class HtmlForm
@@ -85,7 +86,7 @@ class HtmlForm
     {
         $data = [];
         /** @var DOMElement[] $elements */
-        $elements = $this->filterCrawlerElements("{$this->parentElement} select");
+        $elements = $this->filterCrawlerElements("$this->parentElement select");
         foreach ($elements as $element) {
             $name = $element->getAttribute('name');
             if ($this->elementNameIsExcluded($name)) {
@@ -111,7 +112,7 @@ class HtmlForm
      * This method is compatible with elements that have a name and value
      * It excludes the selects which name match with an exclusion pattern
      * If type is defined is excluded if was set as an excluded type
-     * If type is radio is included only if checked attribute is trueish
+     * If type is radio is included only if checked attribute is true-ish
      *
      * @param string $element
      * @param string[] $excludeTypes
@@ -124,7 +125,7 @@ class HtmlForm
         $data = [];
 
         /** @var DOMElement[] $elements */
-        $elements = $this->filterCrawlerElements("{$this->parentElement} {$element}");
+        $elements = $this->filterCrawlerElements("$this->parentElement $element");
         foreach ($elements as $element) {
             $name = $element->getAttribute('name');
             if ($this->elementNameIsExcluded($name)) {

@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper;
 
 use PhpCfdi\CfdiSatScraper\Contracts\MaximumRecordsHandler;
-use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
-use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
+use PhpCfdi\CfdiSatScraper\Contracts\SatScraperInterface;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
 use PhpCfdi\CfdiSatScraper\Internal\NullMaximumRecordsHandler;
 use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
 use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 
-class SatScraper
+class SatScraper implements SatScraperInterface
 {
     /** @var SessionManager */
     private $sessionManager;
@@ -71,15 +70,6 @@ class SatScraper
         return new QueryResolver($this->satHttpGateway);
     }
 
-    /**
-     * Create a ResourceDownloader object with (optionally) a MetadataList.
-     * Use the ResourceDownloader to retrieve the CFDI related files.
-     *
-     * @param ResourceType|null $resourceType
-     * @param MetadataList|null $metadataList
-     * @param int $concurrency
-     * @return ResourceDownloader
-     */
     public function resourceDownloader(
         ResourceType $resourceType = null,
         ?MetadataList $metadataList = null,
@@ -89,12 +79,6 @@ class SatScraper
         return new ResourceDownloader($this->satHttpGateway, $resourceType, $metadataList, $concurrency);
     }
 
-    /**
-     * Initializes session on SAT
-     *
-     * @return SatScraper
-     * @throws LoginException if session is not alive
-     */
     public function confirmSessionIsAlive(): self
     {
         $sessionManager = $this->getSessionManager();
@@ -108,43 +92,18 @@ class SatScraper
         return $this;
     }
 
-    /**
-     * Retrieve the MetadataList using specific UUIDS to download
-     *
-     * @param string[] $uuids
-     * @param DownloadType $downloadType
-     * @return MetadataList
-     * @throws LoginException
-     * @throws SatHttpGatewayException
-     */
     public function listByUuids(array $uuids, DownloadType $downloadType): MetadataList
     {
         $this->confirmSessionIsAlive();
         return $this->createMetadataDownloader()->downloadByUuids($uuids, $downloadType);
     }
 
-    /**
-     * Retrieve the MetadataList based on the query, but uses full days on dates (without time parts)
-     *
-     * @param QueryByFilters $query
-     * @return MetadataList
-     * @throws LoginException
-     * @throws SatHttpGatewayException
-     */
     public function listByPeriod(QueryByFilters $query): MetadataList
     {
         $this->confirmSessionIsAlive();
         return $this->createMetadataDownloader()->downloadByDate($query);
     }
 
-    /**
-     * Retrieve the MetadataList based on the query, but uses the period considering dates and times
-     *
-     * @param QueryByFilters $query
-     * @return MetadataList
-     * @throws LoginException
-     * @throws SatHttpGatewayException
-     */
     public function listByDateTime(QueryByFilters $query): MetadataList
     {
         $this->confirmSessionIsAlive();

@@ -8,7 +8,6 @@ use Throwable;
 
 final class LoginUsingCiecTest extends IntegrationTestCase
 {
-    /** @noinspection PhpUnhandledExceptionInspection */
     public function testLoginAndLogout(): void
     {
         $factory = $this->getFactory();

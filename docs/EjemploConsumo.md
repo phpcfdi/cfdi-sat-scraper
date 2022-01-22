@@ -44,6 +44,9 @@ $ciecSessionManager = CiecSessionManager::create($rfc, $claveCiec, $captchaResol
 
 $satScraper = new SatScraper($ciecSessionManager, $gateway);
 
+$resourceDownloader = $satScraper->resourceDownloader(ResourceType::xml())
+    ->setConcurrency(20);
+
 $query = new QueryByFilters(new DateTimeImmutable('2019-12-01'), new DateTimeImmutable('2019-12-31'));
 $query->setDownloadType(DownloadType::recibidos()) // default: emitidos
     ->setStateVoucher(StatesVoucherOption::vigentes());   // default: todos
@@ -55,9 +58,7 @@ $list = $list->filterWithResourceLink(ResourceType::xml());
 printf("\nPero solamente %d contienen archivos XML", $list->count());
 while ($list->count() > 0) {
     printf("\nIntentando descargar %d archivos: ", $list->count());
-    $downloadedUuids = $satScraper->resourceDownloader(ResourceType::xml())
-        ->setMetadataList($list)
-        ->setConcurrency(20)
+    $downloadedUuids = $resourceDownloader->setMetadataList($list)
         ->saveTo($downloadsPath, true);
     printf("%d descargados: ", count($downloadedUuids));
     $list = $list->filterWithOutUuids($downloadedUuids);

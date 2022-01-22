@@ -7,7 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Exceptions;
 use GuzzleHttp\Exception\GuzzleException;
 
 /**
- * This exception is thrown by SatHttpGateway and stores an http client exception GuzzleException
+ * This exception is thrown by SatHttpGateway and stores a http client exception GuzzleException
  *
  * @see GuzzleException
  */

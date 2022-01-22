@@ -8,7 +8,7 @@ use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\ImageCaptchaResolver\CaptchaResolverInterface;
 
 /**
- * This immutable class is the store of the data required to login into SAT
+ * This immutable class is the store of the data required to log in into SAT
  */
 class CiecSessionData
 {

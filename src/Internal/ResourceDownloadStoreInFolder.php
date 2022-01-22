@@ -16,6 +16,7 @@ use Throwable;
  * This is a class to perform the ResourceDownloader::saveTo method.
  *
  * @see \PhpCfdi\CfdiSatScraper\ResourceDownloader::saveTo()
+ * @internal
  */
 final class ResourceDownloadStoreInFolder implements ResourceDownloadHandlerInterface
 {
