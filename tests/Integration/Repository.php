@@ -34,21 +34,29 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
         /** @noinspection PhpUsageOfSilenceOperatorInspection */
         $content = strval(@file_get_contents($filename));
         $decoded = json_decode($content, true);
-        if (! is_array($decoded)) {
-            throw new RuntimeException('JSON decoded contents from %s is not an array');
-        }
+        try {
         return static::fromArray($decoded);
+        } catch (Throwable $exception) {
+            throw new RuntimeException('JSON decoded contents from %s are invalid', 0, $exception);
+    }
     }
 
     /**
      * @param array<array<string, string>> $dataItems
      * @return self
      */
-    public static function fromArray(array $dataItems): self
+    public static function fromArray($dataItems): self
     {
+        if (! is_array($dataItems)) {
+            throw new RuntimeException('JSON decoded contents from %s is not an array');
+        }
         $items = [];
-        foreach ($dataItems as $dataItem) {
-            $items[] = RepositoryItem::fromArray($dataItem);
+        foreach ($dataItems as $index => $dataItem) {
+            if (! is_array($dataItem)) {
+                throw new RuntimeException("Entry $index is not an array");
+            }
+            $item = RepositoryItem::fromArray($dataItem);
+            $items[$item->getUuid()] = $item;
         }
         return new self($items);
     }
