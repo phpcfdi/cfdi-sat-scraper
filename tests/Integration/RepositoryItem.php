@@ -31,12 +31,12 @@ class RepositoryItem implements JsonSerializable
         $this->state = strtoupper(substr($state, 0, 1));
     }
 
-    /** @param array<string, string> $item */
+    /** @param array<mixed> $item */
     public static function fromArray(array $item): self
     {
         return new self(
             strval($item['uuid'] ?? ''),
-            static::dateFromString(strval($item['date'] ?? '')),
+            self::dateFromString(strval($item['date'] ?? '')),
             strval($item['state'] ?? ''),
             strval($item['type'] ?? ''),
         );

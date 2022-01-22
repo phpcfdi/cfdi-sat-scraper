@@ -215,12 +215,16 @@ class SatHttpGateway
             } else {
                 $this->effectiveUri = $uri;
             }
+            /** @var array<string, mixed> $requestHeaders */
+            $requestHeaders = $options[RequestOptions::HEADERS];
+            /** @var array<string, mixed> $requestData */
+            $requestData = $options[RequestOptions::FORM_PARAMS] ?? [];
             throw SatHttpGatewayClientException::clientException(
                 $reason,
                 $method,
                 $uri,
-                $options[RequestOptions::HEADERS],
-                $options[RequestOptions::FORM_PARAMS] ?? [],
+                $requestHeaders,
+                $requestData,
                 $exception,
             );
         }
@@ -228,13 +232,17 @@ class SatHttpGateway
 
         $contents = strval($response->getBody());
         if ('' === $contents) {
+            /** @var array<string, mixed> $requestHeaders */
+            $requestHeaders = $options[RequestOptions::HEADERS];
+            /** @var array<string, mixed> $requestData */
+            $requestData = $options[RequestOptions::FORM_PARAMS] ?? [];
             throw SatHttpGatewayResponseException::unexpectedEmptyResponse(
                 $reason,
                 $response,
                 $method,
                 $uri,
-                $options[RequestOptions::HEADERS],
-                $options[RequestOptions::FORM_PARAMS] ?? [],
+                $requestHeaders,
+                $requestData,
             );
         }
 

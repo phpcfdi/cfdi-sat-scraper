@@ -26,7 +26,7 @@ class CiecLoginException extends LoginException
      * @param string $message
      * @param CiecSessionData $sessionData
      * @param string $contents
-     * @param array<string, mixed> $postedData
+     * @param array<string, string> $postedData
      * @param Throwable|null $previous
      */
     public function __construct(string $message, CiecSessionData $sessionData, string $contents, array $postedData = [], Throwable $previous = null)
