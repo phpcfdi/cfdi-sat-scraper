@@ -16,7 +16,7 @@ use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use Throwable;
 
-class IntegrationTestCase extends TestCase
+abstract class IntegrationTestCase extends TestCase
 {
     /**
      * @var Factory
