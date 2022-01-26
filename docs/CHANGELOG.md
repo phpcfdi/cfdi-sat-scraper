@@ -11,6 +11,10 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 El proyecto se ha integrado con SonarCloud y se están utilizando sus métricas:
 <https://sonarcloud.io/project/overview?id=phpcfdi_cfdi-sat-scraper>.
 
+### Remover Scrutinizer CI.
+
+Se deja de usar la integración con Scrutinizer CI. Gracias Srutinizer.
+
 ## Version 3.0.0
 
 Vea la [Guía de actualización de `2.x` a `3.x`](UPGRADE-2-3.md).
