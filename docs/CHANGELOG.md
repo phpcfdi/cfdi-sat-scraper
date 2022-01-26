@@ -6,15 +6,6 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión.
 
-### Integrar con SonarCloud
-
-El proyecto se ha integrado con SonarCloud y se están utilizando sus métricas:
-<https://sonarcloud.io/project/overview?id=phpcfdi_cfdi-sat-scraper>.
-
-### Remover Scrutinizer CI.
-
-Se deja de usar la integración con Scrutinizer CI. Gracias Srutinizer.
-
 ## Version 3.0.0
 
 Vea la [Guía de actualización de `2.x` a `3.x`](UPGRADE-2-3.md).
@@ -34,6 +25,9 @@ Cambios relevantes en desarrollo:
 
 - Se cambia de `development/install-development-tools` a `phive`.
 - Se mejoraron los bloques `phpdoc`.
+- El proyecto se ha integrado con SonarCloud y se están utilizando sus métricas:
+  <https://sonarcloud.io/project/overview?id=phpcfdi_cfdi-sat-scraper>.
+- Se deja de usar la integración con Scrutinizer CI. Gracias Srutinizer.
 
 ## Version 2.1.1
 
