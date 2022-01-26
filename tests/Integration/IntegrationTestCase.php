@@ -50,7 +50,7 @@ class IntegrationTestCase extends TestCase
         }
     }
 
-    /** @return mixed[] */
+    /** @return array<string, array{DownloadType}> */
     public function providerEmitidosRecibidos(): array
     {
         return [
@@ -104,7 +104,7 @@ class IntegrationTestCase extends TestCase
         self::assertSame(
             strtolower($expectedUuid),
             strtolower($uuidAttr->value),
-            sprintf('The UUID from the XML CFDI %s is not the same as expected %s', $uuidAttr->value, $expectedUuid)
+            sprintf('The UUID from the XML CFDI %s is not the same as expected %s', $uuidAttr->value, $expectedUuid),
         );
     }
 

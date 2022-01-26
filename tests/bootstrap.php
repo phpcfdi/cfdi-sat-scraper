@@ -9,7 +9,7 @@ error_reporting(-1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // load dotenv file
-call_user_func(new class() {
+call_user_func(new class () {
     public function __invoke(): void
     {
         $environmentFile = __DIR__ . '/.env';
@@ -28,7 +28,6 @@ call_user_func(new class() {
     public function loadEnvironmentFile(string $environmentFile): void
     {
         $dotenv = new Symfony\Component\Dotenv\Dotenv();
-        $dotenv->usePutenv();
         $dotenv->load($environmentFile);
     }
 });

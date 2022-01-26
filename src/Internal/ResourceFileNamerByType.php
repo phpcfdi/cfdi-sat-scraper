@@ -9,7 +9,7 @@ use PhpCfdi\CfdiSatScraper\Contracts\ResourceFileNamerInterface;
 use PhpCfdi\CfdiSatScraper\ResourceType;
 
 /**
- * This class is an implementation of ResourceFileNamerInterface to create a file name for an UUID
+ * This class is an implementation of ResourceFileNamerInterface to create a file name for a UUID
  * depending on a resource type.
  *
  * @internal

@@ -6,6 +6,11 @@ namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 
+/**
+ * This trait contains the methods to insert a $downloadType property
+ *
+ * @internal
+ */
 trait DownloadTypePropertyTrait
 {
     /** @var DownloadType */
@@ -25,7 +30,7 @@ trait DownloadTypePropertyTrait
      * @param DownloadType $downloadType
      * @return $this
      */
-    public function setDownloadType(DownloadType $downloadType)
+    public function setDownloadType(DownloadType $downloadType): self
     {
         $this->downloadType = $downloadType;
 

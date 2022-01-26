@@ -49,7 +49,6 @@ class ResourceDownloadStoreInFolderTest extends TestCase
     public function testCheckDestinationFolderWhenFolderExistsAndAskToNotCreate(): void
     {
         $downloader = $this->createResourceDownloadStoreInFolder(__DIR__);
-        /** @noinspection PhpUnhandledExceptionInspection */
         $downloader->checkDestinationFolder(false);
         $this->assertTrue(true, 'checkDestinationFolder should not create any exception');
     }
@@ -57,7 +56,6 @@ class ResourceDownloadStoreInFolderTest extends TestCase
     public function testCheckDestinationFolderWhenFolderExistsAndAskToCreate(): void
     {
         $downloader = $this->createResourceDownloadStoreInFolder(__DIR__);
-        /** @noinspection PhpUnhandledExceptionInspection */
         $downloader->checkDestinationFolder(true);
         $this->assertTrue(true, 'checkDestinationFolder should not create any exception');
     }
@@ -91,7 +89,6 @@ class ResourceDownloadStoreInFolderTest extends TestCase
         $destinationFolder = $this->filePath(uniqid());
         try {
             $downloader = $this->createResourceDownloadStoreInFolder($destinationFolder);
-            /** @noinspection PhpUnhandledExceptionInspection */
             $downloader->checkDestinationFolder(true);
             $this->assertDirectoryExists($destinationFolder);
         } finally {
@@ -115,7 +112,6 @@ class ResourceDownloadStoreInFolderTest extends TestCase
 
         $contents = 'foo-bar';
         $response = $this->createMock(ResponseInterface::class);
-        /** @noinspection PhpUnhandledExceptionInspection */
         $downloader->onSuccess($uuid, $contents, $response);
 
         try {

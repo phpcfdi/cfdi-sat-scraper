@@ -13,13 +13,13 @@ use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
 final class MetadataListTest extends TestCase
 {
-    public function testCreateEmptyList(): Void
+    public function testCreateEmptyList(): void
     {
         $list = new MetadataList([]);
         $this->assertCount(0, $list);
     }
 
-    public function testHasMethod(): Void
+    public function testHasMethod(): void
     {
         $fakes = $this->fakes();
         $item = $fakes->doMetadata();
@@ -29,7 +29,7 @@ final class MetadataListTest extends TestCase
         $this->assertFalse($list->has($fakes->faker()->uuid));
     }
 
-    public function testFindMethod(): Void
+    public function testFindMethod(): void
     {
         $fakes = $this->fakes();
         $item = $fakes->doMetadata();
@@ -38,7 +38,7 @@ final class MetadataListTest extends TestCase
         $this->assertNull($list->find($fakes->faker()->uuid));
     }
 
-    public function testGetMethod(): Void
+    public function testGetMethod(): void
     {
         $item = $this->fakes()->doMetadata();
         $list = new MetadataList([$item]);
@@ -46,7 +46,7 @@ final class MetadataListTest extends TestCase
         $this->assertSame($item, $list->get($item->uuid()));
     }
 
-    public function testGetMethodWithoutUuid(): Void
+    public function testGetMethodWithoutUuid(): void
     {
         $list = new MetadataList([]);
         $this->expectException(LogicException::class);

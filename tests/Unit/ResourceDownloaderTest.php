@@ -81,7 +81,7 @@ final class ResourceDownloaderTest extends TestCase
                 $uuidWithUrlXml1 = $this->fakes()->faker()->uuid,
                 $uuidWithUrlXml2 = $this->fakes()->faker()->uuid,
             ]);
-        $downloader = new class($this->createSatHttpGateway(), ResourceType::xml()) extends ResourceDownloader {
+        $downloader = new class ($this->createSatHttpGateway(), ResourceType::xml()) extends ResourceDownloader {
             public function makePromises(): Traversable
             {
                 return parent::makePromises();
@@ -101,7 +101,7 @@ final class ResourceDownloaderTest extends TestCase
     public function testMakePromiseHandler(): void
     {
         $resourceType = ResourceType::cancelVoucher();
-        $downloader = new class($this->createSatHttpGateway(), $resourceType) extends ResourceDownloader {
+        $downloader = new class ($this->createSatHttpGateway(), $resourceType) extends ResourceDownloader {
             public function makePromiseHandler(ResourceDownloadHandlerInterface $handler): ResourceDownloaderPromiseHandlerInterface
             {
                 return parent::makePromiseHandler($handler);
@@ -129,7 +129,7 @@ final class ResourceDownloaderTest extends TestCase
 
         // given a well known behavior for a fake ResourceDownloaderPromiseHandlerInterface
         // the behavior is that only even entries are downloaded, odd entries are rejected
-        $downloader = new class(new SatHttpGateway(), ResourceType::xml()) extends ResourceDownloader {
+        $downloader = new class (new SatHttpGateway(), ResourceType::xml()) extends ResourceDownloader {
             /** @noinspection PhpMissingParentCallCommonInspection */
             public function makePromiseHandler(ResourceDownloadHandlerInterface $handler): ResourceDownloaderPromiseHandlerInterface
             {

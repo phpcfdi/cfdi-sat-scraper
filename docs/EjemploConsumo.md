@@ -30,17 +30,22 @@ use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
 
-$rfc = strval(getenv('SAT_AUTH_RFC'));
-$claveCiec = strval(getenv('SAT_AUTH_CIEC'));
+$rfc = strval($_SERVER['SAT_AUTH_RFC'] ?? '');
+$claveCiec = strval($_SERVER['SAT_AUTH_CIEC'] ?? '');
 $cookieJarPath = sprintf('%s/build/cookies/%s.json', getcwd(), $rfc);
 $downloadsPath = sprintf('%s/build/cfdis/%s', getcwd(), $rfc);
 
 $gateway = new SatHttpGateway(new Client(), new FileCookieJar($cookieJarPath, true));
 $captchaResolver = new ConsoleCaptchaResolver();
 
-$satScraper = new SatScraper(new SatSessionData($rfc, $claveCiec, $captchaResolver), $gateway);
+$ciecSessionManager = CiecSessionManager::create($rfc, $claveCiec, $captchaResolver);
+
+$satScraper = new SatScraper($ciecSessionManager, $gateway);
+
+$resourceDownloader = $satScraper->resourceDownloader(ResourceType::xml())
+    ->setConcurrency(20);
 
 $query = new QueryByFilters(new DateTimeImmutable('2019-12-01'), new DateTimeImmutable('2019-12-31'));
 $query->setDownloadType(DownloadType::recibidos()) // default: emitidos
@@ -53,9 +58,7 @@ $list = $list->filterWithResourceLink(ResourceType::xml());
 printf("\nPero solamente %d contienen archivos XML", $list->count());
 while ($list->count() > 0) {
     printf("\nIntentando descargar %d archivos: ", $list->count());
-    $downloadedUuids = $satScraper->resourceDownloader(ResourceType::xml())
-        ->setMetadataList($list)
-        ->setConcurrency(20)
+    $downloadedUuids = $resourceDownloader->setMetadataList($list)
         ->saveTo($downloadsPath, true);
     printf("%d descargados: ", count($downloadedUuids));
     $list = $list->filterWithOutUuids($downloadedUuids);

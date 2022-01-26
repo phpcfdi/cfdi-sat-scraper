@@ -6,7 +6,7 @@
     cacheResultFile="build/phpunit.result.cache"
     colors="true">
 
-    <coverage>
+  <coverage>
     <include>
       <directory suffix=".php">src</directory>
     </include>

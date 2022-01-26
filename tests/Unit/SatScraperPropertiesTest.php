@@ -4,20 +4,24 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
+use PhpCfdi\CfdiSatScraper\Contracts\MaximumRecordsHandler;
+use PhpCfdi\CfdiSatScraper\Internal\NullMaximumRecordsHandler;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 
 final class SatScraperPropertiesTest extends TestCase
 {
-    private function createSatScraper(?SatSessionData $sessionData = null, ?SatHttpGateway $satHttpGateway = null, ?callable $onFiveHundred = null): SatScraper
-    {
+    private function createSatScraper(
+        ?SessionManager $sessionManager = null,
+        ?SatHttpGateway $satHttpGateway = null,
+        ?MaximumRecordsHandler $maximumRecordsHandler = null
+    ): SatScraper {
         return new SatScraper(
-            $sessionData ?? new SatSessionData('rfc', 'ciec', $this->createCaptchaResolver()),
+            $sessionManager ?? $this->createMock(SessionManager::class),
             $satHttpGateway,
-            $onFiveHundred
+            $maximumRecordsHandler,
         );
     }
 
@@ -26,21 +30,14 @@ final class SatScraperPropertiesTest extends TestCase
         return new SatHttpGateway();
     }
 
-    private function createCaptchaResolver(): CaptchaResolverInterface
+    public function testSessionManagerProperty(): void
     {
-        /** @var CaptchaResolverInterface $captcha */
-        $captcha = $this->createMock(CaptchaResolverInterface::class);
-        return $captcha;
+        $sessionManager = $this->createMock(SessionManager::class);
+        $scraper = $this->createSatScraper($sessionManager);
+        $this->assertSame($sessionManager, $scraper->getSessionManager());
     }
 
-    public function testSatSessionData(): void
-    {
-        $data = new SatSessionData('rfc', 'ciec', $this->createCaptchaResolver());
-        $scraper = $this->createSatScraper($data);
-        $this->assertSame($data, $scraper->getSatSessionData());
-    }
-
-    public function testSatHttpGateway(): void
+    public function testSatHttpGatewayProperty(): void
     {
         $satHttpGateway = $this->createSatHttpGateway();
         $scraper = $this->createSatScraper(null, $satHttpGateway);
@@ -53,17 +50,16 @@ final class SatScraperPropertiesTest extends TestCase
         $this->assertInstanceOf(SatHttpGateway::class, $scraper->getSatHttpGateway());
     }
 
-    public function testOnFiveHundred(): void
+    public function testMaximumRecordsHandler(): void
     {
-        $callable = function (): void {
-        };
-        $scraper = $this->createSatScraper(null, null, $callable);
-        $this->assertSame($callable, $scraper->getOnFiveHundred(), 'Given OnFiveHundred was not the same');
+        $handler = $this->createMock(MaximumRecordsHandler::class);
+        $scraper = $this->createSatScraper(null, null, $handler);
+        $this->assertSame($handler, $scraper->getMaximumRecordsHandler(), 'Given handler should be the same');
     }
 
-    public function testOnFiveHundredDefault(): void
+    public function testMaximumRecordsHandlerDefault(): void
     {
         $scraper = $this->createSatScraper();
-        $this->assertNull($scraper->getOnFiveHundred(), 'Default OnFiveHundred should be NULL');
+        $this->assertInstanceOf(NullMaximumRecordsHandler::class, $scraper->getMaximumRecordsHandler());
     }
 }

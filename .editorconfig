@@ -9,7 +9,11 @@ end_of_line = lf
 [**.yml]
 indent_size = 2
 
-[**.{php,md,xml,yml,json,dist}]
+[**.md]
+charset = utf-8
+insert_final_newline = true
+
+[**.{php,xml,yml,json,dist}]
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true

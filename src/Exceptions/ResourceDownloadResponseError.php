@@ -24,7 +24,7 @@ class ResourceDownloadResponseError extends ResourceDownloadError
         return new self(
             sprintf('Download of CFDI %s return an invalid status code %d', $uuid, $response->getStatusCode()),
             $uuid,
-            $response
+            $response,
         );
     }
 
@@ -48,6 +48,6 @@ class ResourceDownloadResponseError extends ResourceDownloadError
         if ($throwable instanceof self) {
             return $throwable;
         }
-        return new self("Download of CFDI $uuid was unable to handle fulfill", $uuid, $response, $throwable);
+        return new self(sprintf('Download of CFDI %s was unable to handle fulfill', $uuid), $uuid, $response, $throwable);
     }
 }

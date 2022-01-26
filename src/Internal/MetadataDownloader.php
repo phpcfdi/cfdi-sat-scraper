@@ -6,6 +6,7 @@ namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use DateTimeImmutable;
 use Generator;
+use PhpCfdi\CfdiSatScraper\Contracts\MaximumRecordsHandler;
 use PhpCfdi\CfdiSatScraper\Contracts\QueryInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
@@ -32,13 +33,14 @@ class MetadataDownloader
     /** @var QueryResolver */
     private $queryResolver;
 
-    /** @var callable|null */
-    private $onFiveHundred;
+    /** @var MaximumRecordsHandler */
+    private $maximumRecordsHandler;
 
-    public function __construct(QueryResolver $queryResolver, ?callable $onFiveHundred)
+    /** @internal */
+    public function __construct(QueryResolver $queryResolver, MaximumRecordsHandler $maximumRecordsHandler)
     {
         $this->queryResolver = $queryResolver;
-        $this->onFiveHundred = $onFiveHundred;
+        $this->maximumRecordsHandler = $maximumRecordsHandler;
     }
 
     public function getQueryResolver(): QueryResolver
@@ -46,9 +48,9 @@ class MetadataDownloader
         return $this->queryResolver;
     }
 
-    public function getOnFiveHundred(): ?callable
+    public function getMaximumRecordsHandler(): MaximumRecordsHandler
     {
-        return $this->onFiveHundred;
+        return $this->maximumRecordsHandler;
     }
 
     /**
@@ -62,7 +64,7 @@ class MetadataDownloader
         $uuids = array_keys(array_change_key_case(array_flip($uuids), CASE_LOWER));
         $result = new MetadataList([]);
         foreach ($uuids as $uuid) {
-            $uuidResult = $this->downloadByUuid($uuid, $downloadType);
+            $uuidResult = $this->downloadByUuid(new UuidOption($uuid), $downloadType);
             $result = $result->merge($uuidResult);
         }
 
@@ -70,14 +72,14 @@ class MetadataDownloader
     }
 
     /**
-     * @param string $uuid
+     * @param UuidOption $uuid
      * @param DownloadType $downloadType
      * @return MetadataList
      * @throws SatHttpGatewayException
      */
-    public function downloadByUuid(string $uuid, DownloadType $downloadType): MetadataList
+    public function downloadByUuid(UuidOption $uuid, DownloadType $downloadType): MetadataList
     {
-        $query = new QueryByUuid(new UuidOption($uuid), $downloadType);
+        $query = new QueryByUuid($uuid, $downloadType);
         return $this->resolveQuery($query);
     }
 
@@ -156,7 +158,7 @@ class MetadataDownloader
     {
         return (clone $query)->setPeriod(
             $this->buildDateWithDayAndSeconds($query->getStartDate(), $startSec),
-            $this->buildDateWithDayAndSeconds($query->getEndDate(), $endSec)
+            $this->buildDateWithDayAndSeconds($query->getEndDate(), $endSec),
         );
     }
 
@@ -179,10 +181,7 @@ class MetadataDownloader
 
     public function raiseOnLimit(DateTimeImmutable $date): void
     {
-        if (null === $this->onFiveHundred) {
-            return;
-        }
-        call_user_func($this->onFiveHundred, $date);
+        $this->maximumRecordsHandler->handle($date);
     }
 
     public function createInputsFromQuery(QueryInterface $query): InputsInterface
@@ -200,12 +199,12 @@ class MetadataDownloader
     }
 
     /**
-     * Generates a clone of this query splitted by day
+     * Generates a clone of this query split by day
      *
      * @param QueryByFilters $query
      * @return Generator<QueryByFilters>
      */
-    public function splitQueryByFiltersByDays(QueryByFilters $query)
+    public function splitQueryByFiltersByDays(QueryByFilters $query): Generator
     {
         $endDate = $query->getEndDate();
         for ($date = $query->getStartDate(); $date <= $endDate; $date = $date->modify('midnight +1 day')) {

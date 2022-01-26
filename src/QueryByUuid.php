@@ -40,7 +40,6 @@ class QueryByUuid implements QueryInterface
         return $this;
     }
 
-    /** @return UuidOption */
     final public function getUuid(): UuidOption
     {
         return $this->uuid;

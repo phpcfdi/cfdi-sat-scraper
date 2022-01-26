@@ -21,8 +21,9 @@ composer require phpcfdi/cfdi-sat-scraper
 
 ## Funcionamiento
 
-El servicio de descarga de CFDI del SAT que se encuentra en <https://portalcfdi.facturaelectronica.sat.gob.mx/>
-requiere identificarse con RFC, Clave CIEC y de la resolución de un *captcha*.
+El servicio de descarga de CFDI del SAT que se encuentra en la dirección <https://portalcfdi.facturaelectronica.sat.gob.mx/>,
+requiere identificarse con RFC, Clave CIEC y de la resolución de un *captcha*,
+o bien, utilizando el certificado y llave privada FIEL.
 
 Una vez dentro del sitio se pueden consultar facturas emitidas y facturas recibidas. Ya sea por UUID o por filtro.
 
@@ -98,16 +99,43 @@ de enviar a procesarla.
 
 Esta librería está basada en [Guzzle](https://github.com/guzzle/guzzle), por lo que puedes configurar el cliente
 a tus propias necesidades como configurar un proxy o depurar las llamadas HTTP.
-Gracias a esta librería podemos ofrecer descargas simultáneas de XML.
+Gracias a esta librería podemos ofrecer descargas simultáneas de XML y hacer el proceso de comunicación mucho
+más veloz que si se estuviera utilizando un navegador completo.
 
-No contamos con un método propio para resolver captchas, pero se puede utilizar un servicio externo como
-[*DeCaptcher*](https://de-captcher.com/) o [*Anti-Captcha*](https://anti-captcha.com). Para testeo puedes
-usar [`eclipxe/captcha-local-resolver](https://github.com/eclipxe13/captcha-local-resolver) donde tú mismo
-serás el que resuelve los captchas, las tres implementaciones están creadas.
+## Autenticación
 
-Si cuentas con un servicio diferente solo debes implementar la interfaz `CaptchaResolverInterface`.
-Aceptamos PR de nuevas implementaciones. La recomendación es crear un paquete diferente que permita
-conectarse con un servicio externo, por ejemplo: `tu-vendor/cfdi-sat-scraper-mi-servicio-captcha-resolver`.
+Esta librería permite identificarse ante el SAT utilizando alguno de dos mecanismos: Clave CIEC o FIEL.
+
+### Autenticación por FIEL
+
+Para identificarse utilizando la FIEL se necesita usar el manejador de sesiones `FielSessionManager`,
+con el respectivo certificado, llave privada y contraseña de la llave privada.
+
+La ventaja de este método es que no requiere de un resolvedor de captchas.
+La desventaja es que es riesgoso trabajar con la FIEL.
+
+Advertencia: No utilice este mecanismo a menos que se trate de su propia FIEL.
+La FIEL en México está regulada por la "Ley de Firma Electrónica Avanzada".
+Su uso es extenso y no está limitado al SAT, con ella se pueden realizar múltiples operaciones legales.
+En PhpCfdi no recomendamos que almacene o use la FIEL de terceras personas.
+
+### Autenticación por clave CIEC
+
+Para identificarse utilizando la clave CIEC se necesita usar el manejador de sesiones `CiecSessionManager`,
+con los datos de RFC, Clave CIEC y un resolvedor de captchas.
+
+La ventaja de este método es que no se requiere la FIEL.
+La desventaja es que se requiere un resolvedor de captchas.
+
+No contamos con un método propio para resolver los captchas, pero se puede utilizar un servicio externo como
+[*Anti-Captcha*](https://anti-captcha.com). Para testeo o implementaciones locales puedes
+usar [`eclipxe/captcha-local-resolver](https://github.com/eclipxe13/captcha-local-resolver)
+donde tú mismo serás el que resuelve los captchas, las tres implementaciones están creadas.
+
+La resolución de captchas se realiza a través de la librería de resolución de captchas
+[`phpcfdi/image-captcha-resolver`](https://github.com/phpcfdi/image-captcha-resolver).
+Si estás usando un servicio que no está implementado puedes revisar la documentación
+de este proyecto e integrar el servicio dentro de los clientes soportados.
 
 ## Ejemplo de elaboración de consulta
 
@@ -135,14 +163,14 @@ $query
 ```php
 <?php declare(strict_types=1);
 
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
+use PhpCfdi\ImageCaptchaResolver\CaptchaResolverInterface;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+$satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
 
 $query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->listByPeriod($query);
@@ -169,13 +197,13 @@ echo json_encode($downloadedUuids);
 ```php
 <?php declare(strict_types=1);
 
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
+use PhpCfdi\ImageCaptchaResolver\CaptchaResolverInterface;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+$satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
 
 $uuids = [
     '5cc88a1a-8672-11e6-ae22-56b6b6499611',
@@ -189,8 +217,12 @@ echo json_encode($list);
 ## Aviso de que existen más de 500 comprobantes en un mismo segundo
 
 El servicio ofrecido por el SAT tiene límites, entre ellos, no se pueden obtener más de 500 registros
-en un rango de fechas. Esta librería trata de reducir el rango para obtener todos los datos, sin embargo,
-si se presenta este caso, entonces se puede invocar una función que le puede ayudar a considerar este escenario.
+en un rango de fechas. Esta librería trata de reducir el rango hasta el mínimo de una consulta en un segundo
+para obtener todos los datos, sin embargo, si se presenta este caso, entonces se puede invocar a un manejador
+que le puede ayudar a registrar este escenario.
+
+Si al crear el objeto `SatScraper` no se establece un manejador o se establece como `null` entonces se usará
+una instancia de `NullMaximumRecordsHandler` que, como su nombre lo indica, no realiza ninguna acción.
 
 ```php
 <?php declare(strict_types=1);
@@ -198,19 +230,22 @@ si se presenta este caso, entonces se puede invocar una función que le puede ay
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 
-// define onFiveHundred callback
-$onFiveHundred = function (DateTimeImmutable $date) {
-    echo 'Se encontraron más de 500 CFDI en el segundo: ', $date->format('c'), PHP_EOL;
+// define handler
+$handler = new class () implements MaximumRecordsHandler {
+    public function handle(DateTimeImmutable $date): void
+    {
+        echo 'Se encontraron más de 500 CFDI en el segundo: ', $date->format('c'), PHP_EOL;
+    }
 };
 
-// create scraper using the callback
+// create scraper using the handler
 /**
- * @var SatSessionData $sessionData
+ * @var SessionManager $sessionManager
  * @var SatHttpGateway $httpGateway
  */
-$satScraper = new SatScraper($sessionData, $httpGateway, $onFiveHundred);
+$satScraper = new SatScraper($sessionManager, $httpGateway, $handler);
 
 $query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->listByPeriod($query);
@@ -226,14 +261,14 @@ Si ocurrió un error con alguna de las descargas dicho error será ignorado.
 ```php
 <?php declare(strict_types=1);
 
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
+use PhpCfdi\ImageCaptchaResolver\CaptchaResolverInterface;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+$satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
 
 $query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 $list = $satScraper->listByPeriod($query);
@@ -270,7 +305,6 @@ de la interfaz `ResourceDownloadHandlerInterface`.
 ```php
 <?php declare(strict_types=1);
 
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Contracts\ResourceDownloadHandlerInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\ResourceDownloadError;
 use PhpCfdi\CfdiSatScraper\Exceptions\ResourceDownloadResponseError;
@@ -278,11 +312,12 @@ use PhpCfdi\CfdiSatScraper\Exceptions\ResourceDownloadRequestExceptionError;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
+use PhpCfdi\ImageCaptchaResolver\CaptchaResolverInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+$satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
 
 $query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
 
@@ -316,33 +351,18 @@ $downloadedUuids = $satScraper->resourceDownloader(ResourceType::xml(), $list)->
 echo json_encode($downloadedUuids);
 ```
 
-## Usar el servicio *De-Captcher*
-
-```php
-<?php declare(strict_types=1);
-
-use GuzzleHttp\Client;
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
-
-$captchaResolver = new DeCaptcherCaptchaResolver(new Client(), 'decaptcher-user', 'decaptcher-password');
-
-$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
-```
-
 ## Usar el servicio *Anti-Captcha*
 
 ```php
 <?php declare(strict_types=1);
 
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\AntiCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
+use PhpCfdi\ImageCaptchaResolver\Resolvers\AntiCaptchaResolver;
 
 $captchaResolver = AntiCaptchaResolver::create('anticaptcha-client-key');
 
-$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+$satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
 ```
 
 ## Verificar datos de autenticación sin hacer una consulta
@@ -357,13 +377,13 @@ Se hacen los dos pasos para evitar consumir el servicio de resolución de captch
 ```php
 <?php declare(strict_types=1);
 
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
+use PhpCfdi\ImageCaptchaResolver\CaptchaResolverInterface;
 
 /** @var CaptchaResolverInterface $captchaResolver */
-$satScraper = new SatScraper(new SatSessionData('rfc', 'ciec', $captchaResolver));
+$satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
 try {
     $satScraper->confirmSessionIsAlive();
 } catch (LoginException $exception) {
@@ -372,13 +392,41 @@ try {
 }
 ```
 
+## Ejemplo de autenticación con FIEL
+
+El siguiente ejemplo utiliza una FIEL donde los archivos de certificado y llave privada están cargados
+en memoria y se encuentran vigentes. Puede obtener más información de cómo formar la credencial en
+el proyecto [`phpcfdi/credentials`](https://github.com/phpcfdi/credentials).
+
+```php
+<?php declare(strict_types=1);
+
+use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\Sessions\Fiel\FielSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\Fiel\FielSessionData;
+use PhpCfdi\Credentials\Credential;
+
+/**
+ * @var string $certificate Contenido del certificado
+ * @var string $privateKey Contenido de la llave privada
+ * @var string $passPhrase Contraseña de la llave privada
+ */
+
+// crear la credencial
+$credential = Credential::create($certificate, $privateKey, $passPhrase);
+
+// crear el objeto scraper usando la FIEL
+$satScraper = new SatScraper(FielSessionManager::create($credential));
+```
+
 ## Quitar la verificación de certificados del SAT
 
 En caso de que los certificados del SAT usados en HTTPS fallen, podría desactivar la verificación de los mismos.
 Esto se puede lograr creando el cliente de Guzzle con la negación de la opción `verify`.
 
 No es una práctica recomendada, pero tal vez necesaria ante los problemas a los que el SAT se ve expuesto.
-Considera que esto podría facilitar significativamente un ataque (*man in the middle*) que provoque que la pérdida de su clave CIEC.
+Considera que esto podría facilitar significativamente un ataque (*man in the middle*)
+que provoque que la pérdida de su clave CIEC.
 
 **Nota: No recomendamos esta práctica, solamente la exponemos por las constantes fallas que presenta el SAT.**
 
@@ -388,15 +436,15 @@ use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 
 $insecureClient = new Client([
     RequestOptions::VERIFY => false
 ]);
 $gateway = new SatHttpGateway($insecureClient);
 
-/** @var SatSessionData $sessionData */
-$scraper = new SatScraper($sessionData, $gateway);
+/** @var SessionManager $sessionManager */
+$scraper = new SatScraper($sessionManager, $gateway);
 ```
 
 ## Compatibilidad
@@ -407,6 +455,8 @@ Esta librería se mantendrá compatible con al menos la versión con
 También utilizamos [Versionado Semántico 2.0.0](docs/SEMVER.md) por lo que puedes usar esta librería
 sin temor a romper tu aplicación.
 
+Consulta la [guía de actualización de la versión `2.x` a la versión `3.x`](docs/UPGRADE-2-3.md).
+
 ## Contribuciones
 
 Las contribuciones con bienvenidas. Por favor lee [CONTRIBUTING][] para más detalles
@@ -415,9 +465,8 @@ y recuerda revisar el archivo de tareas pendientes [TODO][] y el archivo [CHANGE
 Documentación de desarrollo:
 
 - [Guía de contribuciones](CONTRIBUTING.md)
-- [Entorno de desarrollo](develop/docs/EntornoDesarrollo.md)
-- [Integración contínua](develop/docs/IntegracionContinua.md)
-- [Test de integración](develop/docs/TestIntegracion.md)
+- [Entorno de desarrollo](develop/EntornoDesarrollo.md)
+- [Test de integración](develop/TestIntegracion.md)
 
 ## Copyright and License
 

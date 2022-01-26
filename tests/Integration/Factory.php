@@ -1,7 +1,4 @@
 <?php
-/**
- * @noinspection PhpUnhandledExceptionInspection
- */
 
 declare(strict_types=1);
 
@@ -11,15 +8,19 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\FileCookieJar;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\AntiCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\ConsoleCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\DeCaptcherCaptchaResolver;
-use PhpCfdi\CfdiSatScraper\Contracts\CaptchaResolverInterface;
+use LogicException;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\SatSessionData;
-use PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver\CaptchaLocalResolver;
-use PhpCfdi\CfdiSatScraper\Tests\CaptchaLocalResolver\CaptchaLocalResolverClient;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\Fiel\FielSessionData;
+use PhpCfdi\CfdiSatScraper\Sessions\Fiel\FielSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
+use PhpCfdi\Credentials\Credential;
+use PhpCfdi\ImageCaptchaResolver\CaptchaResolverInterface;
+use PhpCfdi\ImageCaptchaResolver\Resolvers\AntiCaptchaResolver;
+use PhpCfdi\ImageCaptchaResolver\Resolvers\CaptchaLocalResolver;
+use PhpCfdi\ImageCaptchaResolver\Resolvers\ConsoleResolver;
 use RuntimeException;
 
 class Factory
@@ -38,74 +39,105 @@ class Factory
         $this->repositoryPath = $repositoryPath;
     }
 
-    public static function createCaptchaResolver(): CaptchaResolverInterface
+    public function createCaptchaResolver(): CaptchaResolverInterface
     {
-        $resolver = strval(getenv('CAPTCHA_RESOLVER'));
+        $resolver = $this->env('CAPTCHA_RESOLVER');
 
         if ('console' === $resolver) {
-            return new ConsoleCaptchaResolver();
+            return new ConsoleResolver();
         }
 
         if ('local' === $resolver) {
-            return new CaptchaLocalResolver(
-                new CaptchaLocalResolverClient(
-                    strval(getenv('CAPTCHA_LOCAL_HOST')),
-                    intval(getenv('CAPTCHA_LOCAL_PORT')),
-                    intval(getenv('CAPTCHA_LOCAL_TIMEOUT')),
-                    new Client()
-                )
-            );
-        }
-
-        if ('decaptcher' === $resolver) {
-            return new DeCaptcherCaptchaResolver(
-                new Client(),
-                strval(getenv('DECAPTCHER_USERNAME')),
-                strval(getenv('DECAPTCHER_PASSWORD'))
+            return CaptchaLocalResolver::create(
+                $this->env('CAPTCHA_LOCAL_URL'),
+                intval($this->env('CAPTCHA_LOCAL_INITIAL_WAIT')) ?: CaptchaLocalResolver::DEFAULT_INITIAL_WAIT,
+                intval($this->env('CAPTCHA_LOCAL_TIMEOUT')) ?: CaptchaLocalResolver::DEFAULT_TIMEOUT,
+                intval($this->env('CAPTCHA_LOCAL_WAIT')) ?: CaptchaLocalResolver::DEFAULT_WAIT,
             );
         }
 
         if ('anticaptcha' === $resolver) {
             return AntiCaptchaResolver::create(
-                strval(getenv('ANTICAPTCHA_CLIENT_KEY')),
-                new Client(),
-                intval(getenv('ANTICAPTCHA_CLIENT_TIMEOUT'))
+                $this->env('ANTICAPTCHA_CLIENT_KEY'),
+                intval($this->env('ANTICAPTCHA_INITIAL_WAIT')) ?: AntiCaptchaResolver::DEFAULT_INITIAL_WAIT,
+                intval($this->env('ANTICAPTCHA_TIMEOUT')) ?: AntiCaptchaResolver::DEFAULT_TIMEOUT,
+                intval($this->env('ANTICAPTCHA_WAIT')) ?: AntiCaptchaResolver::DEFAULT_WAIT,
             );
         }
 
         throw new RuntimeException('Unable to create resolver');
     }
 
-    /** @noinspection PhpUnhandledExceptionInspection */
-    public function createSatSessionData(): SatSessionData
+    public function createSessionManager(): SessionManager
     {
-        $rfc = strval(getenv('SAT_AUTH_RFC'));
+        $satAuthMode = $this->env('SAT_AUTH_MODE');
+        if ('FIEL' === $satAuthMode) {
+            return $this->createFielSessionManager();
+        }
+        if ('CIEC' === $satAuthMode) {
+            return $this->createCiecSessionManager();
+        }
+        throw new LogicException("Unable to create a session manager using SAT_AUTHMODE='$satAuthMode'");
+    }
+
+    public function createFielSessionManager(): FielSessionManager
+    {
+        return new FielSessionManager($this->createFielSessionData());
+    }
+
+    public function createFielSessionData(): FielSessionData
+    {
+        $fiel = Credential::openFiles(
+            $this->path($this->env('SAT_FIEL_CER')),
+            $this->path($this->env('SAT_FIEL_KEY')),
+            file_get_contents($this->path($this->env('SAT_FIEL_PWD'))) ?: '',
+        );
+        if (! $fiel->isFiel()) {
+            throw new LogicException('The CERTIFICATE is not a FIEL');
+        }
+        if (! $fiel->certificate()->validOn()) {
+            throw new LogicException('The CERTIFICATE is not valid');
+        }
+
+        return new FielSessionData($fiel);
+    }
+
+    public function createCiecSessionManager(): CiecSessionManager
+    {
+        return new CiecSessionManager($this->createCiecSessionData());
+    }
+
+    public function createCiecSessionData(): CiecSessionData
+    {
+        $rfc = $this->env('SAT_AUTH_RFC');
         if ('' === $rfc) {
             throw new RuntimeException('The is no environment variable SAT_AUTH_RFC');
         }
 
-        $ciec = strval(getenv('SAT_AUTH_CIEC'));
+        $ciec = $this->env('SAT_AUTH_CIEC');
         if ('' === $ciec) {
             throw new RuntimeException('The is no environment variable SAT_AUTH_CIEC');
         }
 
-        $resolver = static::createCaptchaResolver();
+        $resolver = $this->createCaptchaResolver();
 
-        return new SatSessionData($rfc, $ciec, $resolver);
+        return new CiecSessionData($rfc, $ciec, $resolver);
     }
 
-    public function createSatScraper(): SatScraper
+    public function createSatScraper(?SessionManager $sessionManager = null): SatScraper
     {
-        $sessionData = $this->createSatSessionData();
-        $cookieFile = __DIR__ . '/../../build/cookie-' . strtolower($sessionData->getRfc()) . '.json';
+        $sessionManager = $sessionManager ?? $this->createSessionManager();
+        $suffix = basename(str_replace(['\\', 'sessionmanager'], ['/', ''], strtolower(get_class($sessionManager))));
+        $rfc = strtolower($sessionManager->getRfc());
+        $cookieFile = sprintf('%s/%s/cookie-%s-%s.json', __DIR__, '../../build', $rfc, $suffix);
         $cookieJar = new FileCookieJar($cookieFile, true);
         $satHttpGateway = new SatHttpGateway($this->createGuzzleClient(), $cookieJar);
-        return new SatScraper($sessionData, $satHttpGateway);
+        return new SatScraper($sessionManager, $satHttpGateway);
     }
 
     public function createGuzzleClient(): Client
     {
-        $container = new HttpLogger(strval(getenv('SAT_HTTPDUMP_FOLDER')));
+        $container = new HttpLogger($this->path($this->env('SAT_HTTPDUMP_FOLDER')));
         $stack = HandlerStack::create();
         $stack->push(Middleware::history($container));
         return new Client(['handler' => $stack]);
@@ -133,5 +165,19 @@ class Factory
             $this->repository = $this->createRepository($this->repositoryPath);
         }
         return $this->repository;
+    }
+
+    public function env(string $variable): string
+    {
+        return strval($_SERVER[$variable] ?? '');
+    }
+
+    public function path(string $path): string
+    {
+        // if is not empty and is not an absolute path, prepend project dir
+        if ('' !== $path && ! in_array(substr($path, 0, 1), ['/', '\\'], true)) {
+            $path = dirname(__DIR__, 2) . '/' . $path;
+        }
+        return $path;
     }
 }

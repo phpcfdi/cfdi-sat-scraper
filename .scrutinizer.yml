@@ -1,18 +1,21 @@
 filter:
   excluded_paths:
     - 'tests/'
+  dependency_paths:
+    - 'tools/'
     - 'vendor/'
 
 build:
   dependencies:
     override:
-      - composer upgrade --no-interaction --prefer-dist
+      - composer update --no-interaction --prefer-dist
   nodes:
     analysis: # see https://scrutinizer-ci.com/docs/tools/php/php-scrutinizer/
-      project_setup: { override: true }
+      project_setup: {override: true}
       tests:
         override:
           - php-scrutinizer-run --enable-security-analysis
-
-tools:
-  external_code_coverage: true
+          - command: vendor/bin/phpunit --verbose --testdox --coverage-clover=coverage.clover
+            coverage:
+              file: coverage.clover
+              format: clover

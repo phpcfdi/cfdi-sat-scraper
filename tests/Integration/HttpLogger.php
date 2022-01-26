@@ -1,19 +1,17 @@
 <?php
-/**
- * @noinspection PhpUnhandledExceptionInspection
- */
 
 declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 
+use ArrayAccess;
 use ArrayObject;
 use DateTimeImmutable;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * @extends ArrayObject<int, array>
+ * @extends ArrayObject<int|string, mixed>
  */
 class HttpLogger extends ArrayObject
 {
@@ -23,17 +21,9 @@ class HttpLogger extends ArrayObject
     public function __construct(string $destinationDir)
     {
         parent::__construct();
-        // if is not empty and is not an absolute path, prepend project dir
-        if ('' !== $destinationDir && ! in_array(substr($destinationDir, 0, 1), ['/', '\\'], true)) {
-            $destinationDir = dirname(__DIR__, 3) . '/' . $destinationDir;
-        }
         $this->destinationDir = $destinationDir;
     }
 
-    /**
-     * @inheritDoc
-     * @param mixed $value
-     */
     public function append($value): void
     {
         $this->write($value);
@@ -42,7 +32,6 @@ class HttpLogger extends ArrayObject
 
     /**
      * @param int|string|null $index
-     * @param mixed $entry
      * @noinspection PhpParameterNameChangedDuringInheritanceInspection
      */
     public function offsetSet($index, $entry): void
@@ -53,12 +42,10 @@ class HttpLogger extends ArrayObject
         parent::offsetSet($index, $entry);
     }
 
-    /**
-     * @param mixed $entry
-     */
+    /** @param mixed $entry */
     public function write($entry): void
     {
-        if (! is_array($entry)) {
+        if (! is_array($entry) && ! $entry instanceof ArrayAccess) {
             return;
         }
         if ('' === $this->destinationDir) {
@@ -69,7 +56,7 @@ class HttpLogger extends ArrayObject
         }
         /** @var RequestInterface $request */
         $request = $entry['request'];
-        /** @var ResponseInterface $response */
+        /** @var ResponseInterface|null $response */
         $response = $entry['response'];
         $time = new DateTimeImmutable();
         $file = sprintf(
@@ -78,7 +65,7 @@ class HttpLogger extends ArrayObject
             $time->format('c'),
             $time->format('u'),
             strtolower($request->getMethod()),
-            $this->slugify(sprintf('%s%s', $request->getUri()->getHost(), $request->getUri()->getPath()))
+            $this->slugify(sprintf('%s%s', $request->getUri()->getHost(), $request->getUri()->getPath())),
         );
         file_put_contents($file, $this->entryToJson($request, $response), FILE_APPEND);
     }
@@ -93,11 +80,11 @@ class HttpLogger extends ArrayObject
         $text = (string) preg_replace('~[^\w\-]+~', '', $text);
         // replace consecutive dashes to only one
         $text = (string) preg_replace('~-+~', '-', $text);
-        // final result with timmed dash and lowercase
+        // final result with trimmed dash and lowercase
         return strtolower(trim($text, '-'));
     }
 
-    public function entryToJson(RequestInterface $request, ResponseInterface $response): string
+    public function entryToJson(RequestInterface $request, ?ResponseInterface $response): string
     {
         $json = json_encode(
             [
@@ -106,15 +93,18 @@ class HttpLogger extends ArrayObject
                     'headers' => $request->getHeaders(),
                     'body' => $this->bodyToVars((string) $request->getBody()),
                 ],
-                'response' => [
+                'response' => ($response) ? [
+                    'code' => $response->getStatusCode(),
                     'headers' => $response->getHeaders(),
-                    'body' => $this->bodyToVars((string) $request->getBody()),
-                ],
+                    'body' => (string) $response->getBody(),
+                ] : '(no response)',
             ],
-            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_LINE_TERMINATORS
+            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_LINE_TERMINATORS,
         ) . PHP_EOL;
         $request->getBody()->rewind();
-        $response->getBody()->rewind();
+        if (null !== $response) {
+            $response->getBody()->rewind();
+        }
         return $json;
     }
 

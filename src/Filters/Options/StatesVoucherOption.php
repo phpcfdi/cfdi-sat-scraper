@@ -8,7 +8,7 @@ use Eclipxe\Enum\Enum;
 use PhpCfdi\CfdiSatScraper\Contracts\FilterOption;
 
 /**
- * voucher state option enumerator: todos, cancelados & vigentes.
+ * Voucher state option enumerator: todos, cancelados & vigentes.
  *
  * @method static self todos()
  * @method static self cancelados()
@@ -18,7 +18,7 @@ use PhpCfdi\CfdiSatScraper\Contracts\FilterOption;
  * @method bool isCancelados()
  * @method bool isVigentes()
  */
-class StatesVoucherOption extends Enum implements FilterOption
+final class StatesVoucherOption extends Enum implements FilterOption
 {
     /** @noinspection PhpMissingParentCallCommonInspection */
     protected static function overrideValues(): array

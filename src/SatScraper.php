@@ -4,62 +4,72 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
-use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
-use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
+use PhpCfdi\CfdiSatScraper\Contracts\MaximumRecordsHandler;
+use PhpCfdi\CfdiSatScraper\Contracts\SatScraperInterface;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
+use PhpCfdi\CfdiSatScraper\Internal\NullMaximumRecordsHandler;
 use PhpCfdi\CfdiSatScraper\Internal\QueryResolver;
-use PhpCfdi\CfdiSatScraper\Internal\SatSessionManager;
+use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 
-class SatScraper
+class SatScraper implements SatScraperInterface
 {
-    /** @var SatSessionData */
-    private $satSessionData;
-
-    /** @var callable|null */
-    protected $onFiveHundred;
+    /** @var SessionManager */
+    private $sessionManager;
 
     /** @var SatHttpGateway */
     private $satHttpGateway;
 
+    /** @var MaximumRecordsHandler */
+    protected $maximumRecordsHandler;
+
     /**
      * SatScraper constructor.
      *
-     * @param SatSessionData $sessionData
+     * @param SessionManager $sessionManager
      * @param SatHttpGateway|null $satHttpGateway
-     * @param callable|null $onFiveHundred
+     * @param MaximumRecordsHandler|null $maximumRecordsHandler
      */
     public function __construct(
-        SatSessionData $sessionData,
+        SessionManager $sessionManager,
         ?SatHttpGateway $satHttpGateway = null,
-        ?callable $onFiveHundred = null
+        ?MaximumRecordsHandler $maximumRecordsHandler = null
     ) {
+        $this->sessionManager = $sessionManager;
         $this->satHttpGateway = $satHttpGateway ?? $this->createDefaultSatHttpGateway();
-        $this->satSessionData = $sessionData;
-        $this->onFiveHundred = $onFiveHundred;
+        $this->maximumRecordsHandler = $maximumRecordsHandler ?? new NullMaximumRecordsHandler();
     }
 
     /**
-     * Create a new configured instance of MetadataDownloader.
-     * Is a protected method because is not intended to be used from the outside.
+     * Method factory to create a MetadataDownloader
      *
-     * @return MetadataDownloader
      * @internal
      */
-    public function metadataDownloader(): MetadataDownloader
+    protected function createMetadataDownloader(): MetadataDownloader
     {
-        return new MetadataDownloader($this->createQueryResolver(), $this->onFiveHundred);
+        return new MetadataDownloader($this->createQueryResolver(), $this->maximumRecordsHandler);
     }
 
     /**
-     * Create a ResourceDownloader object with (optionally) a MetadataList.
-     * The ResourceDownloader object can be used to retrieve the CFDI XML contents.
+     * Method factory to create a SatHttpGateway
      *
-     * @param ResourceType|null $resourceType
-     * @param MetadataList|null $metadataList
-     * @param int $concurrency
-     * @return ResourceDownloader
+     * @internal
      */
+    protected function createDefaultSatHttpGateway(): SatHttpGateway
+    {
+        return new SatHttpGateway();
+    }
+
+    /**
+     * Method factory to create a QueryResolver
+     *
+     * @internal
+     */
+    protected function createQueryResolver(): QueryResolver
+    {
+        return new QueryResolver($this->satHttpGateway);
+    }
+
     public function resourceDownloader(
         ResourceType $resourceType = null,
         ?MetadataList $metadataList = null,
@@ -69,98 +79,40 @@ class SatScraper
         return new ResourceDownloader($this->satHttpGateway, $resourceType, $metadataList, $concurrency);
     }
 
-    /**
-     * Method factory to create a SatHttpGateway
-     *
-     * @internal
-     * @return SatHttpGateway
-     */
-    protected function createDefaultSatHttpGateway(): SatHttpGateway
-    {
-        return new SatHttpGateway();
-    }
-
-    /**
-     * Method factory to create a SatSessionManager
-     *
-     * @internal
-     * @return SatSessionManager
-     */
-    protected function createSessionManager(): SatSessionManager
-    {
-        return new SatSessionManager($this->satSessionData, $this->getSatHttpGateway());
-    }
-
-    /**
-     * Method factory to create a QueryResolver
-     *
-     * @internal
-     * @return QueryResolver
-     */
-    protected function createQueryResolver(): QueryResolver
-    {
-        return new QueryResolver($this->satHttpGateway);
-    }
-
-    /**
-     * Initializates session on SAT
-     *
-     * @return SatScraper
-     * @throws LoginException if session is not alive
-     */
     public function confirmSessionIsAlive(): self
     {
-        $this->createSessionManager()->initSession();
+        $sessionManager = $this->getSessionManager();
+        $sessionManager->setHttpGateway($this->getSatHttpGateway());
+
+        if (! $sessionManager->hasLogin()) {
+            $sessionManager->login();
+        }
+        $sessionManager->accessPortalMainPage();
 
         return $this;
     }
 
-    /**
-     * Retrieve the MetadataList using specific UUIDS to download
-     *
-     * @param string[] $uuids
-     * @param DownloadType $downloadType
-     * @return MetadataList
-     * @throws LoginException
-     * @throws SatHttpGatewayException
-     */
     public function listByUuids(array $uuids, DownloadType $downloadType): MetadataList
     {
         $this->confirmSessionIsAlive();
-        return $this->metadataDownloader()->downloadByUuids($uuids, $downloadType);
+        return $this->createMetadataDownloader()->downloadByUuids($uuids, $downloadType);
     }
 
-    /**
-     * Retrieve the MetadataList based on the query, but uses full days on dates (without time parts)
-     *
-     * @param QueryByFilters $query
-     * @return MetadataList
-     * @throws LoginException
-     * @throws SatHttpGatewayException
-     */
     public function listByPeriod(QueryByFilters $query): MetadataList
     {
         $this->confirmSessionIsAlive();
-        return $this->metadataDownloader()->downloadByDate($query);
+        return $this->createMetadataDownloader()->downloadByDate($query);
     }
 
-    /**
-     * Retrieve the MetadataList based on the query, but uses the period considering dates and times
-     *
-     * @param QueryByFilters $query
-     * @return MetadataList
-     * @throws LoginException
-     * @throws SatHttpGatewayException
-     */
     public function listByDateTime(QueryByFilters $query): MetadataList
     {
         $this->confirmSessionIsAlive();
-        return $this->metadataDownloader()->downloadByDateTime($query);
+        return $this->createMetadataDownloader()->downloadByDateTime($query);
     }
 
-    public function getSatSessionData(): SatSessionData
+    public function getSessionManager(): SessionManager
     {
-        return $this->satSessionData;
+        return $this->sessionManager;
     }
 
     public function getSatHttpGateway(): SatHttpGateway
@@ -168,8 +120,8 @@ class SatScraper
         return $this->satHttpGateway;
     }
 
-    public function getOnFiveHundred(): ?callable
+    public function getMaximumRecordsHandler(): MaximumRecordsHandler
     {
-        return $this->onFiveHundred;
+        return $this->maximumRecordsHandler;
     }
 }

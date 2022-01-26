@@ -33,19 +33,19 @@
     "require": {
         "php": ">=7.3",
         "ext-curl": "*",
-        "ext-libxml": "*",
-        "ext-simplexml": "*",
         "ext-dom": "*",
         "ext-json": "*",
-        "ext-filter": "*",
         "ext-fileinfo": "*",
+        "ext-openssl": "*",
         "psr/http-message": "^1.0",
         "guzzlehttp/guzzle": "^7.0",
         "guzzlehttp/promises": "^1.3",
         "symfony/dom-crawler": "^5.1",
         "symfony/css-selector": "^5.1",
         "eclipxe/enum": "^0.2.0",
-        "eclipxe/micro-catalog": "^0.1.2"
+        "eclipxe/micro-catalog": "^0.1.2",
+        "phpcfdi/credentials": "^1.1",
+        "phpcfdi/image-captcha-resolver": "^0.2.0"
     },
     "require-dev": {
         "ext-iconv": "*",
@@ -54,9 +54,6 @@
         "fakerphp/faker": "^1.13"
     },
     "scripts": {
-        "dev:install": [
-            "bash develop/install-development-tools"
-        ],
         "dev:build": [
             "@dev:fix-style",
             "@dev:tests"
@@ -76,7 +73,6 @@
         ]
     },
     "scripts-descriptions": {
-        "dev:install": "DEV: install development tools into tools/",
         "dev:build": "DEV: run dev:fix-style and dev:tests, run before pull request",
         "dev:check-style": "DEV: search for code style errors using php-cs-fixer and phpcs",
         "dev:fix-style": "DEV: fix code style errors using php-cs-fixer and phpcbf",

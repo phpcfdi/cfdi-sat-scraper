@@ -12,6 +12,8 @@ use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
+ * Parses a web page to obtain all the Metadata records on it.
+ *
  * @internal
  */
 class MetadataExtractor
@@ -36,7 +38,7 @@ class MetadataExtractor
             return new MetadataList([]);
         }
 
-        // first tr is the only expected to have the th elements
+        // first row is the only expected to have the th elements
         $fieldsPositions = $this->locateFieldsPositions($rows->first(), $fieldsCaptions);
 
         // slice first row (headers), build data array as a collection of metadata
@@ -51,7 +53,7 @@ class MetadataExtractor
                 $metadata[ResourceType::cancelRequest()->value()] = $this->obtainUrlCancelRequest($row);
                 $metadata[ResourceType::cancelVoucher()->value()] = $this->obtainUrlCancelVoucher($row);
                 return new Metadata($metadata['uuid'], $metadata);
-            }
+            },
         );
 
         // build metadata using uuid as key
@@ -91,7 +93,7 @@ class MetadataExtractor
             $headerCells = $headersRow->children()->each(
                 function (Crawler $cell) {
                     return trim($cell->text());
-                }
+                },
             );
         } catch (RuntimeException $exception) {
             return [];
@@ -134,8 +136,8 @@ class MetadataExtractor
         $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnDescarga');
         return str_replace(
             ["return AccionCfdi('", "','Recuperacion');"],
-            [URLS::SAT_URL_PORTAL_CFDI, ''],
-            $onClickAttribute
+            [URLS::PORTAL_CFDI, ''],
+            $onClickAttribute,
         );
     }
 
@@ -144,8 +146,8 @@ class MetadataExtractor
         $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnRI');
         return str_replace(
             ["recuperaRepresentacionImpresa('", "');"],
-            [URLS::SAT_URL_PORTAL_CFDI . 'RepresentacionImpresa.aspx?Datos=', ''],
-            $onClickAttribute
+            [URLS::PORTAL_CFDI . 'RepresentacionImpresa.aspx?Datos=', ''],
+            $onClickAttribute,
         );
     }
 
@@ -154,8 +156,8 @@ class MetadataExtractor
         $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnRecuperaAcuse');
         return str_replace(
             ["AccionCfdi('", "','Acuse');"],
-            [URLS::SAT_URL_PORTAL_CFDI, ''],
-            $onClickAttribute
+            [URLS::PORTAL_CFDI, ''],
+            $onClickAttribute,
         );
     }
 
@@ -165,8 +167,8 @@ class MetadataExtractor
         // change javascript call and replace it with complete url
         return str_replace(
             ["javascript:window.location.href='", "';"],
-            [URLS::SAT_URL_PORTAL_CFDI, ''],
-            $onClickAttribute
+            [URLS::PORTAL_CFDI, ''],
+            $onClickAttribute,
         );
     }
 

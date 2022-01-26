@@ -1,0 +1,319 @@
+
+
+
+
+<!DOCTYPE html PUBLIC "-/W3C/DTD XHTML 1.0 Transitional/EN"
+"http:/www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+
+    <meta http-equiv="X-UA-Compatible"
+          content="IE=edge,IE=EmulateIE11,IE=EmulateIE10,IE=EmulateIE9,IE=11,IE=10,IE=9,IE=8"/>
+
+    <!-- CSS -->
+    <link href="../gobmx/assets/styles/main.css" rel="stylesheet">
+
+    <script type="application/javascript">
+        //Variables globales
+        var root = 'https://cfdiau.sat.gob.mx/';
+        var path = root + 'nidp/gobmx/assets/';
+        var imagesPath = path + 'images/';
+        var scriptsPath = path + 'scripts/';
+        var stylesPath = path + 'styles/';
+        var myVar;
+        var jsurlciec = 'https://cfdiau.sat.gob.mx/nidp/wsfed/ep?id=SATUPCFDiCon&sid=0&option=credential&sid=0';
+
+        var showEncabezado = false;
+        try {
+            window.parent.document
+            if (window.parent.document == undefined) {
+                showEncabezado = false;
+            } else {
+                showEncabezado = true;
+            }
+        } catch (e) {
+            showEncabezado = false;
+        }
+    </script>
+
+    <meta http-equiv="X-UA-Compatible"
+          content="IE=edge,IE=EmulateIE11,IE=EmulateIE10,IE=EmulateIE9,IE=11,IE=10,IE=9,IE=8"/>
+    <meta http-equiv="content-language" content="en"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+
+    <script type="text/javascript" src="/nidp/gobmx/assets/scripts/gobmx.js"></script>
+
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/sat/libs.min.js"></script>
+
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/sjcl/sjcl.js"></script>
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/sjcl/sha1.js"></script>
+
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/jsrsasign/ext/jsbn.js"></script>
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/jsrsasign/ext/jsbn2.js"></script>
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/jsrsasign/ext/rsa.js"></script>
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/jsrsasign/ext/rsa2.js"></script>
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/jsrsasign/ext/base64.js"></script>
+
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/jsrsasign/crypto-1.1.min.js"></script>
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/jsrsasign/asn1hex-1.1.min.js"></script>
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/jsrsasign/rsasign-1.2.min.js"></script>
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/jsrsasign/x509-1.1.min.js"></script>
+
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/cryptoJS/rollups/pbkdf2.js"></script>
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/cryptoJS/rollups/tripledes.js"></script>
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/cryptoJS/rollups/aes.js"></script>
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/cryptoJS/rollups/rc2.js"></script>
+
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/asn1/asn1.js"></script>
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/asn1/base64.js"></script>
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/asn1/hex.js"></script>
+
+    <script language="JavaScript" type="text/javascript"
+            src="/nidp/x509SAT/js/jquery/jquery-1.6.4.min.js"></script>
+
+    <title>SAT Autenticaci&oacute;n</title>
+</head>
+
+<body style="padding-top: 0px;">
+<script src="../gobmx/assets/scripts/jquery.min.js"></script>
+<script src="../gobmx/assets/scripts/respond.min.js"></script>
+<script src="../gobmx/assets/scripts/ie8.js"></script>
+<script type="text/javascript">
+
+    $(function (e) {
+        var error = '';
+        if (error != "" || error.length != 0) {
+            if (new String(error).valueOf() == new String("Certificado Revocado").valueOf()) {
+                error = "No se puede acceder al aplicativo porque su E.FIRMA está revocada.";
+            }
+
+            if (new String(error).valueOf() == new String("Certificado Caduco").valueOf()) {
+                error = "No se puede acceder al aplicativo porque su E.FIRMA no está vigente.";
+            }
+
+            showMsgError(error);
+        }
+    });
+    function despliega(error) {
+        showMsgError(error);
+    }
+
+    function cerrarPopup() {
+        var link = document.getElementById("linkClose");
+        link.click();
+    }
+    function firmar(event) {
+        if (validate()) {
+            console.log('Realizando firma...');
+            var rfc = document.getElementById("rfc").value;
+            console.log('RFC obtenido: ' + rfc);
+            var numSerie = obtieneNumSerie();
+            console.log('Numero de serie: ' + numSerie);
+            var co = document.getElementById("tokenuuid").value + "|" + rfc + "|" + numSerie;
+            console.log('El token generado es: ' + co);
+            var laFirma = generaFirma(document.getElementById("privateKeyPassword").value, co);
+            console.log('La firma generada es: ' + laFirma);
+            if (laFirma != 'SIN_FIRMA') {
+                var token = Base64.encode(Base64.encode(co) + "#" + laFirma);
+                console.log('Token Final: ' + token);
+                document.getElementById("token").value = token;
+                document.getElementById("certform").submit();
+            }
+        }else {
+            event.preventDefault();
+            showMsgError('<strong>¡Error!</strong> no ha llenado varios campos requeridos. Por favor verifique.');
+        }
+    }
+
+    /**
+     * Funcion para mostrar mensaje de error.
+     * */
+    function showMsgError(mensaje) {
+        $('#divError').html(mensaje);
+        $('#divError').show();
+        document.getElementById("submit").disabled = true;
+    }
+
+    function limpiarMsgs() {
+        $('#divError').html("");
+        $('#divError').hide();
+        document.getElementById("submit").disabled = false;
+    }
+
+    $('#contrasena').click(function () {
+        $(location).attr('href', jsurlciec)
+    });
+</script>
+
+<!-- Contenido -->
+<main class="page">
+    <div class="container" id="container" style="width: 100%">
+<ol id="breadcrumb" class="breadcrumb" hidden style="margin-left: 8px;"> </ol>
+        <div class="row">
+            <div class="col-sm-8 bottom-buffer">
+                <!-- Contenido 2/3 -->
+
+                <!-- TITULO -->
+                <div class="bottom-buffer">
+                    <h3>Acceso con e.firma</h3>
+                </div>
+
+                <!-- Mensaje ERROR -->
+                <div id="divError" class="alert alert-danger" style="display: none;"></div>
+
+                <!-- FORMULARIO -->
+                <form role="form" method="post">
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label class="control-label" for="txtCertificate">Certificado (.cer):</label>
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    placeholder="Ubicaci&oacute;n del certificado"
+                                    name="txtCertificate"
+                                    id="txtCertificate"
+                                    size="25"
+                                    readonly="readonly" style="width: 95%" onclick="limpiarMsgs();">
+                            <input type="file" style="display: none" accept=".cer" id="fileCertificate"
+                                   onclick="limpiarMsgs();"/>
+
+                            <span class="input-group-btn" style="vertical-align: bottom">
+                                <button type="button" onclick="limpiarMsgs();" class="btn btn-default"
+                                        id="btnCertificate" name="btnCertificate">Buscar</button>
+                            </span>
+                        </div>
+                        <span id="msgErrorCert"
+                              style="display: none; color: #D0021B; font-size: 11px; font-weight: initial;">Este campo es obligatorio.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label class="control-label" for="txtPrivateKey">Clave privada (.key):</label>
+                            <input
+                                    class="form-control"
+                                    id="txtPrivateKey"
+                                    name="txtPrivateKey"
+                                    size="25"
+                                    type="text"
+                                    placeholder="Ubicaci&oacute;n de la llave privada"
+                                    readonly="readonly" style="width: 95%" onclick="limpiarMsgs();">
+                            <input type="file" style="display: none" accept=".key" id="filePrivateKey"
+                                   onclick="limpiarMsgs();"/>
+
+                            <span class="input-group-btn" style="vertical-align: bottom">
+                                <button type="button" class="btn btn-default" name="btnPrivateKey" id="btnPrivateKey"
+                                        onclick="limpiarMsgs();">Buscar</button>
+                            </span>
+                        </div>
+                        <span id="msgErrorKey"
+                              style="display: none; color: #D0021B; font-size: 11px; font-weight: initial;">Este campo es obligatorio.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label" for="privateKeyPassword">
+                            Contrase&ntilde;a de clave privada:
+                            <span style="left: -2px;" class="glyphicon glyphicon-question-sign" aria-hidden="true"
+                                  data-toggle="tooltip" data-placement="right"
+                                  title="Esta contraseña es la que corresponde la clave privada .key"></span>
+                        </label>
+                        <input class="form-control" id="privateKeyPassword" type="password" name="privateKeyPassword"
+                               placeholder="Contrase&ntilde;a" type="password" onclick="limpiarMsgs();">
+                        <span id="msgErrorPass"
+                              style="display: none; color: #D0021B; font-size: 11px; font-weight: initial;">Este campo es obligatorio.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rfc">RFC:</label>
+                        <input class="form-control" name="rfc" id="rfc" placeholder="RFC" type="text" disabled>
+                        <span id="msgErrorRfc"
+                              style="display: none; color: #D0021B; font-size: 11px; font-weight: initial;">Este campo es obligatorio.</span>
+                    </div>
+
+                    <div class="clearfix">
+                        <div class="pull-right">
+                            <input
+                                    class="btn btn-default"
+                                    type="button"
+                                    value="Contrase&ntilde;a"
+                                    id="contrasena"
+                                    name="contrasena"
+                                    onclick="$(location).attr('href', jsurlciec)">
+                            </input>
+                            <input
+                                    class="btn btn-primary"
+                                    type="button"
+                                    value="Enviar"
+                                    id="submit"
+                                    name="submit"
+                                    onclick="firmar(event);">
+                            </input>
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+        </div>
+        <!--Inicio Aviso-->
+            <div class="col-sm-12">
+            <div class="row"></div>
+            <div style=
+            "background-color: #D9EDF7;
+            width: 100%;
+            border: 2px #BCE8F1;
+            padding: 20px;
+            margin: 2px;
+            font-size: 18px;
+            border-style: solid;
+            overflow: auto;">
+
+            <font color="#31708F"><center><b>Aviso de privacidad simplificado</b></center>
+            <center>El Servicio de Administraci&oacute;n Tributaria, es el responsable del tratamiento de los datos personales que se recolectan a trav&eacute;s de su portal de internet <a target="_blank" onclick="window.open('https://www.sat.gob.mx')">(https://www.sat.gob.mx)</a>, los cuales son protegidos conforme a lo dispuesto en la Ley General de Protecci&oacute;n de Datos Personales en Posesi&oacute;n de Sujetos Obligados y la normatividad que resulte aplicable.</center>
+            <br style= "line-height: 20px;">
+            <center>Para mayor informaci&oacute;n acerca de este tema y de los derechos que puedes hacer valer, ponemos a tu disposici&oacute;n el Aviso de privacidad en el sitio: <a target="_blank" onclick="window.open('https://repositorio.cloudb.sat.gob.mx/FTP/avisoprivacidad/802_NV_aviso_integral.html')">https://repositorio.cloudb.sat.gob.mx/FTP/avisoprivacidad/802_NV_aviso_integral.html</a></center></font>
+            </div>
+            <br>
+            <br>
+            <!--Fin Aviso-->
+    </div>
+    <form enctype="application/x-www-form-urlencoded" name="certform" id="certform" method="post">
+        <input type="hidden" id="tokenuuid" value="MjdkOGU5ZjEtOThkYy00ODU2LWE3NWYtNmYwYTIzNGU2Njlm"/>
+        <input type="hidden" id="token" name="token"/>
+        <input type="hidden" id="credentialsRequired" name="credentialsRequired" value="CERT"/>
+        <input type="hidden" id="guid" name="guid" value="MjdkOGU5ZjEtOThkYy00ODU2LWE3NWYtNmYwYTIzNGU2Njlm"/>
+        <input type="hidden" id="ks" name="ks" value="null"/>
+        <input type="hidden" id="seeder" name="seeder"/>
+        <input type="hidden" id="arc" name="arc"/>
+        <input type="hidden" id="tan" name="tan"/>
+        <input type="hidden" id="placer" name="placer"/>
+        <input type="hidden" id="secuence" name="secuence"/>
+        <input type="hidden" id="urlApplet" name="urlApplet" value="https://cfdiau.sat.gob.mx/nidp/app/login?id=SATx509Custom"/>
+        <input type="hidden" id="fert" name="fert"/>
+    </form>
+</main>
+
+</body>
+
+</html>
+

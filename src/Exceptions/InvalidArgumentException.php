@@ -16,7 +16,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements SatE
     public static function periodStartDateGreaterThanEndDate(DateTimeImmutable $start, DateTimeImmutable $end): self
     {
         return new self(
-            sprintf('The start date %s is greater than the end date %s', $start->format('Y-m-d H:i:s'), $end->format('Y-m-d H:i:s'))
+            sprintf('The start date %s is greater than the end date %s', $start->format('Y-m-d H:i:s'), $end->format('Y-m-d H:i:s')),
         );
     }
 

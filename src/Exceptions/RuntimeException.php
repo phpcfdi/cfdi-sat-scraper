@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Exceptions;
 
-use RuntimeException as SplRuntimeException;
 use Throwable;
 
-class RuntimeException extends SplRuntimeException implements SatException
+class RuntimeException extends \RuntimeException implements SatException
 {
     protected function __construct(string $message, Throwable $previous = null)
     {
@@ -32,5 +31,10 @@ class RuntimeException extends SplRuntimeException implements SatException
     public static function unableToFilePutContents(string $destinationFile, Throwable $previous = null): self
     {
         return new self(sprintf('Unable to put contents on %s', $destinationFile), $previous);
+    }
+
+    public static function unableToFindCaptchaImage(string $selector): self
+    {
+        return new self(sprintf("Unable to find image using filter '%s'", $selector));
     }
 }

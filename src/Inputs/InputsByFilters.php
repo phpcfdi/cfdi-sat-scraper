@@ -8,7 +8,7 @@ use DateTimeImmutable;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
 
 /**
- * @method QueryByFilters getQuery()
+ * @extends InputsGeneric<QueryByFilters>
  */
 abstract class InputsByFilters extends InputsGeneric implements InputsInterface
 {
@@ -29,12 +29,13 @@ abstract class InputsByFilters extends InputsGeneric implements InputsInterface
     {
         return array_merge(
             parent::getQueryAsInputs(),
-            $this->getDateFilters()
+            $this->getDateFilters(),
         );
     }
 
     public function getFilterOptions(): array
     {
+        /** @var QueryByFilters $query */
         $query = $this->getQuery();
         return [$query->getComplement(), $query->getStateVoucher(), $query->getRfc()];
     }
