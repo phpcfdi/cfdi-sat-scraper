@@ -16,7 +16,6 @@
 /.gitattributes             export-ignore
 /.gitignore                 export-ignore
 /.php-cs-fixer.dist.php     export-ignore
-/.scrutinizer.yml           export-ignore
 /phpcs.xml.dist             export-ignore
 /phpstan.neon.dist          export-ignore
 /phpunit.xml.dist           export-ignore

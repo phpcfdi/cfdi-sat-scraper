@@ -1,12 +1,15 @@
 # phpcfdi/cfdi-sat-scraper
 
 [![Source Code][badge-source]][source]
+[![Packagist PHP Version Support][badge-php-version]][php-version]
 [![Discord][badge-discord]][discord]
 [![Latest Version][badge-release]][release]
 [![Software License][badge-license]][license]
 [![Build Status][badge-build]][build]
-[![Scrutinizer][badge-quality]][quality]
-[![Coverage Status][badge-coverage]][coverage]
+[![Reliability][badge-reliability]][reliability]
+[![Maintainability][badge-maintainability]][maintainability]
+[![Code Coverage][badge-coverage]][coverage]
+[![Violations][badge-violations]][violations]
 [![Total Downloads][badge-downloads]][downloads]
 
 Obtiene las facturas emitidas, recibidas, vigentes y cancelados por medio de web scraping desde la página del SAT.
@@ -478,19 +481,25 @@ and licensed for use under the MIT License (MIT). Please see [LICENSE][] for mor
 [todo]: https://github.com/phpcfdi/cfdi-sat-scraper/blob/main/docs/TODO.md
 
 [source]: https://github.com/phpcfdi/cfdi-sat-scraper
+[php-version]: https://packagist.org/packages/phpcfdi/cfdi-sat-scraper
 [discord]: https://discord.gg/aFGYXvX
 [release]: https://github.com/phpcfdi/cfdi-sat-scraper/releases
 [license]: https://github.com/phpcfdi/cfdi-sat-scraper/blob/main/LICENSE
 [build]: https://github.com/phpcfdi/cfdi-sat-scraper/actions/workflows/build.yml?query=branch:main
-[quality]: https://scrutinizer-ci.com/g/phpcfdi/cfdi-sat-scraper/
-[coverage]: https://scrutinizer-ci.com/g/phpcfdi/cfdi-sat-scraper/code-structure/main/code-coverage/src/
+[reliability]:https://sonarcloud.io/component_measures?id=phpcfdi_cfdi-sat-scraper&metric=Reliability
+[maintainability]: https://sonarcloud.io/component_measures?id=phpcfdi_cfdi-sat-scraper&metric=Maintainability
+[coverage]: https://sonarcloud.io/component_measures?id=phpcfdi_cfdi-sat-scraper&metric=Coverage
+[violations]: https://sonarcloud.io/project/issues?id=phpcfdi_cfdi-sat-scraper&resolved=false
 [downloads]: https://packagist.org/packages/phpcfdi/cfdi-sat-scraper
 
-[badge-source]: https://img.shields.io/badge/source-phpcfdi/cfdi--sat--scraper-blue?style=flat-square
-[badge-discord]: https://img.shields.io/discord/459860554090283019?style=flat-square
-[badge-release]: https://img.shields.io/github/release/phpcfdi/cfdi-sat-scraper?style=flat-square
-[badge-license]: https://img.shields.io/github/license/phpcfdi/cfdi-sat-scraper?style=flat-square
+[badge-source]: https://img.shields.io/badge/source-phpcfdi/cfdi--sat--scraper-blue?logo=github
+[badge-discord]: https://img.shields.io/discord/459860554090283019?logo=discord
+[badge-php-version]: https://img.shields.io/packagist/php-v/phpcfdi/cfdi-sat-scraper?logo=php
+[badge-release]: https://img.shields.io/github/release/phpcfdi/cfdi-sat-scraper?logo=git
+[badge-license]: https://img.shields.io/github/license/phpcfdi/cfdi-sat-scraper?logo=open-source-initiative
 [badge-build]: https://img.shields.io/github/workflow/status/phpcfdi/cfdi-sat-scraper/build/main?style=flat-square
-[badge-quality]: https://img.shields.io/scrutinizer/g/phpcfdi/cfdi-sat-scraper/main?style=flat-square
-[badge-coverage]: https://img.shields.io/scrutinizer/coverage/g/phpcfdi/cfdi-sat-scraper/main?style=flat-square
-[badge-downloads]: https://img.shields.io/packagist/dt/phpcfdi/cfdi-sat-scraper?style=flat-square
+[badge-reliability]: https://sonarcloud.io/api/project_badges/measure?project=phpcfdi_cfdi-sat-scraper&metric=reliability_rating
+[badge-maintainability]: https://sonarcloud.io/api/project_badges/measure?project=phpcfdi_cfdi-sat-scraper&metric=sqale_rating
+[badge-coverage]: https://img.shields.io/sonar/coverage/phpcfdi_cfdi-sat-scraper/main?logo=sonarcloud&server=https%3A%2F%2Fsonarcloud.io
+[badge-violations]: https://img.shields.io/sonar/violations/phpcfdi_cfdi-sat-scraper/main?format=long&logo=sonarcloud&server=https%3A%2F%2Fsonarcloud.io
+[badge-downloads]: https://img.shields.io/packagist/dt/phpcfdi/cfdi-sat-scraper?logo=packagist

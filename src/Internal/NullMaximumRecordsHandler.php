@@ -16,5 +16,6 @@ final class NullMaximumRecordsHandler implements MaximumRecordsHandler
 {
     public function handle(DateTimeImmutable $moment): void
     {
+        // As a *null implementation** it must do nothing.
     }
 }
