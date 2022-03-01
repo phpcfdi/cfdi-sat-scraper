@@ -417,6 +417,12 @@ use PhpCfdi\Credentials\Credential;
 
 // crear la credencial
 $credential = Credential::create($certificate, $privateKey, $passPhrase);
+if (! $credential->isFiel()) {
+    throw new Exception('The certificate and private key is not a FIEL');
+}
+if (! $credential->certificate()->validOn()) {
+    throw new Exception('The certificate and private key is not valid at this moment');
+}
 
 // crear el objeto scraper usando la FIEL
 $satScraper = new SatScraper(FielSessionManager::create($credential));
@@ -449,6 +455,37 @@ $gateway = new SatHttpGateway($insecureClient);
 /** @var SessionManager $sessionManager */
 $scraper = new SatScraper($sessionManager, $gateway);
 ```
+
+## Problemas de conectividad con el SAT
+
+Es frecuente encontrar este problema dependiendo de la configuración general del sistema:
+
+```text
+cURL error 35: error:141A318A:SSL routines:tls_process_ske_dhe:dh key too small (see https://curl.haxx.se/libcurl/c/libcurl-errors.html) for https://cfdiau.sat.gob.mx/...
+```
+
+Este problema es por la configuración de los servidores que atienden las peticiones del SAT.
+
+Una forma de solucionar este problema únicamente para esta librería, consiste en establecer la configuración de cURL
+en el cliente del `SatHttpGateway` al crear el `SatScraper`:
+
+```php
+<?php declare(strict_types=1);
+use GuzzleHttp\Client;
+use PhpCfdi\CfdiSatScraper\SatHttpGateway;
+use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
+
+$client = new Client([
+    'curl' => [CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1'],
+]);
+
+/** @var SessionManager $sessionManager */
+$scraper = new SatScraper($sessionManager, new SatHttpGateway($client));
+```
+
+Otra solución consiste en degradar la seguridad general de OpenSSL, algunas instrucciones se pueden ver en
+<https://askubuntu.com/questions/1250787/when-i-try-to-curl-a-website-i-get-ssl-error>.
 
 ## Compatibilidad
 
@@ -497,7 +534,7 @@ and licensed for use under the MIT License (MIT). Please see [LICENSE][] for mor
 [badge-php-version]: https://img.shields.io/packagist/php-v/phpcfdi/cfdi-sat-scraper?logo=php
 [badge-release]: https://img.shields.io/github/release/phpcfdi/cfdi-sat-scraper?logo=git
 [badge-license]: https://img.shields.io/github/license/phpcfdi/cfdi-sat-scraper?logo=open-source-initiative
-[badge-build]: https://img.shields.io/github/workflow/status/phpcfdi/cfdi-sat-scraper/build/main?style=flat-square
+[badge-build]: https://img.shields.io/github/workflow/status/phpcfdi/cfdi-sat-scraper/build/main?logo=github-actions
 [badge-reliability]: https://sonarcloud.io/api/project_badges/measure?project=phpcfdi_cfdi-sat-scraper&metric=reliability_rating
 [badge-maintainability]: https://sonarcloud.io/api/project_badges/measure?project=phpcfdi_cfdi-sat-scraper&metric=sqale_rating
 [badge-coverage]: https://img.shields.io/sonar/coverage/phpcfdi_cfdi-sat-scraper/main?logo=sonarcloud&server=https%3A%2F%2Fsonarcloud.io

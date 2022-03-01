@@ -9,7 +9,6 @@ on:
 
 # Actions
 # shivammathur/setup-php@v2 https://github.com/marketplace/actions/setup-php-action
-# sudo-bot/action-scrutinizer@latest https://github.com/marketplace/actions/action-scrutinizer
 
 jobs:
 
@@ -28,7 +27,7 @@ jobs:
         env:
           fail-fast: true
       - name: Code style (phpcs)
-        run: phpcs -q --report=checkstyle src/ tests/ | cs2pr
+        run: phpcs -q --report=checkstyle | cs2pr
 
   php-cs-fixer:
     name: Code style (php-cs-fixer)
