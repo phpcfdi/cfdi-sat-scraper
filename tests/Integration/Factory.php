@@ -140,7 +140,10 @@ class Factory
         $container = new HttpLogger($this->path($this->env('SAT_HTTPDUMP_FOLDER')));
         $stack = HandlerStack::create();
         $stack->push(Middleware::history($container));
-        return new Client(['handler' => $stack]);
+        return new Client([
+            'handler' => $stack,
+            'curl' => [CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1']
+        ]);
     }
 
     public function createRepository(string $filename): Repository
