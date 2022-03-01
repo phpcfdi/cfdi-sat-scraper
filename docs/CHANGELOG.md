@@ -6,6 +6,18 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión.
 
+### Documentación 2022-03-01
+
+Se agrega la documentación para configurar el cliente de cURL con `DEFAULT@SECLEVEL=1`.
+
+Las pruebas se corren con `DEFAULT@SECLEVEL=1`.
+
+Se agrega el código que ejemplifica cómo validar que la FIEL no es un CSD y que es válido al momento de la consulta.
+
+### Entorno de desarrollo 2022-03-01
+
+Al ejecutar el flujo de integración continua, se usan los path en el archivo `phpcs.xml.dist`.
+
 ## Version 3.0.0
 
 Vea la [Guía de actualización de `2.x` a `3.x`](UPGRADE-2-3.md).
