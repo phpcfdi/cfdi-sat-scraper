@@ -4,6 +4,7 @@
 
 - Core:
     - Incrementar las pruebas unitarias a un mínimo de 80%.
+    - Verificar si el SAT sigue teniendo problemas de conectividad y se puede usar `DEFAULT@SECLEVEL=2`.
 - Documentación:
     - Todos los puntos de entrada deben tener phpdoc.
 - Entorno de desarrollo:
