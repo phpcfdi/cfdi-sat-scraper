@@ -142,7 +142,7 @@ class Factory
         $stack->push(Middleware::history($container));
         return new Client([
             'handler' => $stack,
-            'curl' => [CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1']
+            'curl' => [CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1'],
         ]);
     }
 
