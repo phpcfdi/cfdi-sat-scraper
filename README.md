@@ -417,6 +417,12 @@ use PhpCfdi\Credentials\Credential;
 
 // crear la credencial
 $credential = Credential::create($certificate, $privateKey, $passPhrase);
+if (! $credential->isFiel()) {
+    throw new Exception('The certificate and private key is not a FIEL');
+}
+if (! $credential->certificate()->validOn()) {
+    throw new Exception('The certificate and private key is not valid at this moment');
+}
 
 // crear el objeto scraper usando la FIEL
 $satScraper = new SatScraper(FielSessionManager::create($credential));
@@ -497,7 +503,7 @@ and licensed for use under the MIT License (MIT). Please see [LICENSE][] for mor
 [badge-php-version]: https://img.shields.io/packagist/php-v/phpcfdi/cfdi-sat-scraper?logo=php
 [badge-release]: https://img.shields.io/github/release/phpcfdi/cfdi-sat-scraper?logo=git
 [badge-license]: https://img.shields.io/github/license/phpcfdi/cfdi-sat-scraper?logo=open-source-initiative
-[badge-build]: https://img.shields.io/github/workflow/status/phpcfdi/cfdi-sat-scraper/build/main?style=flat-square
+[badge-build]: https://img.shields.io/github/workflow/status/phpcfdi/cfdi-sat-scraper/build/main?logo=github-actions
 [badge-reliability]: https://sonarcloud.io/api/project_badges/measure?project=phpcfdi_cfdi-sat-scraper&metric=reliability_rating
 [badge-maintainability]: https://sonarcloud.io/api/project_badges/measure?project=phpcfdi_cfdi-sat-scraper&metric=sqale_rating
 [badge-coverage]: https://img.shields.io/sonar/coverage/phpcfdi_cfdi-sat-scraper/main?logo=sonarcloud&server=https%3A%2F%2Fsonarcloud.io
