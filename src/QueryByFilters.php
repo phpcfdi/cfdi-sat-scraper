@@ -9,6 +9,7 @@ use PhpCfdi\CfdiSatScraper\Contracts\QueryInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOnBehalfOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 use PhpCfdi\CfdiSatScraper\Internal\DownloadTypePropertyTrait;
@@ -29,6 +30,9 @@ class QueryByFilters implements QueryInterface
     /** @var RfcOption */
     private $rfc;
 
+    /** @var RfcOnBehalfOption */
+    private $rfcOnBehalf;
+
     /** @var ComplementsOption */
     private $complement;
 
@@ -47,6 +51,7 @@ class QueryByFilters implements QueryInterface
         $this->setComplement(ComplementsOption::todos());
         $this->setStateVoucher(StatesVoucherOption::todos());
         $this->setRfc(new RfcOption(''));
+        $this->setRfcOnBehalf(new RfcOnBehalfOption(''));
     }
 
     /**
@@ -118,12 +123,30 @@ class QueryByFilters implements QueryInterface
 
     /**
      * @param RfcOption $rfc
-     *
      * @return $this
      */
     public function setRfc(RfcOption $rfc): self
     {
         $this->rfc = $rfc;
+
+        return $this;
+    }
+
+    /**
+     * @return RfcOnBehalfOption
+     */
+    public function getRfcOnBehalf(): RfcOnBehalfOption
+    {
+        return $this->rfcOnBehalf;
+    }
+
+    /**
+     * @param RfcOnBehalfOption $rfcOnBehalf
+     * @return $this
+     */
+    public function setRfcOnBehalf(RfcOnBehalfOption $rfcOnBehalf): self
+    {
+        $this->rfcOnBehalf = $rfcOnBehalf;
 
         return $this;
     }

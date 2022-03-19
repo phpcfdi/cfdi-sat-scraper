@@ -88,4 +88,13 @@ final class QueryByFiltersTest extends TestCase
 
         $this->assertEquals($query->getRfc()->value(), $rfc);
     }
+
+    public function testSetRfcOnBehalfOption(): void
+    {
+        $rfc = 'ABGC930521D34';
+        $query = new Query(new DateTimeImmutable('2019-01-01'), new DateTimeImmutable('2019-01-31'));
+        $this->assertSame($query, $query->setRfcOnBehalf(new RfcOnBehalfOption($rfc)), 'The setter should be fluid');
+
+        $this->assertEquals($query->getRfcOnBehalf()->value(), $rfc);
+    }
 }

@@ -40,6 +40,7 @@ Una vez dentro del sitio se pueden consultar facturas emitidas y facturas recibi
     - RFC Receptor.
     - Estado del comprobante (cualquiera, vigente o cancelado).
     - Tipo de comprobante (si contiene un complemento específico).
+    - RFC A cuenta de terceros.
 
 - Consulta de recibidas:
     - Fecha de emisión.
@@ -47,6 +48,7 @@ Una vez dentro del sitio se pueden consultar facturas emitidas y facturas recibi
     - RFC Emisor.
     - Estado del comprobante (cualquiera, vigente o cancelado).
     - Tipo de comprobante (si contiene un complemento específico).
+    - RFC A cuenta de terceros.
 
 El servicio de búsqueda regresa una tabla con información, con un tope de 500 registros por consulta
 (aun cuando existan más, solo se muestran 500).
@@ -149,6 +151,7 @@ use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOnBehalfOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOption;
 
 // se crea con un rango de fechas específico
@@ -158,6 +161,7 @@ $query
     ->setStateVoucher(StatesVoucherOption::vigentes())          // en lugar de todos
     ->setRfc(new RfcOption('EKU9003173C9'))                     // de este RFC específico
     ->setComplement(ComplementsOption::reciboPagoSalarios12())  // que incluya este complemento
+    ->setRfcOnBehalf(new RfcOnBehalfOption('AAA010101AAA'))     // con este RFC A cuenta de terceros
 ;
 ```
 

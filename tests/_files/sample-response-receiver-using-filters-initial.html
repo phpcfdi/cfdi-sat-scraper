@@ -558,21 +558,28 @@
 
                 
                     <div class="form-group">
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <span id="ctl00_MainContent_LblRfcReceptor" class="control-label">RFC Emisor</span>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
+                            <span id="ctl00_MainContent_LblRfcTercero" class="control-label">RFC a cuenta terceros</span>
+                        </div>
+                        <div class="col-sm-4">
                             <span id="ctl00_MainContent_LblEstado" class="control-label">Estado del Comprobante</span>
                         </div>
                     </div>
-                
 
-                
+
+
                     <div class="form-group">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <input name="ctl00$MainContent$TxtRfcReceptor" type="text" maxlength="13" id="ctl00_MainContent_TxtRfcReceptor" class="form-control" />
+
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <input name="ctl00$MainContent$TxtRfcTercero" type="text" maxlength="13" id="ctl00_MainContent_TxtRfcTercero" class="form-control" style="width:100%;" />
+                        </div>
+                        <div class="col-md-4">
                             <select name="ctl00$MainContent$DdlEstadoComprobante" id="ctl00_MainContent_DdlEstadoComprobante" class="form-control" onchange="EstadoComprobante(this);">
 	<option value="-1">Seleccione un valor...</option>
 	<option value="0">Cancelado</option>

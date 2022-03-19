@@ -37,7 +37,12 @@ abstract class InputsByFilters extends InputsGeneric implements InputsInterface
     {
         /** @var QueryByFilters $query */
         $query = $this->getQuery();
-        return [$query->getComplement(), $query->getStateVoucher(), $query->getRfc()];
+        return [
+            $query->getComplement(),
+            $query->getStateVoucher(),
+            $query->getRfc(),
+            $query->getRfcOnBehalf(),
+        ];
     }
 
     /**
