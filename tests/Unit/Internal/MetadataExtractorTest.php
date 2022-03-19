@@ -167,6 +167,28 @@ final class MetadataExtractorTest extends TestCase
         $this->assertCount(1, $list);
         $expectedUuid = 'B97262E5-704C-4BF7-AE26-9174FEF04D63';
         $this->assertTrue($list->has($expectedUuid));
+        $expectedData = [
+            'uuid' => 'b97262e5-704c-4bf7-ae26-9174fef04d63',
+            'rfcEmisor' => 'BSM970519DU8',
+            'nombreEmisor' => 'BANCO SANTANDER MEXICO, SA INSTITUCION DE BANCA MULTIPLE, GRUPO FINANCIERO SANTANDER MEXICO',
+            'rfcReceptor' => 'AUAC920422D38',
+            'nombreReceptor' => 'CESAR RENE AGUILERA ARREOLA',
+            'fechaEmision' => '2019-03-31T02:04:46',
+            'fechaCertificacion' => '2019-03-31T02:05:15',
+            'pacCertifico' => 'INT020124V62',
+            'total' => '$0.00',
+            'efectoComprobante' => 'Ingreso',
+            'estatusCancelacion' => 'Cancelable sin aceptación',
+            'estadoComprobante' => 'Vigente',
+            'estatusProcesoCancelacion' => '',
+            'fechaProcesoCancelacion' => '',
+            'rfcACuentaTerceros' => 'AAA991231AAA',
+            'urlXml' => '', // the data is not included on test file
+            'urlPdf' => '',
+            'urlCancelRequest' => '',
+            'urlCancelVoucher' => '',
+        ];
+        $this->assertSame($expectedData, $list->get($expectedUuid)->getData());
     }
 
     public function testExtractUsingSampleWithOneUuid(): void
@@ -197,6 +219,7 @@ final class MetadataExtractorTest extends TestCase
                 'estadoComprobante' => 'Vigente',
                 'estatusProcesoCancelacion' => '',
                 'fechaProcesoCancelacion' => '',
+                'rfcACuentaTerceros' => 'ABC010101AAA',
             ],
         ];
 
