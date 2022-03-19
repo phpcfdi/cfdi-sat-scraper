@@ -5,20 +5,27 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
 use JsonSerializable;
+use LogicException;
 use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Metadata;
 use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
+use Traversable;
 
 final class MetadataTest extends TestCase
 {
     public function testCreateAndRetrieveData(): void
     {
         $uuid = $this->fakes()->faker()->uuid;
-        $item = new Metadata($uuid, ['bar' => 'x-bar', 'foo' => 'x-foo']);
+        $data = ['bar' => 'x-bar', 'foo' => 'x-foo'];
+        $item = new Metadata($uuid, $data);
         $this->assertSame($uuid, $item->uuid());
         $this->assertSame('x-foo', $item->get('foo'));
+        $this->assertTrue($item->has('foo'));
+        $this->assertSame('x-foo', $item->{'foo'}); /** @phpstan-ignore-line */
+        $this->assertTrue(isset($item->{'foo'}));
         $this->assertSame('', $item->get('xee'), 'non existent data must return empty string');
+        $this->assertSame(['uuid' => $uuid] + $data, $item->getData());
     }
 
     public function testUuidPassedOnConstructorOverridesUuidOnData(): void
@@ -76,5 +83,29 @@ final class MetadataTest extends TestCase
         $clon = clone $base;
         $this->assertEquals($base, $clon);
         $this->assertNotSame($base, $clon);
+    }
+
+    public function testSetThrowsException(): void
+    {
+        $metadata = new Metadata($this->fakes()->faker()->uuid, []);
+        $this->expectException(LogicException::class);
+        $metadata->{'foo'} = 'bar'; /** @phpstan-ignore-line */
+    }
+
+    public function testUnsetThrowsException(): void
+    {
+        $metadata = new Metadata($this->fakes()->faker()->uuid, []);
+        $this->expectException(LogicException::class);
+        unset($metadata->{'foo'});
+    }
+
+    public function testIterateOverData(): void
+    {
+        $uuid = $this->fakes()->faker()->uuid;
+        $data = ['uuid' => $uuid, 'foo' => 'x-foo', 'bar' => 'x-bar'];
+        $metadata = new Metadata($uuid, $data);
+
+        $this->assertInstanceOf(Traversable::class, $metadata);
+        $this->assertSame($data, iterator_to_array($metadata));
     }
 }
