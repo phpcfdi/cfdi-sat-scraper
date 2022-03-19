@@ -16,7 +16,7 @@ class RfcOption implements FilterOption
 
     public function __construct(string $rfc)
     {
-        $this->value = $rfc;
+        $this->value = mb_strtoupper($rfc);
     }
 
     public function nameIndex(): string
