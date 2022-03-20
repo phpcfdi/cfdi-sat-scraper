@@ -7,9 +7,9 @@ namespace PhpCfdi\CfdiSatScraper\Filters\Options;
 use PhpCfdi\CfdiSatScraper\Contracts\FilterOption;
 
 /**
- * RFC Option
+ * RfcOnBehalfOption (A cuenta de terceros) option
  */
-class RfcOption implements FilterOption
+class RfcOnBehalfOption implements FilterOption
 {
     /** @var string */
     protected $value;
@@ -21,7 +21,7 @@ class RfcOption implements FilterOption
 
     public function nameIndex(): string
     {
-        return 'ctl00$MainContent$TxtRfcReceptor';
+        return 'ctl00$MainContent$TxtRfcTercero';
     }
 
     public function value(): string

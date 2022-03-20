@@ -11,12 +11,14 @@ declare(strict_types=1);
 
 return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
-    ->setCacheFile(__DIR__ . '/build/php_cs.cache')
+    ->setCacheFile(__DIR__ . '/build/php-cs-fixer.cache')
     ->setRules([
         '@PSR12' => true,
         '@PSR12:risky' => true,
         '@PHP71Migration:risky' => true,
         '@PHP73Migration' => true,
+        // PHP73Migration
+        'method_argument_space' => ['on_multiline' => 'ignore'],
         // symfony
         'class_attributes_separation' => true,
         'whitespace_after_comma_in_array' => true,

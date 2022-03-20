@@ -15,6 +15,8 @@ use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
  * @method static self sinComplemento()
  * @method static self acreditamientoIeps()
  * @method static self aerolineas()
+ * @method static self cartaPorte10()
+ * @method static self cartaPorte20()
  * @method static self certificadoDestruccion()
  * @method static self comercioExterior()
  * @method static self comercioExterior11()
@@ -37,6 +39,7 @@ use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
  * @method static self pagoEspecie()
  * @method static self personaFisicaIntegranteCoordinado()
  * @method static self recepcionPagos()
+ * @method static self recepcionPagos20()
  * @method static self reciboDonativo()
  * @method static self reciboPagoSalarios()
  * @method static self reciboPagoSalarios12()
@@ -56,6 +59,8 @@ use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
  * @method bool isSinComplemento()
  * @method bool isAcreditamientoIeps()
  * @method bool isAerolineas()
+ * @method bool isCartaPorte10()
+ * @method bool isCartaPorte20()
  * @method bool isCertificadoDestruccion()
  * @method bool isComercioExterior()
  * @method bool isComercioExterior11()
@@ -78,6 +83,7 @@ use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
  * @method bool isPagoEspecie()
  * @method bool isPersonaFisicaIntegranteCoordinado()
  * @method bool isRecepcionPagos()
+ * @method bool isRecepcionPagos20()
  * @method bool isReciboDonativo()
  * @method bool isReciboPagoSalarios()
  * @method bool isReciboPagoSalarios12()
@@ -114,6 +120,14 @@ class ComplementsOption extends MicroCatalog implements FilterOption
         'aerolineas' => [
             'input' => '8388608',
             'description' => 'Aerolíneas',
+        ],
+        'cartaPorte10' => [
+            'input' => '70368744177664',
+            'description' => 'Carta Porte 1.0',
+        ],
+        'cartaPorte20' => [
+            'input' => '140737488355328',
+            'description' => 'Carta Porte 2.0',
         ],
         'certificadoDestruccion' => [
             'input' => '1073741824',
@@ -201,7 +215,11 @@ class ComplementsOption extends MicroCatalog implements FilterOption
         ],
         'recepcionPagos' => [
             'input' => '549755813888',
-            'description' => 'Complemento para recepción de pagos',
+            'description' => 'Recepción de pagos',
+        ],
+        'recepcionPagos20' => [
+            'input' => '1125899906842624',
+            'description' => 'Recepción de pagos 2.0',
         ],
         'reciboDonativo' => [
             'input' => '128',

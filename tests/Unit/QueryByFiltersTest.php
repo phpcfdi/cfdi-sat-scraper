@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use InvalidArgumentException;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
+use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOnBehalfOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\RfcOption;
 use PhpCfdi\CfdiSatScraper\QueryByFilters as Query;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
@@ -44,7 +45,7 @@ final class QueryByFiltersTest extends TestCase
         $end = new DateTimeImmutable('2019-01-17');
 
         $query = new Query(new DateTimeImmutable('2019-01-01'), new DateTimeImmutable('2019-01-31'));
-        $query->setPeriod($start, $end);
+        $this->assertSame($query, $query->setPeriod($start, $end), 'The setter should be fluid');
 
         $this->assertEquals($query->getStartDate(), $start);
         $this->assertEquals($query->getEndDate(), $end);
@@ -56,8 +57,8 @@ final class QueryByFiltersTest extends TestCase
         $end = new DateTimeImmutable('2019-01-17');
 
         $query = new Query(new DateTimeImmutable('2019-01-01'), new DateTimeImmutable('2019-01-31'));
-        $query->setStartDate($start);
-        $query->setEndDate($end);
+        $this->assertSame($query, $query->setStartDate($start), 'The setter should be fluid');
+        $this->assertSame($query, $query->setEndDate($end), 'The setter should be fluid');
 
         $this->assertEquals($query->getStartDate(), $start);
         $this->assertEquals($query->getEndDate(), $end);
@@ -66,7 +67,7 @@ final class QueryByFiltersTest extends TestCase
     public function testSetComplementOption(): void
     {
         $query = new Query(new DateTimeImmutable('2019-01-01'), new DateTimeImmutable('2019-01-31'));
-        $query->setComplement(ComplementsOption::aerolineas());
+        $this->assertSame($query, $query->setComplement(ComplementsOption::aerolineas()), 'The setter should be fluid');
 
         $this->assertTrue($query->getComplement()->isAerolineas());
     }
@@ -74,7 +75,7 @@ final class QueryByFiltersTest extends TestCase
     public function testSetDownloadTypeOption(): void
     {
         $query = new Query(new DateTimeImmutable('2019-01-01'), new DateTimeImmutable('2019-01-31'));
-        $query->setDownloadType(DownloadType::recibidos());
+        $this->assertSame($query, $query->setDownloadType(DownloadType::recibidos()), 'The setter should be fluid');
 
         $this->assertTrue($query->getDownloadType()->isRecibidos());
     }
@@ -83,8 +84,17 @@ final class QueryByFiltersTest extends TestCase
     {
         $rfc = 'ABGC930521D34';
         $query = new Query(new DateTimeImmutable('2019-01-01'), new DateTimeImmutable('2019-01-31'));
-        $query->setRfc(new RfcOption($rfc));
+        $this->assertSame($query, $query->setRfc(new RfcOption($rfc)), 'The setter should be fluid');
 
         $this->assertEquals($query->getRfc()->value(), $rfc);
+    }
+
+    public function testSetRfcOnBehalfOption(): void
+    {
+        $rfc = 'ABGC930521D34';
+        $query = new Query(new DateTimeImmutable('2019-01-01'), new DateTimeImmutable('2019-01-31'));
+        $this->assertSame($query, $query->setRfcOnBehalf(new RfcOnBehalfOption($rfc)), 'The setter should be fluid');
+
+        $this->assertEquals($query->getRfcOnBehalf()->value(), $rfc);
     }
 }

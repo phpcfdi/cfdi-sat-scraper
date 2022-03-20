@@ -60,7 +60,10 @@ class MetadataExtractor
         return new MetadataList($data);
     }
 
-    /** @return array<string, string> */
+    /**
+     * @return array<string, string>
+     * @see Metadata
+     */
     public function defaultFieldsCaptions(): array
     {
         return [
@@ -78,6 +81,7 @@ class MetadataExtractor
             'estadoComprobante' => 'Estado del Comprobante',
             'estatusProcesoCancelacion' => 'Estatus de Proceso de Cancelación',
             'fechaProcesoCancelacion' => 'Fecha de Proceso de Cancelación',
+            'rfcACuentaTerceros' => 'RFC a cuenta de terceros',
         ];
     }
 
