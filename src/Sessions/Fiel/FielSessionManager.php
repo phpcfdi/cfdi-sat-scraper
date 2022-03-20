@@ -59,7 +59,7 @@ final class FielSessionManager extends AbstractSessionManager implements Session
             $httpGateway->getPortalMainPage();
 
             // previous page will try to redirect to access by password using post
-            $httpGateway->postLoginData(URLS::AUTH_LOGIN_CIEC, []);
+            $httpGateway->postCiecLoginData(URLS::AUTH_LOGIN_CIEC, []);
 
             // change to fiel login page and get challenge
             $html = $httpGateway->getAuthLoginPage(URLS::AUTH_LOGIN_FIEL, URLS::AUTH_LOGIN_CIEC);

@@ -86,12 +86,28 @@ class SatHttpGateway
      * @param array<string, string> $formParams
      * @return string
      * @throws SatHttpGatewayException
-     * @todo rename to postCiecLoginData
      */
-    public function postLoginData(string $loginUrl, array $formParams): string
+    public function postCiecLoginData(string $loginUrl, array $formParams): string
     {
         $headers = Headers::post($this->urlHost(URLS::AUTH_LOGIN), URLS::AUTH_LOGIN);
         return $this->post('post login data', $loginUrl, $headers, $formParams);
+    }
+
+    /**
+     * @param string $loginUrl
+     * @param array<string, string> $formParams
+     * @return string
+     * @throws SatHttpGatewayException
+     * @deprecated 3.1.1
+     * @see SatHttpGateway::postCiecLoginData()
+     */
+    public function postLoginData(string $loginUrl, array $formParams): string
+    {
+        trigger_error(
+            sprintf('Method %1$s::postLoginData is deprecated, use %1$s::postCiecLoginData', static::class),
+            E_USER_DEPRECATED,
+        );
+        return $this->postCiecLoginData($loginUrl, $formParams);
     }
 
     /**

@@ -1,5 +1,9 @@
 # phpcfdi/cfdi-sat-scraper tareas pendientes
 
+## Siguiente versión mayor
+
+- Eliminar el método `SatHttpGatewayException::postLoginData`.
+
 ## Pendientes
 
 - Core:
