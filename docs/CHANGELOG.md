@@ -6,6 +6,18 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión.
 
+## Version 3.1.0
+
+### Agregar *RFC a cuenta de terceros*
+
+Se agrega el filtro `RfcOnBehalfOption`.
+Se agrega la lectura de esta información en `Metadata` como `rfcACuentaTerceros`.
+Se agrega la documentación para filtrar y leer el campo de *RFC a cuenta de terceros*.
+
+### Acceso por propiedades a `Metadata`.
+
+Se documentan las propiedades en `Metadata` para acceder a ellas usando, por ejemplo `$metadata->uuid`.
+
 ### Documentación 2022-03-01
 
 Se agrega la documentación para configurar el cliente de cURL con `DEFAULT@SECLEVEL=1`.
