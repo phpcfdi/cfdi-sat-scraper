@@ -4,7 +4,28 @@
 
 Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta librería sin temor a romper tu aplicación.
 
-## Cambios aún no liberados en una versión.
+## Cambios aún no liberados en una versión
+
+No hay cambios no liberados, si existen, deben aparecer aquí.
+
+## Versión 3.1.1
+
+### Cambios en el código
+
+Se admite la compatibilidad con Symfony 6. Esto evita que se tengan que degradar componentes a la versión 5.
+
+Se depreca `SatHttpGatewayException::postLoginData` para crear el método específico
+`SatHttpGatewayException::postCiecLoginData`. Esto no altera la funcionalidad actual.
+
+Se agrega la dependencia faltante `mbstring`.
+
+### Cambios en el entorno de desarrollo
+
+Se mejoran los test para probar valores idénticos en lugar de valores iguales.
+
+Se actualizan las herramientas de desarrollo.
+
+Se actualiza el archivo de configuración de `php-cs-fixer`. 
 
 ## Versión 3.1.0
 
