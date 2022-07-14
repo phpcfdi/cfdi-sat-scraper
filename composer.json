@@ -36,6 +36,7 @@
         "ext-dom": "*",
         "ext-json": "*",
         "ext-fileinfo": "*",
+        "ext-mbstring": "*",
         "ext-openssl": "*",
         "psr/http-message": "^1.0",
         "guzzlehttp/guzzle": "^7.0",
