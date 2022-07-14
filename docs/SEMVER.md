@@ -26,7 +26,7 @@ Esto significa que:
 ## Versiones 0.x.y no rompe compatibilidad
 
 Las versiones que inician con cero, por ejemplo `0.y.z`, no se ajustan a las reglas de versionado.
-Se considera que estas versiones son previas a la madurez del proyecto y por lo tanto
+Se considera que estas versiones son previas a la madurez del proyecto y, por lo tanto,
 introducen cambios sin previo aviso.
 
 ## `@internal` no rompe compatibilidad

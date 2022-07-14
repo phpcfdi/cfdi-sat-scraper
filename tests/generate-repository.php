@@ -89,9 +89,9 @@ exit(call_user_func(new class () {
     public function printHelp(): void
     {
         echo "$this->command start-date end-date", PHP_EOL,
-            'start-date end-date are dates, time is ignored', PHP_EOL,
-            'This script is a helper to retrieve issued and received cfdi on specific dates,', PHP_EOL,
-            'the resulting json can be stored as a source of true to perform the integration tests.', PHP_EOL,
-            'The configuration options are the same as used on integration tests', PHP_EOL;
+        'start-date end-date are dates, time is ignored', PHP_EOL,
+        'This script is a helper to retrieve issued and received cfdi on specific dates,', PHP_EOL,
+        'the resulting json can be stored as a source of true to perform the integration tests.', PHP_EOL,
+        'The configuration options are the same as used on integration tests', PHP_EOL;
     }
 }, ...$argv));

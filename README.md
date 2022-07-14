@@ -99,7 +99,7 @@ Si se llega a la consulta mínima de 1 segundo y se obtuvieron 500 o más regist
 se llama a un *callback* (opcional) para reportar este acontecimiento.
 
 La búsqueda siempre debe crearse con un rango de fechas, además en forma predeterminada, se busca por CFDI emitidos,
-con cualquier complemento y con cualquier estado (vigente o cancelado). Sin embargo puedes cambiar la búsqueda antes
+con cualquier complemento y con cualquier estado (vigente o cancelado). Sin embargo, puedes cambiar la búsqueda antes
 de enviar a procesarla.
 
 Esta librería está basada en [Guzzle](https://github.com/guzzle/guzzle), por lo que puedes configurar el cliente
@@ -377,7 +377,7 @@ $satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaR
 El siguiente ejemplo muestra cómo usar el método `SatScraper::confirmSessionIsAlive` para verificar que
 los datos de sesión sean (o continuen siendo) correctos. El funcionamiento interno del scraper es:
 Si la sesión no se inicializó previamente entonces se intentará hacer el proceso de autenticación,
-además se verificará que la sesión (`cookie`) se encuentre vigente.
+además se comprobará que la sesión (`cookie`) se encuentre vigente.
 
 Se hacen los dos pasos para evitar consumir el servicio de resolución de captcha en forma innecesaria.
 
@@ -405,6 +405,10 @@ El siguiente ejemplo utiliza una FIEL donde los archivos de certificado y llave 
 en memoria y se encuentran vigentes. Puede obtener más información de cómo formar la credencial en
 el proyecto [`phpcfdi/credentials`](https://github.com/phpcfdi/credentials).
 
+Para crear la credencial se necesita un certificado, una llave privada y la contraseña.
+Si el contenido del certificado y llave privada están en memoria, se utiliza el método `Credential::create()`. 
+Si el certificado y llave privada están en archivos, se emplea el método `Credential::openFiles()`. 
+
 ```php
 <?php declare(strict_types=1);
 
@@ -420,6 +424,7 @@ use PhpCfdi\Credentials\Credential;
  */
 
 // crear la credencial
+// se puede usar Credential::openFiles(certificateFile, privateKeyFile, passphrase) si la FIEL está en archivos 
 $credential = Credential::create($certificate, $privateKey, $passPhrase);
 if (! $credential->isFiel()) {
     throw new Exception('The certificate and private key is not a FIEL');

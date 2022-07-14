@@ -4,7 +4,9 @@
     defaultTestSuite="unit"
     bootstrap="tests/bootstrap.php"
     cacheResultFile="build/phpunit.result.cache"
-    colors="true">
+    convertDeprecationsToExceptions="true"
+    colors="true"
+    >
 
   <coverage>
     <include>

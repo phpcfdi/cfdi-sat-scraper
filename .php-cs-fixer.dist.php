@@ -25,9 +25,7 @@ return (new PhpCsFixer\Config())
         'no_empty_statement' => true,
         'no_extra_blank_lines' => true,
         'function_typehint_space' => true,
-        'trailing_comma_in_multiline' => ['elements' => ['arrays', 'arguments']],
-        'new_with_braces' => true,
-        'no_blank_lines_after_class_opening' => true,
+        'trailing_comma_in_multiline' => ['after_heredoc' => true, 'elements' => ['arrays', 'arguments']],
         'no_blank_lines_after_phpdoc' => true,
         'object_operator_without_whitespace' => true,
         'binary_operator_spaces' => true,
@@ -36,7 +34,6 @@ return (new PhpCsFixer\Config())
         'single_quote' => true,
         'no_singleline_whitespace_before_semicolons' => true,
         'no_unused_imports' => true,
-        'no_whitespace_in_blank_line' => true,
         'yoda_style' => ['equal' => true, 'identical' => true, 'less_and_greater' => null],
         'standardize_not_equals' => true,
         'concat_space' => ['spacing' => 'one'],
@@ -46,10 +43,7 @@ return (new PhpCsFixer\Config())
         'self_accessor' => true,
         // contrib
         'not_operator_with_successor_space' => true,
-        'single_blank_line_before_namespace' => true,
-        'blank_line_after_opening_tag' => true,
-        'ordered_imports' => true,
-        'array_syntax' => ['syntax' => 'short'],
+        'ordered_imports' => ['imports_order' => ['class', 'function', 'const']], // @PSR12 sort_algorithm: none
     ])
     ->setFinder(
         PhpCsFixer\Finder::create()

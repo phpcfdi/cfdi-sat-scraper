@@ -148,7 +148,7 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
     }
 
     /** @return Traversable<string, RepositoryItem> */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->items);
     }
@@ -156,6 +156,6 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
     /** @return RepositoryItem[] */
     public function jsonSerialize(): array
     {
-        return iterator_to_array($this->getIterator());
+        return $this->items;
     }
 }

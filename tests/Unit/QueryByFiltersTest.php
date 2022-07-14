@@ -35,8 +35,8 @@ final class QueryByFiltersTest extends TestCase
         $end = new DateTimeImmutable('2019-01-31');
         $query = new Query($start, $end);
 
-        $this->assertEquals($query->getStartDate(), $start);
-        $this->assertEquals($query->getEndDate(), $end);
+        $this->assertSame($query->getStartDate(), $start);
+        $this->assertSame($query->getEndDate(), $end);
     }
 
     public function testSetDatesFromSettersPeriod(): void
@@ -47,8 +47,8 @@ final class QueryByFiltersTest extends TestCase
         $query = new Query(new DateTimeImmutable('2019-01-01'), new DateTimeImmutable('2019-01-31'));
         $this->assertSame($query, $query->setPeriod($start, $end), 'The setter should be fluid');
 
-        $this->assertEquals($query->getStartDate(), $start);
-        $this->assertEquals($query->getEndDate(), $end);
+        $this->assertSame($query->getStartDate(), $start);
+        $this->assertSame($query->getEndDate(), $end);
     }
 
     public function testSetDatesFromSetStartEndDate(): void
@@ -60,8 +60,8 @@ final class QueryByFiltersTest extends TestCase
         $this->assertSame($query, $query->setStartDate($start), 'The setter should be fluid');
         $this->assertSame($query, $query->setEndDate($end), 'The setter should be fluid');
 
-        $this->assertEquals($query->getStartDate(), $start);
-        $this->assertEquals($query->getEndDate(), $end);
+        $this->assertSame($query->getStartDate(), $start);
+        $this->assertSame($query->getEndDate(), $end);
     }
 
     public function testSetComplementOption(): void
@@ -86,7 +86,7 @@ final class QueryByFiltersTest extends TestCase
         $query = new Query(new DateTimeImmutable('2019-01-01'), new DateTimeImmutable('2019-01-31'));
         $this->assertSame($query, $query->setRfc(new RfcOption($rfc)), 'The setter should be fluid');
 
-        $this->assertEquals($query->getRfc()->value(), $rfc);
+        $this->assertSame($rfc, $query->getRfc()->value());
     }
 
     public function testSetRfcOnBehalfOption(): void
@@ -95,6 +95,6 @@ final class QueryByFiltersTest extends TestCase
         $query = new Query(new DateTimeImmutable('2019-01-01'), new DateTimeImmutable('2019-01-31'));
         $this->assertSame($query, $query->setRfcOnBehalf(new RfcOnBehalfOption($rfc)), 'The setter should be fluid');
 
-        $this->assertEquals($query->getRfcOnBehalf()->value(), $rfc);
+        $this->assertSame($rfc, $query->getRfcOnBehalf()->value());
     }
 }

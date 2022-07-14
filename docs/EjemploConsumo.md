@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\FileCookieJar;
-use PhpCfdi\CfdiSatScraper\Captcha\Resolvers\ConsoleCaptchaResolver;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
@@ -31,6 +30,7 @@ use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
+use PhpCfdi\ImageCaptchaResolver\Resolvers\ConsoleResolver;
 
 $rfc = strval($_SERVER['SAT_AUTH_RFC'] ?? '');
 $claveCiec = strval($_SERVER['SAT_AUTH_CIEC'] ?? '');
@@ -38,7 +38,7 @@ $cookieJarPath = sprintf('%s/build/cookies/%s.json', getcwd(), $rfc);
 $downloadsPath = sprintf('%s/build/cfdis/%s', getcwd(), $rfc);
 
 $gateway = new SatHttpGateway(new Client(), new FileCookieJar($cookieJarPath, true));
-$captchaResolver = new ConsoleCaptchaResolver();
+$captchaResolver = new ConsoleResolver();
 
 $ciecSessionManager = CiecSessionManager::create($rfc, $claveCiec, $captchaResolver);
 
@@ -55,12 +55,22 @@ $list = $satScraper->listByPeriod($query);
 printf("\nSe encontraron %d registros", $list->count());
 
 $list = $list->filterWithResourceLink(ResourceType::xml());
-printf("\nPero solamente %d contienen archivos XML", $list->count());
+printf("\nPero solamente %d registros contienen archivos XML", $list->count());
+
 while ($list->count() > 0) {
+    // perform download
     printf("\nIntentando descargar %d archivos: ", $list->count());
     $downloadedUuids = $resourceDownloader->setMetadataList($list)
         ->saveTo($downloadsPath, true);
-    printf("%d descargados: ", count($downloadedUuids));
+    printf('%d descargados.', count($downloadedUuids));
+
+    // check that at least one uuid were downloaded
+    if ([] === $downloadedUuids) {
+        printf("\nNo se pudieron descargar %d registros", $list->count());
+        break; // exit loop since no records were downloaded
+    }
+    
+    // reduce list
     $list = $list->filterWithOutUuids($downloadedUuids);
 }
 ```
