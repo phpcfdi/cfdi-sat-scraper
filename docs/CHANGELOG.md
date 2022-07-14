@@ -6,7 +6,7 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión.
 
-## Version 3.1.0
+## Versión 3.1.0
 
 ### Agregar *RFC a cuenta de terceros*
 
@@ -30,7 +30,7 @@ Se agrega el código que ejemplifica cómo validar que la FIEL no es un CSD y qu
 
 Al ejecutar el flujo de integración continua, se usan los path en el archivo `phpcs.xml.dist`.
 
-## Version 3.0.0
+## Versión 3.0.0
 
 Vea la [Guía de actualización de `2.x` a `3.x`](UPGRADE-2-3.md).
 
@@ -53,7 +53,7 @@ Cambios relevantes en desarrollo:
   <https://sonarcloud.io/project/overview?id=phpcfdi_cfdi-sat-scraper>.
 - Se deja de usar la integración con Scrutinizer CI. Gracias Srutinizer.
 
-## Version 2.1.1
+## Versión 2.1.1
 
 Se corrige un bug al consumir el servicio de Anti-Captcha donde estaba asumiendo que el código de error
 era un string vacío cuando en realidad es un número entero.
@@ -63,7 +63,7 @@ era un string vacío cuando en realidad es un número entero.
 
 - 2021-07-05: CI: Se permite que falle la subida del archivo de cobertura de código a Scrutinizer-CI.
 
-## Version 2.1.0
+## Versión 2.1.0
 
 Se agrega la implementación para resolver el *captcha* en la clase `AntiCaptchaResolver`,
 que a su vez usa la clase `AntiCaptchaTinyClient` como un cliente de conectividad mínimo.
@@ -74,7 +74,7 @@ Estos cambios no son importantes si estás usando la librería y son con respect
 Los flujos de pruebas de integración contínua ahora se migraron a GitHub Actions,
 Travis-CI ha sido de gran ayuda en el desarrollo de este proyecto.
 
-## Version 2.0.0
+## Versión 2.0.0
 
 ### Descarga de diferentes tipos de recursos
 
@@ -101,7 +101,7 @@ Este cambio no afectó la versión liberada y no requiere de un nuevo release.
   de PHPUnit, por lo que sabe que el código subsecuente es código muerto. Se corrigieron las pruebas con problemas.
 - Se actualizó la herramienta `develop/install-development-tools`
 
-## Version 1.0.1
+## Versión 1.0.1
 
 - Se actualizan dependencias:
     - `symfony/dom-crawler` de `^4.2|^5.0` a `5.1`.
@@ -113,7 +113,7 @@ Este cambio no afectó la versión liberada y no requiere de un nuevo release.
 - Se cambia en desarrollo la inicialización de `Dotenv` porque se deprecó la forma anterior en `symfony/dotenv: ^5.1`.
 - Se cambia en desarrollo la dependencia de `symfony/dotenv` de `^4.2|^5.0` a `^5.1`.
 
-## Version 1.0.0
+## Versión 1.0.0
 
 - Se establece la versión mínima de PHP a 7.3.
 - Se revisan las expresiones regulares y `json_encode`/`json_decode` con el paso a 7.3.

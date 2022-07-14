@@ -2,7 +2,7 @@
 
 ## Creación del objeto `SatScraper`
 
-Anteriormente el objeto `SatScraper` se construía utilizando los datos de la Clave CIEC,
+Anteriormente, el objeto `SatScraper` se construía utilizando los datos de la Clave CIEC,
 sin embargo, a partir de la versión 3 se puede utilizar la Clave CIEC o la FIEL.
 
 Luego entonces, esta es la nueva forma de construirlo:
@@ -42,7 +42,7 @@ se incluye el método `getCaptchaImage` con el último objeto `CaptchaImage` que
 
 ## Manejador del momento cuando se han alcanzado 500 registros
 
-Anteriormente se usaba una función `callable` con la firma `callable(DateTimeImmutable): void`.
+Anteriormente, se usaba una función `callable` con la firma `callable(DateTimeImmutable): void`.
 
 Ahora se requiere una implementación del *contrato* `MaximumRecordsHandler`.
 Si al crear el objeto `SatScraper` no se establece un manejador o se establece como `null` entonces se usará

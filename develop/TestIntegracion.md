@@ -86,7 +86,7 @@ xdg-open http://127.0.0.1:9595
 
 Y para ejecutar los tests:
 
-```
+```shell
 # using .env config
 php vendor/bin/phpunit --testsuite integration --verbose
 

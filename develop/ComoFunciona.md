@@ -25,7 +25,7 @@ para crear los inputs (datos de las llamadas HTTP POST) basados en la consulta. 
 encargado de definir cuál es la implementación de `InputsInterface` que utilizará: `InputsByUuid`,
 `InputsByFiltersReceived` y `InputsByFiltersIssued`.
 
-```
+```text
 - interface InputsInterface
     - abstract InputsGeneric
         - concrete InputsByUuid
@@ -43,7 +43,7 @@ La resolución de una consulta de `QueryResolver` consta de 3 pasos:
 
 Por lo anterior, los pasos son:
 
-```
+```text
 SatScraper -> MetadataDownloader -> QueryResolver
           Query          Query[] -> Inputs
 ```
