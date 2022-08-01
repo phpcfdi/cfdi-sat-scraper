@@ -133,14 +133,14 @@ final class MetadataListTest extends TestCase
     public function testFilterWithResourceLink(): void
     {
         $faker = $this->fakes()->faker();
-        $withXmlUrl = $this->createMetadataArrayUsingUuids(...[ // 3 items
-            $faker->uuid,
-            $faker->uuid,
-            $faker->uuid,
-        ]);
+        $withXmlUrl = $this->createMetadataArrayUsingUuids( // 3 items
+            $faker->uuid(),
+            $faker->uuid(),
+            $faker->uuid(),
+        );
         $metadatas = $withXmlUrl + [  // + 2 items without url
-            $uuid = $faker->uuid => new Metadata($uuid),
-            $uuid = $faker->uuid => new Metadata($uuid),
+            $uuid = $faker->uuid() => new Metadata($uuid, [ResourceType::xml()->value() => '']), // url is empty
+            $uuid = $faker->uuid() => new Metadata($uuid), // url is not defined
         ];
         shuffle($metadatas);
         $metadataList = new MetadataList($metadatas);

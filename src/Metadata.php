@@ -108,7 +108,7 @@ class Metadata implements JsonSerializable, IteratorAggregate
 
     public function hasResource(ResourceType $resourceType): bool
     {
-        return $this->has($resourceType->value());
+        return '' !== $this->get($resourceType->value());
     }
 
     /** @return Traversable<string, string> */

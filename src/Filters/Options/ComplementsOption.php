@@ -101,6 +101,8 @@ use PhpCfdi\CfdiSatScraper\Exceptions\InvalidArgumentException;
  *
  * @method string getInput()
  * @method string getDescription()
+ *
+ * @extends MicroCatalog<array{input: string, description: string}>
  */
 class ComplementsOption extends MicroCatalog implements FilterOption
 {
@@ -294,7 +296,7 @@ class ComplementsOption extends MicroCatalog implements FilterOption
         return self::VALUES;
     }
 
-    public function getEntryValueOnUndefined(): void
+    public function getEntryValueOnUndefined(): array
     {
         throw InvalidArgumentException::complementsOptionInvalidKey((string) $this->getEntryIndex());
     }

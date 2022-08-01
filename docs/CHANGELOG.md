@@ -8,6 +8,25 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 No hay cambios no liberados, si existen, deben aparecer aquí.
 
+## Versión 3.1.2
+
+### Filtrado de recursos incorrecto
+
+Problema: Si el objeto `Metadata` contenía la entrada del recurso, pero estaba vacía,
+entonces la función `hasResource` devolvía verdadero. Esto hacía que fallara el filtrado.
+Se corrigió el problema comparando contra el valor vacío y no contra la existencia de la llave.
+Gracias `@micotito` por la detección del problema.
+
+### Actualización de `eclipxe/micro-catalog`
+
+La nueva versión de `eclipxe/micro-catalog` necesita la especificación del tipo de datos
+para `MicroCatalog` en la clase `ComplementsOption`.
+
+### Actualización de herramientas de desarrollo
+
+- Se actualizan las herramientas.
+- Se elimina la regla `method_argument_space` para dejar la definición por defecto de PSR-12.
+
 ## Versión 3.1.1
 
 ### Cambios en el código

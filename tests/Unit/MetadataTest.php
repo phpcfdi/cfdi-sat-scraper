@@ -108,4 +108,20 @@ final class MetadataTest extends TestCase
         $this->assertInstanceOf(Traversable::class, $metadata);
         $this->assertSame($data, iterator_to_array($metadata));
     }
+
+    public function testHasResource(): void
+    {
+        $uuid = $this->fakes()->faker()->uuid();
+        $data = ['uuid' => $uuid];
+        foreach (ResourceType::toArray() as $value) {
+            $data[$value] = '';
+        }
+
+        $metadata = new Metadata($uuid, $data);
+
+        foreach (ResourceType::toArray() as $value) {
+            $resourceType = new ResourceType($value);
+            $this->assertFalse($metadata->hasResource($resourceType));
+        }
+    }
 }
