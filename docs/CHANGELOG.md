@@ -8,6 +8,13 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 No hay cambios no liberados, si existen, deben aparecer aquí.
 
+## Versión 3.2.0
+
+### Agregar *Motivo de cancelación* y *Folio de sustitución*
+
+Se agrega la lectura de *Motivo de cancelación* (`motivoCancelacion`) y *Folio de sustitución* (`folioSustitucion`) a `Metadata`. Así como la extracción de estos datos en `MetadataExtractor`.
+Gracias `@TheSpectroMx`.
+
 ## Versión 3.1.2
 
 ### Filtrado de recursos incorrecto
