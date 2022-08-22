@@ -71,7 +71,6 @@ final class SatScraperDownloadMethodsTest extends TestCase
 
     public function testListByPeriodCallDownloaderMethod(): void
     {
-
         /** @var SatScraper&MockObject $scraper */
         $scraper = $this->getMockBuilder(SatScraper::class)
             ->disableOriginalConstructor()
