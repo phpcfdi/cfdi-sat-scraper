@@ -6,7 +6,11 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
-No hay cambios no liberados, si existen, deben aparecer aquí.
+### 2022-10-22: Corrección de construcción de integración continua
+
+- Se actualizaron las herramientas de desarrollo.
+- Se aplicó la corrección de `php-cs-fixer`.
+- Se corrigió el nombre de usuario de `@git-micotito` en este mismo archivo.
 
 ## Versión 3.2.0
 
@@ -22,7 +26,7 @@ Gracias `@TheSpectroMx`.
 Problema: Si el objeto `Metadata` contenía la entrada del recurso, pero estaba vacía,
 entonces la función `hasResource` devolvía verdadero. Esto hacía que fallara el filtrado.
 Se corrigió el problema comparando contra el valor vacío y no contra la existencia de la llave.
-Gracias `@micotito` por la detección del problema.
+Gracias `@git-micotito` por la detección del problema.
 
 ### Actualización de `eclipxe/micro-catalog`
 
