@@ -22,7 +22,7 @@ Gracias `@TheSpectroMx`.
 Problema: Si el objeto `Metadata` contenía la entrada del recurso, pero estaba vacía,
 entonces la función `hasResource` devolvía verdadero. Esto hacía que fallara el filtrado.
 Se corrigió el problema comparando contra el valor vacío y no contra la existencia de la llave.
-Gracias `@micotito` por la detección del problema.
+Gracias `@git-micotito` por la detección del problema.
 
 ### Actualización de `eclipxe/micro-catalog`
 
