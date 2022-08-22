@@ -6,7 +6,11 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
-No hay cambios no liberados, si existen, deben aparecer aquí.
+### 2022-10-22: Corrección de construcción de integración continua
+
+- Se actualizaron las herramientas de desarrollo.
+- Se aplicó la corrección de `php-cs-fixer`.
+- Se corrigió el nombre de usuario de `@git-micotito` en este mismo archivo.
 
 ## Versión 3.2.0
 
