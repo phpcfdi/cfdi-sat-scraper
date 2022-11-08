@@ -6,6 +6,13 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
+### 2022-11-09: Corrección de construcción de integración continua
+
+- Se actualizaron las herramientas de desarrollo.
+- Se corrige la firma (`phpdoc`) del método `HttpLogger::bodyToVars`.
+- Se corrige el método `Repository::randomize` pues perdía las llaves del arreglo.
+- Se corrige el archivo de configuración de `php-cs-fixer` porque la regla `no_trailing_comma_in_singleline_array` está deprecada.
+
 ### 2022-10-22: Corrección de construcción de integración continua
 
 - Se actualizaron las herramientas de desarrollo.
