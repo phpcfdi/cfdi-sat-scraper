@@ -95,7 +95,11 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
     {
         $items = $this->items;
         shuffle($items);
-        return new self($items);
+        $itemsWithUuid = [];
+        foreach ($items as $item) {
+            $itemsWithUuid[$item->getUuid()] = $item;
+        }
+        return new self($itemsWithUuid);
     }
 
     public function topItems(int $length): self
