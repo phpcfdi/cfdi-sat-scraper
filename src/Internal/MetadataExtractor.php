@@ -82,6 +82,8 @@ class MetadataExtractor
             'estatusProcesoCancelacion' => 'Estatus de Proceso de Cancelación',
             'fechaProcesoCancelacion' => 'Fecha de Proceso de Cancelación',
             'rfcACuentaTerceros' => 'RFC a cuenta de terceros',
+            'motivoCancelacion' => 'Motivo',
+            'folioSustitucion' => 'Folio de Sustitución',
         ];
     }
 

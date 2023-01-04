@@ -183,6 +183,8 @@ final class MetadataExtractorTest extends TestCase
             'estatusProcesoCancelacion' => '',
             'fechaProcesoCancelacion' => '',
             'rfcACuentaTerceros' => 'AAA991231AAA',
+            'motivoCancelacion' => '',
+            'folioSustitucion' => '',
             'urlXml' => '', // the data is not included on test file
             'urlPdf' => '',
             'urlCancelRequest' => '',
@@ -220,6 +222,8 @@ final class MetadataExtractorTest extends TestCase
                 'estatusProcesoCancelacion' => '',
                 'fechaProcesoCancelacion' => '',
                 'rfcACuentaTerceros' => 'ABC010101AAA',
+                'motivoCancelacion' => '',
+                'folioSustitucion' => '',
             ],
         ];
 
