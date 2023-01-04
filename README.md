@@ -543,7 +543,7 @@ and licensed for use under the MIT License (MIT). Please see [LICENSE][] for mor
 [badge-php-version]: https://img.shields.io/packagist/php-v/phpcfdi/cfdi-sat-scraper?logo=php
 [badge-release]: https://img.shields.io/github/release/phpcfdi/cfdi-sat-scraper?logo=git
 [badge-license]: https://img.shields.io/github/license/phpcfdi/cfdi-sat-scraper?logo=open-source-initiative
-[badge-build]: https://img.shields.io/github/workflow/status/phpcfdi/cfdi-sat-scraper/build/main?logo=github-actions
+[badge-build]: https://img.shields.io/github/actions/workflow/status/phpcfdi/cfdi-sat-scraper/build.yml?branch=main&logo=github-actions
 [badge-reliability]: https://sonarcloud.io/api/project_badges/measure?project=phpcfdi_cfdi-sat-scraper&metric=reliability_rating
 [badge-maintainability]: https://sonarcloud.io/api/project_badges/measure?project=phpcfdi_cfdi-sat-scraper&metric=sqale_rating
 [badge-coverage]: https://img.shields.io/sonar/coverage/phpcfdi_cfdi-sat-scraper/main?logo=sonarcloud&server=https%3A%2F%2Fsonarcloud.io

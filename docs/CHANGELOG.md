@@ -6,7 +6,24 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
-### 2022-11-09: Corrección de construcción de integración continua
+No hay cambios aún no liberados actualmente.
+
+## Versión 3.2.1
+
+### Quitar *Motivo de cancelación* y *Folio de sustitución*
+
+Se elimina la lectura de *Motivo de cancelación* (`motivoCancelacion`) y *Folio de sustitución* (`folioSustitucion`).
+Aparentemente, en la fecha 2023-01-04 el SAT ha eliminado estas columnas.
+
+### Otros cambios menores
+
+- Actualización de licencia a 2023. ¡Feliz año!.
+- Actualización de flujos de trabajo sustituyendo la directiva `::set-output` con `$GITHUB_OUTPUT`.
+- Corrección de la insignia del flujo de construcción `build`.
+
+### Cambios previos
+
+#### 2022-11-09: Corrección de construcción de integración continua
 
 - Se actualizaron las herramientas de desarrollo.
 - Se agrega PHP 8.2 a la matriz de pruebas en el proceso de integración continua.
@@ -14,7 +31,7 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 - Se corrige el método `Repository::randomize` pues perdía las llaves del arreglo.
 - Se corrige el archivo de configuración de `php-cs-fixer` porque la regla `no_trailing_comma_in_singleline_array` está deprecada.
 
-### 2022-10-22: Corrección de construcción de integración continua
+#### 2022-10-22: Corrección de construcción de integración continua
 
 - Se actualizaron las herramientas de desarrollo.
 - Se aplicó la corrección de `php-cs-fixer`.
