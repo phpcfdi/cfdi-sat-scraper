@@ -33,8 +33,6 @@ use Traversable;
  * @property-read string $estatusProcesoCancelacion Estatus de Proceso de Cancelación
  * @property-read string $fechaProcesoCancelacion Fecha de Proceso de Cancelación
  * @property-read string $rfcACuentaTerceros RFC a cuenta de terceros
- * @property-read string $motivoCancelacion Motivo de cancelación
- * @property-read string $folioSustitucion UUID del CFDI con el que es sustituido
  *
  * @see MetadataExtractor::defaultFieldsCaptions()
  * @implements IteratorAggregate<string, string>
