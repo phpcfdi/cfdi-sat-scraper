@@ -8,6 +8,13 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 No hay cambios aún no liberados actualmente.
 
+## Versión 3.2.2
+
+### Regresar *Motivo de cancelación* y *Folio de sustitución*
+
+Se regresa la lectura de *Motivo de cancelación* (`motivoCancelacion`) y *Folio de sustitución* (`folioSustitucion`).
+Aparentemente, en la fecha 2023-01-12 el SAT ha regresado estas columnas.
+
 ## Versión 3.2.1
 
 ### Quitar *Motivo de cancelación* y *Folio de sustitución*
