@@ -96,7 +96,7 @@ final class MetadataTest extends TestCase
     {
         $metadata = new Metadata($this->fakes()->faker()->uuid, []);
         $this->expectException(LogicException::class);
-        unset($metadata->{'foo'}); /** @phpstan-ignore-line */
+        unset($metadata->{'foo'});
     }
 
     public function testIterateOverData(): void
