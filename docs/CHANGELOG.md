@@ -6,7 +6,11 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
-No hay cambios aún no liberados actualmente.
+### Cambios no liberados: 2023-01-31
+
+- Actualización de herramientas de desarrollo.
+- En las pruebas, se elimina una anotación para PHPStan para ignorar un error al realizar `unset` sobre una
+  variable indefinida en un objeto de tipo `Metadata`.
 
 ## Versión 3.2.2
 
