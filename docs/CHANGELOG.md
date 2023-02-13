@@ -6,6 +6,13 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
+### Cambios no liberados: 2023-02-13
+
+- Actualización de herramientas de desarrollo.
+- Se agrega la configuración en `composer.json` para no permitir el uso de *plugins* de `php-http/discovery`.
+- En las pruebas, se refactoriza `SatHttpGatewayTest::testMethodPostLoginDataIsDeprecated` para probar que
+  el método `postLoginData` está deprecado, dado que PHPUnit 9.6 descontinuó el método `expectDeprecation`.
+
 ### Cambios no liberados: 2023-01-31
 
 - Actualización de herramientas de desarrollo.

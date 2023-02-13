@@ -15,6 +15,9 @@
         }
     ],
     "config": {
+        "allow-plugins": {
+            "php-http/discovery": false
+        },
         "preferred-install": {
             "*": "dist"
         },
