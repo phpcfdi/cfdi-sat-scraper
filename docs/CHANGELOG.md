@@ -13,6 +13,7 @@ Estos cambios se realizan en el entorno de desarrollo y pruebas, por lo que no e
 - Se refactoriza la clase `RepositoryItem` para que las responsabilidades de la creación de una instancia 
   a partir de un arreglo se realizen en la clase `RepositoryItemFactory`.
 - Se corrige el issue falso positivo encontrado por PHPStan al convertir un objeto a cadena de caracteres.
+- Actualización de herramientas de desarrollo.
 
 ### Cambios no liberados: 2023-02-13
 
