@@ -16,6 +16,7 @@ En este momento no hay cambios no liberados.
 
 Los siguientes cambios aplican al entorno de desarrollo:
 
+- La ejecución de `php-cs-fixer` dentro de `composer` se condiciona a mínimo PHP 8.0.
 - Se refactoriza la clase `RepositoryItem` para que las responsabilidades de la creación de una instancia 
   a partir de un arreglo se realizen en la clase `RepositoryItemFactory`.
 - Se corrigen las pruebas para usar `psr/http-message:^2.0`.
