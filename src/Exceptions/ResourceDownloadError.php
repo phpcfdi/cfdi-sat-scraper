@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Exceptions;
 
+use Stringable;
 use Throwable;
 
 /**
@@ -67,6 +68,11 @@ class ResourceDownloadError extends \RuntimeException implements SatException
             return strval($reason);
         }
         if (is_object($reason) && is_callable([$reason, '__toString'])) {
+            /**
+             * Fix PHPStan false positive detecting cast from object to string
+             * @phpstan-var Stringable $reason
+             * @noinspection PhpMultipleClassDeclarationsInspection
+             */
             return strval($reason);
         }
         return print_r($reason, true);
