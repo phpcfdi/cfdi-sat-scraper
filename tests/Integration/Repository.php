@@ -50,12 +50,14 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
         if (! is_array($dataItems)) {
             throw new RuntimeException('JSON decoded contents from %s is not an array');
         }
+
+        $itemFactory = new RepositoryItemFactory();
         $items = [];
         foreach ($dataItems as $index => $dataItem) {
             if (! is_array($dataItem)) {
                 throw new RuntimeException("Entry $index is not an array");
             }
-            $item = RepositoryItem::fromArray($dataItem);
+            $item = $itemFactory->make($dataItem);
             $items[$item->getUuid()] = $item;
         }
         return new self($items);

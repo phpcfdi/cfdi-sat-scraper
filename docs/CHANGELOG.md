@@ -6,6 +6,13 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
+### Cambios no liberados: 2023-05-25
+
+Estos cambios se realizan en el entorno de desarrollo y pruebas, por lo que no es necesario hacer una liberación.
+
+- Se refactoriza la clase `RepositoryItem` para que las responsabilidades de la creación de una instancia 
+  a partir de un arreglo se realizen en la clase `RepositoryItemFactory`.
+
 ### Cambios no liberados: 2023-02-13
 
 - Actualización de herramientas de desarrollo.
