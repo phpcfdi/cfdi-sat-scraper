@@ -210,7 +210,7 @@ class ResourceDownloader
      * @throws RuntimeException if ask to create folder path exists and is not a folder
      * @throws RuntimeException if unable to create folder
      *
-     * @see \PhpCfdi\CfdiSatScraper\Internal\ResourceDownloadStoreInFolder
+     * @see ResourceDownloadStoreInFolder
      */
     public function saveTo(string $destinationFolder, bool $createFolder = false, int $createMode = 0775): array
     {

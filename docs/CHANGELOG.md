@@ -6,6 +6,25 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
+En este momento no hay cambios no liberados.
+
+## Versión 3.2.3 2023-05-25
+
+- Se actualiza la dependencia de `guzzlehttp/promises` a versión mínima 2.0.
+- Se actualiza la dependencia de `psr/http-message` a versiones mínimas 1.1 o 2.0.
+- Se actualiza la dependencia de `phpcfdi/image-captcha-resolver` a versión mínima 0.2.3.
+
+Los siguientes cambios aplican al entorno de desarrollo:
+
+- La ejecución de `php-cs-fixer` dentro de `composer` se condiciona a mínimo PHP 8.0.
+- Se refactoriza la clase `RepositoryItem` para que las responsabilidades de la creación de una instancia 
+  a partir de un arreglo se realizen en la clase `RepositoryItemFactory`.
+- Se corrigen las pruebas para usar `psr/http-message:^2.0`.
+- Se corrige el issue falso positivo encontrado por PHPStan al convertir un objeto a cadena de caracteres.
+- Actualización de herramientas de desarrollo.
+
+También se concluyen los siguientes cambios previos no liberados.
+
 ### Cambios no liberados: 2023-02-13
 
 - Actualización de herramientas de desarrollo.

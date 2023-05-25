@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 
 use DateTimeImmutable;
-use DomainException;
-use Exception;
 use JsonSerializable;
 
 class RepositoryItem implements JsonSerializable
@@ -29,26 +27,6 @@ class RepositoryItem implements JsonSerializable
         $this->date = $date;
         $this->type = strtoupper(substr($type, 0, 1));
         $this->state = strtoupper(substr($state, 0, 1));
-    }
-
-    /** @param array<mixed> $item */
-    public static function fromArray(array $item): self
-    {
-        return new self(
-            strval($item['uuid'] ?? ''),
-            self::dateFromString(strval($item['date'] ?? '')),
-            strval($item['state'] ?? ''),
-            strval($item['type'] ?? ''),
-        );
-    }
-
-    private static function dateFromString(string $value): DateTimeImmutable
-    {
-        try {
-            return new DateTimeImmutable($value);
-        } catch (Exception $exception) {
-            throw new DomainException(sprintf('Unable to parse date with value %s', $value));
-        }
     }
 
     public function getUuid(): string
