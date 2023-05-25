@@ -23,7 +23,7 @@ final class ResourceDownloadResponseErrorTest extends TestCase
     {
         /** @var ResponseInterface&MockObject $response */
         $response = $this->createMock(ResponseInterface::class);
-        $response->method('getStatusCode')->willReturn('503');
+        $response->method('getStatusCode')->willReturn(503);
         $uuid = 'uuid';
         $exception = ResourceDownloadResponseError::invalidStatusCode($response, $uuid);
         $this->assertSame(
