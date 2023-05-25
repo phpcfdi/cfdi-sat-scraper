@@ -6,7 +6,10 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
-En este momento no hay cambios no liberados.
+### Cambios no liberados: 2023-02-13
+
+- Se corrige la configuración de `sonar-project.properties` para excluir correctamente los archivos para pruebas.
+- Se excluye correctamente el archivo `sonar-project.properties` del paquete de Git.
 
 ## Versión 3.2.3 2023-05-25
 
