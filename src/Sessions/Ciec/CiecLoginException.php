@@ -6,7 +6,7 @@ namespace PhpCfdi\CfdiSatScraper\Sessions\Ciec;
 
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
-use PhpCfdi\ImageCaptchaResolver\CaptchaImage;
+use PhpCfdi\ImageCaptchaResolver\CaptchaImageInterface;
 use Throwable;
 
 class CiecLoginException extends LoginException
@@ -17,7 +17,7 @@ class CiecLoginException extends LoginException
     /** @var array<string, string> */
     private $postedData;
 
-    /** @var CaptchaImage|null */
+    /** @var CaptchaImageInterface|null */
     private $captchaImage;
 
     /**
@@ -47,7 +47,7 @@ class CiecLoginException extends LoginException
         return new self('It was unable to find the captcha image', $data, $contents, [], $previous);
     }
 
-    public static function captchaWithoutAnswer(CiecSessionData $data, CaptchaImage $captchaImage, Throwable $previous = null): self
+    public static function captchaWithoutAnswer(CiecSessionData $data, CaptchaImageInterface $captchaImage, Throwable $previous = null): self
     {
         $exception = new self('Unable to decode captcha', $data, '', [], $previous);
         $exception->captchaImage = $captchaImage;
@@ -62,7 +62,7 @@ class CiecLoginException extends LoginException
      */
     public static function incorrectLoginData(CiecSessionData $data, string $contents, array $postedData): self
     {
-        return new self('Unable to decode captcha', $data, $contents, $postedData);
+        return new self('Incorrect login data', $data, $contents, $postedData);
     }
 
     public static function connectionException(string $when, CiecSessionData $data, SatHttpGatewayException $exception): self
@@ -81,7 +81,7 @@ class CiecLoginException extends LoginException
         return $this->postedData;
     }
 
-    public function getCaptchaImage(): ?CaptchaImage
+    public function getCaptchaImage(): ?CaptchaImageInterface
     {
         return $this->captchaImage;
     }

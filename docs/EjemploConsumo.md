@@ -12,7 +12,7 @@ Y se espera que:
 
 - Se pueda reutilizar la `cookie` si no ha expirado y así no tener que volver a resolver un captcha.
 - Se carge una lista de CFDI recibidos y vigentes entre 2019-12-01 y 2019-12-31.
-- Se descarguen los XML correspondientes a dichos registros.
+- Ocurra la descarga de los XML correspondientes a dichos registros.
 
 La rutina de descarga intentará hasta que haya descargado todos los archivos.
 

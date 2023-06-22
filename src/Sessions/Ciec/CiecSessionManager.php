@@ -123,6 +123,24 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
     private function loginInternal(int $attempt): string
     {
         $captchaValue = $this->getCaptchaValue(1);
+
+        try {
+            $response = $this->loginPostLoginData($captchaValue);
+        } catch (CiecLoginException $exception) {
+            if ($attempt < $this->sessionData->getMaxTriesLogin()) {
+                return $this->loginInternal($attempt + 1);
+            }
+            throw $exception;
+        }
+
+        return $response;
+    }
+
+    /**
+     * @throws CiecLoginException
+     */
+    public function loginPostLoginData(string $captchaValue): string
+    {
         $postData = [
             'Ecom_User_ID' => $this->sessionData->getRfc(),
             'Ecom_Password' => $this->sessionData->getCiec(),
@@ -137,10 +155,6 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
         }
 
         if (false !== strpos($response, 'Ecom_User_ID')) {
-            if ($attempt < $this->sessionData->getMaxTriesLogin()) {
-                return $this->loginInternal($attempt + 1);
-            }
-
             throw CiecLoginException::incorrectLoginData($this->sessionData, $response, $postData);
         }
 

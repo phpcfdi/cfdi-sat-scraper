@@ -1,5 +1,6 @@
 name: build
 on:
+  workflow_dispatch:
   pull_request:
     branches: [ "main" ]
   push:
@@ -45,8 +46,23 @@ jobs:
           fail-fast: true
       - name: Code style (php-cs-fixer)
         run: php-cs-fixer fix --dry-run --format=checkstyle | cs2pr
+
+  composer-normalize:
+    name: Composer normalization
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: composer-normalize
         env:
-          PHP_CS_FIXER_IGNORE_ENV: y
+          fail-fast: true
+      - name: Composer normalize
+        run: composer-normalize
 
   phpstan:
     name: Code analysis (phpstan)

@@ -6,6 +6,24 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
+## Versión 3.2.4 2023-06-22
+
+Se corrige el mensaje relacionado con el envío de datos incorrectos al iniciar sesión usando CIEC.
+
+Se corrige la dependencia de `CaptchaImage` por `CaptchaImageInterface` en `CiecLoginException`.
+
+Se extrae la lógica para hacer la petición de acceso vía CIEC a un método separado.
+En una prueba de concepto esto ayuda a crear la sesión usando un valor conocido de *Captcha*.
+
+Se agregan los siguientes cambios en el entorno de desarrollo:
+
+- Se corrige la liga del proyecto en el archivo `CONTRIBUTING.md`.
+- Se actualizan las herramientas de desarrollo.
+- Se agrega la herramienta `composer-normalize`.
+- En el flujo de trabajo de cobertura de código se ejecuta usando PHP 8.2.
+- Se elimina `PHP_CS_FIXER_IGNORE_ENV` del flujo de trabajo principal en el trabajo `php-cs-fixer`.
+- Se agrega la opción para ejecutar flujos de trabajo a solicitud.
+
 ### Cambios no liberados: 2023-02-13
 
 - Se corrige la configuración de `sonar-project.properties` para excluir correctamente los archivos para pruebas.

@@ -1,9 +1,14 @@
 {
     "name": "phpcfdi/cfdi-sat-scraper",
-    "type": "library",
     "description": "Web Scraping para extraer facturas electrónicas desde la página del SAT",
-    "keywords": ["sat", "cfdi", "scrap", "mexico"],
     "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "sat",
+        "cfdi",
+        "scrap",
+        "mexico"
+    ],
     "authors": [
         {
             "name": "Cesar Aguilera",
@@ -14,14 +19,29 @@
             "email": "eclipxe13@gmail.com"
         }
     ],
-    "config": {
-        "allow-plugins": {
-            "php-http/discovery": false
-        },
-        "preferred-install": {
-            "*": "dist"
-        },
-        "optimize-autoloader": true
+    "require": {
+        "php": ">=7.3",
+        "ext-curl": "*",
+        "ext-dom": "*",
+        "ext-fileinfo": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-openssl": "*",
+        "eclipxe/enum": "^0.2.0",
+        "eclipxe/micro-catalog": "^v0.1.3",
+        "guzzlehttp/guzzle": "^7.0",
+        "guzzlehttp/promises": "^2.0",
+        "phpcfdi/credentials": "^1.1",
+        "phpcfdi/image-captcha-resolver": "^0.2.3",
+        "psr/http-message": "^1.1 || ^2.0",
+        "symfony/css-selector": "^5.4 || ^6.0",
+        "symfony/dom-crawler": "^5.4 || ^6.0"
+    },
+    "require-dev": {
+        "ext-iconv": "*",
+        "fakerphp/faker": "^1.13",
+        "phpunit/phpunit": "^9.5",
+        "symfony/dotenv": "^5.4 || ^6.0"
     },
     "autoload": {
         "psr-4": {
@@ -33,29 +53,14 @@
             "PhpCfdi\\CfdiSatScraper\\Tests\\": "tests"
         }
     },
-    "require": {
-        "php": ">=7.3",
-        "ext-curl": "*",
-        "ext-dom": "*",
-        "ext-json": "*",
-        "ext-fileinfo": "*",
-        "ext-mbstring": "*",
-        "ext-openssl": "*",
-        "psr/http-message": "^1.1|^2.0",
-        "guzzlehttp/guzzle": "^7.0",
-        "guzzlehttp/promises": "^2.0",
-        "symfony/dom-crawler": "^5.4|^6.0",
-        "symfony/css-selector": "^5.4|^6.0",
-        "eclipxe/enum": "^0.2.0",
-        "eclipxe/micro-catalog": "^v0.1.3",
-        "phpcfdi/credentials": "^1.1",
-        "phpcfdi/image-captcha-resolver": "^0.2.3"
-    },
-    "require-dev": {
-        "ext-iconv": "*",
-        "phpunit/phpunit": "^9.5",
-        "symfony/dotenv": "^5.4|^6.0",
-        "fakerphp/faker": "^1.13"
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": false
+        },
+        "optimize-autoloader": true,
+        "preferred-install": {
+            "*": "dist"
+        }
     },
     "scripts": {
         "dev:build": [
@@ -63,10 +68,12 @@
             "@dev:tests"
         ],
         "dev:check-style": [
+            "@php tools/composer-normalize normalize --dry-run",
             "@php -r 'exit(intval(PHP_VERSION_ID >= 74000));' || $PHP_BINARY tools/php-cs-fixer fix --dry-run --verbose",
             "@php tools/phpcs --colors -sp"
         ],
         "dev:fix-style": [
+            "@php tools/composer-normalize normalize",
             "@php -r 'exit(intval(PHP_VERSION_ID >= 74000));' || $PHP_BINARY tools/php-cs-fixer fix --verbose",
             "@php tools/phpcbf --colors -sp"
         ],
@@ -78,8 +85,8 @@
     },
     "scripts-descriptions": {
         "dev:build": "DEV: run dev:fix-style and dev:tests, run before pull request",
-        "dev:check-style": "DEV: search for code style errors using php-cs-fixer and phpcs",
-        "dev:fix-style": "DEV: fix code style errors using php-cs-fixer and phpcbf",
+        "dev:check-style": "DEV: search for code style errors using composer-normalize, php-cs-fixer and phpcs",
+        "dev:fix-style": "DEV: fix code style errors using composer-normalize, php-cs-fixer and phpcbf",
         "dev:tests": "DEV: run executes phpunit tests"
     }
 }
