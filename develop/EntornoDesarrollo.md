@@ -25,7 +25,7 @@ Un buen paso podría ser iniciar ejecutando los tests unitarios
 vendor/bin/phpunit tests/Unit --testdox --verbose
 ```
 
-Y después los tests de integración, sin embargo es probable que necesites configurar el archivo `tests/.env`.
+Y después los tests de integración, sin embargo, es probable que necesites configurar el archivo `tests/.env`.
 Revisa la información en [TestIntegracion](TestIntegracion.md)
 
 ```shell

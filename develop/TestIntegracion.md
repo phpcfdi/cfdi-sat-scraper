@@ -1,6 +1,6 @@
 # Test de integración
 
-Las pruebas de integración realizan consultas al sitio web del SAT y por lo tanto,
+Las pruebas de integración realizan consultas al sitio web del SAT y, por lo tanto,
 como utiliza datos de RFC y Clave CIEC, o bien, utiliza la llave FIEL,
 entonces no pueden funcionar igual para todos.
 

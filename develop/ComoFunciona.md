@@ -6,7 +6,7 @@ Al `SatScraper` se le pide que ejecute consultas, de las que hay dos definicione
 
 La propiedad que comparten todas las consultas es `DownloadType`, que define si se trata de *recibidos* o *emitidos*.
 
-Tanto en *recibidos* o *emitidos* se puede consultar por *UUID* o por *filtros*. Por lo tanto hay 4 tipos de consultas:
+Tanto en *recibidos* o *emitidos* se puede consultar por *UUID* o por *filtros*. Por lo tanto, hay 4 tipos de consultas:
 Recibidos por UUID, Recibidos por filtros, Emitidos por UUID y Emitidos por filtros.
 Sin embargo, se simplifica porque el portal del SAT funciona casi igual para recibidos y emitidos, por lo que se puede
 reducir a 3 tipos: Por UUID (recibidos/emitidos), Recibidos por filtro, Emitidos por filtro.
@@ -37,9 +37,9 @@ encargado de definir cuál es la implementación de `InputsInterface` que utiliz
 La resolución de una consulta de `QueryResolver` consta de 3 pasos:
 
 1. Entrar a la página principal según el tipo de consulta (recibidos o emitidos) y obtener todos los inputs.
-1. Hacer la selección del tipo de consulta (por UUID o por filtros) y recapturar los inputs que hubieran cambiado.
-1. Hacer la consulta con los datos específicos (uuid, fechas, rfc, complemento, estado, etc.)
-1. Generar el objeto `MetadataList` a partir de los datos devueltos.
+2. Hacer la selección del tipo de consulta (por UUID o por filtros) y recapturar los inputs que hubieran cambiado.
+3. Hacer la consulta con los datos específicos (uuid, fechas, rfc, complemento, estado, etc.)
+4. Generar el objeto `MetadataList` a partir de los datos devueltos.
 
 Por lo anterior, los pasos son:
 
