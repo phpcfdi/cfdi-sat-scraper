@@ -4,4 +4,5 @@
   <phar name="phpcs" version="^3.7.2" installed="3.7.2" location="./tools/phpcs" copy="false"/>
   <phar name="phpcbf" version="^3.7.2" installed="3.7.2" location="./tools/phpcbf" copy="false"/>
   <phar name="phpstan" version="^1.10.21" installed="1.10.21" location="./tools/phpstan" copy="false"/>
+  <phar name="composer-normalize" version="^2.31.0" installed="2.31.0" location="./tools/composer-normalize" copy="false"/>
 </phive>
