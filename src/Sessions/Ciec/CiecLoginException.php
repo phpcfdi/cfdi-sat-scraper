@@ -62,7 +62,7 @@ class CiecLoginException extends LoginException
      */
     public static function incorrectLoginData(CiecSessionData $data, string $contents, array $postedData): self
     {
-        return new self('Unable to decode captcha', $data, $contents, $postedData);
+        return new self('Incorrect login data', $data, $contents, $postedData);
     }
 
     public static function connectionException(string $when, CiecSessionData $data, SatHttpGatewayException $exception): self
