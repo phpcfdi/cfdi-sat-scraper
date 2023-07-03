@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use DOMElement;
-use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
+use Throwable;
 
 /**
  * Utility class to extract data from an HTML form.
@@ -166,7 +166,7 @@ class HtmlForm
     {
         try {
             $elements = $this->crawler->filter($filter);
-        } catch (RuntimeException $exception) {
+        } catch (Throwable $exception) {
             $elements = [];
         }
         /** @var Crawler|DOMElement[] $elements */
