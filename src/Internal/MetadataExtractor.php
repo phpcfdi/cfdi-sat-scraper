@@ -10,6 +10,7 @@ use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\URLS;
 use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
+use Throwable;
 
 /**
  * Parses a web page to obtain all the Metadata records on it.
@@ -182,7 +183,7 @@ class MetadataExtractor
     {
         try {
             $filteredElements = $crawler->filter($elementFilter);
-        } catch (RuntimeException $exception) {
+        } catch (Throwable $exception) {
             return '';
         }
 

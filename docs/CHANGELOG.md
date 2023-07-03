@@ -6,6 +6,11 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
+## Versión 3.2.5 2023-07-03
+
+Algunos métodos intentaban atrapar una excepción `RuntimeException` proveniente de `Crawler`, sin embargo, 
+la excepción no era correcta, se atrapa ahora `Throwable`. Gracias a PHPStan por detectar el problema.
+
 ## Versión 3.2.4 2023-06-22
 
 Se corrige el mensaje relacionado con el envío de datos incorrectos al iniciar sesión usando CIEC.
