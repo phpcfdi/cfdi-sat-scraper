@@ -24,7 +24,7 @@ class SatScraper implements SatScraperInterface
 
     /**
      * @var MaximumRecordsHandler
-     * @deprecated 3.4.0
+     * @deprecated 3.3.0
      */
     protected $maximumRecordsHandler;
 
@@ -151,7 +151,10 @@ class SatScraper implements SatScraperInterface
         return $this->satHttpGateway;
     }
 
-    /** @deprecated 3.4.0 */
+    /**
+     * @deprecated 3.3.0
+     * @see SatScraper::getMetadataMessageHandler()
+     */
     public function getMaximumRecordsHandler(): MaximumRecordsHandler
     {
         trigger_error(

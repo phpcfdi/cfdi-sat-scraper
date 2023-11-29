@@ -8,7 +8,7 @@ use DateTimeImmutable;
 
 /**
  * @see MetadataMessageHandler
- * @deprecated 3.4.0
+ * @deprecated 3.3.0
  */
 interface MaximumRecordsHandler
 {
