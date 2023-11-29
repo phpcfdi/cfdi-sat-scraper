@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Internal;
 
 use DateTimeImmutable;
-use PhpCfdi\CfdiSatScraper\Contracts\MaximumRecordsHandler;
+use PhpCfdi\CfdiSatScraper\Contracts\MetadataMessageHandler;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\ComplementsOption;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
@@ -15,37 +15,22 @@ use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\QueryByFilters as Query;
 use PhpCfdi\CfdiSatScraper\Tests\Fakes\FakeQueryResolver;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
-use PHPUnit\Framework\MockObject\MockObject;
 
 final class MetadataDownloaderTest extends TestCase
 {
     public function testConstructor(): void
     {
         $resolver = $this->createMock(QueryResolver::class);
-        $handler = $this->createMock(MaximumRecordsHandler::class);
+        $handler = $this->createMock(MetadataMessageHandler::class);
         $downloader = new MetadataDownloader($resolver, $handler);
         $this->assertSame($resolver, $downloader->getQueryResolver());
-        $this->assertSame($handler, $downloader->getMaximumRecordsHandler());
-    }
-
-    public function testRaiseOnLimitWithHandler(): void
-    {
-        $expectedDate = new DateTimeImmutable();
-
-        $resolver = $this->createMock(QueryResolver::class);
-        /** @var MaximumRecordsHandler&MockObject $handler */
-        $handler = $this->createMock(MaximumRecordsHandler::class);
-        $handler->expects($this->once())->method('handle')->with($expectedDate);
-
-        $downloader = new MetadataDownloader($resolver, $handler);
-
-        $downloader->raiseOnLimit($expectedDate);
+        $this->assertSame($handler, $downloader->getMessageHandler());
     }
 
     public function testBuildDateWithDayAndSeconds(): void
     {
         $resolver = $this->createMock(QueryResolver::class);
-        $handler = $this->createMock(MaximumRecordsHandler::class);
+        $handler = $this->createMock(MetadataMessageHandler::class);
         $downloader = new MetadataDownloader($resolver, $handler);
 
         $date = new DateTimeImmutable('2019-01-13 14:15:16');
@@ -60,7 +45,7 @@ final class MetadataDownloaderTest extends TestCase
         $end = new DateTimeImmutable('2012-11-16 23:59:59');
         $query = new QueryByFilters($start, $end);
         $resolver = new FakeQueryResolver();
-        $downloader = new MetadataDownloader($resolver, $this->createMock(MaximumRecordsHandler::class));
+        $downloader = new MetadataDownloader($resolver, $this->createMock(MetadataMessageHandler::class));
         $downloader->resolveQuery($query);
         $expected = [
             ['start' => '2012-11-16 00:00:00', 'end' => '2012-11-16 23:59:59', 'count' => 0],
@@ -75,7 +60,7 @@ final class MetadataDownloaderTest extends TestCase
         $baseQuery = new QueryByFilters($baseStart, $baseEnd);
 
         $resolver = $this->createMock(QueryResolver::class);
-        $handler = $this->createMock(MaximumRecordsHandler::class);
+        $handler = $this->createMock(MetadataMessageHandler::class);
         $downloader = new MetadataDownloader($resolver, $handler);
 
         $query = $downloader->newQueryWithSeconds($baseQuery, 1, 2);
@@ -101,7 +86,7 @@ final class MetadataDownloaderTest extends TestCase
         $resolver->appendMoment(new DateTimeImmutable('2019-01-13 00:00:40'), $fakes->doMetadataList(250));
         $resolver->appendMoment(new DateTimeImmutable('2019-01-13 00:00:55'), $fakes->doMetadataList(250));
 
-        $handler = new MaximumRecordsTracker();
+        $handler = new MetadataMessageTracker();
         $downloader = new MetadataDownloader($resolver, $handler);
 
         // prepare expected output
@@ -119,7 +104,55 @@ final class MetadataDownloaderTest extends TestCase
         // fire and check
         $downloader->downloadQuery($baseQuery);
         $this->assertSame($expectedInfo, $resolver->resolveCalls);
-        $this->assertCount(0, $handler->getMoments(), 'downloadQuery should never raise with given example');
+        $this->assertCount(0, $handler->getMaximum(), 'downloadQuery should never raise with given example');
+    }
+
+    public function testDownloadByDateTimeCreatesCorrectIntervals(): void
+    {
+        // observe that dates does not start at 00:00:00 or end at 23:59:59
+        $baseStart = new DateTimeImmutable('2019-01-12 00:00:01');
+        $baseEnd = new DateTimeImmutable('2019-01-14 23:59:58');
+        $baseQuery = new QueryByFilters($baseStart, $baseEnd);
+
+        $fakes = $this->fakes();
+        $resolver = new FakeQueryResolver();
+        $resolver->appendMoment(new DateTimeImmutable('2019-01-12 00:00:00'), $fakes->doMetadataList(1));   // excluded
+        $resolver->appendMoment(new DateTimeImmutable('2019-01-12 00:00:01'), $fakes->doMetadataList(450)); // included
+        $resolver->appendMoment(new DateTimeImmutable('2019-01-12 12:13:14'), $fakes->doMetadataList(450));
+        $resolver->appendMoment(new DateTimeImmutable('2019-01-13 00:00:00'), $fakes->doMetadataList(250));
+        $resolver->appendMoment(new DateTimeImmutable('2019-01-13 12:00:00'), $fakes->doMetadataList(250));
+        $resolver->appendMoment(new DateTimeImmutable('2019-01-13 18:00:00'), $fakes->doMetadataList(250));
+        $resolver->appendMoment(new DateTimeImmutable('2019-01-14 23:59:58'), $fakes->doMetadataList(450)); // included
+        $resolver->appendMoment(new DateTimeImmutable('2019-01-14 23:59:59'), $fakes->doMetadataList(1));   // excluded
+
+        $handler = new MetadataMessageTracker();
+        $downloader = new MetadataDownloader($resolver, $handler);
+
+        // fire and check
+        $downloader->downloadByDateTime($baseQuery);
+
+        $this->assertSame([
+            '2019-01-12 00:00:01 - 2019-01-12 23:59:59: 900', // start time is not 00:00:00
+            '2019-01-13 00:00:00 - 2019-01-13 23:59:59: 750', // full day
+            '2019-01-14 00:00:00 - 2019-01-14 23:59:58: 450', // end time is not 23:59:59
+        ], $handler->getResolvedDates());
+
+        $this->assertSame([
+            '2019-01-12 00:00:01 - 2019-01-12 12:00:00: 450',
+            '2019-01-12 12:00:01 - 2019-01-12 23:59:59: 450',
+            '2019-01-13 00:00:00 - 2019-01-13 11:59:59: 250',
+            '2019-01-13 12:00:00 - 2019-01-13 17:59:59: 250',
+            '2019-01-13 18:00:00 - 2019-01-13 23:59:59: 250',
+            '2019-01-14 00:00:00 - 2019-01-14 23:59:58: 450',
+        ], $handler->getResolved());
+
+        $this->assertSame([
+            '2019-01-12 00:00:01 - 2019-01-12 23:59:59',
+            '2019-01-13 00:00:00 - 2019-01-13 23:59:59',
+            '2019-01-13 12:00:00 - 2019-01-13 23:59:59',
+        ], $handler->getDivisions());
+
+        $this->assertSame([], $handler->getMaximum());
     }
 
     public function testDownloadQueryWithLimitReached(): void
@@ -134,7 +167,7 @@ final class MetadataDownloaderTest extends TestCase
         $resolver->appendMoment(new DateTimeImmutable('2019-01-13 00:00:00'), $fakes->doMetadataList(500));
         $resolver->appendMoment(new DateTimeImmutable('2019-01-13 00:00:04'), $fakes->doMetadataList(500));
 
-        $handler = new MaximumRecordsTracker();
+        $handler = new MetadataMessageTracker();
         $downloader = new MetadataDownloader($resolver, $handler);
 
         // prepare expected output
@@ -156,13 +189,13 @@ final class MetadataDownloaderTest extends TestCase
         $this->assertSame([
             '2019-01-13 00:00:00',
             '2019-01-13 00:00:04',
-        ], $handler->getMoments());
+        ], $handler->getMaximum());
     }
 
     public function testDownloadByDateTime(): void
     {
         $resolver = new FakeQueryResolver();
-        $handler = $this->createMock(MaximumRecordsHandler::class);
+        $handler = $this->createMock(MetadataMessageHandler::class);
         $downloader = new MetadataDownloader($resolver, $handler);
 
         $start = new DateTimeImmutable('2019-01-13 14:15:16');
@@ -180,7 +213,7 @@ final class MetadataDownloaderTest extends TestCase
     public function testDownloadByDate(): void
     {
         $resolver = new FakeQueryResolver();
-        $handler = $this->createMock(MaximumRecordsHandler::class);
+        $handler = $this->createMock(MetadataMessageHandler::class);
         $downloader = new MetadataDownloader($resolver, $handler);
 
         $start = new DateTimeImmutable('2019-01-13 14:15:16');
@@ -199,7 +232,7 @@ final class MetadataDownloaderTest extends TestCase
     {
         $fakes = $this->fakes();
         $resolver = new FakeQueryResolver();
-        $handler = $this->createMock(MaximumRecordsHandler::class);
+        $handler = $this->createMock(MetadataMessageHandler::class);
         $downloader = new MetadataDownloader($resolver, $handler);
 
         $downloader->downloadByUuids([
@@ -216,7 +249,7 @@ final class MetadataDownloaderTest extends TestCase
         $lowerBound = new DateTimeImmutable('2019-01-13 14:15:16');
         $upperBound = new DateTimeImmutable('2019-01-15 18:19:20');
         $query = new QueryByFilters($lowerBound, $upperBound);
-        $handler = $this->createMock(MaximumRecordsHandler::class);
+        $handler = $this->createMock(MetadataMessageHandler::class);
         $metadata = new MetadataDownloader($this->createMock(QueryResolver::class), $handler);
 
         $split = [];
@@ -249,7 +282,7 @@ final class MetadataDownloaderTest extends TestCase
         $query->setDownloadType($downloadType);
         $query->setComplement($complement);
         $query->setStateVoucher($stateVoucher);
-        $handler = $this->createMock(MaximumRecordsHandler::class);
+        $handler = $this->createMock(MetadataMessageHandler::class);
         $metadata = new MetadataDownloader($this->createMock(QueryResolver::class), $handler);
 
         foreach ($metadata->splitQueryByFiltersByDays($query) as $current) {

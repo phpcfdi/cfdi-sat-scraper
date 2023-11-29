@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper;
 
+use LogicException;
 use PhpCfdi\CfdiSatScraper\Contracts\MaximumRecordsHandler;
+use PhpCfdi\CfdiSatScraper\Contracts\MetadataMessageHandler;
 use PhpCfdi\CfdiSatScraper\Contracts\SatScraperInterface;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
@@ -20,24 +22,53 @@ class SatScraper implements SatScraperInterface
     /** @var SatHttpGateway */
     private $satHttpGateway;
 
-    /** @var MaximumRecordsHandler */
+    /**
+     * @var MaximumRecordsHandler
+     * @deprecated 3.4.0
+     */
     protected $maximumRecordsHandler;
+
+    /** @var MetadataMessageHandler */
+    protected $metadataMessageHandler;
 
     /**
      * SatScraper constructor.
      *
      * @param SessionManager $sessionManager
      * @param SatHttpGateway|null $satHttpGateway
-     * @param MaximumRecordsHandler|null $maximumRecordsHandler
+     * @param MetadataMessageHandler|MaximumRecordsHandler|null $maximumRecordsHandler
      */
     public function __construct(
         SessionManager $sessionManager,
         ?SatHttpGateway $satHttpGateway = null,
-        ?MaximumRecordsHandler $maximumRecordsHandler = null
+        $maximumRecordsHandler = null
     ) {
+        if ($maximumRecordsHandler instanceof MetadataMessageHandler) {
+            $metadataMessageHandler = $maximumRecordsHandler;
+            $maximumRecordsHandler = new Internal\MetadataMessageHandlerWrapper($maximumRecordsHandler);
+        } elseif ($maximumRecordsHandler instanceof MaximumRecordsHandler) {
+            trigger_error(
+                sprintf(
+                    <<< 'MESSAGE'
+                        Class %1$s with argument $maximumRecordsHandler of type MaximumRecordsHandler is deprecated,
+                        use a MetadataMessageHandler implementation.
+                        MESSAGE,
+                    self::class,
+                ),
+                E_USER_DEPRECATED,
+            );
+            $metadataMessageHandler = new Internal\MaximumRecordsHandlerWrapper($maximumRecordsHandler);
+        } elseif (null === $maximumRecordsHandler) {
+            $maximumRecordsHandler = new NullMaximumRecordsHandler();
+            $metadataMessageHandler = new NullMetadataMessageHandler();
+        } else {
+            throw new LogicException('Invalid parameter type maximumRecordsHandler');
+        }
+
         $this->sessionManager = $sessionManager;
         $this->satHttpGateway = $satHttpGateway ?? $this->createDefaultSatHttpGateway();
-        $this->maximumRecordsHandler = $maximumRecordsHandler ?? new NullMaximumRecordsHandler();
+        $this->maximumRecordsHandler = $maximumRecordsHandler;
+        $this->metadataMessageHandler = $metadataMessageHandler;
     }
 
     /**
@@ -47,7 +78,7 @@ class SatScraper implements SatScraperInterface
      */
     protected function createMetadataDownloader(): MetadataDownloader
     {
-        return new MetadataDownloader($this->createQueryResolver(), $this->maximumRecordsHandler);
+        return new MetadataDownloader($this->createQueryResolver(), $this->metadataMessageHandler);
     }
 
     /**
@@ -120,8 +151,18 @@ class SatScraper implements SatScraperInterface
         return $this->satHttpGateway;
     }
 
+    /** @deprecated 3.4.0 */
     public function getMaximumRecordsHandler(): MaximumRecordsHandler
     {
+        trigger_error(
+            sprintf('Method %1$s::getMaximumRecordsHandler is deprecated, use %1$s::getMetadataMessageHandler', self::class),
+            E_USER_DEPRECATED,
+        );
         return $this->maximumRecordsHandler;
+    }
+
+    public function getMetadataMessageHandler(): MetadataMessageHandler
+    {
+        return $this->metadataMessageHandler;
     }
 }

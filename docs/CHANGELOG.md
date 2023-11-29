@@ -6,6 +6,22 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
+## Versión 3.3.0 2023-11-28
+
+Se agregó la interfaz `MetadataMessageHandler` que permite recibir notificaciones de la descarga de *Metadata*.
+Dentro de las notificaciones se incluye la que ocurre cuando se encontraron 500 registros en un solo segundo.
+
+Se deprecó la interfaz `MaximumRecordsHandler`, es sustituida por `MetadataMessageHandler`.
+
+Se deprecó el método `SatScraper::getMaximumRecordsHandler()` a favor de `SatScraper::getMetadataMessageHandler()`.
+
+Para no introducir un cambio que rompa la compatibilidad, el constructor de `SatScraper` sigue soportando la
+creación del objeto con el argumento `MaximumRecordsHandler $maximumRecordsHandler`.
+En su lugar, debería enviar un objeto que implemente la interfaz `MetadataMessageHandler`.
+
+Se introduce el objeto `NullMetadataMessageHandler` que implementa la interfaz `MetadataMessageHandler`, 
+pero no realiza ninguna acción en sus métodos.
+
 ## Versión 3.2.5 2023-07-03
 
 Algunos métodos intentaban atrapar una excepción `RuntimeException` proveniente de `Crawler`, sin embargo, 

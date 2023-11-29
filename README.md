@@ -221,27 +221,43 @@ $list = $satScraper->listByUuids($uuids, DownloadType::recibidos());
 echo json_encode($list);
 ```
 
-## Aviso de que existen más de 500 comprobantes en un mismo segundo
+## Avisos de descargas de Metadata
 
 El servicio ofrecido por el SAT tiene límites, entre ellos, no se pueden obtener más de 500 registros
 en un rango de fechas. Esta librería trata de reducir el rango hasta el mínimo de una consulta en un segundo
-para obtener todos los datos, sin embargo, si se presenta este caso, entonces se puede invocar a un manejador
-que le puede ayudar a registrar este escenario.
+para obtener todos los datos, sin embargo, si se presenta este caso, entonces se puede usar el manejador
+`MetadataMessageHandler` para registrar este escenario.
+
+El manejador `MetadataMessageHandler` es una interfaz que puede recibir diferentes mensajes:
+
+- `resolved(DateTimeImmutable $since, DateTimeImmutable $until, int $count): void`:
+  Ocurre cuando se resolvió una consulta entre dos momentos en un mismo día, siempre serán menos de 500 registros.
+- `date(DateTimeImmutable $since, DateTimeImmutable $until, int $count): void`:
+  Ocurre cuando se resolvió una consulta de un día determinado.
+  Hay un momento inicial y otro final porque las horas podrían ser diferentes a `00:00:00` y `23:59:59`.
+- `divide(DateTimeImmutable $since, DateTimeImmutable $until): void`:
+  Ocurre cuando se encontraron 500 registros en un periodo.
+  Se dividirá la consulta para intentar descargar el contenido completo.
+- `maximum(DateTimeImmutable $moment): void`:
+  Ocurre cuando se encontraron 500 registros en un solo segundo.
 
 Si al crear el objeto `SatScraper` no se establece un manejador o se establece como `null` entonces se usará
-una instancia de `NullMaximumRecordsHandler` que, como su nombre lo indica, no realiza ninguna acción.
+una instancia de `NullMetadataMessageHandler` que, como su nombre lo indica, no realiza ninguna acción.
+
+En el siguiente código se muestra un ejemplo que muestra un mensaje al encontrar el problema de 500 registros.
 
 ```php
 <?php declare(strict_types=1);
 
+use PhpCfdi\CfdiSatScraper\NullMetadataMessageHandler;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 
 // define handler
-$handler = new class () implements MaximumRecordsHandler {
-    public function handle(DateTimeImmutable $date): void
+$handler = new class () extends NullMetadataMessageHandler {
+    public function maximum(DateTimeImmutable $date): void
     {
         echo 'Se encontraron más de 500 CFDI en el segundo: ', $date->format('c'), PHP_EOL;
     }
@@ -258,6 +274,9 @@ $query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImm
 $list = $satScraper->listByPeriod($query);
 echo json_encode($list);
 ```
+
+La interfaz `MaximumRecordsHandler` y el objeto `NullMaximumRecordsHandler` han sido deprecados desde la versión 3.3.0.
+Ambos símbolos serán eliminados a partir de la versión `4.0.0`.
 
 ## Descargar CFDIS a una carpeta
 

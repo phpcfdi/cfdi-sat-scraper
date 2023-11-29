@@ -6,7 +6,7 @@ namespace PhpCfdi\CfdiSatScraper\Internal;
 
 use DateTimeImmutable;
 use Generator;
-use PhpCfdi\CfdiSatScraper\Contracts\MaximumRecordsHandler;
+use PhpCfdi\CfdiSatScraper\Contracts\MetadataMessageHandler;
 use PhpCfdi\CfdiSatScraper\Contracts\QueryInterface;
 use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatHttpGatewayException;
@@ -33,14 +33,14 @@ class MetadataDownloader
     /** @var QueryResolver */
     private $queryResolver;
 
-    /** @var MaximumRecordsHandler */
-    private $maximumRecordsHandler;
+    /** @var MetadataMessageHandler */
+    private $messageHandler;
 
     /** @internal */
-    public function __construct(QueryResolver $queryResolver, MaximumRecordsHandler $maximumRecordsHandler)
+    public function __construct(QueryResolver $queryResolver, MetadataMessageHandler $messageHandler)
     {
         $this->queryResolver = $queryResolver;
-        $this->maximumRecordsHandler = $maximumRecordsHandler;
+        $this->messageHandler = $messageHandler;
     }
 
     public function getQueryResolver(): QueryResolver
@@ -48,9 +48,9 @@ class MetadataDownloader
         return $this->queryResolver;
     }
 
-    public function getMaximumRecordsHandler(): MaximumRecordsHandler
+    public function getMessageHandler(): MetadataMessageHandler
     {
-        return $this->maximumRecordsHandler;
+        return $this->messageHandler;
     }
 
     /**
@@ -109,7 +109,9 @@ class MetadataDownloader
     {
         $result = new MetadataList([]);
         foreach ($this->splitQueryByFiltersByDays($query) as $current) {
-            $result = $result->merge($this->downloadQuery($current));
+            $list = $this->downloadQuery($current);
+            $this->messageHandler->date($current->getStartDate(), $current->getEndDate(), $list->count());
+            $result = $result->merge($list);
         }
         return $result;
     }
@@ -134,14 +136,16 @@ class MetadataDownloader
             $result = $list->count();
 
             if ($result >= 500 && $secondEnd === $secondInitial) {
-                $this->raiseOnLimit($this->buildDateWithDayAndSeconds($day, $secondInitial));
+                $this->messageHandler->maximum($currentQuery->getStartDate());
             }
 
             if ($result >= 500 && $secondEnd > $secondInitial) {
-                $secondEnd = (int)floor($secondInitial + (($secondEnd - $secondInitial) / 2));
+                $this->messageHandler->divide($currentQuery->getStartDate(), $currentQuery->getEndDate());
+                $secondEnd = (int) floor($secondInitial + (($secondEnd - $secondInitial) / 2));
                 continue;
             }
 
+            $this->messageHandler->resolved($currentQuery->getStartDate(), $currentQuery->getEndDate(), $list->count());
             $finalList = $finalList->merge($list);
             if ($secondEnd >= $upperBound) {
                 break;
@@ -177,11 +181,6 @@ class MetadataDownloader
     public function buildDateWithDayAndSeconds(DateTimeImmutable $day, int $seconds): DateTimeImmutable
     {
         return $day->modify(sprintf('midnight + %d seconds', $seconds));
-    }
-
-    public function raiseOnLimit(DateTimeImmutable $date): void
-    {
-        $this->maximumRecordsHandler->handle($date);
     }
 
     public function createInputsFromQuery(QueryInterface $query): InputsInterface

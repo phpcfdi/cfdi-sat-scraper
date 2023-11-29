@@ -10,6 +10,7 @@ use PhpCfdi\CfdiSatScraper\Contracts\MaximumRecordsHandler;
 /**
  * Null implementation of MaximumRecordsHandler.
  *
+ * @deprecated
  * @internal
  */
 final class NullMaximumRecordsHandler implements MaximumRecordsHandler
