@@ -22,6 +22,13 @@ En su lugar, debería enviar un objeto que implemente la interfaz `MetadataMessa
 Se introduce el objeto `NullMetadataMessageHandler` que implementa la interfaz `MetadataMessageHandler`, 
 pero no realiza ninguna acción en sus métodos.
 
+Otros cambios al entorno de desarrollo:
+
+- Se actualizan las dependencias de desarrollo.
+- Se agrega PHP 8.3 a la matrix de pruebas.
+- Los trabajos se ejecutan con PHP 8.3.
+- Para `php-cs-fixer` se sustituye `function_typehint_space` con `type_declaration_spaces`.
+
 ## Versión 3.2.5 2023-07-03
 
 Algunos métodos intentaban atrapar una excepción `RuntimeException` proveniente de `Crawler`, sin embargo, 
