@@ -224,9 +224,9 @@ echo json_encode($list);
 ## Avisos de descargas de Metadata
 
 El servicio ofrecido por el SAT tiene límites, entre ellos, no se pueden obtener más de 500 registros
-en un rango de fechas. Esta librería trata de reducir el rango hasta el mínimo de una consulta en un segundo
-para obtener todos los datos, sin embargo, si se presenta este caso, entonces se puede usar el manejador
-`MetadataMessageHandler` para registrar este escenario.
+en un rango de fechas. Esta librería trata de reducir el rango hasta el mínimo de fabricar una consulta por
+un solo segundo para obtener todos los datos, sin embargo, si se presenta este caso, entonces se puede usar
+el manejador `MetadataMessageHandler` para registrar este escenario.
 
 El manejador `MetadataMessageHandler` es una interfaz que puede recibir diferentes mensajes:
 
@@ -255,7 +255,12 @@ use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 use PhpCfdi\CfdiSatScraper\SatScraper;
 use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 
-// define handler
+/**
+ * @var SessionManager $sessionManager
+ * @var SatHttpGateway $httpGateway
+ */
+
+// se define el controlador de mensajes
 $handler = new class () extends NullMetadataMessageHandler {
     public function maximum(DateTimeImmutable $date): void
     {
@@ -263,11 +268,7 @@ $handler = new class () extends NullMetadataMessageHandler {
     }
 };
 
-// create scraper using the handler
-/**
- * @var SessionManager $sessionManager
- * @var SatHttpGateway $httpGateway
- */
+// se crea el scraper usando el controlador de mensajes
 $satScraper = new SatScraper($sessionManager, $httpGateway, $handler);
 
 $query = new QueryByFilters(new DateTimeImmutable('2019-03-01'), new DateTimeImmutable('2019-03-31'));
@@ -275,7 +276,7 @@ $list = $satScraper->listByPeriod($query);
 echo json_encode($list);
 ```
 
-La interfaz `MaximumRecordsHandler` y el objeto `NullMaximumRecordsHandler` han sido deprecados desde la versión 3.3.0.
+La interfaz `MaximumRecordsHandler` y el objeto `NullMaximumRecordsHandler` han sido deprecados desde la versión `3.3.0`.
 Ambos símbolos serán eliminados a partir de la versión `4.0.0`.
 
 ## Descargar CFDIS a una carpeta
