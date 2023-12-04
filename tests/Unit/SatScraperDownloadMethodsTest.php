@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Tests\Unit;
 
-use PhpCfdi\CfdiSatScraper\Contracts\MaximumRecordsHandler;
+use PhpCfdi\CfdiSatScraper\Contracts\MetadataMessageHandler;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Internal\MetadataDownloader;
 use PhpCfdi\CfdiSatScraper\MetadataList;
@@ -26,11 +26,11 @@ final class SatScraperDownloadMethodsTest extends TestCase
 {
     public function testCreationOfMetadataDownloaderHasSatScraperProperties(): void
     {
-        $handler = $this->createMock(MaximumRecordsHandler::class);
+        $messageHandler = $this->createMock(MetadataMessageHandler::class);
         $satHttpGateway = $this->createMock(SatHttpGateway::class);
         $captcha = $this->createMock(CaptchaResolverInterface::class);
         $sessionManager = new CiecSessionManager(new CiecSessionData('rfc', 'ciec', $captcha));
-        $scraper = new class ($sessionManager, $satHttpGateway, $handler) extends SatScraper {
+        $scraper = new class ($sessionManager, $satHttpGateway, $messageHandler) extends SatScraper {
             public function exposeCreateMetadataDownloader(): MetadataDownloader
             {
                 return $this->createMetadataDownloader();
@@ -38,7 +38,7 @@ final class SatScraperDownloadMethodsTest extends TestCase
         };
         $downloader = $scraper->exposeCreateMetadataDownloader();
 
-        $this->assertSame($handler, $downloader->getMaximumRecordsHandler());
+        $this->assertSame($messageHandler, $downloader->getMessageHandler());
     }
 
     /** @see SatScraper::listByUuids */
