@@ -6,7 +6,7 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
-## Versión 3.3.0 2023-11-28
+## Versión 3.3.0 2023-12-03
 
 Se agregó la interfaz `MetadataMessageHandler` que permite recibir notificaciones de la descarga de *Metadata*.
 Dentro de las notificaciones se incluye la que ocurre cuando se encontraron 500 registros en un solo segundo.
