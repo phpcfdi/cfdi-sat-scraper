@@ -28,7 +28,7 @@
         "ext-mbstring": "*",
         "ext-openssl": "*",
         "eclipxe/enum": "^0.2.0",
-        "eclipxe/micro-catalog": "^v0.1.3",
+        "eclipxe/micro-catalog": "^0.1.3",
         "guzzlehttp/guzzle": "^7.0",
         "guzzlehttp/promises": "^2.0",
         "phpcfdi/credentials": "^1.1",
