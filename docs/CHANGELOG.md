@@ -6,6 +6,14 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
+## Versión 3.3.1 2024-05-22
+
+- PHPStan encontró un problema en una especificación de tipo en un método de prueba,
+  se ha corregido solo para que el proceso de integración continua no falle.
+- Se actualizan las dependencias de los componentes de Symfony para soportar la versión 7.
+- Se actualizan los flujos de trabajo de GitHub para usar las acciones versión 4.
+- Se actualizan las herramientas de desarrollo.
+
 ## Versión 3.3.0 2023-12-03
 
 Se agregó la interfaz `MetadataMessageHandler` que permite recibir notificaciones de la descarga de *Metadata*.
