@@ -28,20 +28,20 @@
         "ext-mbstring": "*",
         "ext-openssl": "*",
         "eclipxe/enum": "^0.2.0",
-        "eclipxe/micro-catalog": "^v0.1.3",
+        "eclipxe/micro-catalog": "^0.1.3",
         "guzzlehttp/guzzle": "^7.0",
         "guzzlehttp/promises": "^2.0",
         "phpcfdi/credentials": "^1.1",
         "phpcfdi/image-captcha-resolver": "^0.2.3",
         "psr/http-message": "^1.1 || ^2.0",
-        "symfony/css-selector": "^5.4 || ^6.0",
-        "symfony/dom-crawler": "^5.4 || ^6.0"
+        "symfony/css-selector": "^5.4 || ^6.0 || ^7.0",
+        "symfony/dom-crawler": "^5.4 || ^6.0 || ^7.0"
     },
     "require-dev": {
         "ext-iconv": "*",
         "fakerphp/faker": "^1.13",
         "phpunit/phpunit": "^9.5",
-        "symfony/dotenv": "^5.4 || ^6.0"
+        "symfony/dotenv": "^5.4 || ^6.0 || ^7.0"
     },
     "autoload": {
         "psr-4": {

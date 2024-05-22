@@ -110,7 +110,7 @@ class HttpLogger extends ArrayObject
 
     /**
      * @param string $body
-     * @return array<string|array<string>>
+     * @return array<mixed>
      */
     public function bodyToVars(string $body): array
     {
