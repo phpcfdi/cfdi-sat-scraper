@@ -12,6 +12,7 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
   se ha corregido solo para que el proceso de integración continua no falle.
 - Se actualizan las dependencias de los componentes de Symfony para soportar la versión 7.
 - Se actualizan los flujos de trabajo de GitHub para usar las acciones versión 4.
+- Se usa `php-version` en singular, en lugar de `php-versions`.
 - Se actualizan las herramientas de desarrollo.
 
 ## Versión 3.3.0 2023-12-03
