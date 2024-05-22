@@ -85,7 +85,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          key: "${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}"
           restore-keys: ${{ runner.os }}-composer-
       - name: Install project dependencies
         run: composer upgrade --no-interaction --no-progress --prefer-dist
@@ -116,7 +116,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          key: "${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}"
           restore-keys: ${{ runner.os }}-composer-
       - name: Install project dependencies
         run: composer upgrade --no-interaction --no-progress --prefer-dist
