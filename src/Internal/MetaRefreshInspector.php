@@ -28,7 +28,7 @@ final class MetaRefreshInspector
             return '';
         }
 
-        $url = trim($matches['url'] ?? '');
+        $url = trim($matches['url']);
         if ('' === $url) {
             return '';
         }

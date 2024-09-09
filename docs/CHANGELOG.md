@@ -6,6 +6,14 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
+## Versión 3.3.2 2024-09-09
+
+- PHPStan encontró una comparación superflua que fue eliminada para corregir el proceso de integración continua.
+- Se agregan comentarios a clases *Null* para mejorar la manentibilidad.
+- Se actualiza el año del archivo de licencia a 2024.
+- Se corrige la variable `php-versions` por `php-version` en el flujo de trabajo `tests`.
+- Se actualizan las herramientas de desarrollo.
+
 ## Versión 3.3.1 2024-05-22
 
 - PHPStan encontró un problema en una especificación de tipo en un método de prueba,
