@@ -56,35 +56,7 @@ php tests/generate-repository.php "2020-01-01 00:00:00" "2020-01-31 29:59:59" > 
 ## Ejecución de los tests de integración
 
 Una vez que se ha configurado el entorno y el repositorio entonces se pueden ejecutar los tests de integración
-usando PHPUnit. El problema viene con el *captcha* del SAT, pues como se generan consultas reales es necesario
-poder resolverlo.
-Te recomiendo usar [eclipxe13/captcha-local-resolver](https://github.com/eclipxe13/captcha-local-resolver)
-para que tú directamente puedas resolver los captchas desde un navegador.
-
-## Ejecución con `eclipxe/captcha-local-resolver`
-
-Lee la documentación de <https://github.com/eclipxe13/captcha-local-resolver>.
-
-- Ejecuta el servicio con un host y puerto.
-- Abre tu navegador apuntando a la dirección donde ejecutaste el servicio.
-- Configura el entorno para conectar los tests con el resolvedor.
-- Corre los tests, en cuando se requiera un captcha lo verás en el navegador, lo resuelves y listo.
-
-Con la siguiente configuración:
-
-```dotenv
-CAPTCHA_LOCAL_URL="localhost:9595"
-```
-
-La ejecución sería de la siguiente manera:
-
-```shell
-cd ../captcha-local-resolver/
-php bin/service.php 127.0.0.1:9595
-xdg-open http://127.0.0.1:9595
-```
-
-Y para ejecutar los tests:
+usando PHPUnit. Para el *captcha* del SAT implementa `phpcfdi/image-captcha-resolver-boxfactura-ai`.
 
 ```shell
 # using .env config
