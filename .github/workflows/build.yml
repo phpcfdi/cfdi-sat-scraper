@@ -118,6 +118,9 @@ jobs:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: "${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}"
           restore-keys: ${{ runner.os }}-composer-
+      - name: Remove phpcfdi/image-captcha-resolver-boxfactura-ai for PHP < 8.1
+        if: ${{ matrix.php-version < '8.1' }}
+        run: composer remove phpcfdi/image-captcha-resolver-boxfactura-ai --dev --no-interaction --no-progress --no-update --prefer-dist
       - name: Install project dependencies
         run: composer upgrade --no-interaction --no-progress --prefer-dist
       - name: Tests (phpunit)
