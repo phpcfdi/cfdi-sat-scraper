@@ -6,6 +6,32 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
+## Versión 3.3.3 2024-10-03
+
+- Se agrega la documentación principal para usar el resolvedor de captchas
+  [`phpcfdi/image-captcha-resolver-boxfactura-ai`](https://github.com/phpcfdi/image-captcha-resolver-boxfactura-ai).
+- Se agrega la documentación de `docs/EjemploConsumo.md` para usar el resolvedor de captchas `BoxFacturaAIResolver`,
+  con todos los pasos para hacer correr el ejemplo.
+- En el archivo `composer.json` se recomienda `phpcfdi/image-captcha-resolver-boxfactura-ai`.
+
+Los siguientes cambios aplican para el entorno de desarrollo:
+
+- Se modifica el archivo `composer.json` para:
+  - Requiere `phpcfdi/image-captcha-resolver-boxfactura-ai`.
+  - Utiliza `phpcfdi/image-captcha-resolver-boxfactura-ai` para PHP 8.1 en adelante.
+  - Desinstala `phpcfdi/image-captcha-resolver-boxfactura-ai` para menores de PHP 8.1.
+- Se actualiza la documentación de `develop/TestIntegracion.md` donde se remueve `eclipxe/captcha-local-resolver`
+  y se menciona `phpcfdi/image-captcha-resolver-boxfactura-ai`.
+- Se cambian las pruebas de integración para usar `phpcfdi/image-captcha-resolver-boxfactura-ai`.
+- Se actualizan las herramientas de desarrollo.
+
+Esta actualización únicamente se ha podido hacer gracias al trabajo de investigación y entrenamiento de un modelo Onnx
+de inteligencia artificial de nuestros amigos de [BOX Factura](https://www.boxfactura.com/).
+Su trabajo en el repositorio [`BoxFactura/sat-captcha-ai-model`](https://github.com/BoxFactura/sat-captcha-ai-model)
+permitió crear el resolvedor `BoxFacturaAIResolver`, pero, sobre todo, simplificar la resolución de captchas,
+tanto en forma local como en producción.
+**Muchas gracias**.
+
 ## Versión 3.3.2 2024-09-09
 
 - PHPStan encontró una comparación superflua que fue eliminada para corregir el proceso de integración continua.
