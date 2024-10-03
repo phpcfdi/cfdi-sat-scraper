@@ -32,7 +32,7 @@
         "guzzlehttp/guzzle": "^7.0",
         "guzzlehttp/promises": "^2.0",
         "phpcfdi/credentials": "^1.1",
-        "phpcfdi/image-captcha-resolver": "^0.2.3",
+        "phpcfdi/image-captcha-resolver": "^0.2.4",
         "psr/http-message": "^1.1 || ^2.0",
         "symfony/css-selector": "^5.4 || ^6.0 || ^7.0",
         "symfony/dom-crawler": "^5.4 || ^6.0 || ^7.0"
@@ -40,6 +40,7 @@
     "require-dev": {
         "ext-iconv": "*",
         "fakerphp/faker": "^1.13",
+        "phpcfdi/image-captcha-resolver-boxfactura-ai": "^0.1.0",
         "phpunit/phpunit": "^9.5",
         "symfony/dotenv": "^5.4 || ^6.0 || ^7.0"
     },
@@ -63,6 +64,8 @@
         }
     },
     "scripts": {
+        "post-install-cmd": "OnnxRuntime\\Vendor::check",
+        "post-update-cmd": "OnnxRuntime\\Vendor::check",
         "dev:build": [
             "@dev:fix-style",
             "@dev:tests"
@@ -88,5 +91,8 @@
         "dev:check-style": "DEV: search for code style errors using composer-normalize, php-cs-fixer and phpcs",
         "dev:fix-style": "DEV: fix code style errors using composer-normalize, php-cs-fixer and phpcbf",
         "dev:tests": "DEV: run executes phpunit tests"
+    },
+    "recommended": {
+        "phpcfdi/image-captcha-resolver-boxfactura-ai": "Permite resolver los captchas localmente con inteligencia artificial"
     }
 }
