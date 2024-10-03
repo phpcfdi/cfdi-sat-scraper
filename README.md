@@ -132,13 +132,13 @@ con los datos de RFC, Clave CIEC y un resolvedor de captchas.
 La ventaja de este método es que no se requiere la FIEL.
 La desventaja es que se requiere un resolvedor de captchas.
 
-No contamos con un método propio para resolver los captchas, pero se puede utilizar un servicio externo como
-[*Anti-Captcha*](https://anti-captcha.com). Para testeo o implementaciones locales puedes
-usar [`eclipxe/captcha-local-resolver](https://github.com/eclipxe13/captcha-local-resolver)
-donde tú mismo serás el que resuelve los captchas, las tres implementaciones están creadas.
-
 La resolución de captchas se realiza a través de la librería de resolución de captchas
 [`phpcfdi/image-captcha-resolver`](https://github.com/phpcfdi/image-captcha-resolver).
+
+Para entornos de desarrollo y producción recomendamos utilizar la resolución de captchas con el proyecto
+[`phpcfdi/image-captcha-resolver-boxfactura-ai`](https://github.com/phpcfdi/image-captcha-resolver-boxfactura-ai)
+(gracias al trabajo de [BOX Factura](https://www.boxfactura.com/)).
+
 Si estás usando un servicio que no está implementado puedes revisar la documentación
 de este proyecto e integrar el servicio dentro de los clientes soportados.
 
@@ -376,6 +376,57 @@ $myHandler = new class implements ResourceDownloadHandlerInterface {
 // $downloadedUuids contiene un listado de UUID que fueron procesados correctamente
 $downloadedUuids = $satScraper->resourceDownloader(ResourceType::xml(), $list)->download($myHandler);
 echo json_encode($downloadedUuids);
+```
+
+## Usar con `phpcfdi/image-captcha-resolver-boxfactura-ai`
+
+Recuerda consultar la documentación específica del proyecto
+[`phpcfdi/image-captcha-resolver-boxfactura-ai`](`https://github.com/phpcfdi/image-captcha-resolver-boxfactura-ai`)
+
+En el siguiente ejemplo, se asume que el modelo será almacenado en el directorio `storage/boxfactura-model`.
+
+Instalar la librería `phpcfdi/image-captcha-resolver-boxfactura-ai`:
+
+```shell
+composer require phpcfdi/image-captcha-resolver-boxfactura-ai
+```
+
+Configurar `composer.json` para que se esté instale o actualice *automáticamente* la librería `libonnxruntime.so`:
+
+```json
+{
+    "scripts": {
+        "post-install-cmd": "OnnxRuntime\\Vendor::check",
+        "post-update-cmd": "OnnxRuntime\\Vendor::check"
+    }
+}
+```
+
+O bien, en lugar del paso anterior, actualizar *manualmente* la librería `libonnxruntime.so`:
+
+```shell
+composer run-script post-update-cmd -d vendor/ankane/onnxruntime/
+```
+
+Descarga del modelo de [`BoxFactura/sat-captcha-ai-model`](https://github.com/BoxFactura/sat-captcha-ai-model):
+
+```shell
+bash vendor/phpcfdi/image-captcha-resolver-boxfactura-ai/bin/download-model storage/boxfactura-model
+```
+
+Y se crea la instancia del resolvedor de captchas de la siguiente manera:
+
+```php
+<?php declare(strict_types=1);
+
+use PhpCfdi\CfdiSatScraper\SatScraper;
+use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionManager;
+use PhpCfdi\ImageCaptchaResolver\BoxFacturaAI\BoxFacturaAIResolver;
+
+$configsFile = 'storage/boxfactura-model/configs.yaml';
+$captchaResolver = BoxFacturaAIResolver::createFromConfigs($configsFile);
+
+$satScraper = new SatScraper(CiecSessionManager::create('rfc', 'ciec', $captchaResolver));
 ```
 
 ## Usar el servicio *Anti-Captcha*

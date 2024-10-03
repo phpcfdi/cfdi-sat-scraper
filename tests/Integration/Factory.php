@@ -17,6 +17,7 @@ use PhpCfdi\CfdiSatScraper\Sessions\Fiel\FielSessionData;
 use PhpCfdi\CfdiSatScraper\Sessions\Fiel\FielSessionManager;
 use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 use PhpCfdi\Credentials\Credential;
+use PhpCfdi\ImageCaptchaResolver\BoxFacturaAI\BoxFacturaAIResolver;
 use PhpCfdi\ImageCaptchaResolver\CaptchaResolverInterface;
 use PhpCfdi\ImageCaptchaResolver\Resolvers\AntiCaptchaResolver;
 use PhpCfdi\ImageCaptchaResolver\Resolvers\CaptchaLocalResolver;
@@ -42,6 +43,12 @@ class Factory
     public function createCaptchaResolver(): CaptchaResolverInterface
     {
         $resolver = $this->env('CAPTCHA_RESOLVER');
+
+        if ('boxfactura-ai' === $resolver) {
+            return BoxFacturaAIResolver::createFromConfigs(
+                $this->path($this->env('BOXFACTURA_AI_RESOLVER_CONFIGS')),
+            );
+        }
 
         if ('console' === $resolver) {
             return new ConsoleResolver();
