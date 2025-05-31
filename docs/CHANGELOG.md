@@ -6,6 +6,8 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
+Ninguno.
+
 ## Versión 4.0.0 2025-05-30
 
 Esta versión libera un cambio mayor provocado por el cambio de columnas que implementó el SAT.

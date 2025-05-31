@@ -1,4 +1,4 @@
-# Guía de actualización de `2.x` a `3.x`
+# Guía de actualización de `3.x` a `4.x`
 
 ## Nuevos valores de `Metadata`
 
