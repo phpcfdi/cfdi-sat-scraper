@@ -10,14 +10,23 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 Esta versión libera un cambio mayor provocado por el cambio de columnas que implementó el SAT.
 
-- En la información de *Metadata* se ajusta la información a la nueva estructura de datos del SAT:
-  - Ya no existe `fechaProcesoCancelacion`. 
-  - Se agrega `fechaSolicitudCancelacion`. 
-  - Se agrega `fechaDeCancelacion`.
+En la información de *Metadata* se ajusta la información a la nueva estructura de datos del SAT:
 
-- Se actualizan las herramientas de desarrollo.
+- Ya no existe `fechaProcesoCancelacion`. 
+- Se agrega `fechaSolicitudCancelacion`. 
+- Se agrega `fechaDeCancelacion`.
 
 Gracias totales a `@cruzcraul` por notar este cambio y la implementación.
+
+Adicionalmente, se hicieron los siguientes cambios por tratarse de una versión mayor:
+
+- Se renombra el parámetro del constructor de `Scraper` de `$maximumRecordsHandler` a `$metadataMessageHandler`.
+- Se elimina el método `SatHttpGateway::postLoginData()`, sustituido por `SatHttpGateway::postCiecLoginData()`.
+- Se elimina la interfaz `MaximumRecordsHandler`, sustituida por `MetadataMessageHandler`.
+
+Adicionalmente, se hicieron estos cambios al entorno de desarrollo:
+ 
+- Se actualizan las herramientas de desarrollo.
 
 ## Versión 3.3.3 2024-10-03
 
