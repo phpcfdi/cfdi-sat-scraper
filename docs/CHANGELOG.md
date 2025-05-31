@@ -6,6 +6,19 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
+## Versión 4.0.0 2025-05-30
+
+Esta versión libera un cambio mayor provocado por el cambio de columnas que implementó el SAT.
+
+- En la información de *Metadata* se ajusta la información a la nueva estructura de datos del SAT:
+  - Ya no existe `fechaProcesoCancelacion`. 
+  - Se agrega `fechaSolicitudCancelacion`. 
+  - Se agrega `fechaDeCancelacion`.
+
+- Se actualizan las herramientas de desarrollo.
+
+Gracias totales a `@cruzcraul` por notar este cambio y la implementación.
+
 ## Versión 3.3.3 2024-10-03
 
 - Se agrega la documentación principal para usar el resolvedor de captchas
