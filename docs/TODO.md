@@ -2,7 +2,7 @@
 
 ## Siguiente versión mayor
 
-- Eliminar el método `SatHttpGatewayException::postLoginData`.
+No hay pendientes marcados para la siguiente versión mayor.
 
 ## Pendientes
 
