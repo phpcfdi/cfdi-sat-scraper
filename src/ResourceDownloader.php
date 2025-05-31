@@ -178,7 +178,7 @@ class ResourceDownloader
      * that has a URL to download the XML.
      * By extracting the creation it can be replaced with any iterable.
      *
-     * @return Traversable<string, PromiseInterface>|PromiseInterface[]
+     * @return Traversable<string, PromiseInterface>
      */
     protected function makePromises(): Traversable
     {

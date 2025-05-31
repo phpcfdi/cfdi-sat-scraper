@@ -146,7 +146,7 @@ class Factory
     {
         $container = new HttpLogger($this->path($this->env('SAT_HTTPDUMP_FOLDER')));
         $stack = HandlerStack::create();
-        $stack->push(Middleware::history($container));
+        $stack->push(Middleware::history($container)); /** @phpstan-ignore argument.type */
         return new Client([
             'handler' => $stack,
             'curl' => [CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1'],
@@ -179,7 +179,10 @@ class Factory
 
     public function env(string $variable): string
     {
-        return strval($_SERVER[$variable] ?? '');
+        if (isset($_SERVER[$variable]) && is_scalar($_SERVER[$variable])) {
+            return strval($_SERVER[$variable]);
+        }
+        return '';
     }
 
     public function path(string $path): string

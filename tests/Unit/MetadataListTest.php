@@ -150,7 +150,6 @@ final class MetadataListTest extends TestCase
 
     public function testOnlyContainsMetadataEvenWhenNullIsPassed(): void
     {
-        /** @var Metadata[] $source */
         $source = [null];
         $list = new MetadataList($source);
         $this->assertCount(0, $list);

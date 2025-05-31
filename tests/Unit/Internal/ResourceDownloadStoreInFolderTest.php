@@ -50,6 +50,7 @@ class ResourceDownloadStoreInFolderTest extends TestCase
     {
         $downloader = $this->createResourceDownloadStoreInFolder(__DIR__);
         $downloader->checkDestinationFolder(false);
+        /** @phpstan-ignore-next-line method.alreadyNarrowedType */
         $this->assertTrue(true, 'checkDestinationFolder should not create any exception');
     }
 
@@ -57,6 +58,7 @@ class ResourceDownloadStoreInFolderTest extends TestCase
     {
         $downloader = $this->createResourceDownloadStoreInFolder(__DIR__);
         $downloader->checkDestinationFolder(true);
+        /** @phpstan-ignore-next-line method.alreadyNarrowedType */
         $this->assertTrue(true, 'checkDestinationFolder should not create any exception');
     }
 

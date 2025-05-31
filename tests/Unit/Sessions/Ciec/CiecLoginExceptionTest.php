@@ -10,12 +10,13 @@ use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecLoginException;
 use PhpCfdi\CfdiSatScraper\Sessions\Ciec\CiecSessionData;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
 use PhpCfdi\ImageCaptchaResolver\CaptchaImageInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 
 final class CiecLoginExceptionTest extends TestCase
 {
     public function testNotRegisteredAfterLogin(): void
     {
-        /** @var CiecSessionData $sessionData */
+        /** @var CiecSessionData&MockObject $sessionData */
         $sessionData = $this->createMock(CiecSessionData::class);
         $contents = 'x-contents';
 
@@ -31,7 +32,7 @@ final class CiecLoginExceptionTest extends TestCase
 
     public function testNoCaptchaImageFound(): void
     {
-        /** @var CiecSessionData $sessionData */
+        /** @var CiecSessionData&MockObject $sessionData */
         $sessionData = $this->createMock(CiecSessionData::class);
         $contents = 'x-contents';
         $previous = new Exception('previous');
@@ -46,9 +47,9 @@ final class CiecLoginExceptionTest extends TestCase
 
     public function testCaptchaWithoutAnswer(): void
     {
-        /** @var CiecSessionData $sessionData */
+        /** @var CiecSessionData&MockObject $sessionData */
         $sessionData = $this->createMock(CiecSessionData::class);
-        /** @var CaptchaImageInterface $captchaImage */
+        /** @var CaptchaImageInterface&MockObject $captchaImage */
         $captchaImage = $this->createMock(CaptchaImageInterface::class);
         $previous = new Exception('previous');
 
@@ -62,7 +63,7 @@ final class CiecLoginExceptionTest extends TestCase
 
     public function testIncorrectLoginData(): void
     {
-        /** @var CiecSessionData $sessionData */
+        /** @var CiecSessionData&MockObject $sessionData */
         $sessionData = $this->createMock(CiecSessionData::class);
         $contents = 'x-contents';
         $postedData = [];
@@ -78,9 +79,9 @@ final class CiecLoginExceptionTest extends TestCase
     public function testConnectionException(): void
     {
         $when = 'x-when';
-        /** @var CiecSessionData $sessionData */
+        /** @var CiecSessionData&MockObject $sessionData */
         $sessionData = $this->createMock(CiecSessionData::class);
-        /** @var SatHttpGatewayClientException $previous */
+        /** @var SatHttpGatewayClientException&MockObject $previous */
         $previous = $this->createMock(SatHttpGatewayClientException::class);
 
         $exception = CiecLoginException::connectionException($when, $sessionData, $previous);
