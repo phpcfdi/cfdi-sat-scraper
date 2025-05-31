@@ -2,7 +2,7 @@
 
 ## Siguiente versión mayor
 
-- Eliminar el método `SatHttpGatewayException::postLoginData`.
+Ninguno.
 
 ## Pendientes
 
@@ -20,6 +20,9 @@
 - Code coverage 100%.
 
 ## Realizadas
+
+- 2025-05-30: Versión 4.
+    - Eliminar el método `SatHttpGatewayException::postLoginData`.
 
 - 2021-10-01: Versión 3.
     - Se agrega el registro en el portal del SAT usando FIEL.

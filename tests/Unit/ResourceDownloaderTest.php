@@ -111,11 +111,8 @@ final class ResourceDownloaderTest extends TestCase
         $downloadHandler = $this->createMock(ResourceDownloadHandlerInterface::class);
         $promiseHandler = $downloader->makePromiseHandler($downloadHandler);
         $this->assertInstanceOf(ResourceDownloaderPromiseHandler::class, $promiseHandler);
-        // put inside this if, otherwise code analysis will fail since getHandler is not part of interface
-        if ($promiseHandler instanceof ResourceDownloaderPromiseHandler) {
-            $this->assertSame($resourceType, $promiseHandler->getResourceType());
-            $this->assertSame($downloadHandler, $promiseHandler->getHandler());
-        }
+        $this->assertSame($resourceType, $promiseHandler->getResourceType());
+        $this->assertSame($downloadHandler, $promiseHandler->getHandler());
     }
 
     public function testDownload(): void

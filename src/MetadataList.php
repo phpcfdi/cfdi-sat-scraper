@@ -18,7 +18,7 @@ class MetadataList implements Countable, IteratorAggregate, JsonSerializable
     /** @var array<string, Metadata> */
     private $list;
 
-    /** @param Metadata[] $list */
+    /** @param Metadata[]|mixed[] $list */
     public function __construct(array $list)
     {
         $this->list = [];

@@ -31,7 +31,8 @@ use Traversable;
  * @property-read string $estatusCancelacion Estatus de cancelación
  * @property-read string $estadoComprobante Estado del Comprobante
  * @property-read string $estatusProcesoCancelacion Estatus de Proceso de Cancelación
- * @property-read string $fechaProcesoCancelacion Fecha de Proceso de Cancelación
+ * @property-read string $fechaSolicitudCancelacion Fecha de Solicitud de Cancelación
+ * @property-read string $fechaDeCancelacion Fecha de Cancelación
  * @property-read string $rfcACuentaTerceros RFC a cuenta de terceros
  * @property-read string $motivoCancelacion Motivo de cancelación
  * @property-read string $folioSustitucion UUID del CFDI con el que es sustituido
