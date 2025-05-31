@@ -27,22 +27,16 @@ class SatScraper implements SatScraperInterface
      *
      * @param SessionManager $sessionManager
      * @param SatHttpGateway|null $satHttpGateway
-     * @param MetadataMessageHandler|null $maximumRecordsHandler
+     * @param MetadataMessageHandler|null $metadataMessageHandler
      */
     public function __construct(
         SessionManager $sessionManager,
         ?SatHttpGateway $satHttpGateway = null,
-        ?MetadataMessageHandler $maximumRecordsHandler = null
+        ?MetadataMessageHandler $metadataMessageHandler = null
     ) {
-        if ($maximumRecordsHandler instanceof MetadataMessageHandler) {
-            $metadataMessageHandler = $maximumRecordsHandler;
-        } else {
-            $metadataMessageHandler = new NullMetadataMessageHandler();
-        }
-
         $this->sessionManager = $sessionManager;
         $this->satHttpGateway = $satHttpGateway ?? $this->createDefaultSatHttpGateway();
-        $this->metadataMessageHandler = $metadataMessageHandler;
+        $this->metadataMessageHandler = $metadataMessageHandler ?? new NullMetadataMessageHandler();
     }
 
     /**
