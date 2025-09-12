@@ -15,7 +15,7 @@ abstract class LoginException extends \RuntimeException implements SatException
     /** @var string */
     private $contents;
 
-    public function __construct(string $message, string $contents, Throwable $previous = null)
+    public function __construct(string $message, string $contents, ?Throwable $previous = null)
     {
         parent::__construct($message, 0, $previous);
         $this->contents = $contents;

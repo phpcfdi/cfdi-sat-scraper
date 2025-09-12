@@ -34,7 +34,7 @@ class ResourceDownloadError extends \RuntimeException implements SatException
      * @param mixed $reason
      * @param Throwable|null $previous
      */
-    public function __construct(string $message, string $uuid, $reason, Throwable $previous = null)
+    public function __construct(string $message, string $uuid, $reason, ?Throwable $previous = null)
     {
         if (null === $previous && $reason instanceof Throwable) {
             $previous = $reason;

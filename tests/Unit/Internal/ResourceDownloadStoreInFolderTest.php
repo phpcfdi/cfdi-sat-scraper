@@ -16,7 +16,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class ResourceDownloadStoreInFolderTest extends TestCase
 {
-    private function createResourceDownloadStoreInFolder(string $folder, ResourceFileNamerInterface $namer = null): ResourceDownloadStoreInFolder
+    private function createResourceDownloadStoreInFolder(string $folder, ?ResourceFileNamerInterface $namer = null): ResourceDownloadStoreInFolder
     {
         /** @var ResourceFileNamerInterface $namer */
         $namer = $namer ?? $this->createMock(ResourceFileNamerInterface::class);

@@ -12,13 +12,13 @@ final class FielLoginException extends LoginException
     /** @var FielSessionData */
     private $sessionData;
 
-    public function __construct(string $message, string $contents, FielSessionData $sessionData, Throwable $previous = null)
+    public function __construct(string $message, string $contents, FielSessionData $sessionData, ?Throwable $previous = null)
     {
         parent::__construct($message, $contents, $previous);
         $this->sessionData = $sessionData;
     }
 
-    public static function connectionException(string $when, FielSessionData $sessionData, Throwable $previous = null): self
+    public static function connectionException(string $when, FielSessionData $sessionData, ?Throwable $previous = null): self
     {
         return new self("Connection error when $when", '', $sessionData, $previous);
     }

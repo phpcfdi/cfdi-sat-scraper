@@ -44,7 +44,7 @@ abstract class SatHttpGatewayException extends \RuntimeException implements SatE
         string $url,
         array $requestHeaders,
         array $requestData = [],
-        Throwable $previous = null
+        ?Throwable $previous = null
     ) {
         parent::__construct($message, 0, $previous);
         $this->httpMethod = $httpMethod;

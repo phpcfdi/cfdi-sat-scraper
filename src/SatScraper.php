@@ -70,7 +70,7 @@ class SatScraper implements SatScraperInterface
     }
 
     public function resourceDownloader(
-        ResourceType $resourceType = null,
+        ?ResourceType $resourceType = null,
         ?MetadataList $metadataList = null,
         int $concurrency = ResourceDownloader::DEFAULT_CONCURRENCY
     ): ResourceDownloader {
