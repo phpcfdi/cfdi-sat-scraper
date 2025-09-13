@@ -29,8 +29,6 @@ class RetrieveByUuidTest extends IntegrationTestCase
     }
 
     /**
-     * @param DownloadType $downloadType
-     * @param int $count
      * @dataProvider providerRetrieveByUuid
      */
     public function testRetrieveByUuid(DownloadType $downloadType, int $count): void

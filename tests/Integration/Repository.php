@@ -74,7 +74,7 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
             array_filter(
                 $this->items,
                 function (RepositoryItem $item) use ($itemState): bool {
-                    return $item->getState() == $itemState;
+                    return $item->getState() === $itemState;
                 },
             ),
         );
@@ -87,7 +87,7 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
             array_filter(
                 $this->items,
                 function (RepositoryItem $item) use ($itemType): bool {
-                    return $item->getDownloadType() == $itemType;
+                    return $item->getDownloadType() === $itemType;
                 },
             ),
         );

@@ -15,7 +15,6 @@ use PhpCfdi\CfdiSatScraper\QueryByFilters;
 class RetrieveByDateTimeTest extends IntegrationTestCase
 {
     /**
-     * @param DownloadType $downloadType
      * @dataProvider providerEmitidosRecibidos
      */
     public function testRetrieveByDateTime(DownloadType $downloadType): void

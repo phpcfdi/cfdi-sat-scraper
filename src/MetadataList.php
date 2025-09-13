@@ -16,12 +16,11 @@ use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 class MetadataList implements Countable, IteratorAggregate, JsonSerializable
 {
     /** @var array<string, Metadata> */
-    private $list;
+    private $list = [];
 
     /** @param Metadata[]|mixed[] $list */
     public function __construct(array $list)
     {
-        $this->list = [];
         foreach ($list as $metadata) {
             if (! $metadata instanceof Metadata) {
                 continue;
@@ -41,7 +40,6 @@ class MetadataList implements Countable, IteratorAggregate, JsonSerializable
      * Return a new list with only the Metadata that is on the uuids
      *
      * @param string[] $uuids
-     * @return self
      */
     public function filterWithUuids(array $uuids): self
     {
@@ -53,7 +51,6 @@ class MetadataList implements Countable, IteratorAggregate, JsonSerializable
      * Return a new list excluding the Metadata that is on the uuids
      *
      * @param string[] $uuids
-     * @return self
      */
     public function filterWithOutUuids(array $uuids): self
     {
@@ -63,9 +60,6 @@ class MetadataList implements Countable, IteratorAggregate, JsonSerializable
 
     /**
      * Return a new list with only the Metadata which has an url to download according to specified resource type
-     *
-     * @param ResourceType $resourceType
-     * @return self
      */
     public function filterWithResourceLink(ResourceType $resourceType): self
     {
@@ -81,9 +75,6 @@ class MetadataList implements Countable, IteratorAggregate, JsonSerializable
 
     /**
      * Retrieve a Metadata by UUID, if the metadata object does not exists returns NULL
-     *
-     * @param string $uuid
-     * @return Metadata|null
      */
     public function find(string $uuid): ?Metadata
     {
@@ -93,8 +84,6 @@ class MetadataList implements Countable, IteratorAggregate, JsonSerializable
     /**
      * Obtain a Metadata by UUID, the metadata object must exist in the collection
      *
-     * @param string $uuid
-     * @return Metadata
      * @throws LogicException when UUID is not found
      */
     public function get(string $uuid): Metadata

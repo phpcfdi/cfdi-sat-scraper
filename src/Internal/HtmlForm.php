@@ -27,8 +27,6 @@ class HtmlForm
     /**
      * HtmlForm constructor.
      *
-     * @param string $htmlSource
-     * @param string $parentElement
      * @param string[] $elementNameExcludePatters
      */
     public function __construct(string $htmlSource, string $parentElement, array $elementNameExcludePatters = [])
@@ -96,7 +94,7 @@ class HtmlForm
             $value = '';
             /** @var DOMElement $option */
             foreach ($element->getElementsByTagName('option') as $option) {
-                if ($option->getAttribute('selected')) {
+                if ($option->hasAttribute('selected')) {
                     $value = $option->getAttribute('value');
                     break;
                 }
@@ -114,9 +112,7 @@ class HtmlForm
      * If type is defined is excluded if was set as an excluded type
      * If type is radio is included only if checked attribute is true-ish
      *
-     * @param string $element
      * @param string[] $excludeTypes
-     *
      * @return array<string, string>
      */
     public function readFormElementsValues(string $element, array $excludeTypes = []): array
@@ -159,7 +155,6 @@ class HtmlForm
     /**
      * This method is made to ignore RuntimeException if the CssSelector Component is not available.
      *
-     * @param string $filter
      * @return Crawler|DOMElement[]
      */
     private function filterCrawlerElements(string $filter)

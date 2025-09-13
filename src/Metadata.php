@@ -50,7 +50,6 @@ class Metadata implements JsonSerializable, IteratorAggregate
      * $uuid will be converted to lower case.
      * If $data contains a key with 'uuid' will be ignored.
      *
-     * @param string $uuid
      * @param array<string, string> $data
      * @throws InvalidArgumentException when UUID is empty
      */

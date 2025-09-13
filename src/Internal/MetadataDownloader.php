@@ -55,8 +55,6 @@ class MetadataDownloader
 
     /**
      * @param string[] $uuids
-     * @param DownloadType $downloadType
-     * @return MetadataList
      * @throws SatHttpGatewayException
      */
     public function downloadByUuids(array $uuids, DownloadType $downloadType): MetadataList
@@ -72,9 +70,6 @@ class MetadataDownloader
     }
 
     /**
-     * @param UuidOption $uuid
-     * @param DownloadType $downloadType
-     * @return MetadataList
      * @throws SatHttpGatewayException
      */
     public function downloadByUuid(UuidOption $uuid, DownloadType $downloadType): MetadataList
@@ -84,8 +79,6 @@ class MetadataDownloader
     }
 
     /**
-     * @param QueryByFilters $query
-     * @return MetadataList
      * @throws SatHttpGatewayException
      */
     public function downloadByDate(QueryByFilters $query): MetadataList
@@ -101,8 +94,6 @@ class MetadataDownloader
     }
 
     /**
-     * @param QueryByFilters $query
-     * @return MetadataList
      * @throws SatHttpGatewayException
      */
     public function downloadByDateTime(QueryByFilters $query): MetadataList
@@ -117,8 +108,6 @@ class MetadataDownloader
     }
 
     /**
-     * @param QueryByFilters $query
-     * @return MetadataList
      * @throws SatHttpGatewayException
      */
     public function downloadQuery(QueryByFilters $query): MetadataList
@@ -167,8 +156,6 @@ class MetadataDownloader
     }
 
     /**
-     * @param QueryInterface $query
-     * @return MetadataList
      * @throws SatHttpGatewayException
      * @see QueryResolver
      */
@@ -200,7 +187,6 @@ class MetadataDownloader
     /**
      * Generates a clone of this query split by day
      *
-     * @param QueryByFilters $query
      * @return Generator<QueryByFilters>
      */
     public function splitQueryByFiltersByDays(QueryByFilters $query): Generator

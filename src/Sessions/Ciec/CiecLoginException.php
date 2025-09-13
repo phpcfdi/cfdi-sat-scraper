@@ -23,11 +23,7 @@ class CiecLoginException extends LoginException
     /**
      * LoginException constructor.
      *
-     * @param string $message
-     * @param CiecSessionData $sessionData
-     * @param string $contents
      * @param array<string, string> $postedData
-     * @param Throwable|null $previous
      */
     public function __construct(string $message, CiecSessionData $sessionData, string $contents, array $postedData = [], ?Throwable $previous = null)
     {
@@ -55,10 +51,7 @@ class CiecLoginException extends LoginException
     }
 
     /**
-     * @param CiecSessionData $data
-     * @param string $contents
      * @param array<string, string> $postedData
-     * @return self
      */
     public static function incorrectLoginData(CiecSessionData $data, string $contents, array $postedData): self
     {

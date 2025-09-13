@@ -14,7 +14,6 @@ class Headers
     /**
      * Return the headers to use on general form submit
      *
-     * @param string $referer
      *
      * @return array<string, string>
      */
@@ -34,8 +33,6 @@ class Headers
     /**
      * Return the headers to use on general form submit
      *
-     * @param string $host
-     * @param string $referer
      *
      * @return array<string, string>
      */
@@ -51,8 +48,6 @@ class Headers
     /**
      * Return the headers to use on ajax requests
      *
-     * @param string $host
-     * @param string $referer
      *
      * @return array<string, string>
      */

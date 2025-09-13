@@ -31,12 +31,8 @@ abstract class SatHttpGatewayException extends \RuntimeException implements SatE
     /**
      * SatHttpGatewayException constructor.
      *
-     * @param string $message
-     * @param string $httpMethod
-     * @param string $url
      * @param array<string, mixed> $requestHeaders
      * @param array<string, mixed> $requestData
-     * @param Throwable|null $previous
      */
     protected function __construct(
         string $message,

@@ -16,7 +16,6 @@ use PhpCfdi\CfdiSatScraper\QueryByFilters;
 class RetrieveByCfdiStateTest extends IntegrationTestCase
 {
     /**
-     * @param DownloadType $downloadType
      * @dataProvider providerEmitidosRecibidos
      */
     public function testRetrieveByCfdiStateCancelados(DownloadType $downloadType): void
@@ -41,7 +40,6 @@ class RetrieveByCfdiStateTest extends IntegrationTestCase
     }
 
     /**
-     * @param DownloadType $downloadType
      * @dataProvider providerEmitidosRecibidos
      */
     public function testRetrieveByCfdiStateVigentes(DownloadType $downloadType): void

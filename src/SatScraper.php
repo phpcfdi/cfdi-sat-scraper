@@ -24,10 +24,6 @@ class SatScraper implements SatScraperInterface
 
     /**
      * SatScraper constructor.
-     *
-     * @param SessionManager $sessionManager
-     * @param SatHttpGateway|null $satHttpGateway
-     * @param MetadataMessageHandler|null $metadataMessageHandler
      */
     public function __construct(
         SessionManager $sessionManager,

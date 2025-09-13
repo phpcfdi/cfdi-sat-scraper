@@ -27,7 +27,6 @@ class QueryByUuid implements QueryInterface
     }
 
     /**
-     * @param UuidOption $uuid
      * @return $this
      */
     final public function setUuid(UuidOption $uuid): self

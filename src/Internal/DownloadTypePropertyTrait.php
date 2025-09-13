@@ -27,7 +27,6 @@ trait DownloadTypePropertyTrait
     }
 
     /**
-     * @param DownloadType $downloadType
      * @return $this
      */
     public function setDownloadType(DownloadType $downloadType): self

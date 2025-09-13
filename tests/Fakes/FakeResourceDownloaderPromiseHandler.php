@@ -26,10 +26,7 @@ final class FakeResourceDownloaderPromiseHandler implements ResourceDownloaderPr
     /** @var int */
     private $counter = 0;
 
-    /**
-     * @param string $uuid
-     * @return null
-     */
+    /** @return null */
     public function append(string $uuid)
     {
         if (0 === ($this->counter++) % 2) {

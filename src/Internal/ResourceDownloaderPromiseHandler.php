@@ -42,10 +42,6 @@ final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromis
 
     /**
      * This method handles each promise fulfilled event
-     *
-     * @param ResponseInterface $response
-     * @param string $uuid
-     * @return null
      */
     public function promiseFulfilled(ResponseInterface $response, string $uuid)
     {
@@ -66,9 +62,6 @@ final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromis
      * Validate that the Response object was OK and contains something that looks like CFDI.
      * Return the content read from the response body.
      *
-     * @param ResponseInterface $response
-     * @param string $uuid
-     * @return string
      *
      * @throws ResourceDownloadResponseError
      */
@@ -102,8 +95,6 @@ final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromis
      * This method handles each promise rejected event
      *
      * @param mixed $reason
-     * @param string $uuid
-     * @return null
      */
     public function promiseRejected($reason, string $uuid)
     {
@@ -116,8 +107,6 @@ final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromis
 
     /**
      * Send the error to handler error method
-     *
-     * @param ResourceDownloadError $error
      * @return null
      */
     public function handlerError(ResourceDownloadError $error)

@@ -282,7 +282,6 @@ class ComplementsOption extends MicroCatalog implements FilterOption
     ];
 
     /**
-     * @param string $name
      * @param mixed $arguments
      * @return self
      */

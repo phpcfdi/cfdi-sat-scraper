@@ -88,7 +88,6 @@ final class FielSessionManager extends AbstractSessionManager implements Session
     }
 
     /**
-     * @param string $html
      * @return array<string, string>
      */
     private function resolveChallengeUsingFiel(string $html): array

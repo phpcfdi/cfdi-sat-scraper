@@ -84,7 +84,6 @@ class ResourceDownloader
     /**
      * Change the metadata list that will be used to perform downloads
      *
-     * @param MetadataList $list
      * @return $this
      */
     public function setMetadataList(MetadataList $list): self
@@ -101,7 +100,6 @@ class ResourceDownloader
     /**
      * Set concurrency, if lower than 1 will use 1
      *
-     * @param int $concurrency
      * @return $this
      */
     public function setConcurrency(int $concurrency): self
@@ -118,7 +116,6 @@ class ResourceDownloader
     /**
      * Set up the resource file namer
      *
-     * @param ResourceFileNamerInterface $resourceFileNamer
      * @return $this
      */
     public function setResourceFileNamer(ResourceFileNamerInterface $resourceFileNamer): self
@@ -137,7 +134,6 @@ class ResourceDownloader
      *
      * The download will return an array that contains all the successful processed uuids.
      *
-     * @param ResourceDownloadHandlerInterface $handler
      * @return string[]
      *
      * @see ResourceDownloaderPromiseHandler::promiseFulfilled()
@@ -164,9 +160,6 @@ class ResourceDownloader
     /**
      * Factory method to make the default ResourceDownloaderPromiseHandler,
      * by extracting the creation it can be replaced with any ResourceDownloaderPromiseHandlerInterface.
-     *
-     * @param ResourceDownloadHandlerInterface $handler
-     * @return ResourceDownloaderPromiseHandlerInterface
      */
     protected function makePromiseHandler(ResourceDownloadHandlerInterface $handler): ResourceDownloaderPromiseHandlerInterface
     {
@@ -200,9 +193,6 @@ class ResourceDownloader
      *
      * Return the list of fulfilled UUID
      *
-     * @param string $destinationFolder
-     * @param bool $createFolder
-     * @param int $createMode
      * @return string[]
      *
      * @throws InvalidArgumentException if destination folder argument is empty

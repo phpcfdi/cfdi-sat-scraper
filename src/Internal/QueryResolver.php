@@ -27,8 +27,6 @@ class QueryResolver
     }
 
     /**
-     * @param InputsInterface $inputs
-     * @return MetadataList
      * @throws SatHttpGatewayException
      */
     public function resolve(InputsInterface $inputs): MetadataList
@@ -52,7 +50,6 @@ class QueryResolver
     }
 
     /**
-     * @param string $url
      * @return array<string, string>
      * @throws SatHttpGatewayException
      */
@@ -65,7 +62,6 @@ class QueryResolver
     }
 
     /**
-     * @param string $url
      * @param array<string, string> $post
      * @return array<string, string>
      * @throws SatHttpGatewayException
@@ -77,9 +73,7 @@ class QueryResolver
     }
 
     /**
-     * @param string $url
      * @param array<string, string> $post
-     * @return string
      * @throws SatHttpGatewayException
      */
     protected function htmlFromExecuteQuery(string $url, array $post): string

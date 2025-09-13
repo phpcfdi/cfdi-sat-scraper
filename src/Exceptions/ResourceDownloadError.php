@@ -29,10 +29,7 @@ class ResourceDownloadError extends \RuntimeException implements SatException
      *
      * If the reason is a Throwable and previous was not defined, then it set up previous as reason.
      *
-     * @param string $message
-     * @param string $uuid
      * @param mixed $reason
-     * @param Throwable|null $previous
      */
     public function __construct(string $message, string $uuid, $reason, ?Throwable $previous = null)
     {
@@ -45,9 +42,7 @@ class ResourceDownloadError extends \RuntimeException implements SatException
     }
 
     /**
-     * @param string $uuid
      * @param mixed $reason
-     * @return self
      */
     public static function onRejected(string $uuid, $reason): self
     {
@@ -57,7 +52,6 @@ class ResourceDownloadError extends \RuntimeException implements SatException
 
     /**
      * @param mixed $reason
-     * @return string
      */
     public static function reasonToString($reason): string
     {
@@ -80,8 +74,6 @@ class ResourceDownloadError extends \RuntimeException implements SatException
 
     /**
      * The UUID related to the error
-     *
-     * @return string
      */
     public function getUuid(): string
     {

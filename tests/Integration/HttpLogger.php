@@ -93,7 +93,7 @@ class HttpLogger extends ArrayObject
                     'headers' => $request->getHeaders(),
                     'body' => $this->bodyToVars((string) $request->getBody()),
                 ],
-                'response' => ($response) ? [
+                'response' => ($response instanceof \Psr\Http\Message\ResponseInterface) ? [
                     'code' => $response->getStatusCode(),
                     'headers' => $response->getHeaders(),
                     'body' => (string) $response->getBody(),
@@ -109,7 +109,6 @@ class HttpLogger extends ArrayObject
     }
 
     /**
-     * @param string $body
      * @return array<mixed>
      */
     public function bodyToVars(string $body): array

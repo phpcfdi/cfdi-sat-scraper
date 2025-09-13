@@ -20,9 +20,7 @@ use Throwable;
 class MetadataExtractor
 {
     /**
-     * @param string $html
      * @param array<string, string>|null $fieldsCaptions
-     * @return MetadataList
      */
     public function extract(string $html, ?array $fieldsCaptions = null): MetadataList
     {
@@ -90,7 +88,6 @@ class MetadataExtractor
     }
 
     /**
-     * @param Crawler $headersRow
      * @param array<string, string> $fieldsCaptions
      * @return array<string, int>
      */
@@ -99,7 +96,7 @@ class MetadataExtractor
         try {
             /** @var array<int, string> $headerCells */
             $headerCells = $headersRow->children()->each(
-                function (Crawler $cell) {
+                function (Crawler $cell): string {
                     return trim($cell->text());
                 },
             );
@@ -120,7 +117,6 @@ class MetadataExtractor
     }
 
     /**
-     * @param Crawler $row
      * @param array<string, int> $fieldsPositions
      * @return array<string, string>
      */

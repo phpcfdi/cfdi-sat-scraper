@@ -29,7 +29,6 @@ class FielSessionData
     /**
      * The valid to is formatted as yymmddhhiissZ
      * Example: 2023-06-13T21:05:15+00:00 is 230613210515Z
-     * @return string
      */
     public function getValidTo(): string
     {

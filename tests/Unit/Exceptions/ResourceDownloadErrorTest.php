@@ -72,7 +72,6 @@ final class ResourceDownloadErrorTest extends TestCase
     }
 
     /**
-     * @param string $expected
      * @param mixed $reason
      * @dataProvider providerReasonToString
      */

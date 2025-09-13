@@ -67,7 +67,6 @@ final class ParserFormatSatTest extends TestCase
 
     /**
      * @param array<string, string> $values
-     * @return string
      */
     public function buildFakeSourceData(array $values): string
     {

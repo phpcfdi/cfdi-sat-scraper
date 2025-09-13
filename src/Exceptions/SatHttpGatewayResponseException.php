@@ -19,10 +19,6 @@ class SatHttpGatewayResponseException extends SatHttpGatewayException implements
     /**
      * SatHttpGatewayResponseException constructor.
      *
-     * @param ResponseInterface $response
-     * @param string $message
-     * @param string $httpMethod
-     * @param string $url
      * @param array<string, mixed> $requestHeaders
      * @param array<string, mixed> $requestData
      */
@@ -35,13 +31,8 @@ class SatHttpGatewayResponseException extends SatHttpGatewayException implements
     /**
      * Method factory
      *
-     * @param string $when
-     * @param ResponseInterface $response
-     * @param string $httpMethod
-     * @param string $url
      * @param array<string, mixed> $requestHeaders
      * @param array<string, mixed> $requestData
-     * @return self
      */
     public static function unexpectedEmptyResponse(string $when, ResponseInterface $response, string $httpMethod, string $url, array $requestHeaders, array $requestData = []): self
     {

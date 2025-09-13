@@ -52,8 +52,6 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
     }
 
     /**
-     * @param int $attempt
-     * @return string
      * @throws CiecLoginException
      */
     public function getCaptchaValue(int $attempt): string
@@ -116,8 +114,6 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
     }
 
     /**
-     * @param int $attempt
-     * @return string
      * @throws CiecLoginException
      */
     private function loginInternal(int $attempt): string

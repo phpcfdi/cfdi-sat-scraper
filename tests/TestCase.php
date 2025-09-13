@@ -38,7 +38,6 @@ abstract class TestCase extends PHPUnitTestCase
      * Create an array of Metadata containing the specified uuids.
      * Each Metadata has an urlXml
      *
-     * @param string ...$uuids
      * @return array<string, Metadata>
      */
     public static function createMetadataArrayUsingUuids(string ...$uuids): array

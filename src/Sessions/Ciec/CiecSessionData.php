@@ -34,9 +34,6 @@ class CiecSessionData
     /**
      * SatSessionManager constructor.
      *
-     * @param string $rfc
-     * @param string $ciec
-     * @param CaptchaResolverInterface $captchaResolver
      * @param int $maxTriesCaptcha if lower than 1 is set to 1
      * @param int $maxTriesLogin if lower than 1 is set to 1
      *
@@ -50,10 +47,10 @@ class CiecSessionData
         int $maxTriesCaptcha = self::DEFAULT_MAX_TRIES_CAPTCHA,
         int $maxTriesLogin = self::DEFAULT_MAX_TRIES_LOGIN
     ) {
-        if (empty($rfc)) {
+        if ('' === $rfc) {
             throw InvalidArgumentException::emptyInput('RFC');
         }
-        if (empty($ciec)) {
+        if ('' === $ciec) {
             throw InvalidArgumentException::emptyInput('CIEC');
         }
         $this->rfc = $rfc;

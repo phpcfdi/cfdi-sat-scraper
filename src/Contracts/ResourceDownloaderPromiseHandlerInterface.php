@@ -10,9 +10,6 @@ interface ResourceDownloaderPromiseHandlerInterface
 {
     /**
      * This method handles each promise fulfilled event
-     *
-     * @param ResponseInterface $response
-     * @param string $uuid
      * @return null
      */
     public function promiseFulfilled(ResponseInterface $response, string $uuid);
@@ -21,7 +18,6 @@ interface ResourceDownloaderPromiseHandlerInterface
      * This method handles each promise rejected event
      *
      * @param mixed $reason
-     * @param string $uuid
      * @return null
      */
     public function promiseRejected($reason, string $uuid);
