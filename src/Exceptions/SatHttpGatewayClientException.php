@@ -13,7 +13,7 @@ use GuzzleHttp\Exception\GuzzleException;
  */
 class SatHttpGatewayClientException extends SatHttpGatewayException implements SatException
 {
-    private GuzzleException $clientException;
+    private readonly GuzzleException $clientException;
 
     /**
      * SatHttpGatewayClientException constructor.

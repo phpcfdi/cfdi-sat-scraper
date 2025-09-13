@@ -21,9 +21,9 @@ use Psr\Http\Message\ResponseInterface;
 
 class SatHttpGateway
 {
-    private ClientInterface $client;
+    private readonly ClientInterface $client;
 
-    private CookieJarInterface $cookieJar;
+    private readonly CookieJarInterface $cookieJar;
 
     private string $effectiveUri;
 

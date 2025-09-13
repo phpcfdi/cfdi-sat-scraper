@@ -30,7 +30,7 @@ class Factory
 
     private ?Repository $repository = null;
 
-    public function __construct(private string $repositoryPath)
+    public function __construct(private readonly string $repositoryPath)
     {
     }
 

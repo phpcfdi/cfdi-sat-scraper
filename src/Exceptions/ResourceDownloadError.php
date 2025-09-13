@@ -18,7 +18,7 @@ use Throwable;
  */
 class ResourceDownloadError extends \RuntimeException implements SatException
 {
-    private mixed $reason;
+    private readonly mixed $reason;
 
     /**
      * ResourceDownloadError constructor.
@@ -27,7 +27,7 @@ class ResourceDownloadError extends \RuntimeException implements SatException
      *
      * @param mixed $reason
      */
-    public function __construct(string $message, private string $uuid, $reason, ?Throwable $previous = null)
+    public function __construct(string $message, private readonly string $uuid, $reason, ?Throwable $previous = null)
     {
         if (null === $previous && $reason instanceof Throwable) {
             $previous = $reason;

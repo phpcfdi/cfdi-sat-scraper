@@ -15,7 +15,7 @@ use Psr\Http\Message\ResponseInterface;
  */
 class HttpLogger extends ArrayObject
 {
-    public function __construct(private string $destinationDir)
+    public function __construct(private readonly string $destinationDir)
     {
         parent::__construct();
     }
@@ -48,7 +48,7 @@ class HttpLogger extends ArrayObject
             return;
         }
         if (! file_exists($this->destinationDir)) {
-            mkdir($this->destinationDir, 0755, true);
+            mkdir($this->destinationDir, 0o755, true);
         }
         /** @var RequestInterface $request */
         $request = $entry['request'];

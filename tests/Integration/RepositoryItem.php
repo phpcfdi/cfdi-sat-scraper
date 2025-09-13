@@ -9,13 +9,13 @@ use JsonSerializable;
 
 class RepositoryItem implements JsonSerializable
 {
-    private string $uuid;
+    private readonly string $uuid;
 
-    private string $type;
+    private readonly string $type;
 
-    private string $state;
+    private readonly string $state;
 
-    public function __construct(string $uuid, private DateTimeImmutable $date, string $state, string $type)
+    public function __construct(string $uuid, private readonly DateTimeImmutable $date, string $state, string $type)
     {
         $this->uuid = strtolower($uuid);
         $this->type = strtoupper(substr($type, 0, 1));

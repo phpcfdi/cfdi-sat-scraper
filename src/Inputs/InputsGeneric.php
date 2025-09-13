@@ -12,7 +12,7 @@ use PhpCfdi\CfdiSatScraper\Contracts\QueryInterface;
 abstract class InputsGeneric implements InputsInterface
 {
     /** @param TQuery $query */
-    public function __construct(private QueryInterface $query)
+    public function __construct(private readonly QueryInterface $query)
     {
     }
 

@@ -39,8 +39,8 @@ class ResourceDownloader
     private ResourceFileNamerInterface $resourceFileNamer;
 
     public function __construct(
-        private SatHttpGateway $satHttpGateway,
-        private ResourceType $resourceType,
+        private readonly SatHttpGateway $satHttpGateway,
+        private readonly ResourceType $resourceType,
         protected ?MetadataList $list = null,
         int $concurrency = self::DEFAULT_CONCURRENCY,
         ?ResourceFileNamerInterface $resourceFileNamer = null
@@ -188,7 +188,7 @@ class ResourceDownloader
      *
      * @see ResourceDownloadStoreInFolder
      */
-    public function saveTo(string $destinationFolder, bool $createFolder = false, int $createMode = 0775): array
+    public function saveTo(string $destinationFolder, bool $createFolder = false, int $createMode = 0o775): array
     {
         $storeHandler = new ResourceDownloadStoreInFolder($destinationFolder, $this->getResourceFileNamer());
         $storeHandler->checkDestinationFolder($createFolder, $createMode);

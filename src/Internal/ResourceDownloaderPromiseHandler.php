@@ -28,7 +28,7 @@ final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromis
     /** @var string[] */
     private array $fulfilledUuids = [];
 
-    public function __construct(private ResourceType $resourceType, private ResourceDownloadHandlerInterface $handler)
+    public function __construct(private readonly ResourceType $resourceType, private readonly ResourceDownloadHandlerInterface $handler)
     {
     }
 

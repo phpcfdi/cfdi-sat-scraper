@@ -22,10 +22,10 @@ abstract class SatHttpGatewayException extends \RuntimeException implements SatE
      */
     protected function __construct(
         string $message,
-        private string $httpMethod,
-        private string $url,
-        private array $requestHeaders,
-        private array $requestData = [],
+        private readonly string $httpMethod,
+        private readonly string $url,
+        private readonly array $requestHeaders,
+        private readonly array $requestData = [],
         ?Throwable $previous = null
     ) {
         parent::__construct($message, 0, $previous);

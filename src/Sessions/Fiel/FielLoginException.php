@@ -9,7 +9,7 @@ use Throwable;
 
 final class FielLoginException extends LoginException
 {
-    public function __construct(string $message, string $contents, private FielSessionData $sessionData, ?Throwable $previous = null)
+    public function __construct(string $message, string $contents, private readonly FielSessionData $sessionData, ?Throwable $previous = null)
     {
         parent::__construct($message, $contents, $previous);
     }

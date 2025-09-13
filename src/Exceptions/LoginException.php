@@ -12,7 +12,7 @@ use Throwable;
  */
 abstract class LoginException extends \RuntimeException implements SatException
 {
-    public function __construct(string $message, private string $contents, ?Throwable $previous = null)
+    public function __construct(string $message, private readonly string $contents, ?Throwable $previous = null)
     {
         parent::__construct($message, 0, $previous);
     }

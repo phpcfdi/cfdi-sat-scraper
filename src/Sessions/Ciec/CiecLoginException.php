@@ -14,8 +14,13 @@ class CiecLoginException extends LoginException
     private ?CaptchaImageInterface $captchaImage = null;
 
     /** @param array<string, string> $postedData */
-    public function __construct(string $message, private CiecSessionData $sessionData, string $contents, private array $postedData = [], ?Throwable $previous = null)
-    {
+    public function __construct(
+        string $message,
+        private readonly CiecSessionData $sessionData,
+        string $contents,
+        private readonly array $postedData = [],
+        ?Throwable $previous = null
+    ) {
         parent::__construct($message, $contents, $previous);
     }
 

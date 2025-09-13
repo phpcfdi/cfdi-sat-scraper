@@ -31,7 +31,7 @@ use PhpCfdi\CfdiSatScraper\QueryByUuid;
 class MetadataDownloader
 {
     /** @internal */
-    public function __construct(private QueryResolver $queryResolver, private MetadataMessageHandler $messageHandler)
+    public function __construct(private readonly QueryResolver $queryResolver, private readonly MetadataMessageHandler $messageHandler)
     {
     }
 

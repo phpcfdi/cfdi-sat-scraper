@@ -20,7 +20,7 @@ use Throwable;
  */
 final class ResourceDownloadStoreInFolder implements ResourceDownloadHandlerInterface
 {
-    public function __construct(private string $destinationFolder, private ResourceFileNamerInterface $resourceFileNamer)
+    public function __construct(private readonly string $destinationFolder, private readonly ResourceFileNamerInterface $resourceFileNamer)
     {
         if ('' === $this->destinationFolder) {
             throw InvalidArgumentException::emptyInput('destination folder');
@@ -51,7 +51,7 @@ final class ResourceDownloadStoreInFolder implements ResourceDownloadHandlerInte
      * @throws RuntimeException if ask to create folder path exists and is not a folder
      * @throws RuntimeException if unable to create folder
      */
-    public function checkDestinationFolder(bool $createDestinationFolder, int $createMode = 0755): void
+    public function checkDestinationFolder(bool $createDestinationFolder, int $createMode = 0o755): void
     {
         $destinationFolder = $this->getDestinationFolder();
 

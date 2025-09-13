@@ -18,7 +18,7 @@ use PhpCfdi\CfdiSatScraper\SatHttpGateway;
  */
 class QueryResolver
 {
-    public function __construct(private SatHttpGateway $satHttpGateway)
+    public function __construct(private readonly SatHttpGateway $satHttpGateway)
     {
     }
 

@@ -16,13 +16,13 @@ class CiecSessionData
 
     public const DEFAULT_MAX_TRIES_LOGIN = 3;
 
-    private string $rfc;
+    private readonly string $rfc;
 
-    private string $ciec;
+    private readonly string $ciec;
 
-    private int $maxTriesCaptcha;
+    private readonly int $maxTriesCaptcha;
 
-    private int $maxTriesLogin;
+    private readonly int $maxTriesLogin;
 
     /**
      * @param int $maxTriesCaptcha if lower than 1 is set to 1
@@ -34,7 +34,7 @@ class CiecSessionData
     public function __construct(
         string $rfc,
         string $ciec,
-        private CaptchaResolverInterface $captchaResolver,
+        private readonly CaptchaResolverInterface $captchaResolver,
         int $maxTriesCaptcha = self::DEFAULT_MAX_TRIES_CAPTCHA,
         int $maxTriesLogin = self::DEFAULT_MAX_TRIES_LOGIN
     ) {

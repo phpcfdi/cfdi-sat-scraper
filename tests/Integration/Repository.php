@@ -22,7 +22,7 @@ use Traversable;
 class Repository implements Countable, IteratorAggregate, JsonSerializable
 {
     /** @param array<string, RepositoryItem> $items */
-    public function __construct(private array $items)
+    public function __construct(private readonly array $items)
     {
     }
 
