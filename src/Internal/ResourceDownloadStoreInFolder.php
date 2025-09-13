@@ -18,9 +18,9 @@ use Throwable;
  * @see \PhpCfdi\CfdiSatScraper\ResourceDownloader::saveTo()
  * @internal
  */
-final class ResourceDownloadStoreInFolder implements ResourceDownloadHandlerInterface
+final readonly class ResourceDownloadStoreInFolder implements ResourceDownloadHandlerInterface
 {
-    public function __construct(private readonly string $destinationFolder, private readonly ResourceFileNamerInterface $resourceFileNamer)
+    public function __construct(private string $destinationFolder, private ResourceFileNamerInterface $resourceFileNamer)
     {
         if ('' === $this->destinationFolder) {
             throw InvalidArgumentException::emptyInput('destination folder');

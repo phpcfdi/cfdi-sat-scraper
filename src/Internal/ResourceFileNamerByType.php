@@ -14,9 +14,9 @@ use PhpCfdi\CfdiSatScraper\ResourceType;
  *
  * @internal
  */
-final class ResourceFileNamerByType implements ResourceFileNamerInterface
+final readonly class ResourceFileNamerByType implements ResourceFileNamerInterface
 {
-    public function __construct(private readonly ResourceType $resourceType)
+    public function __construct(private ResourceType $resourceType)
     {
     }
 

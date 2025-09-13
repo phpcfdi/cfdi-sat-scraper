@@ -35,7 +35,7 @@ final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromis
     /**
      * This method handles each promise fulfilled event
      */
-    public function promiseFulfilled(ResponseInterface $response, string $uuid)
+    public function promiseFulfilled(ResponseInterface $response, string $uuid): null
     {
         try {
             $content = $this->validateResponse($response, $uuid);
@@ -86,7 +86,7 @@ final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromis
     /**
      * This method handles each promise rejected event
      */
-    public function promiseRejected(mixed $reason, string $uuid)
+    public function promiseRejected(mixed $reason, string $uuid): null
     {
         if ($reason instanceof RequestException) {
             return $this->handlerError(ResourceDownloadRequestExceptionError::onRequestException($reason, $uuid));
@@ -97,9 +97,8 @@ final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromis
 
     /**
      * Send the error to handler error method
-     * @return null
      */
-    public function handlerError(ResourceDownloadError $error)
+    public function handlerError(ResourceDownloadError $error): null
     {
         $this->handler->onError($error);
         return null;

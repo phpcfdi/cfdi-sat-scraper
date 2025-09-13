@@ -6,9 +6,9 @@ namespace PhpCfdi\CfdiSatScraper\Sessions\Fiel;
 
 use PhpCfdi\Credentials\Credential;
 
-class FielSessionData
+readonly class FielSessionData
 {
-    public function __construct(private readonly Credential $fiel)
+    public function __construct(private Credential $fiel)
     {
     }
 

@@ -12,10 +12,10 @@ use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
  * @see FielSessionManager::resolveChallengeUsingFiel
  * @internal
  */
-final class ChallengeResolver
+final readonly class ChallengeResolver
 {
     /** @param array<string, string> $fields */
-    private function __construct(private readonly array $fields, private readonly FielSessionData $sessionData)
+    private function __construct(private array $fields, private FielSessionData $sessionData)
     {
     }
 
