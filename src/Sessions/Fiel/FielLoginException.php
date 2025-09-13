@@ -9,8 +9,7 @@ use Throwable;
 
 final class FielLoginException extends LoginException
 {
-    /** @var FielSessionData */
-    private $sessionData;
+    private FielSessionData $sessionData;
 
     public function __construct(string $message, string $contents, FielSessionData $sessionData, ?Throwable $previous = null)
     {

@@ -16,8 +16,7 @@ use Throwable;
 
 final class CiecSessionManager extends AbstractSessionManager implements SessionManager
 {
-    /** @var CiecSessionData */
-    private $sessionData;
+    private CiecSessionData $sessionData;
 
     public function __construct(CiecSessionData $sessionData)
     {

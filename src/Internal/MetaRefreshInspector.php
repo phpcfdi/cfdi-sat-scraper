@@ -8,7 +8,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\UriResolver;
 
 /**
- * This is a class to inspect a web page and find if there is a http meta refresh instruction.
+ * This is a class to inspect a web page and find if there is an http meta refresh instruction.
  *
  * @internal
  */
@@ -24,7 +24,7 @@ final class MetaRefreshInspector
         }
 
         $content = (string) $refresh->attr('content');
-        if (! (bool) preg_match('/^\d+;\s*url=(?<url>.*)$/i', $content, $matches)) {
+        if (! preg_match('/^\d+;\s*url=(?<url>.*)$/i', $content, $matches)) {
             return '';
         }
 

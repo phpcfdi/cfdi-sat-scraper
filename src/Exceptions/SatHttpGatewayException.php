@@ -16,17 +16,15 @@ use Throwable;
  */
 abstract class SatHttpGatewayException extends \RuntimeException implements SatException
 {
-    /** @var string */
-    private $url;
+    private string $url;
 
     /** @var array<string, mixed> */
-    private $requestHeaders;
+    private array $requestHeaders;
 
     /** @var array<string, mixed> */
-    private $requestData;
+    private array $requestData;
 
-    /** @var string */
-    private $httpMethod;
+    private string $httpMethod;
 
     /**
      * SatHttpGatewayException constructor.

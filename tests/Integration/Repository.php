@@ -22,7 +22,7 @@ use Traversable;
 class Repository implements Countable, IteratorAggregate, JsonSerializable
 {
     /** @var array<string, RepositoryItem> */
-    private $items;
+    private array $items;
 
     /** @param array<string, RepositoryItem> $items */
     public function __construct(array $items)
@@ -73,9 +73,7 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
         return new self(
             array_filter(
                 $this->items,
-                function (RepositoryItem $item) use ($itemState): bool {
-                    return $item->getState() === $itemState;
-                },
+                fn (RepositoryItem $item): bool => $item->getState() === $itemState,
             ),
         );
     }
@@ -86,9 +84,7 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
         return new self(
             array_filter(
                 $this->items,
-                function (RepositoryItem $item) use ($itemType): bool {
-                    return $item->getDownloadType() === $itemType;
-                },
+                fn (RepositoryItem $item): bool => $item->getDownloadType() === $itemType,
             ),
         );
     }
@@ -117,9 +113,7 @@ class Repository implements Countable, IteratorAggregate, JsonSerializable
     public function getUuids(): array
     {
         return array_map(
-            function (RepositoryItem $item): string {
-                return $item->getUuid();
-            },
+            fn (RepositoryItem $item): string => $item->getUuid(),
             $this->items,
         );
     }

@@ -14,8 +14,7 @@ use PhpCfdi\Credentials\Credential;
 
 final class FielSessionManager extends AbstractSessionManager implements SessionManager
 {
-    /** @var FielSessionData */
-    private $sessionData;
+    private FielSessionData $sessionData;
 
     public function __construct(FielSessionData $fielSessionData)
     {

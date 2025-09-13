@@ -13,14 +13,11 @@ use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 
 class SatScraper implements SatScraperInterface
 {
-    /** @var SessionManager */
-    private $sessionManager;
+    private SessionManager $sessionManager;
 
-    /** @var SatHttpGateway */
-    private $satHttpGateway;
+    private SatHttpGateway $satHttpGateway;
 
-    /** @var MetadataMessageHandler */
-    protected $metadataMessageHandler;
+    protected MetadataMessageHandler $metadataMessageHandler;
 
     /**
      * SatScraper constructor.
@@ -70,7 +67,7 @@ class SatScraper implements SatScraperInterface
         ?MetadataList $metadataList = null,
         int $concurrency = ResourceDownloader::DEFAULT_CONCURRENCY
     ): ResourceDownloader {
-        $resourceType = $resourceType ?? ResourceType::xml();
+        $resourceType ??= ResourceType::xml();
         return new ResourceDownloader($this->satHttpGateway, $resourceType, $metadataList, $concurrency);
     }
 

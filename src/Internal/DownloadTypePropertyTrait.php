@@ -13,8 +13,7 @@ use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
  */
 trait DownloadTypePropertyTrait
 {
-    /** @var DownloadType */
-    private $downloadType;
+    private DownloadType $downloadType;
 
     protected function getDefaultDownloadType(?DownloadType $downloadType = null): DownloadType
     {

@@ -9,17 +9,13 @@ use JsonSerializable;
 
 class RepositoryItem implements JsonSerializable
 {
-    /** @var string */
-    private $uuid;
+    private string $uuid;
 
-    /** @var DateTimeImmutable */
-    private $date;
+    private DateTimeImmutable $date;
 
-    /** @var string */
-    private $type;
+    private string $type;
 
-    /** @var string */
-    private $state;
+    private string $state;
 
     public function __construct(string $uuid, DateTimeImmutable $date, string $state, string $type)
     {

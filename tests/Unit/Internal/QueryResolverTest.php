@@ -16,11 +16,10 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 final class QueryResolverTest extends TestCase
 {
-    /** @var QueryResolver */
-    private $resolver;
+    private QueryResolver $resolver;
 
     /** @var SatHttpGateway&MockObject */
-    private $satHttpGateway;
+    private MockObject $satHttpGateway;
 
     protected function setUp(): void
     {

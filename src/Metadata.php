@@ -43,7 +43,7 @@ use Traversable;
 class Metadata implements JsonSerializable, IteratorAggregate
 {
     /** @var array<string, string> */
-    private $data;
+    private array $data;
 
     /**
      * Metadata constructor.

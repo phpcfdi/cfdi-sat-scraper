@@ -70,8 +70,10 @@ final class ParserFormatSatTest extends TestCase
      */
     public function buildFakeSourceData(array $values): string
     {
-        return implode('', array_map(function ($fieldName, $fieldValue): string {
-            return '|' . implode('|', [strlen($fieldValue), 'hiddenField', $fieldName, $fieldValue]);
-        }, array_keys($values), $values));
+        return implode('', array_map(
+            fn ($fieldName, $fieldValue): string => '|' . implode('|', [strlen($fieldValue), 'hiddenField', $fieldName, $fieldValue]),
+            array_keys($values),
+            $values,
+        ));
     }
 }

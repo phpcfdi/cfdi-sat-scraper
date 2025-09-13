@@ -21,23 +21,17 @@ class QueryByFilters implements QueryInterface
 {
     use DownloadTypePropertyTrait;
 
-    /** @var DateTimeImmutable */
-    private $startDate;
+    private DateTimeImmutable $startDate;
 
-    /** @var DateTimeImmutable */
-    private $endDate;
+    private DateTimeImmutable $endDate;
 
-    /** @var RfcOption */
-    private $rfc;
+    private RfcOption $rfc;
 
-    /** @var RfcOnBehalfOption */
-    private $rfcOnBehalf;
+    private RfcOnBehalfOption $rfcOnBehalf;
 
-    /** @var ComplementsOption */
-    private $complement;
+    private ComplementsOption $complement;
 
-    /** @var StatesVoucherOption */
-    private $stateVoucher;
+    private StatesVoucherOption $stateVoucher;
 
     public function __construct(DateTimeImmutable $startDate, DateTimeImmutable $endDate, ?DownloadType $downloadType = null)
     {

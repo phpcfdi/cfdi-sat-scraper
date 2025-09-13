@@ -16,16 +16,16 @@ use PhpCfdi\CfdiSatScraper\Contracts\MetadataMessageHandler;
 final class MetadataMessageTracker implements MetadataMessageHandler
 {
     /** @var string[] */
-    private $resolved = [];
+    private array $resolved = [];
 
     /** @var string[] */
-    private $resolvedDates = [];
+    private array $resolvedDates = [];
 
     /** @var string[] */
-    private $divisions = [];
+    private array $divisions = [];
 
     /** @var string[] */
-    private $maximum = [];
+    private array $maximum = [];
 
     /** @return string[] */
     public function getResolved(): array

@@ -15,10 +15,9 @@ use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
 final class ChallengeResolver
 {
     /** @var array<string, string> */
-    private $fields;
+    private array $fields;
 
-    /** @var FielSessionData */
-    private $sessionData;
+    private FielSessionData $sessionData;
 
     /** @param array<string, string> $fields */
     private function __construct(array $fields, FielSessionData $sessionData)

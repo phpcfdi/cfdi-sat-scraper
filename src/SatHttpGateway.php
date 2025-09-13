@@ -21,19 +21,16 @@ use Psr\Http\Message\ResponseInterface;
 
 class SatHttpGateway
 {
-    /** @var ClientInterface */
-    private $client;
+    private ClientInterface $client;
 
-    /** @var CookieJarInterface */
-    private $cookieJar;
+    private CookieJarInterface $cookieJar;
 
-    /** @var string */
-    private $effectiveUri;
+    private string $effectiveUri;
 
     public function __construct(?ClientInterface $client = null, ?CookieJarInterface $cookieJar = null)
     {
         // create a new client (if not set) with the given cookie (if set)
-        $client = $client ?? new Client([RequestOptions::COOKIES => $cookieJar ?? new CookieJar()]);
+        $client ??= new Client([RequestOptions::COOKIES => $cookieJar ?? new CookieJar()]);
 
         // if the cookieJar was set on the client but not in the configuration
         if (null === $cookieJar) {

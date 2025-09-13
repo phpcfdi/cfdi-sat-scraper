@@ -17,8 +17,7 @@ class QueryByUuid implements QueryInterface
 {
     use DownloadTypePropertyTrait;
 
-    /** @var UuidOption */
-    private $uuid;
+    private UuidOption $uuid;
 
     public function __construct(UuidOption $uuid, ?DownloadType $downloadType = null)
     {

@@ -16,7 +16,7 @@ use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 class MetadataList implements Countable, IteratorAggregate, JsonSerializable
 {
     /** @var array<string, Metadata> */
-    private $list = [];
+    private array $list = [];
 
     /** @param Metadata[]|mixed[] $list */
     public function __construct(array $list)
@@ -59,13 +59,11 @@ class MetadataList implements Countable, IteratorAggregate, JsonSerializable
     }
 
     /**
-     * Return a new list with only the Metadata which has an url to download according to specified resource type
+     * Return a new list with only the Metadata which has a url to download according to specified resource type
      */
     public function filterWithResourceLink(ResourceType $resourceType): self
     {
-        return new self(array_filter($this->list, function (Metadata $metadata) use ($resourceType): bool {
-            return $metadata->hasResource($resourceType);
-        }));
+        return new self(array_filter($this->list, fn (Metadata $metadata): bool => $metadata->hasResource($resourceType)));
     }
 
     public function has(string $uuid): bool

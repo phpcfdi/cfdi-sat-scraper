@@ -15,8 +15,7 @@ use Psr\Http\Message\ResponseInterface;
  */
 class HttpLogger extends ArrayObject
 {
-    /** @var string */
-    private $destinationDir;
+    private string $destinationDir;
 
     public function __construct(string $destinationDir)
     {
@@ -93,7 +92,7 @@ class HttpLogger extends ArrayObject
                     'headers' => $request->getHeaders(),
                     'body' => $this->bodyToVars((string) $request->getBody()),
                 ],
-                'response' => ($response instanceof \Psr\Http\Message\ResponseInterface) ? [
+                'response' => ($response instanceof ResponseInterface) ? [
                     'code' => $response->getStatusCode(),
                     'headers' => $response->getHeaders(),
                     'body' => (string) $response->getBody(),

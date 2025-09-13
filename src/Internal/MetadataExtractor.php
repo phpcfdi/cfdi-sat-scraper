@@ -96,9 +96,7 @@ class MetadataExtractor
         try {
             /** @var array<int, string> $headerCells */
             $headerCells = $headersRow->children()->each(
-                function (Crawler $cell): string {
-                    return trim($cell->text());
-                },
+                fn (Crawler $cell): string => trim($cell->text()),
             );
         } catch (RuntimeException $exception) {
             return [];
@@ -128,11 +126,10 @@ class MetadataExtractor
             return [];
         }
 
-        $values = [];
-        foreach ($fieldsPositions as $field => $position) {
-            $values[$field] = trim($cells->getNode($position)->textContent ?? '');
-        }
-        return $values;
+        return array_map(
+            fn($position): string => trim($cells->getNode($position)->textContent ?? ''),
+            $fieldsPositions
+        );
     }
 
     public function obtainUrlXml(Crawler $row): string

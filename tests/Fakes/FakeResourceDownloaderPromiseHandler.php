@@ -18,13 +18,12 @@ use Psr\Http\Message\ResponseInterface;
 final class FakeResourceDownloaderPromiseHandler implements ResourceDownloaderPromiseHandlerInterface
 {
     /** @var string[] */
-    private $downloadedUuids = [];
+    private array $downloadedUuids = [];
 
     /** @var string[] */
-    private $rejectedUuids = [];
+    private array $rejectedUuids = [];
 
-    /** @var int */
-    private $counter = 0;
+    private int $counter = 0;
 
     /** @return null */
     public function append(string $uuid)

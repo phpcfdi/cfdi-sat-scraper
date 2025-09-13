@@ -12,8 +12,7 @@ use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 
 abstract class AbstractSessionManager implements SessionManager
 {
-    /** @var SatHttpGateway|null */
-    private $httpGateway;
+    private ?SatHttpGateway $httpGateway = null;
 
     abstract protected function createExceptionConnection(string $when, SatHttpGatewayException $exception): LoginException;
 

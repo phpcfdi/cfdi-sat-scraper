@@ -16,20 +16,15 @@ class CiecSessionData
 
     public const DEFAULT_MAX_TRIES_LOGIN = 3;
 
-    /** @var string */
-    private $rfc;
+    private string $rfc;
 
-    /** @var string */
-    private $ciec;
+    private string $ciec;
 
-    /** @var CaptchaResolverInterface */
-    private $captchaResolver;
+    private CaptchaResolverInterface $captchaResolver;
 
-    /** @var int */
-    private $maxTriesCaptcha = 3;
+    private int $maxTriesCaptcha;
 
-    /** @var int */
-    private $maxTriesLogin = 3;
+    private int $maxTriesLogin;
 
     /**
      * SatSessionManager constructor.

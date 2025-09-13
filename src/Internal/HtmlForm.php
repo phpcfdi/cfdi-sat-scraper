@@ -15,14 +15,12 @@ use Throwable;
  */
 class HtmlForm
 {
-    /** @var string */
-    protected $parentElement;
+    protected string $parentElement;
 
-    /** @var Crawler */
-    protected $crawler;
+    protected Crawler $crawler;
 
     /** @var string[] */
-    protected $elementNameExcludePatters;
+    protected array $elementNameExcludePatters;
 
     /**
      * HtmlForm constructor.

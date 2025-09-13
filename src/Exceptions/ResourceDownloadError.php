@@ -18,8 +18,7 @@ use Throwable;
  */
 class ResourceDownloadError extends \RuntimeException implements SatException
 {
-    /** @var string */
-    private $uuid;
+    private string $uuid;
 
     /** @var mixed */
     private $reason;

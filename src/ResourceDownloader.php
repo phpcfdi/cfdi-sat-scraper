@@ -34,20 +34,15 @@ class ResourceDownloader
 {
     public const DEFAULT_CONCURRENCY = 10;
 
-    /** @var MetadataList|null */
-    protected $list;
+    protected ?MetadataList $list;
 
-    /** @var int */
-    protected $concurrency;
+    protected int $concurrency;
 
-    /** @var SatHttpGateway */
-    private $satHttpGateway;
+    private SatHttpGateway $satHttpGateway;
 
-    /** @var ResourceType */
-    private $resourceType;
+    private ResourceType $resourceType;
 
-    /** @var ResourceFileNamerInterface */
-    private $resourceFileNamer;
+    private ResourceFileNamerInterface $resourceFileNamer;
 
     public function __construct(
         SatHttpGateway $satHttpGateway,

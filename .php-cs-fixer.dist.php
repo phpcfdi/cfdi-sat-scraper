@@ -15,8 +15,8 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR12' => true,
         '@PSR12:risky' => true,
-        '@PHP71Migration:risky' => true,
-        '@PHP73Migration' => true,
+        '@PHP74Migration:risky' => true,
+        '@PHP74Migration' => true,
         // symfony
         'class_attributes_separation' => true,
         'whitespace_after_comma_in_array' => true,
@@ -36,6 +36,7 @@ return (new PhpCsFixer\Config())
         'standardize_not_equals' => true,
         'concat_space' => ['spacing' => 'one'],
         'linebreak_after_opening_tag' => true,
+        'fully_qualified_strict_types' => true,
         // symfony:risky
         'no_alias_functions' => true,
         'self_accessor' => true,

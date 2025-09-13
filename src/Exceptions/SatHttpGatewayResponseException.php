@@ -13,8 +13,7 @@ use Psr\Http\Message\ResponseInterface;
  */
 class SatHttpGatewayResponseException extends SatHttpGatewayException implements SatException
 {
-    /** @var ResponseInterface */
-    private $response;
+    private ResponseInterface $response;
 
     /**
      * SatHttpGatewayResponseException constructor.

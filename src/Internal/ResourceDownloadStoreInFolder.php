@@ -20,11 +20,9 @@ use Throwable;
  */
 final class ResourceDownloadStoreInFolder implements ResourceDownloadHandlerInterface
 {
-    /** @var string */
-    private $destinationFolder;
+    private string $destinationFolder;
 
-    /** @var ResourceFileNamerInterface */
-    private $resourceFileNamer;
+    private ResourceFileNamerInterface $resourceFileNamer;
 
     /**
      * ResourceDownloadStoreInFolder constructor.

@@ -25,14 +25,12 @@ use Throwable;
  */
 final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromiseHandlerInterface
 {
-    /** @var ResourceType */
-    private $resourceType;
+    private ResourceType $resourceType;
 
-    /** @var ResourceDownloadHandlerInterface */
-    private $handler;
+    private ResourceDownloadHandlerInterface $handler;
 
     /** @var string[] */
-    private $fulfilledUuids = [];
+    private array $fulfilledUuids = [];
 
     public function __construct(ResourceType $resourceType, ResourceDownloadHandlerInterface $handler)
     {

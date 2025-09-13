@@ -42,9 +42,7 @@ abstract class TestCase extends PHPUnitTestCase
      */
     public static function createMetadataArrayUsingUuids(string ...$uuids): array
     {
-        $contents = array_map(function (string $uuid): Metadata {
-            return new Metadata($uuid, [ResourceType::xml()->value() => 'https://example.com/' . $uuid]);
-        }, $uuids);
+        $contents = array_map(fn (string $uuid): Metadata => new Metadata($uuid, [ResourceType::xml()->value() => 'https://example.com/' . $uuid]), $uuids);
         $contents = array_combine($uuids, $contents);
         return $contents ?: [];
     }

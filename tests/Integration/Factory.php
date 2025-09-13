@@ -26,14 +26,11 @@ use RuntimeException;
 
 class Factory
 {
-    /** @var string */
-    private $repositoryPath;
+    private string $repositoryPath;
 
-    /** @var SatScraper|null */
-    private $scraper;
+    private ?SatScraper $scraper = null;
 
-    /** @var Repository|null */
-    private $repository;
+    private ?Repository $repository = null;
 
     public function __construct(string $repositoryPath)
     {
@@ -133,7 +130,7 @@ class Factory
 
     public function createSatScraper(?SessionManager $sessionManager = null): SatScraper
     {
-        $sessionManager = $sessionManager ?? $this->createSessionManager();
+        $sessionManager ??= $this->createSessionManager();
         $suffix = basename(str_replace(['\\', 'sessionmanager'], ['/', ''], strtolower(get_class($sessionManager))));
         $rfc = strtolower($sessionManager->getRfc());
         $cookieFile = sprintf('%s/%s/cookie-%s-%s.json', __DIR__, '../../build', $rfc, $suffix);

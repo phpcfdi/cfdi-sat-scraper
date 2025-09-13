@@ -11,14 +11,12 @@ use Throwable;
 
 class CiecLoginException extends LoginException
 {
-    /** @var CiecSessionData */
-    private $sessionData;
+    private CiecSessionData $sessionData;
 
     /** @var array<string, string> */
-    private $postedData;
+    private array $postedData;
 
-    /** @var CaptchaImageInterface|null */
-    private $captchaImage;
+    private ?CaptchaImageInterface $captchaImage = null;
 
     /**
      * LoginException constructor.
