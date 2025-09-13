@@ -26,15 +26,12 @@ use RuntimeException;
 
 class Factory
 {
-    private string $repositoryPath;
-
     private ?SatScraper $scraper = null;
 
     private ?Repository $repository = null;
 
-    public function __construct(string $repositoryPath)
+    public function __construct(private string $repositoryPath)
     {
-        $this->repositoryPath = $repositoryPath;
     }
 
     public function createCaptchaResolver(): CaptchaResolverInterface
@@ -131,7 +128,7 @@ class Factory
     public function createSatScraper(?SessionManager $sessionManager = null): SatScraper
     {
         $sessionManager ??= $this->createSessionManager();
-        $suffix = basename(str_replace(['\\', 'sessionmanager'], ['/', ''], strtolower(get_class($sessionManager))));
+        $suffix = basename(str_replace(['\\', 'sessionmanager'], ['/', ''], strtolower($sessionManager::class)));
         $rfc = strtolower($sessionManager->getRfc());
         $cookieFile = sprintf('%s/%s/cookie-%s-%s.json', __DIR__, '../../build', $rfc, $suffix);
         $cookieJar = new FileCookieJar($cookieFile, true);

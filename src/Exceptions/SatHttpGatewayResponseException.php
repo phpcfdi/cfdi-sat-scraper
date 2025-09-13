@@ -13,18 +13,13 @@ use Psr\Http\Message\ResponseInterface;
  */
 class SatHttpGatewayResponseException extends SatHttpGatewayException implements SatException
 {
-    private ResponseInterface $response;
-
     /**
-     * SatHttpGatewayResponseException constructor.
-     *
      * @param array<string, mixed> $requestHeaders
      * @param array<string, mixed> $requestData
      */
-    protected function __construct(ResponseInterface $response, string $message, string $httpMethod, string $url, array $requestHeaders, array $requestData)
+    protected function __construct(private ResponseInterface $response, string $message, string $httpMethod, string $url, array $requestHeaders, array $requestData)
     {
         parent::__construct($message, $httpMethod, $url, $requestHeaders, $requestData);
-        $this->response = $response;
     }
 
     /**

@@ -20,15 +20,11 @@ class CiecSessionData
 
     private string $ciec;
 
-    private CaptchaResolverInterface $captchaResolver;
-
     private int $maxTriesCaptcha;
 
     private int $maxTriesLogin;
 
     /**
-     * SatSessionManager constructor.
-     *
      * @param int $maxTriesCaptcha if lower than 1 is set to 1
      * @param int $maxTriesLogin if lower than 1 is set to 1
      *
@@ -38,7 +34,7 @@ class CiecSessionData
     public function __construct(
         string $rfc,
         string $ciec,
-        CaptchaResolverInterface $captchaResolver,
+        private CaptchaResolverInterface $captchaResolver,
         int $maxTriesCaptcha = self::DEFAULT_MAX_TRIES_CAPTCHA,
         int $maxTriesLogin = self::DEFAULT_MAX_TRIES_LOGIN
     ) {
@@ -50,7 +46,6 @@ class CiecSessionData
         }
         $this->rfc = $rfc;
         $this->ciec = $ciec;
-        $this->captchaResolver = $captchaResolver;
         $this->maxTriesCaptcha = max(1, $maxTriesCaptcha);
         $this->maxTriesLogin = max(1, $maxTriesLogin);
     }

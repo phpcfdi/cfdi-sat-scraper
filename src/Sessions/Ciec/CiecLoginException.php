@@ -11,23 +11,12 @@ use Throwable;
 
 class CiecLoginException extends LoginException
 {
-    private CiecSessionData $sessionData;
-
-    /** @var array<string, string> */
-    private array $postedData;
-
     private ?CaptchaImageInterface $captchaImage = null;
 
-    /**
-     * LoginException constructor.
-     *
-     * @param array<string, string> $postedData
-     */
-    public function __construct(string $message, CiecSessionData $sessionData, string $contents, array $postedData = [], ?Throwable $previous = null)
+    /** @param array<string, string> $postedData */
+    public function __construct(string $message, private CiecSessionData $sessionData, string $contents, private array $postedData = [], ?Throwable $previous = null)
     {
         parent::__construct($message, $contents, $previous);
-        $this->sessionData = $sessionData;
-        $this->postedData = $postedData;
     }
 
     public static function notRegisteredAfterLogin(CiecSessionData $data, string $contents): self

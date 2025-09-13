@@ -30,15 +30,9 @@ use PhpCfdi\CfdiSatScraper\QueryByUuid;
  */
 class MetadataDownloader
 {
-    private QueryResolver $queryResolver;
-
-    private MetadataMessageHandler $messageHandler;
-
     /** @internal */
-    public function __construct(QueryResolver $queryResolver, MetadataMessageHandler $messageHandler)
+    public function __construct(private QueryResolver $queryResolver, private MetadataMessageHandler $messageHandler)
     {
-        $this->queryResolver = $queryResolver;
-        $this->messageHandler = $messageHandler;
     }
 
     public function getQueryResolver(): QueryResolver
@@ -179,7 +173,7 @@ class MetadataDownloader
         if ($query instanceof QueryByUuid) {
             return new InputsByUuid($query);
         }
-        throw LogicException::generic(sprintf('Unable to create input filters from query type %s', get_class($query)));
+        throw LogicException::generic(sprintf('Unable to create input filters from query type %s', $query::class));
     }
 
     /**

@@ -8,11 +8,8 @@ use PhpCfdi\Credentials\Credential;
 
 class FielSessionData
 {
-    private Credential $fiel;
-
-    public function __construct(Credential $fiel)
+    public function __construct(private Credential $fiel)
     {
-        $this->fiel = $fiel;
     }
 
     public function getFiel(): Credential

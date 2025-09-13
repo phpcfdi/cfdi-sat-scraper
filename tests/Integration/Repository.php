@@ -21,13 +21,9 @@ use Traversable;
  */
 class Repository implements Countable, IteratorAggregate, JsonSerializable
 {
-    /** @var array<string, RepositoryItem> */
-    private array $items;
-
     /** @param array<string, RepositoryItem> $items */
-    public function __construct(array $items)
+    public function __construct(private array $items)
     {
-        $this->items = $items;
     }
 
     public static function fromFile(string $filename): self

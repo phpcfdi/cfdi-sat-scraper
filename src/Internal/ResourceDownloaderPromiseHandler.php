@@ -25,17 +25,11 @@ use Throwable;
  */
 final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromiseHandlerInterface
 {
-    private ResourceType $resourceType;
-
-    private ResourceDownloadHandlerInterface $handler;
-
     /** @var string[] */
     private array $fulfilledUuids = [];
 
-    public function __construct(ResourceType $resourceType, ResourceDownloadHandlerInterface $handler)
+    public function __construct(private ResourceType $resourceType, private ResourceDownloadHandlerInterface $handler)
     {
-        $this->resourceType = $resourceType;
-        $this->handler = $handler;
     }
 
     /**
@@ -91,10 +85,8 @@ final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromis
 
     /**
      * This method handles each promise rejected event
-     *
-     * @param mixed $reason
      */
-    public function promiseRejected($reason, string $uuid)
+    public function promiseRejected(mixed $reason, string $uuid)
     {
         if ($reason instanceof RequestException) {
             return $this->handlerError(ResourceDownloadRequestExceptionError::onRequestException($reason, $uuid));

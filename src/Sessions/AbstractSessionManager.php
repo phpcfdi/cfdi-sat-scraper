@@ -36,7 +36,7 @@ abstract class AbstractSessionManager implements SessionManager
             throw $this->createExceptionConnection('registering on login page', $exception);
         }
 
-        if (false === strpos($htmlMainPage, 'RFC Autenticado: ' . $this->getRfc())) {
+        if (! str_contains($htmlMainPage, 'RFC Autenticado: ' . $this->getRfc())) {
             throw $this->createExceptionNotAuthenticated($htmlMainPage);
         }
     }

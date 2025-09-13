@@ -13,21 +13,15 @@ use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 
 class SatScraper implements SatScraperInterface
 {
-    private SessionManager $sessionManager;
-
     private SatHttpGateway $satHttpGateway;
 
     protected MetadataMessageHandler $metadataMessageHandler;
 
-    /**
-     * SatScraper constructor.
-     */
     public function __construct(
-        SessionManager $sessionManager,
+        private SessionManager $sessionManager,
         ?SatHttpGateway $satHttpGateway = null,
         ?MetadataMessageHandler $metadataMessageHandler = null
     ) {
-        $this->sessionManager = $sessionManager;
         $this->satHttpGateway = $satHttpGateway ?? $this->createDefaultSatHttpGateway();
         $this->metadataMessageHandler = $metadataMessageHandler ?? new NullMetadataMessageHandler();
     }

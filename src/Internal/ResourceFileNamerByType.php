@@ -16,11 +16,8 @@ use PhpCfdi\CfdiSatScraper\ResourceType;
  */
 final class ResourceFileNamerByType implements ResourceFileNamerInterface
 {
-    private ResourceType $resourceType;
-
-    public function __construct(ResourceType $resourceType)
+    public function __construct(private ResourceType $resourceType)
     {
-        $this->resourceType = $resourceType;
     }
 
     public function getResourceType(): ResourceType

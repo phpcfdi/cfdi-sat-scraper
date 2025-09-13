@@ -17,10 +17,9 @@ interface ResourceDownloaderPromiseHandlerInterface
     /**
      * This method handles each promise rejected event
      *
-     * @param mixed $reason
      * @return null
      */
-    public function promiseRejected($reason, string $uuid);
+    public function promiseRejected(mixed $reason, string $uuid);
 
     /**
      * Return the list of successfully processed UUIDS

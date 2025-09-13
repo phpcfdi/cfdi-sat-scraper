@@ -41,7 +41,7 @@ final class FakeResourceDownloaderPromiseHandler implements ResourceDownloaderPr
         return $this->append($uuid);
     }
 
-    public function promiseRejected($reason, string $uuid)
+    public function promiseRejected(mixed $reason, string $uuid)
     {
         return $this->append($uuid);
     }

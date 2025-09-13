@@ -240,7 +240,7 @@ class SatHttpGateway
     {
         try {
             return $this->get('logout', $destination, $referer);
-        } catch (SatHttpGatewayException $exception) {
+        } catch (SatHttpGatewayException) {
             return '';
         }
     }

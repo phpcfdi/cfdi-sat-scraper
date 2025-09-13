@@ -18,10 +18,7 @@ use Throwable;
  */
 class ResourceDownloadError extends \RuntimeException implements SatException
 {
-    private string $uuid;
-
-    /** @var mixed */
-    private $reason;
+    private mixed $reason;
 
     /**
      * ResourceDownloadError constructor.
@@ -30,32 +27,25 @@ class ResourceDownloadError extends \RuntimeException implements SatException
      *
      * @param mixed $reason
      */
-    public function __construct(string $message, string $uuid, $reason, ?Throwable $previous = null)
+    public function __construct(string $message, private string $uuid, $reason, ?Throwable $previous = null)
     {
         if (null === $previous && $reason instanceof Throwable) {
             $previous = $reason;
         }
         parent::__construct($message, 0, $previous);
-        $this->uuid = $uuid;
         $this->reason = $reason;
     }
 
-    /**
-     * @param mixed $reason
-     */
-    public static function onRejected(string $uuid, $reason): self
+    public static function onRejected(string $uuid, mixed $reason): self
     {
         $message = sprintf('Download of UUID %s was rejected, reason: %s', $uuid, static::reasonToString($reason));
         return new self($message, $uuid, $reason);
     }
 
-    /**
-     * @param mixed $reason
-     */
-    public static function reasonToString($reason): string
+    public static function reasonToString(mixed $reason): string
     {
         if ($reason instanceof Throwable) {
-            return get_class($reason) . ': ' . $reason->getMessage();
+            return $reason::class . ': ' . $reason->getMessage();
         }
         if (is_scalar($reason)) {
             return strval($reason);
@@ -81,10 +71,8 @@ class ResourceDownloadError extends \RuntimeException implements SatException
 
     /**
      * The given reason of the exception
-     *
-     * @return mixed
      */
-    public function getReason()
+    public function getReason(): mixed
     {
         return $this->reason;
     }

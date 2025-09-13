@@ -34,28 +34,19 @@ class ResourceDownloader
 {
     public const DEFAULT_CONCURRENCY = 10;
 
-    protected ?MetadataList $list;
-
     protected int $concurrency;
-
-    private SatHttpGateway $satHttpGateway;
-
-    private ResourceType $resourceType;
 
     private ResourceFileNamerInterface $resourceFileNamer;
 
     public function __construct(
-        SatHttpGateway $satHttpGateway,
-        ResourceType $resourceType,
-        ?MetadataList $list = null,
+        private SatHttpGateway $satHttpGateway,
+        private ResourceType $resourceType,
+        protected ?MetadataList $list = null,
         int $concurrency = self::DEFAULT_CONCURRENCY,
         ?ResourceFileNamerInterface $resourceFileNamer = null
     ) {
-        $this->satHttpGateway = $satHttpGateway;
-        $this->resourceType = $resourceType;
-        $this->list = $list;
         $this->setConcurrency($concurrency);
-        $this->setResourceFileNamer($resourceFileNamer ?? new ResourceFileNamerByType($resourceType));
+        $this->setResourceFileNamer($resourceFileNamer ?? new ResourceFileNamerByType($this->resourceType));
     }
 
     public function getResourceType(): ResourceType

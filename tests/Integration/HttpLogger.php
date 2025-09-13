@@ -15,12 +15,9 @@ use Psr\Http\Message\ResponseInterface;
  */
 class HttpLogger extends ArrayObject
 {
-    private string $destinationDir;
-
-    public function __construct(string $destinationDir)
+    public function __construct(private string $destinationDir)
     {
         parent::__construct();
-        $this->destinationDir = $destinationDir;
     }
 
     public function append($value): void

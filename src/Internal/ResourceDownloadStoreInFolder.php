@@ -20,20 +20,11 @@ use Throwable;
  */
 final class ResourceDownloadStoreInFolder implements ResourceDownloadHandlerInterface
 {
-    private string $destinationFolder;
-
-    private ResourceFileNamerInterface $resourceFileNamer;
-
-    /**
-     * ResourceDownloadStoreInFolder constructor.
-     */
-    public function __construct(string $destinationFolder, ResourceFileNamerInterface $resourceFileNamer)
+    public function __construct(private string $destinationFolder, private ResourceFileNamerInterface $resourceFileNamer)
     {
-        if ('' === $destinationFolder) {
+        if ('' === $this->destinationFolder) {
             throw InvalidArgumentException::emptyInput('destination folder');
         }
-        $this->destinationFolder = $destinationFolder;
-        $this->resourceFileNamer = $resourceFileNamer;
     }
 
     public function getDestinationFolder(): string

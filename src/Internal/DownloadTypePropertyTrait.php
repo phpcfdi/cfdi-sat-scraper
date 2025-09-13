@@ -25,9 +25,7 @@ trait DownloadTypePropertyTrait
         return $this->downloadType;
     }
 
-    /**
-     * @return $this
-     */
+    /** @return $this */
     public function setDownloadType(DownloadType $downloadType): self
     {
         $this->downloadType = $downloadType;

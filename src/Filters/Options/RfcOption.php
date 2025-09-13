@@ -11,8 +11,7 @@ use PhpCfdi\CfdiSatScraper\Contracts\FilterOption;
  */
 class RfcOption implements FilterOption
 {
-    /** @var string */
-    protected $value;
+    protected string $value;
 
     public function __construct(string $rfc)
     {

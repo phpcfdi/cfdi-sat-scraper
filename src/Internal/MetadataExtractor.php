@@ -30,7 +30,7 @@ class MetadataExtractor
 
         try {
             $rows = (new Crawler($html))->filter('table#ctl00_MainContent_tblResult > tr');
-        } catch (RuntimeException $exception) {
+        } catch (RuntimeException) {
             return new MetadataList([]);
         }
         if ($rows->count() < 2) {
@@ -98,7 +98,7 @@ class MetadataExtractor
             $headerCells = $headersRow->children()->each(
                 fn (Crawler $cell): string => trim($cell->text()),
             );
-        } catch (RuntimeException $exception) {
+        } catch (RuntimeException) {
             return [];
         }
 
@@ -122,13 +122,13 @@ class MetadataExtractor
     {
         try {
             $cells = $row->children();
-        } catch (RuntimeException $exception) {
+        } catch (RuntimeException) {
             return [];
         }
 
         return array_map(
-            fn($position): string => trim($cells->getNode($position)->textContent ?? ''),
-            $fieldsPositions
+            fn (int $position): string => trim($cells->getNode($position)->textContent ?? ''),
+            $fieldsPositions,
         );
     }
 
@@ -177,7 +177,7 @@ class MetadataExtractor
     {
         try {
             $filteredElements = $crawler->filter($elementFilter);
-        } catch (Throwable $exception) {
+        } catch (Throwable) {
             return '';
         }
 
