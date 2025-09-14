@@ -25,24 +25,23 @@ final class FakeResourceDownloaderPromiseHandler implements ResourceDownloaderPr
 
     private int $counter = 0;
 
-    public function append(string $uuid): null
+    public function append(string $uuid): void
     {
         if (0 === ($this->counter++) % 2) {
             $this->downloadedUuids[] = $uuid;
         } else {
             $this->rejectedUuids[] = $uuid;
         }
-        return null;
     }
 
-    public function promiseFulfilled(ResponseInterface $response, string $uuid): null
+    public function promiseFulfilled(ResponseInterface $response, string $uuid): void
     {
-        return $this->append($uuid);
+        $this->append($uuid);
     }
 
-    public function promiseRejected(mixed $reason, string $uuid): null
+    public function promiseRejected(mixed $reason, string $uuid): void
     {
-        return $this->append($uuid);
+        $this->append($uuid);
     }
 
     public function downloadedUuids(): array

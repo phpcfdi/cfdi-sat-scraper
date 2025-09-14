@@ -35,19 +35,20 @@ final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromis
     /**
      * This method handles each promise fulfilled event
      */
-    public function promiseFulfilled(ResponseInterface $response, string $uuid): null
+    public function promiseFulfilled(ResponseInterface $response, string $uuid): void
     {
         try {
             $content = $this->validateResponse($response, $uuid);
             $this->handler->onSuccess($uuid, $content, $response);
         } catch (ResourceDownloadResponseError $exception) {
-            return $this->handlerError($exception);
+            $this->handlerError($exception);
+            return;
         } catch (Throwable $exception) {
-            return $this->handlerError(ResourceDownloadResponseError::onSuccessException($response, $uuid, $exception));
+            $this->handlerError(ResourceDownloadResponseError::onSuccessException($response, $uuid, $exception));
+            return;
         }
 
         $this->fulfilledUuids[] = $uuid;
-        return null;
     }
 
     /**
@@ -86,22 +87,22 @@ final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromis
     /**
      * This method handles each promise rejected event
      */
-    public function promiseRejected(mixed $reason, string $uuid): null
+    public function promiseRejected(mixed $reason, string $uuid): void
     {
         if ($reason instanceof RequestException) {
-            return $this->handlerError(ResourceDownloadRequestExceptionError::onRequestException($reason, $uuid));
+            $this->handlerError(ResourceDownloadRequestExceptionError::onRequestException($reason, $uuid));
+            return;
         }
 
-        return $this->handlerError(ResourceDownloadError::onRejected($uuid, $reason));
+        $this->handlerError(ResourceDownloadError::onRejected($uuid, $reason));
     }
 
     /**
      * Send the error to handler error method
      */
-    public function handlerError(ResourceDownloadError $error): null
+    public function handlerError(ResourceDownloadError $error): void
     {
         $this->handler->onError($error);
-        return null;
     }
 
     /**
