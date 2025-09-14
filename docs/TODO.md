@@ -7,6 +7,9 @@ Ninguno.
 ## Pendientes
 
 - Core:
+    - Sustituir los derivados de `Eclipxe\Enum` por enumeradores de PHP.
+    - Cambiar en los constructores los valores opcionales por valores instanciados,
+      implementar métodos estáticos de tipo fábrica como ayuda para valores predeterminados.
     - Incrementar las pruebas unitarias a un mínimo de 80%.
     - Verificar si el SAT sigue teniendo problemas de conectividad y se puede usar `DEFAULT@SECLEVEL=2`.
 - Documentación:
