@@ -579,6 +579,7 @@ Consulta las guías de actualización:
 
 - [Actualización de la versión `2.x` a la versión `3.x`](docs/UPGRADE-2-3.md).
 - [Actualización de la versión `3.x` a la versión `4.x`](docs/UPGRADE-3-4.md).
+- [Actualización de la versión `4.x` a la versión `5.x`](docs/UPGRADE-4-5.md).
 
 ## Contribuciones
 
