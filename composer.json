@@ -72,12 +72,12 @@
         ],
         "dev:check-style": [
             "@php tools/composer-normalize normalize --dry-run",
-            "@php -r 'exit(intval(PHP_VERSION_ID >= 74000));' || $PHP_BINARY tools/php-cs-fixer fix --dry-run --verbose",
+            "@php tools/php-cs-fixer fix --dry-run --verbose",
             "@php tools/phpcs --colors -sp"
         ],
         "dev:fix-style": [
             "@php tools/composer-normalize normalize",
-            "@php -r 'exit(intval(PHP_VERSION_ID >= 74000));' || $PHP_BINARY tools/php-cs-fixer fix --verbose",
+            "@php tools/php-cs-fixer fix --verbose",
             "@php tools/phpcbf --colors -sp"
         ],
         "dev:tests": [

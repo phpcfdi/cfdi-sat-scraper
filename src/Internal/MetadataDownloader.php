@@ -33,7 +33,7 @@ class MetadataDownloader
     /** @internal */
     public function __construct(
         private readonly QueryResolver $queryResolver,
-        private readonly MetadataMessageHandler $messageHandler
+        private readonly MetadataMessageHandler $messageHandler,
     ) {
     }
 

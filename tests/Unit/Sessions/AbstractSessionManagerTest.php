@@ -15,10 +15,10 @@ final class AbstractSessionManagerTest extends TestCase
 {
     private function createStubForHttpGatewayProperty(): AbstractSessionManager
     {
-        return new class extends AbstractSessionManager {
+        return new class () extends AbstractSessionManager {
             protected function createExceptionConnection(
                 string $when,
-                SatHttpGatewayException $exception
+                SatHttpGatewayException $exception,
             ): LoginException {
                 throw new LogicException('This is a stub');
             }

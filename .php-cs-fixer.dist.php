@@ -23,7 +23,7 @@ return (new PhpCsFixer\Config())
         'no_empty_statement' => true,
         'no_extra_blank_lines' => true,
         'type_declaration_spaces' => true,
-        'trailing_comma_in_multiline' => ['after_heredoc' => true, 'elements' => ['arrays', 'arguments']],
+        'trailing_comma_in_multiline' => ['after_heredoc' => true, 'elements' => ['arrays', 'match', 'arguments', 'parameters']],
         'no_blank_lines_after_phpdoc' => true,
         'object_operator_without_whitespace' => true,
         'binary_operator_spaces' => true,

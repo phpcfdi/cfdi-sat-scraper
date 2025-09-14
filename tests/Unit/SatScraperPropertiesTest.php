@@ -16,7 +16,7 @@ final class SatScraperPropertiesTest extends TestCase
     private function createSatScraper(
         ?SessionManager $sessionManager = null,
         ?SatHttpGateway $satHttpGateway = null,
-        ?MetadataMessageHandler $messageHandler = null
+        ?MetadataMessageHandler $messageHandler = null,
     ): SatScraper {
         return new SatScraper(
             $sessionManager ?? $this->createMock(SessionManager::class),

@@ -20,7 +20,7 @@ class SatScraper implements SatScraperInterface
     public function __construct(
         private readonly SessionManager $sessionManager,
         ?SatHttpGateway $satHttpGateway = null,
-        ?MetadataMessageHandler $metadataMessageHandler = null
+        ?MetadataMessageHandler $metadataMessageHandler = null,
     ) {
         $this->satHttpGateway = $satHttpGateway ?? $this->createDefaultSatHttpGateway();
         $this->metadataMessageHandler = $metadataMessageHandler ?? new NullMetadataMessageHandler();
@@ -59,7 +59,7 @@ class SatScraper implements SatScraperInterface
     public function resourceDownloader(
         ?ResourceType $resourceType = null,
         ?MetadataList $metadataList = null,
-        int $concurrency = ResourceDownloader::DEFAULT_CONCURRENCY
+        int $concurrency = ResourceDownloader::DEFAULT_CONCURRENCY,
     ): ResourceDownloader {
         $resourceType ??= ResourceType::xml();
         return new ResourceDownloader($this->satHttpGateway, $resourceType, $metadataList, $concurrency);

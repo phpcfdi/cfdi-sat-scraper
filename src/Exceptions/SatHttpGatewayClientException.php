@@ -27,7 +27,7 @@ class SatHttpGatewayClientException extends SatHttpGatewayException implements S
         string $url,
         array $requestHeaders,
         array $requestData,
-        GuzzleException $previous
+        GuzzleException $previous,
     ) {
         parent::__construct($message, $httpMethod, $url, $requestHeaders, $requestData, $previous);
         $this->clientException = $previous;

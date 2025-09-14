@@ -36,7 +36,7 @@ class CiecSessionData
         string $ciec,
         private readonly CaptchaResolverInterface $captchaResolver,
         int $maxTriesCaptcha = self::DEFAULT_MAX_TRIES_CAPTCHA,
-        int $maxTriesLogin = self::DEFAULT_MAX_TRIES_LOGIN
+        int $maxTriesLogin = self::DEFAULT_MAX_TRIES_LOGIN,
     ) {
         if ('' === $rfc) {
             throw InvalidArgumentException::emptyInput('RFC');

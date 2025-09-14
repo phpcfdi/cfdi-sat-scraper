@@ -43,7 +43,7 @@ class ResourceDownloader
         private readonly ResourceType $resourceType,
         protected ?MetadataList $list = null,
         int $concurrency = self::DEFAULT_CONCURRENCY,
-        ?ResourceFileNamerInterface $resourceFileNamer = null
+        ?ResourceFileNamerInterface $resourceFileNamer = null,
     ) {
         $this->setConcurrency($concurrency);
         $this->setResourceFileNamer($resourceFileNamer ?? new ResourceFileNamerByType($this->resourceType));

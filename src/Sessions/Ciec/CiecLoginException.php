@@ -19,7 +19,7 @@ class CiecLoginException extends LoginException
         private readonly CiecSessionData $sessionData,
         string $contents,
         private readonly array $postedData = [],
-        ?Throwable $previous = null
+        ?Throwable $previous = null,
     ) {
         parent::__construct($message, $contents, $previous);
     }

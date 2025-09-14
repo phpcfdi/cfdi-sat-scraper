@@ -26,7 +26,7 @@ abstract class SatHttpGatewayException extends \RuntimeException implements SatE
         private readonly string $url,
         private readonly array $requestHeaders,
         private readonly array $requestData = [],
-        ?Throwable $previous = null
+        ?Throwable $previous = null,
     ) {
         parent::__construct($message, 0, $previous);
     }

@@ -22,7 +22,7 @@ interface SatScraperInterface
     public function resourceDownloader(
         ?ResourceType $resourceType = null,
         ?MetadataList $metadataList = null,
-        int $concurrency = ResourceDownloader::DEFAULT_CONCURRENCY
+        int $concurrency = ResourceDownloader::DEFAULT_CONCURRENCY,
     ): ResourceDownloader;
 
     /**
