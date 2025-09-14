@@ -91,6 +91,7 @@ final class ResourceDownloaderTest extends TestCase
         $downloader->setMetadataList($metadataList);
 
         $generated = iterator_to_array($downloader->makePromises());
+        /** @phpstan-ignore method.alreadyNarrowedType */
         $this->assertContainsOnlyInstancesOf(PromiseInterface::class, $generated);
         $this->assertCount(2, $generated);
         $this->assertArrayHasKey($uuidWithUrlXml1, $generated);
