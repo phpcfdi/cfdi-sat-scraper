@@ -18,27 +18,13 @@ use Throwable;
  * @see \PhpCfdi\CfdiSatScraper\ResourceDownloader::saveTo()
  * @internal
  */
-final class ResourceDownloadStoreInFolder implements ResourceDownloadHandlerInterface
+final readonly class ResourceDownloadStoreInFolder implements ResourceDownloadHandlerInterface
 {
-    /** @var string */
-    private $destinationFolder;
-
-    /** @var ResourceFileNamerInterface */
-    private $resourceFileNamer;
-
-    /**
-     * ResourceDownloadStoreInFolder constructor.
-     *
-     * @param string $destinationFolder
-     * @param ResourceFileNamerInterface $resourceFileNamer
-     */
-    public function __construct(string $destinationFolder, ResourceFileNamerInterface $resourceFileNamer)
+    public function __construct(private string $destinationFolder, private ResourceFileNamerInterface $resourceFileNamer)
     {
-        if ('' === $destinationFolder) {
+        if ('' === $this->destinationFolder) {
             throw InvalidArgumentException::emptyInput('destination folder');
         }
-        $this->destinationFolder = $destinationFolder;
-        $this->resourceFileNamer = $resourceFileNamer;
     }
 
     public function getDestinationFolder(): string
@@ -60,14 +46,12 @@ final class ResourceDownloadStoreInFolder implements ResourceDownloadHandlerInte
      * This method is invoked from ResourceDownloader::saveTo() to validate that the
      * destination folder exists or create it.
      *
-     * @param bool $createDestinationFolder
-     * @param int $createMode
      *
      * @throws RuntimeException if didn't ask to create folder and path does not exist
      * @throws RuntimeException if ask to create folder path exists and is not a folder
      * @throws RuntimeException if unable to create folder
      */
-    public function checkDestinationFolder(bool $createDestinationFolder, int $createMode = 0755): void
+    public function checkDestinationFolder(bool $createDestinationFolder, int $createMode = 0o755): void
     {
         $destinationFolder = $this->getDestinationFolder();
 
@@ -105,8 +89,6 @@ final class ResourceDownloadStoreInFolder implements ResourceDownloadHandlerInte
     }
 
     /**
-     * @param string $destinationFolder
-     * @param int $createMode
      * @throws RuntimeException if unable to create folder
      */
     public function mkdirRecursive(string $destinationFolder, int $createMode): void
@@ -122,8 +104,6 @@ final class ResourceDownloadStoreInFolder implements ResourceDownloadHandlerInte
     }
 
     /**
-     * @param string $destinationFile
-     * @param string $content
      * @throws RuntimeException if unable to put contents on file
      */
     public function filePutContents(string $destinationFile, string $content): void

@@ -12,14 +12,15 @@ use PhpCfdi\CfdiSatScraper\Internal\ResourceDownloadStoreInFolder;
 use PhpCfdi\CfdiSatScraper\Internal\ResourceFileNamerByType;
 use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\ResponseInterface;
 
 class ResourceDownloadStoreInFolderTest extends TestCase
 {
-    private function createResourceDownloadStoreInFolder(string $folder, ResourceFileNamerInterface $namer = null): ResourceDownloadStoreInFolder
+    private function createResourceDownloadStoreInFolder(string $folder, ?ResourceFileNamerInterface $namer = null): ResourceDownloadStoreInFolder
     {
-        /** @var ResourceFileNamerInterface $namer */
-        $namer = $namer ?? $this->createMock(ResourceFileNamerInterface::class);
+        $namer ??= $this->createMock(ResourceFileNamerInterface::class);
+        /** @var ResourceFileNamerInterface&MockObject $namer */
         return new ResourceDownloadStoreInFolder($folder, $namer);
     }
 

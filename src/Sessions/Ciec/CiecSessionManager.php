@@ -16,12 +16,8 @@ use Throwable;
 
 final class CiecSessionManager extends AbstractSessionManager implements SessionManager
 {
-    /** @var CiecSessionData */
-    private $sessionData;
-
-    public function __construct(CiecSessionData $sessionData)
+    public function __construct(private readonly CiecSessionData $sessionData)
     {
-        $this->sessionData = $sessionData;
     }
 
     public static function create(string $rfc, string $ciec, CaptchaResolverInterface $resolver): self
@@ -52,8 +48,6 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
     }
 
     /**
-     * @param int $attempt
-     * @return string
      * @throws CiecLoginException
      */
     public function getCaptchaValue(int $attempt): string
@@ -90,7 +84,7 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
             throw CiecLoginException::connectionException('getting login page', $this->sessionData, $exception);
         }
         // if the user has a valid session then CFDIAU will try to send to this location
-        if (false === strpos($html, 'https://cfdiau.sat.gob.mx/nidp/app?sid=0')) {
+        if (! str_contains($html, 'https://cfdiau.sat.gob.mx/nidp/app?sid=0')) {
             $this->logout();
             return false;
         }
@@ -102,7 +96,7 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
             throw CiecLoginException::connectionException('getting portal main page', $this->sessionData, $exception);
         }
         // if portal main page session is no longer valid then will try to force you to log out
-        if (false !== strpos($html, urlencode('https://portalcfdi.facturaelectronica.sat.gob.mx/logout.aspx?salir=y'))) {
+        if (str_contains($html, urlencode('https://portalcfdi.facturaelectronica.sat.gob.mx/logout.aspx?salir=y'))) {
             $this->logout();
             return false;
         }
@@ -116,8 +110,6 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
     }
 
     /**
-     * @param int $attempt
-     * @return string
      * @throws CiecLoginException
      */
     private function loginInternal(int $attempt): string
@@ -154,7 +146,7 @@ final class CiecSessionManager extends AbstractSessionManager implements Session
             throw CiecLoginException::connectionException('sending login data', $this->sessionData, $exception);
         }
 
-        if (false !== strpos($response, 'Ecom_User_ID')) {
+        if (str_contains($response, 'Ecom_User_ID')) {
             throw CiecLoginException::incorrectLoginData($this->sessionData, $response, $postData);
         }
 

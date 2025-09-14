@@ -8,6 +8,27 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 Ninguno.
 
+## Versión 5.0.0 2025-09-13
+
+Los cambios en esta versión son principalmente de actualización de lenguaje y especificación de tipos de datos.
+Si actualmente estás en la versión 4 y PHP mayor o igual a 8.2, entonces no necesitarás hacer ningún cambio.
+
+- Se elimina la compatibilidad con versiones de PHP 8.1 o menores.
+- Se revisa la compatibilidad de PHP 8.4.
+- Se cambian las definiciones implícitas a tipos *nullables* a explícitas.
+- Se hacen diversos cambios para asegurar los tipos de datos y satisfacer PHPStan.
+- Se documentan los cambios de versión 4.x a 5.x.
+
+Cambios de mantenimiento al entorno de desarrollo:
+
+- Se actualiza a PHPUnit 11.5.
+- Se actualizan las reglas para `php-cs-fixer` y `phpcs`.
+- En los flujos de trabajo de GitHub:
+    - Se agrega PHP 8.4 a la matrix de pruebas.
+    - Los trabajos se ejecutan en PHP 8.4.
+    - Se actualiza la integración con SonarQube Cloud.
+- Se actualizaron las herramientas de desarrollo.
+
 ## Versión 4.0.0 2025-05-30
 
 Esta versión libera un cambio mayor provocado por el cambio de columnas que implementó el SAT.

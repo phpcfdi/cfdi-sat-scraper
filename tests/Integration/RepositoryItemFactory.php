@@ -35,7 +35,7 @@ class RepositoryItemFactory
     {
         try {
             return new DateTimeImmutable($value);
-        } catch (Exception $exception) {
+        } catch (Exception) {
             throw new DomainException(sprintf('Unable to parse date with value %s', $value));
         }
     }

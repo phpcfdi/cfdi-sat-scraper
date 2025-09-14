@@ -281,12 +281,7 @@ class ComplementsOption extends MicroCatalog implements FilterOption
         ],
     ];
 
-    /**
-     * @param string $name
-     * @param mixed $arguments
-     * @return self
-     */
-    public static function __callStatic(string $name, $arguments)
+    public static function __callStatic(string $name, mixed $arguments): self
     {
         return new self($name);
     }

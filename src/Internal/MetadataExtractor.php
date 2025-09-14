@@ -20,9 +20,7 @@ use Throwable;
 class MetadataExtractor
 {
     /**
-     * @param string $html
      * @param array<string, string>|null $fieldsCaptions
-     * @return MetadataList
      */
     public function extract(string $html, ?array $fieldsCaptions = null): MetadataList
     {
@@ -32,7 +30,7 @@ class MetadataExtractor
 
         try {
             $rows = (new Crawler($html))->filter('table#ctl00_MainContent_tblResult > tr');
-        } catch (RuntimeException $exception) {
+        } catch (RuntimeException) {
             return new MetadataList([]);
         }
         if ($rows->count() < 2) {
@@ -90,7 +88,6 @@ class MetadataExtractor
     }
 
     /**
-     * @param Crawler $headersRow
      * @param array<string, string> $fieldsCaptions
      * @return array<string, int>
      */
@@ -99,11 +96,9 @@ class MetadataExtractor
         try {
             /** @var array<int, string> $headerCells */
             $headerCells = $headersRow->children()->each(
-                function (Crawler $cell) {
-                    return trim($cell->text());
-                },
+                fn (Crawler $cell): string => trim($cell->text()),
             );
-        } catch (RuntimeException $exception) {
+        } catch (RuntimeException) {
             return [];
         }
 
@@ -120,7 +115,6 @@ class MetadataExtractor
     }
 
     /**
-     * @param Crawler $row
      * @param array<string, int> $fieldsPositions
      * @return array<string, string>
      */
@@ -128,15 +122,14 @@ class MetadataExtractor
     {
         try {
             $cells = $row->children();
-        } catch (RuntimeException $exception) {
+        } catch (RuntimeException) {
             return [];
         }
 
-        $values = [];
-        foreach ($fieldsPositions as $field => $position) {
-            $values[$field] = trim($cells->getNode($position)->textContent ?? '');
-        }
-        return $values;
+        return array_map(
+            fn (int $position): string => trim($cells->getNode($position)->textContent ?? ''),
+            $fieldsPositions,
+        );
     }
 
     public function obtainUrlXml(Crawler $row): string
@@ -184,7 +177,7 @@ class MetadataExtractor
     {
         try {
             $filteredElements = $crawler->filter($elementFilter);
-        } catch (Throwable $exception) {
+        } catch (Throwable) {
             return '';
         }
 

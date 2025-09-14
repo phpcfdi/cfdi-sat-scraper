@@ -22,7 +22,6 @@ class ParserFormatSAT
     /**
      * Parse source and retrieve only the preconfigured valid keys
      *
-     * @param string $source
      * @return array<string, string>
      */
     public function getFormValues(string $source): array

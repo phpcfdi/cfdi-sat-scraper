@@ -15,11 +15,9 @@ use Throwable;
 require __DIR__ . '/bootstrap.php';
 
 exit(call_user_func(new class () {
-    /** @var string */
-    private $rfc;
+    private string $rfc = '';
 
-    /** @var string */
-    private $command;
+    private string $command = '';
 
     public function __invoke(string ...$arguments): int
     {

@@ -15,13 +15,9 @@ use Psr\Http\Message\ResponseInterface;
  */
 class HttpLogger extends ArrayObject
 {
-    /** @var string */
-    private $destinationDir;
-
-    public function __construct(string $destinationDir)
+    public function __construct(private readonly string $destinationDir)
     {
         parent::__construct();
-        $this->destinationDir = $destinationDir;
     }
 
     public function append($value): void
@@ -52,7 +48,7 @@ class HttpLogger extends ArrayObject
             return;
         }
         if (! file_exists($this->destinationDir)) {
-            mkdir($this->destinationDir, 0755, true);
+            mkdir($this->destinationDir, 0o755, true);
         }
         /** @var RequestInterface $request */
         $request = $entry['request'];
@@ -93,7 +89,7 @@ class HttpLogger extends ArrayObject
                     'headers' => $request->getHeaders(),
                     'body' => $this->bodyToVars((string) $request->getBody()),
                 ],
-                'response' => ($response) ? [
+                'response' => ($response instanceof ResponseInterface) ? [
                     'code' => $response->getStatusCode(),
                     'headers' => $response->getHeaders(),
                     'body' => (string) $response->getBody(),
@@ -109,7 +105,6 @@ class HttpLogger extends ArrayObject
     }
 
     /**
-     * @param string $body
      * @return array<mixed>
      */
     public function bodyToVars(string $body): array

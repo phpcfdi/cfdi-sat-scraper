@@ -11,8 +11,6 @@ interface InputsInterface
 {
     /**
      * Return the query property
-     *
-     * @return QueryInterface
      */
     public function getQuery(): QueryInterface;
 
@@ -25,8 +23,6 @@ interface InputsInterface
 
     /**
      * Contains the central filter id
-     *
-     * @return string
      */
     public function getCentralFilter(): string;
 
@@ -46,8 +42,6 @@ interface InputsInterface
 
     /**
      * Return the URL which all http transactions will be sent
-     *
-     * @return string
      */
     public function getUrl(): string;
 }

@@ -16,27 +16,15 @@ class CiecSessionData
 
     public const DEFAULT_MAX_TRIES_LOGIN = 3;
 
-    /** @var string */
-    private $rfc;
+    private readonly string $rfc;
 
-    /** @var string */
-    private $ciec;
+    private readonly string $ciec;
 
-    /** @var CaptchaResolverInterface */
-    private $captchaResolver;
+    private readonly int $maxTriesCaptcha;
 
-    /** @var int */
-    private $maxTriesCaptcha = 3;
-
-    /** @var int */
-    private $maxTriesLogin = 3;
+    private readonly int $maxTriesLogin;
 
     /**
-     * SatSessionManager constructor.
-     *
-     * @param string $rfc
-     * @param string $ciec
-     * @param CaptchaResolverInterface $captchaResolver
      * @param int $maxTriesCaptcha if lower than 1 is set to 1
      * @param int $maxTriesLogin if lower than 1 is set to 1
      *
@@ -46,19 +34,18 @@ class CiecSessionData
     public function __construct(
         string $rfc,
         string $ciec,
-        CaptchaResolverInterface $captchaResolver,
+        private readonly CaptchaResolverInterface $captchaResolver,
         int $maxTriesCaptcha = self::DEFAULT_MAX_TRIES_CAPTCHA,
-        int $maxTriesLogin = self::DEFAULT_MAX_TRIES_LOGIN
+        int $maxTriesLogin = self::DEFAULT_MAX_TRIES_LOGIN,
     ) {
-        if (empty($rfc)) {
+        if ('' === $rfc) {
             throw InvalidArgumentException::emptyInput('RFC');
         }
-        if (empty($ciec)) {
+        if ('' === $ciec) {
             throw InvalidArgumentException::emptyInput('CIEC');
         }
         $this->rfc = $rfc;
         $this->ciec = $ciec;
-        $this->captchaResolver = $captchaResolver;
         $this->maxTriesCaptcha = max(1, $maxTriesCaptcha);
         $this->maxTriesLogin = max(1, $maxTriesLogin);
     }

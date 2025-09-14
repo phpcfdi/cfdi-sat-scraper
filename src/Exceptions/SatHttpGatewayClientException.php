@@ -7,24 +7,19 @@ namespace PhpCfdi\CfdiSatScraper\Exceptions;
 use GuzzleHttp\Exception\GuzzleException;
 
 /**
- * This exception is thrown by SatHttpGateway and stores a http client exception GuzzleException
+ * This exception is thrown by SatHttpGateway and stores an http client exception GuzzleException
  *
  * @see GuzzleException
  */
 class SatHttpGatewayClientException extends SatHttpGatewayException implements SatException
 {
-    /** @var GuzzleException */
-    private $clientException;
+    private readonly GuzzleException $clientException;
 
     /**
      * SatHttpGatewayClientException constructor.
      *
-     * @param string $message
-     * @param string $httpMethod
-     * @param string $url
      * @param array<string, mixed> $requestHeaders
      * @param array<string, mixed> $requestData
-     * @param GuzzleException $previous
      */
     protected function __construct(
         string $message,
@@ -32,7 +27,7 @@ class SatHttpGatewayClientException extends SatHttpGatewayException implements S
         string $url,
         array $requestHeaders,
         array $requestData,
-        GuzzleException $previous
+        GuzzleException $previous,
     ) {
         parent::__construct($message, $httpMethod, $url, $requestHeaders, $requestData, $previous);
         $this->clientException = $previous;
@@ -41,13 +36,8 @@ class SatHttpGatewayClientException extends SatHttpGatewayException implements S
     /**
      * Method factory
      *
-     * @param string $when
-     * @param string $method
-     * @param string $url
      * @param array<string, mixed> $requestHeaders
      * @param array<string, mixed> $requestData
-     * @param GuzzleException $exception
-     * @return self
      */
     public static function clientException(string $when, string $method, string $url, array $requestHeaders, array $requestData, GuzzleException $exception): self
     {

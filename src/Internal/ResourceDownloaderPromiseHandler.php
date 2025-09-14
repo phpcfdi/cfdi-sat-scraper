@@ -25,50 +25,36 @@ use Throwable;
  */
 final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromiseHandlerInterface
 {
-    /** @var ResourceType */
-    private $resourceType;
-
-    /** @var ResourceDownloadHandlerInterface */
-    private $handler;
-
     /** @var string[] */
-    private $fulfilledUuids = [];
+    private array $fulfilledUuids = [];
 
-    public function __construct(ResourceType $resourceType, ResourceDownloadHandlerInterface $handler)
+    public function __construct(private readonly ResourceType $resourceType, private readonly ResourceDownloadHandlerInterface $handler)
     {
-        $this->resourceType = $resourceType;
-        $this->handler = $handler;
     }
 
     /**
      * This method handles each promise fulfilled event
-     *
-     * @param ResponseInterface $response
-     * @param string $uuid
-     * @return null
      */
-    public function promiseFulfilled(ResponseInterface $response, string $uuid)
+    public function promiseFulfilled(ResponseInterface $response, string $uuid): void
     {
         try {
             $content = $this->validateResponse($response, $uuid);
             $this->handler->onSuccess($uuid, $content, $response);
         } catch (ResourceDownloadResponseError $exception) {
-            return $this->handlerError($exception);
+            $this->handlerError($exception);
+            return;
         } catch (Throwable $exception) {
-            return $this->handlerError(ResourceDownloadResponseError::onSuccessException($response, $uuid, $exception));
+            $this->handlerError(ResourceDownloadResponseError::onSuccessException($response, $uuid, $exception));
+            return;
         }
 
         $this->fulfilledUuids[] = $uuid;
-        return null;
     }
 
     /**
      * Validate that the Response object was OK and contains something that looks like CFDI.
      * Return the content read from the response body.
      *
-     * @param ResponseInterface $response
-     * @param string $uuid
-     * @return string
      *
      * @throws ResourceDownloadResponseError
      */
@@ -100,30 +86,23 @@ final class ResourceDownloaderPromiseHandler implements ResourceDownloaderPromis
 
     /**
      * This method handles each promise rejected event
-     *
-     * @param mixed $reason
-     * @param string $uuid
-     * @return null
      */
-    public function promiseRejected($reason, string $uuid)
+    public function promiseRejected(mixed $reason, string $uuid): void
     {
         if ($reason instanceof RequestException) {
-            return $this->handlerError(ResourceDownloadRequestExceptionError::onRequestException($reason, $uuid));
+            $this->handlerError(ResourceDownloadRequestExceptionError::onRequestException($reason, $uuid));
+            return;
         }
 
-        return $this->handlerError(ResourceDownloadError::onRejected($uuid, $reason));
+        $this->handlerError(ResourceDownloadError::onRejected($uuid, $reason));
     }
 
     /**
      * Send the error to handler error method
-     *
-     * @param ResourceDownloadError $error
-     * @return null
      */
-    public function handlerError(ResourceDownloadError $error)
+    public function handlerError(ResourceDownloadError $error): void
     {
         $this->handler->onError($error);
-        return null;
     }
 
     /**

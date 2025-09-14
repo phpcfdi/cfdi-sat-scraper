@@ -21,29 +21,18 @@ class QueryByFilters implements QueryInterface
 {
     use DownloadTypePropertyTrait;
 
-    /** @var DateTimeImmutable */
-    private $startDate;
+    private DateTimeImmutable $startDate;
 
-    /** @var DateTimeImmutable */
-    private $endDate;
+    private DateTimeImmutable $endDate;
 
-    /** @var RfcOption */
-    private $rfc;
+    private RfcOption $rfc;
 
-    /** @var RfcOnBehalfOption */
-    private $rfcOnBehalf;
+    private RfcOnBehalfOption $rfcOnBehalf;
 
-    /** @var ComplementsOption */
-    private $complement;
+    private ComplementsOption $complement;
 
-    /** @var StatesVoucherOption */
-    private $stateVoucher;
+    private StatesVoucherOption $stateVoucher;
 
-    /**
-     * @param DateTimeImmutable $startDate
-     * @param DateTimeImmutable $endDate
-     * @param DownloadType|null $downloadType
-     */
     public function __construct(DateTimeImmutable $startDate, DateTimeImmutable $endDate, ?DownloadType $downloadType = null)
     {
         $this->setPeriod($startDate, $endDate);
@@ -57,8 +46,6 @@ class QueryByFilters implements QueryInterface
     /**
      * Set the query period using start date and current end date
      *
-     * @param DateTimeImmutable $startDate
-     * @param DateTimeImmutable $endDate
      * @return $this
      * @throws InvalidArgumentException if start date is greater than end date
      */
@@ -73,9 +60,6 @@ class QueryByFilters implements QueryInterface
         return $this;
     }
 
-    /**
-     * @return DateTimeImmutable
-     */
     public function getStartDate(): DateTimeImmutable
     {
         return $this->startDate;
@@ -84,7 +68,6 @@ class QueryByFilters implements QueryInterface
     /**
      * Set the query period using specified start date and current end date
      *
-     * @param DateTimeImmutable $startDate
      * @return $this
      * @throws InvalidArgumentException if start date is greater than end date
      */
@@ -93,9 +76,6 @@ class QueryByFilters implements QueryInterface
         return $this->setPeriod($startDate, $this->getEndDate());
     }
 
-    /**
-     * @return DateTimeImmutable
-     */
     public function getEndDate(): DateTimeImmutable
     {
         return $this->endDate;
@@ -104,7 +84,6 @@ class QueryByFilters implements QueryInterface
     /**
      * Set the query period using current start date and specified end date
      *
-     * @param DateTimeImmutable $endDate
      * @return $this
      * @throws InvalidArgumentException if start date is greater than end date
      */
@@ -113,16 +92,12 @@ class QueryByFilters implements QueryInterface
         return $this->setPeriod($this->getStartDate(), $endDate);
     }
 
-    /**
-     * @return RfcOption
-     */
     public function getRfc(): RfcOption
     {
         return $this->rfc;
     }
 
     /**
-     * @param RfcOption $rfc
      * @return $this
      */
     public function setRfc(RfcOption $rfc): self
@@ -132,16 +107,12 @@ class QueryByFilters implements QueryInterface
         return $this;
     }
 
-    /**
-     * @return RfcOnBehalfOption
-     */
     public function getRfcOnBehalf(): RfcOnBehalfOption
     {
         return $this->rfcOnBehalf;
     }
 
     /**
-     * @param RfcOnBehalfOption $rfcOnBehalf
      * @return $this
      */
     public function setRfcOnBehalf(RfcOnBehalfOption $rfcOnBehalf): self
@@ -151,16 +122,12 @@ class QueryByFilters implements QueryInterface
         return $this;
     }
 
-    /**
-     * @return ComplementsOption
-     */
     public function getComplement(): ComplementsOption
     {
         return $this->complement;
     }
 
     /**
-     * @param ComplementsOption $complement
      * @return $this
      */
     public function setComplement(ComplementsOption $complement): self
@@ -170,16 +137,12 @@ class QueryByFilters implements QueryInterface
         return $this;
     }
 
-    /**
-     * @return StatesVoucherOption
-     */
     public function getStateVoucher(): StatesVoucherOption
     {
         return $this->stateVoucher;
     }
 
     /**
-     * @param StatesVoucherOption $stateVoucher
      * @return $this
      */
     public function setStateVoucher(StatesVoucherOption $stateVoucher): self

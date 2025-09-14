@@ -14,7 +14,7 @@ use Throwable;
  */
 class ResourceDownloadResponseError extends ResourceDownloadError
 {
-    public function __construct(string $message, string $uuid, ResponseInterface $response, Throwable $previous = null)
+    public function __construct(string $message, string $uuid, ResponseInterface $response, ?Throwable $previous = null)
     {
         parent::__construct($message, $uuid, $response, $previous);
     }

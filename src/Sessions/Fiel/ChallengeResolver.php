@@ -12,19 +12,11 @@ use PhpCfdi\CfdiSatScraper\Internal\HtmlForm;
  * @see FielSessionManager::resolveChallengeUsingFiel
  * @internal
  */
-final class ChallengeResolver
+final readonly class ChallengeResolver
 {
-    /** @var array<string, string> */
-    private $fields;
-
-    /** @var FielSessionData */
-    private $sessionData;
-
     /** @param array<string, string> $fields */
-    private function __construct(array $fields, FielSessionData $sessionData)
+    private function __construct(private array $fields, private FielSessionData $sessionData)
     {
-        $this->sessionData = $sessionData;
-        $this->fields = $fields;
     }
 
     public static function createFromHtml(string $html, FielSessionData $sessionData): self

@@ -22,7 +22,7 @@ Un buen paso podría ser iniciar ejecutando los tests unitarios
 
 ```shell
 # ejecutando phpunit
-vendor/bin/phpunit tests/Unit --testdox --verbose
+vendor/bin/phpunit tests/Unit --testdox
 ```
 
 Y después los tests de integración, sin embargo, es probable que necesites configurar el archivo `tests/.env`.
@@ -30,7 +30,7 @@ Revisa la información en [TestIntegracion](TestIntegracion.md)
 
 ```shell
 # ejecutando phpunit
-vendor/bin/phpunit tests/Integration --testdox --verbose
+vendor/bin/phpunit tests/Integration --testdox
 ```
 
 ## Recomendaciones de cambios
@@ -56,5 +56,5 @@ Asegúrate que nada esté roto con los cambios, para revisarlo actualiza las dep
 # run default test process
 composer dev:build
 # run integration tests (not included by default)
-vendor/bin/phpunit tests/Integration --testdox --verbose
+vendor/bin/phpunit tests/Integration --testdox
 ```

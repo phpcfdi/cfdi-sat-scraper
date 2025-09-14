@@ -13,28 +13,15 @@ use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 
 class SatScraper implements SatScraperInterface
 {
-    /** @var SessionManager */
-    private $sessionManager;
+    private readonly SatHttpGateway $satHttpGateway;
 
-    /** @var SatHttpGateway */
-    private $satHttpGateway;
+    protected MetadataMessageHandler $metadataMessageHandler;
 
-    /** @var MetadataMessageHandler */
-    protected $metadataMessageHandler;
-
-    /**
-     * SatScraper constructor.
-     *
-     * @param SessionManager $sessionManager
-     * @param SatHttpGateway|null $satHttpGateway
-     * @param MetadataMessageHandler|null $metadataMessageHandler
-     */
     public function __construct(
-        SessionManager $sessionManager,
+        private readonly SessionManager $sessionManager,
         ?SatHttpGateway $satHttpGateway = null,
-        ?MetadataMessageHandler $metadataMessageHandler = null
+        ?MetadataMessageHandler $metadataMessageHandler = null,
     ) {
-        $this->sessionManager = $sessionManager;
         $this->satHttpGateway = $satHttpGateway ?? $this->createDefaultSatHttpGateway();
         $this->metadataMessageHandler = $metadataMessageHandler ?? new NullMetadataMessageHandler();
     }
@@ -70,11 +57,11 @@ class SatScraper implements SatScraperInterface
     }
 
     public function resourceDownloader(
-        ResourceType $resourceType = null,
+        ?ResourceType $resourceType = null,
         ?MetadataList $metadataList = null,
-        int $concurrency = ResourceDownloader::DEFAULT_CONCURRENCY
+        int $concurrency = ResourceDownloader::DEFAULT_CONCURRENCY,
     ): ResourceDownloader {
-        $resourceType = $resourceType ?? ResourceType::xml();
+        $resourceType ??= ResourceType::xml();
         return new ResourceDownloader($this->satHttpGateway, $resourceType, $metadataList, $concurrency);
     }
 

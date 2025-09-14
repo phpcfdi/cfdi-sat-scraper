@@ -21,19 +21,16 @@ use Psr\Http\Message\ResponseInterface;
 
 class SatHttpGateway
 {
-    /** @var ClientInterface */
-    private $client;
+    private readonly ClientInterface $client;
 
-    /** @var CookieJarInterface */
-    private $cookieJar;
+    private readonly CookieJarInterface $cookieJar;
 
-    /** @var string */
-    private $effectiveUri;
+    private string $effectiveUri;
 
     public function __construct(?ClientInterface $client = null, ?CookieJarInterface $cookieJar = null)
     {
         // create a new client (if not set) with the given cookie (if set)
-        $client = $client ?? new Client([RequestOptions::COOKIES => $cookieJar ?? new CookieJar()]);
+        $client ??= new Client([RequestOptions::COOKIES => $cookieJar ?? new CookieJar()]);
 
         // if the cookieJar was set on the client but not in the configuration
         if (null === $cookieJar) {
@@ -52,9 +49,6 @@ class SatHttpGateway
     }
 
     /**
-     * @param string $url
-     * @param string $referer
-     * @return string
      * @throws SatHttpGatewayException
      */
     public function getAuthLoginPage(string $url, string $referer = ''): string
@@ -63,7 +57,6 @@ class SatHttpGateway
     }
 
     /**
-     * @return string
      * @throws SatHttpGatewayException
      */
     public function getPortalMainPage(): string
@@ -73,7 +66,6 @@ class SatHttpGateway
 
     /**
      * @param array<string, string> $formData
-     * @return string
      * @throws SatHttpGatewayException
      */
     public function postPortalMainPage(array $formData): string
@@ -82,9 +74,7 @@ class SatHttpGateway
     }
 
     /**
-     * @param string $loginUrl
      * @param array<string, string> $formParams
-     * @return string
      * @throws SatHttpGatewayException
      */
     public function postCiecLoginData(string $loginUrl, array $formParams): string
@@ -94,9 +84,7 @@ class SatHttpGateway
     }
 
     /**
-     * @param string $loginUrl
      * @param array<string, string> $formParams
-     * @return string
      * @throws SatHttpGatewayException
      */
     public function postFielLoginData(string $loginUrl, array $formParams): string
@@ -106,8 +94,6 @@ class SatHttpGateway
     }
 
     /**
-     * @param string $url
-     * @return string
      * @throws SatHttpGatewayException
      */
     public function getPortalPage(string $url): string
@@ -116,9 +102,7 @@ class SatHttpGateway
     }
 
     /**
-     * @param string $url
      * @param array<string, string> $formParams
-     * @return string
      * @throws SatHttpGatewayException
      */
     public function postAjaxSearch(string $url, array $formParams): string
@@ -129,9 +113,6 @@ class SatHttpGateway
 
     /**
      * Create a promise (asynchronous request) to perform an XML download.
-     *
-     * @param string $link
-     * @return PromiseInterface
      */
     public function getAsync(string $link): PromiseInterface
     {
@@ -155,10 +136,6 @@ class SatHttpGateway
     /**
      * Helper to make a GET request
      *
-     * @param string $reason
-     * @param string $url
-     * @param string $referer
-     * @return string
      * @throws SatHttpGatewayClientException
      * @throws SatHttpGatewayResponseException
      */
@@ -173,11 +150,8 @@ class SatHttpGateway
     /**
      * Helper to make a POST request
      *
-     * @param string $reason
-     * @param string $url
      * @param array<string, mixed> $headers
      * @param array<string, string> $data
-     * @return string
      * @throws SatHttpGatewayException
      */
     private function post(string $reason, string $url, array $headers, array $data): string
@@ -190,11 +164,7 @@ class SatHttpGateway
     }
 
     /**
-     * @param string $method
-     * @param string $uri
      * @param array<string, mixed> $options
-     * @param string $reason
-     * @return string
      * @throws SatHttpGatewayClientException
      * @throws SatHttpGatewayResponseException
      */
@@ -270,7 +240,7 @@ class SatHttpGateway
     {
         try {
             return $this->get('logout', $destination, $referer);
-        } catch (SatHttpGatewayException $exception) {
+        } catch (SatHttpGatewayException) {
             return '';
         }
     }

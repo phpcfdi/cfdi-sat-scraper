@@ -15,15 +15,15 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR12' => true,
         '@PSR12:risky' => true,
-        '@PHP71Migration:risky' => true,
-        '@PHP73Migration' => true,
+        '@PHP82Migration:risky' => true,
+        '@PHP82Migration' => true,
         // symfony
         'class_attributes_separation' => true,
         'whitespace_after_comma_in_array' => true,
         'no_empty_statement' => true,
         'no_extra_blank_lines' => true,
         'type_declaration_spaces' => true,
-        'trailing_comma_in_multiline' => ['after_heredoc' => true, 'elements' => ['arrays', 'arguments']],
+        'trailing_comma_in_multiline' => ['after_heredoc' => true, 'elements' => ['arrays', 'match', 'arguments', 'parameters']],
         'no_blank_lines_after_phpdoc' => true,
         'object_operator_without_whitespace' => true,
         'binary_operator_spaces' => true,
@@ -36,6 +36,7 @@ return (new PhpCsFixer\Config())
         'standardize_not_equals' => true,
         'concat_space' => ['spacing' => 'one'],
         'linebreak_after_opening_tag' => true,
+        'fully_qualified_strict_types' => true,
         // symfony:risky
         'no_alias_functions' => true,
         'self_accessor' => true,

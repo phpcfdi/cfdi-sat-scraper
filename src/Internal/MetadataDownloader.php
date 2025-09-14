@@ -30,17 +30,11 @@ use PhpCfdi\CfdiSatScraper\QueryByUuid;
  */
 class MetadataDownloader
 {
-    /** @var QueryResolver */
-    private $queryResolver;
-
-    /** @var MetadataMessageHandler */
-    private $messageHandler;
-
     /** @internal */
-    public function __construct(QueryResolver $queryResolver, MetadataMessageHandler $messageHandler)
-    {
-        $this->queryResolver = $queryResolver;
-        $this->messageHandler = $messageHandler;
+    public function __construct(
+        private readonly QueryResolver $queryResolver,
+        private readonly MetadataMessageHandler $messageHandler,
+    ) {
     }
 
     public function getQueryResolver(): QueryResolver
@@ -55,8 +49,6 @@ class MetadataDownloader
 
     /**
      * @param string[] $uuids
-     * @param DownloadType $downloadType
-     * @return MetadataList
      * @throws SatHttpGatewayException
      */
     public function downloadByUuids(array $uuids, DownloadType $downloadType): MetadataList
@@ -72,9 +64,6 @@ class MetadataDownloader
     }
 
     /**
-     * @param UuidOption $uuid
-     * @param DownloadType $downloadType
-     * @return MetadataList
      * @throws SatHttpGatewayException
      */
     public function downloadByUuid(UuidOption $uuid, DownloadType $downloadType): MetadataList
@@ -84,8 +73,6 @@ class MetadataDownloader
     }
 
     /**
-     * @param QueryByFilters $query
-     * @return MetadataList
      * @throws SatHttpGatewayException
      */
     public function downloadByDate(QueryByFilters $query): MetadataList
@@ -101,8 +88,6 @@ class MetadataDownloader
     }
 
     /**
-     * @param QueryByFilters $query
-     * @return MetadataList
      * @throws SatHttpGatewayException
      */
     public function downloadByDateTime(QueryByFilters $query): MetadataList
@@ -117,8 +102,6 @@ class MetadataDownloader
     }
 
     /**
-     * @param QueryByFilters $query
-     * @return MetadataList
      * @throws SatHttpGatewayException
      */
     public function downloadQuery(QueryByFilters $query): MetadataList
@@ -167,8 +150,6 @@ class MetadataDownloader
     }
 
     /**
-     * @param QueryInterface $query
-     * @return MetadataList
      * @throws SatHttpGatewayException
      * @see QueryResolver
      */
@@ -194,13 +175,12 @@ class MetadataDownloader
         if ($query instanceof QueryByUuid) {
             return new InputsByUuid($query);
         }
-        throw LogicException::generic(sprintf('Unable to create input filters from query type %s', get_class($query)));
+        throw LogicException::generic(sprintf('Unable to create input filters from query type %s', $query::class));
     }
 
     /**
      * Generates a clone of this query split by day
      *
-     * @param QueryByFilters $query
      * @return Generator<QueryByFilters>
      */
     public function splitQueryByFiltersByDays(QueryByFilters $query): Generator

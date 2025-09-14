@@ -6,14 +6,10 @@ namespace PhpCfdi\CfdiSatScraper\Sessions\Fiel;
 
 use PhpCfdi\Credentials\Credential;
 
-class FielSessionData
+readonly class FielSessionData
 {
-    /** @var Credential */
-    private $fiel;
-
-    public function __construct(Credential $fiel)
+    public function __construct(private Credential $fiel)
     {
-        $this->fiel = $fiel;
     }
 
     public function getFiel(): Credential
@@ -29,7 +25,6 @@ class FielSessionData
     /**
      * The valid to is formatted as yymmddhhiissZ
      * Example: 2023-06-13T21:05:15+00:00 is 230613210515Z
-     * @return string
      */
     public function getValidTo(): string
     {

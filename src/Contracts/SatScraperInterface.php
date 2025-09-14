@@ -18,22 +18,16 @@ interface SatScraperInterface
     /**
      * Create a ResourceDownloader object with (optionally) a MetadataList.
      * Use the ResourceDownloader to retrieve the CFDI related files.
-     *
-     * @param ResourceType|null $resourceType
-     * @param MetadataList|null $metadataList
-     * @param int $concurrency
-     * @return ResourceDownloader
      */
     public function resourceDownloader(
-        ResourceType $resourceType = null,
+        ?ResourceType $resourceType = null,
         ?MetadataList $metadataList = null,
-        int $concurrency = ResourceDownloader::DEFAULT_CONCURRENCY
+        int $concurrency = ResourceDownloader::DEFAULT_CONCURRENCY,
     ): ResourceDownloader;
 
     /**
      * Initializes session on SAT
      *
-     * @return SatScraper
      * @throws LoginException if session is not alive
      */
     public function confirmSessionIsAlive(): SatScraper;
@@ -42,8 +36,6 @@ interface SatScraperInterface
      * Retrieve the MetadataList using specific UUIDS to download
      *
      * @param string[] $uuids
-     * @param DownloadType $downloadType
-     * @return MetadataList
      * @throws SatException on session or connection exception
      */
     public function listByUuids(array $uuids, DownloadType $downloadType): MetadataList;
@@ -51,8 +43,6 @@ interface SatScraperInterface
     /**
      * Retrieve the MetadataList based on the query, but uses full days on dates (without time parts)
      *
-     * @param QueryByFilters $query
-     * @return MetadataList
      * @throws SatException on session or connection exception
      */
     public function listByPeriod(QueryByFilters $query): MetadataList;
@@ -60,8 +50,6 @@ interface SatScraperInterface
     /**
      * Retrieve the MetadataList based on the query, but uses the period considering dates and times
      *
-     * @param QueryByFilters $query
-     * @return MetadataList
      * @throws SatException on session or connection exception
      */
     public function listByDateTime(QueryByFilters $query): MetadataList;

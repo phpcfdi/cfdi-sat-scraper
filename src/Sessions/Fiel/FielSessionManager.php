@@ -14,12 +14,8 @@ use PhpCfdi\Credentials\Credential;
 
 final class FielSessionManager extends AbstractSessionManager implements SessionManager
 {
-    /** @var FielSessionData */
-    private $sessionData;
-
-    public function __construct(FielSessionData $fielSessionData)
+    public function __construct(private readonly FielSessionData $sessionData)
     {
-        $this->sessionData = $fielSessionData;
     }
 
     public static function create(Credential $credential): self
@@ -39,10 +35,10 @@ final class FielSessionManager extends AbstractSessionManager implements Session
         try {
             // check is logged in on portal
             $html = $httpGateway->getPortalMainPage();
-            if (false === strpos($html, 'RFC Autenticado: ' . $this->getRfc())) {
+            if (! str_contains($html, 'RFC Autenticado: ' . $this->getRfc())) {
                 return false;
             }
-        } catch (SatHttpGatewayException $exception) {
+        } catch (SatHttpGatewayException) {
             // if http error, consider without session
             return false;
         }
@@ -88,7 +84,6 @@ final class FielSessionManager extends AbstractSessionManager implements Session
     }
 
     /**
-     * @param string $html
      * @return array<string, string>
      */
     private function resolveChallengeUsingFiel(string $html): array

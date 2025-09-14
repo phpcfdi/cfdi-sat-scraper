@@ -18,36 +18,30 @@ use Psr\Http\Message\ResponseInterface;
 final class FakeResourceDownloaderPromiseHandler implements ResourceDownloaderPromiseHandlerInterface
 {
     /** @var string[] */
-    private $downloadedUuids = [];
+    private array $downloadedUuids = [];
 
     /** @var string[] */
-    private $rejectedUuids = [];
+    private array $rejectedUuids = [];
 
-    /** @var int */
-    private $counter = 0;
+    private int $counter = 0;
 
-    /**
-     * @param string $uuid
-     * @return null
-     */
-    public function append(string $uuid)
+    public function append(string $uuid): void
     {
         if (0 === ($this->counter++) % 2) {
             $this->downloadedUuids[] = $uuid;
         } else {
             $this->rejectedUuids[] = $uuid;
         }
-        return null;
     }
 
-    public function promiseFulfilled(ResponseInterface $response, string $uuid)
+    public function promiseFulfilled(ResponseInterface $response, string $uuid): void
     {
-        return $this->append($uuid);
+        $this->append($uuid);
     }
 
-    public function promiseRejected($reason, string $uuid)
+    public function promiseRejected(mixed $reason, string $uuid): void
     {
-        return $this->append($uuid);
+        $this->append($uuid);
     }
 
     public function downloadedUuids(): array

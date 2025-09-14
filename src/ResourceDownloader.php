@@ -34,33 +34,19 @@ class ResourceDownloader
 {
     public const DEFAULT_CONCURRENCY = 10;
 
-    /** @var MetadataList|null */
-    protected $list;
+    protected int $concurrency;
 
-    /** @var int */
-    protected $concurrency;
-
-    /** @var SatHttpGateway */
-    private $satHttpGateway;
-
-    /** @var ResourceType */
-    private $resourceType;
-
-    /** @var ResourceFileNamerInterface */
-    private $resourceFileNamer;
+    private ResourceFileNamerInterface $resourceFileNamer;
 
     public function __construct(
-        SatHttpGateway $satHttpGateway,
-        ResourceType $resourceType,
-        ?MetadataList $list = null,
+        private readonly SatHttpGateway $satHttpGateway,
+        private readonly ResourceType $resourceType,
+        protected ?MetadataList $list = null,
         int $concurrency = self::DEFAULT_CONCURRENCY,
-        ?ResourceFileNamerInterface $resourceFileNamer = null
+        ?ResourceFileNamerInterface $resourceFileNamer = null,
     ) {
-        $this->satHttpGateway = $satHttpGateway;
-        $this->resourceType = $resourceType;
-        $this->list = $list;
         $this->setConcurrency($concurrency);
-        $this->setResourceFileNamer($resourceFileNamer ?? new ResourceFileNamerByType($resourceType));
+        $this->setResourceFileNamer($resourceFileNamer ?? new ResourceFileNamerByType($this->resourceType));
     }
 
     public function getResourceType(): ResourceType
@@ -84,7 +70,6 @@ class ResourceDownloader
     /**
      * Change the metadata list that will be used to perform downloads
      *
-     * @param MetadataList $list
      * @return $this
      */
     public function setMetadataList(MetadataList $list): self
@@ -101,7 +86,6 @@ class ResourceDownloader
     /**
      * Set concurrency, if lower than 1 will use 1
      *
-     * @param int $concurrency
      * @return $this
      */
     public function setConcurrency(int $concurrency): self
@@ -118,7 +102,6 @@ class ResourceDownloader
     /**
      * Set up the resource file namer
      *
-     * @param ResourceFileNamerInterface $resourceFileNamer
      * @return $this
      */
     public function setResourceFileNamer(ResourceFileNamerInterface $resourceFileNamer): self
@@ -137,7 +120,6 @@ class ResourceDownloader
      *
      * The download will return an array that contains all the successful processed uuids.
      *
-     * @param ResourceDownloadHandlerInterface $handler
      * @return string[]
      *
      * @see ResourceDownloaderPromiseHandler::promiseFulfilled()
@@ -164,9 +146,6 @@ class ResourceDownloader
     /**
      * Factory method to make the default ResourceDownloaderPromiseHandler,
      * by extracting the creation it can be replaced with any ResourceDownloaderPromiseHandlerInterface.
-     *
-     * @param ResourceDownloadHandlerInterface $handler
-     * @return ResourceDownloaderPromiseHandlerInterface
      */
     protected function makePromiseHandler(ResourceDownloadHandlerInterface $handler): ResourceDownloaderPromiseHandlerInterface
     {
@@ -200,9 +179,6 @@ class ResourceDownloader
      *
      * Return the list of fulfilled UUID
      *
-     * @param string $destinationFolder
-     * @param bool $createFolder
-     * @param int $createMode
      * @return string[]
      *
      * @throws InvalidArgumentException if destination folder argument is empty
@@ -212,7 +188,7 @@ class ResourceDownloader
      *
      * @see ResourceDownloadStoreInFolder
      */
-    public function saveTo(string $destinationFolder, bool $createFolder = false, int $createMode = 0775): array
+    public function saveTo(string $destinationFolder, bool $createFolder = false, int $createMode = 0o775): array
     {
         $storeHandler = new ResourceDownloadStoreInFolder($destinationFolder, $this->getResourceFileNamer());
         $storeHandler->checkDestinationFolder($createFolder, $createMode);

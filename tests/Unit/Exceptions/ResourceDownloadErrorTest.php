@@ -7,6 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Exceptions;
 use PhpCfdi\CfdiSatScraper\Exceptions\ResourceDownloadError;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatException;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 use Throwable;
 
@@ -53,7 +54,7 @@ final class ResourceDownloadErrorTest extends TestCase
     }
 
     /** @return array<string, array{string, mixed}> */
-    public function providerReasonToString(): array
+    public static function providerReasonToString(): array
     {
         $stringable = new class () {
             public function __toString(): string
@@ -71,12 +72,8 @@ final class ResourceDownloadErrorTest extends TestCase
         ];
     }
 
-    /**
-     * @param string $expected
-     * @param mixed $reason
-     * @dataProvider providerReasonToString
-     */
-    public function testReasonToString(string $expected, $reason): void
+    #[DataProvider('providerReasonToString')]
+    public function testReasonToString(string $expected, mixed $reason): void
     {
         $value = ResourceDownloadError::reasonToString($reason);
         $this->assertSame($expected, $value);

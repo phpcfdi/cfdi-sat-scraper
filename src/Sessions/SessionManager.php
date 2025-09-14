@@ -50,8 +50,6 @@ interface SessionManager
 
     /**
      * Get the RFC associated with the session data
-     *
-     * @return string
      */
     public function getRfc(): string;
 }

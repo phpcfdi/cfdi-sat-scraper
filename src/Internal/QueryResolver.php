@@ -18,17 +18,11 @@ use PhpCfdi\CfdiSatScraper\SatHttpGateway;
  */
 class QueryResolver
 {
-    /** @var SatHttpGateway */
-    private $satHttpGateway;
-
-    public function __construct(SatHttpGateway $satHttpGateway)
+    public function __construct(private readonly SatHttpGateway $satHttpGateway)
     {
-        $this->satHttpGateway = $satHttpGateway;
     }
 
     /**
-     * @param InputsInterface $inputs
-     * @return MetadataList
      * @throws SatHttpGatewayException
      */
     public function resolve(InputsInterface $inputs): MetadataList
@@ -52,7 +46,6 @@ class QueryResolver
     }
 
     /**
-     * @param string $url
      * @return array<string, string>
      * @throws SatHttpGatewayException
      */
@@ -65,7 +58,6 @@ class QueryResolver
     }
 
     /**
-     * @param string $url
      * @param array<string, string> $post
      * @return array<string, string>
      * @throws SatHttpGatewayException
@@ -77,9 +69,7 @@ class QueryResolver
     }
 
     /**
-     * @param string $url
      * @param array<string, string> $post
-     * @return string
      * @throws SatHttpGatewayException
      */
     protected function htmlFromExecuteQuery(string $url, array $post): string

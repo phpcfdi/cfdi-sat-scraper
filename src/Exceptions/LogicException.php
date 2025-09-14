@@ -8,7 +8,7 @@ use Throwable;
 
 class LogicException extends \LogicException implements SatException
 {
-    public static function generic(string $message, Throwable $previous = null): self
+    public static function generic(string $message, ?Throwable $previous = null): self
     {
         return new self($message, 0, $previous);
     }

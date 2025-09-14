@@ -60,8 +60,8 @@ usando PHPUnit. Para el *captcha* del SAT implementa `phpcfdi/image-captcha-reso
 
 ```shell
 # using .env config
-php vendor/bin/phpunit --testsuite integration --verbose
+php vendor/bin/phpunit --testsuite integration
 
 # overriding SAT_AUTH_MODE (use CIEC or FIEL)
-SAT_AUTH_MODE="FIEL" php vendor/bin/phpunit --testsuite integration --verbose
+SAT_AUTH_MODE="FIEL" php vendor/bin/phpunit --testsuite integration
 ```

@@ -11,29 +11,17 @@ use Throwable;
 
 class CiecLoginException extends LoginException
 {
-    /** @var CiecSessionData */
-    private $sessionData;
+    private ?CaptchaImageInterface $captchaImage = null;
 
-    /** @var array<string, string> */
-    private $postedData;
-
-    /** @var CaptchaImageInterface|null */
-    private $captchaImage;
-
-    /**
-     * LoginException constructor.
-     *
-     * @param string $message
-     * @param CiecSessionData $sessionData
-     * @param string $contents
-     * @param array<string, string> $postedData
-     * @param Throwable|null $previous
-     */
-    public function __construct(string $message, CiecSessionData $sessionData, string $contents, array $postedData = [], Throwable $previous = null)
-    {
+    /** @param array<string, string> $postedData */
+    public function __construct(
+        string $message,
+        private readonly CiecSessionData $sessionData,
+        string $contents,
+        private readonly array $postedData = [],
+        ?Throwable $previous = null,
+    ) {
         parent::__construct($message, $contents, $previous);
-        $this->sessionData = $sessionData;
-        $this->postedData = $postedData;
     }
 
     public static function notRegisteredAfterLogin(CiecSessionData $data, string $contents): self
@@ -42,12 +30,12 @@ class CiecLoginException extends LoginException
         return new self($message, $data, $contents);
     }
 
-    public static function noCaptchaImageFound(CiecSessionData $data, string $contents, Throwable $previous = null): self
+    public static function noCaptchaImageFound(CiecSessionData $data, string $contents, ?Throwable $previous = null): self
     {
         return new self('It was unable to find the captcha image', $data, $contents, [], $previous);
     }
 
-    public static function captchaWithoutAnswer(CiecSessionData $data, CaptchaImageInterface $captchaImage, Throwable $previous = null): self
+    public static function captchaWithoutAnswer(CiecSessionData $data, CaptchaImageInterface $captchaImage, ?Throwable $previous = null): self
     {
         $exception = new self('Unable to decode captcha', $data, '', [], $previous);
         $exception->captchaImage = $captchaImage;
@@ -55,10 +43,7 @@ class CiecLoginException extends LoginException
     }
 
     /**
-     * @param CiecSessionData $data
-     * @param string $contents
      * @param array<string, string> $postedData
-     * @return self
      */
     public static function incorrectLoginData(CiecSessionData $data, string $contents, array $postedData): self
     {

@@ -43,14 +43,12 @@ use Traversable;
 class Metadata implements JsonSerializable, IteratorAggregate
 {
     /** @var array<string, string> */
-    private $data;
+    private array $data;
 
     /**
-     * Metadata constructor.
      * $uuid will be converted to lower case.
-     * If $data contains a key with 'uuid' will be ignored.
+     * If $data contains a key with 'uuid' then it will be ignored.
      *
-     * @param string $uuid
      * @param array<string, string> $data
      * @throws InvalidArgumentException when UUID is empty
      */
@@ -72,8 +70,7 @@ class Metadata implements JsonSerializable, IteratorAggregate
         return $this->has($name);
     }
 
-    /** @param mixed $value */
-    public function __set(string $name, $value): void
+    public function __set(string $name, mixed $value): void
     {
         throw new LogicException(sprintf('The %s class is immutable', self::class));
     }

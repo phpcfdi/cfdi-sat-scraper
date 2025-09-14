@@ -13,12 +13,13 @@ use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\ResourceType;
 use PhpCfdi\CfdiSatScraper\SatScraper;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
 class RetrieveByUuidTest extends IntegrationTestCase
 {
     /** @return array<string, array{DownloadType, int}> */
-    public function providerRetrieveByUuid(): array
+    public static function providerRetrieveByUuid(): array
     {
         return [
             'recibidos, random 1' => [DownloadType::recibidos(), 1],
@@ -28,11 +29,7 @@ class RetrieveByUuidTest extends IntegrationTestCase
         ];
     }
 
-    /**
-     * @param DownloadType $downloadType
-     * @param int $count
-     * @dataProvider providerRetrieveByUuid
-     */
+    #[DataProvider('providerRetrieveByUuid')]
     public function testRetrieveByUuid(DownloadType $downloadType, int $count): void
     {
         // set up

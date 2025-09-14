@@ -51,7 +51,7 @@ abstract class IntegrationTestCase extends TestCase
     }
 
     /** @return array<string, array{DownloadType}> */
-    public function providerEmitidosRecibidos(): array
+    public static function providerEmitidosRecibidos(): array
     {
         return [
             'recibidos' => [DownloadType::recibidos()],

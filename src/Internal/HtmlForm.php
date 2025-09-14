@@ -15,22 +15,14 @@ use Throwable;
  */
 class HtmlForm
 {
-    /** @var string */
-    protected $parentElement;
+    protected string $parentElement;
 
-    /** @var Crawler */
-    protected $crawler;
+    protected Crawler $crawler;
 
     /** @var string[] */
-    protected $elementNameExcludePatters;
+    protected array $elementNameExcludePatters;
 
-    /**
-     * HtmlForm constructor.
-     *
-     * @param string $htmlSource
-     * @param string $parentElement
-     * @param string[] $elementNameExcludePatters
-     */
+    /** @param string[] $elementNameExcludePatters */
     public function __construct(string $htmlSource, string $parentElement, array $elementNameExcludePatters = [])
     {
         $this->setHtmlSource($htmlSource);
@@ -85,7 +77,7 @@ class HtmlForm
     public function readSelectValues(): array
     {
         $data = [];
-        /** @var DOMElement[] $elements */
+        /** @phpstan-var iterable<DOMElement> $elements */
         $elements = $this->filterCrawlerElements("$this->parentElement select");
         foreach ($elements as $element) {
             $name = $element->getAttribute('name');
@@ -96,7 +88,7 @@ class HtmlForm
             $value = '';
             /** @var DOMElement $option */
             foreach ($element->getElementsByTagName('option') as $option) {
-                if ($option->getAttribute('selected')) {
+                if ($option->hasAttribute('selected')) {
                     $value = $option->getAttribute('value');
                     break;
                 }
@@ -114,9 +106,7 @@ class HtmlForm
      * If type is defined is excluded if was set as an excluded type
      * If type is radio is included only if checked attribute is true-ish
      *
-     * @param string $element
      * @param string[] $excludeTypes
-     *
      * @return array<string, string>
      */
     public function readFormElementsValues(string $element, array $excludeTypes = []): array
@@ -124,7 +114,7 @@ class HtmlForm
         $excludeTypes = array_map('strtolower', $excludeTypes);
         $data = [];
 
-        /** @var DOMElement[] $elements */
+        /** @phpstan-var iterable<DOMElement> $elements */
         $elements = $this->filterCrawlerElements("$this->parentElement $element");
         foreach ($elements as $element) {
             $name = $element->getAttribute('name');
@@ -158,18 +148,13 @@ class HtmlForm
 
     /**
      * This method is made to ignore RuntimeException if the CssSelector Component is not available.
-     *
-     * @param string $filter
-     * @return Crawler|DOMElement[]
      */
-    private function filterCrawlerElements(string $filter)
+    private function filterCrawlerElements(string $filter): Crawler
     {
         try {
-            $elements = $this->crawler->filter($filter);
-        } catch (Throwable $exception) {
-            $elements = [];
+            return $this->crawler->filter($filter);
+        } catch (Throwable) {
+            return new Crawler();
         }
-        /** @var Crawler|DOMElement[] $elements */
-        return $elements;
     }
 }
