@@ -12,12 +12,11 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\Filters\Options\StatesVoucherOption;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class RetrieveByCfdiStateTest extends IntegrationTestCase
 {
-    /**
-     * @dataProvider providerEmitidosRecibidos
-     */
+    #[DataProvider('providerEmitidosRecibidos')]
     public function testRetrieveByCfdiStateCancelados(DownloadType $downloadType): void
     {
         $state = StatesVoucherOption::cancelados();
@@ -39,9 +38,7 @@ class RetrieveByCfdiStateTest extends IntegrationTestCase
         $this->assertRepositoryEqualsMetadataList($repository, $list);
     }
 
-    /**
-     * @dataProvider providerEmitidosRecibidos
-     */
+    #[DataProvider('providerEmitidosRecibidos')]
     public function testRetrieveByCfdiStateVigentes(DownloadType $downloadType): void
     {
         $state = StatesVoucherOption::vigentes();

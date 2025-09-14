@@ -11,12 +11,11 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Integration;
 
 use PhpCfdi\CfdiSatScraper\Filters\DownloadType;
 use PhpCfdi\CfdiSatScraper\QueryByFilters;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class RetrieveByDateTimeTest extends IntegrationTestCase
 {
-    /**
-     * @dataProvider providerEmitidosRecibidos
-     */
+    #[DataProvider('providerEmitidosRecibidos')]
     public function testRetrieveByDateTime(DownloadType $downloadType): void
     {
         $repository = $this->getRepository()->filterByType($downloadType);
