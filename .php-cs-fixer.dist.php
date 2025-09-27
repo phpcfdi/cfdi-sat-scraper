@@ -18,6 +18,7 @@ return (new PhpCsFixer\Config())
         '@PHP82Migration:risky' => true,
         '@PHP82Migration' => true,
         // symfony
+        'array_indentation' => true,
         'class_attributes_separation' => true,
         'whitespace_after_comma_in_array' => true,
         'no_empty_statement' => true,
@@ -37,6 +38,7 @@ return (new PhpCsFixer\Config())
         'concat_space' => ['spacing' => 'one'],
         'linebreak_after_opening_tag' => true,
         'fully_qualified_strict_types' => true,
+        'global_namespace_import' => ['import_classes' => true],
         // symfony:risky
         'no_alias_functions' => true,
         'self_accessor' => true,
