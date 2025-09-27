@@ -91,7 +91,7 @@ class Factory
         $fiel = Credential::openFiles(
             $this->path($this->env('SAT_FIEL_CER')),
             $this->path($this->env('SAT_FIEL_KEY')),
-            file_get_contents($this->path($this->env('SAT_FIEL_PWD'))) ?: '',
+            trim((string) file_get_contents($this->path($this->env('SAT_FIEL_PWD')))),
         );
         if (! $fiel->isFiel()) {
             throw new LogicException('The CERTIFICATE is not a FIEL');
