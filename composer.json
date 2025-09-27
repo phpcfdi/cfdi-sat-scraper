@@ -82,7 +82,7 @@
         ],
         "dev:tests": [
             "@dev:check-style",
-            "@php vendor/bin/phpunit --testdox",
+            "@php vendor/bin/phpunit --testdox --display-all-issues",
             "@php tools/phpstan analyze --no-progress --verbose"
         ]
     },

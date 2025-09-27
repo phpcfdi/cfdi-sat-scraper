@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+
+function secure_files_help() {
+    echo "This tool has been created to encrypt and decrypt files on a repository based on an environment"
+    echo "variable names ENCFILESKEY."
+    echo "WARNING: This tool overrides existing files and you can lost data"
+    echo ""
+    echo "Syntax:"
+    echo "  secure-files help"
+    echo "    Show this help screen"
+    echo "  secure-files encrypt FILES"
+    echo "    Encript the given files"
+    echo "  secure-files decrypt FILES"
+    echo "    Decript the given files"
+    echo ""
+    echo "Arguments:"
+    echo "  FILES List of files names (from one to many)"
+    echo ""
+}
+
+function secure_files_error() {
+    echo "${@}" >&2
+}
+
+function secure_files_encrypt() {
+    if [ -z "$ENCFILESKEY" ]; then
+        secure_files_error "The environment variable ENCFILESKEY has not been set"
+        exit 0
+    fi
+
+    for file in "${@}"; do
+        secure_files_encrypt_file "$file"
+    done
+}
+
+function secure_files_encrypt_file() {
+    local file="$1"
+    local temp="$(mktemp)"
+
+    gpg --batch --yes --passphrase "$ENCFILESKEY" --output "$temp" --symmetric --cipher-algo AES256 "$file" 2> /dev/null
+    if [ $? -ne 0 ]; then
+        secure_files_error "$file: Error: unable to encrypt"
+        rm -rf "$temp"
+        return 1
+    fi
+
+    cp "$temp" "$file"
+    if [ $? -ne 0 ]; then
+        secure_files_error "$file: Error: unable to store encrypted"
+        rm -rf "$temp"
+        return 1
+    fi
+
+    rm -rf "$temp"
+    echo "$file: encrypted"
+    return 0
+}
+
+function secure_files_decrypt() {
+    if [ -z "$ENCFILESKEY" ]; then
+        secure_files_error "The environment variable ENCFILESKEY has not been set"
+        exit 0
+    fi
+
+    for file in "${@}"; do
+        secure_files_decrypt_file "$file"
+    done
+}
+
+function secure_files_decrypt_file() {
+    local file="$1"
+    local temp="$(mktemp)"
+
+    gpg --batch --yes --passphrase "$ENCFILESKEY" --output "$temp" --decrypt "$file" 2> /dev/null
+    if [ $? -ne 0 ]; then
+        secure_files_error "$file: Error: unable to decrypt"
+        rm -rf "$temp"
+        return 1
+    fi
+
+    cp "$temp" "$file"
+    if [ $? -ne 0 ]; then
+        secure_files_error "$file: Error: unable to store decrypted"
+        rm -rf "$temp"
+        return 1
+    fi
+
+    rm -rf "$temp"
+    echo "$file: decrypted"
+    return 0
+}
+
+if [ "$1" == "encrypt" ]; then
+    shift
+    secure_files_encrypt "${@}"
+elif [ "$1" == "decrypt" ]; then
+    shift
+    secure_files_decrypt "${@}"
+elif [ "$1" == "help" ]; then
+    secure_files_help
+else
+    secure_files_error "Invalid command, use encrypt, decrypt or help"
+    exit 0
+fi

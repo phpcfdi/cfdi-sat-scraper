@@ -41,8 +41,27 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
       - name: Install project dependencies
         run: composer upgrade --no-interaction --no-progress --prefer-dist
+      - name: Restore encrypted files
+        run: |
+          bash tests/secure-files decrypt \
+            tests/_files/secure/environment \
+            tests/_files/secure/certificate.cer \
+            tests/_files/secure/private.key \
+            tests/_files/secure/private.pass \
+            tests/_files/secure/repository.json
+          mv tests/_files/secure/environment tests/.env
+          mv tests/_files/secure/repository.json tests/repository.json
+        env:
+          ENCFILESKEY: ${{ secrets.ENCFILESKEY }}
       - name: Create code coverage
-        run: vendor/bin/phpunit --testdox --coverage-xml=build/coverage --coverage-clover=build/coverage/clover.xml --log-junit=build/coverage/junit.xml
+        run: vendor/bin/phpunit --testsuite=complete --display-all-issues --coverage-xml=build/coverage --coverage-clover=build/coverage/clover.xml --log-junit=build/coverage/junit.xml
+      - name: Clean up sensitive information
+        run: |
+          rm -f tests/_files/secure/certificate.cer \
+            tests/_files/secure/private.key \
+            tests/_files/secure/private.pass \
+            tests/.env \
+            tests/repository.json
       - name: Prepare SonarCloud Code Coverage Files
         run: |
           sed 's#'$GITHUB_WORKSPACE'#/github/workspace#g' build/coverage/junit.xml > build/sonar-junit.xml

@@ -65,3 +65,25 @@ php vendor/bin/phpunit --testsuite integration
 # overriding SAT_AUTH_MODE (use CIEC or FIEL)
 SAT_AUTH_MODE="FIEL" php vendor/bin/phpunit --testsuite integration
 ```
+
+## Integración con los flujos de trabajo de GitHub
+
+Se ha configurado el proyecto para proveer de forma segura una FIEL, una clave CIEC y un entorno de pruebas seguro.
+
+Los archivos involucrados son:
+
+- `tests/_files/secure/environment`, que se reubica en `tests/.env`. 
+- `tests/_files/secure/certificate.cer`
+- `tests/_files/secure/private.key`
+- `tests/_files/secure/private.pass`
+- `tests/_files/secure/repository.json`, que se reubica en `tests/repository.json`.
+
+Para encriptar y desencriptar los archivos se usa el *script* `tests/` que a su vez usa `gpg`.
+Esta herramienta requiere de la variable de entorno `ENCFILESKEY`, que se establece en los
+flujos de trabajo de GitHub usando los secretos del repositorio.
+
+Solo GitHub tiene la llave de encriptación. En 2025-09-30 fue usada para encriptar los archivos, almacenada y olvidada.
+
+Si estos archivos requieren cambiar -ya sea porque se generó un mejor repositorio, se están especificando nuevas
+credenciales CIEC o se ha cambiado la FIEL- es necesario volver a encriptar los archivos con una nueva clave,
+almacenar la clave en los secretos de GITHUB e incluir los nuevos archivos en el repositorio.
