@@ -14,7 +14,7 @@ final class LoginUsingFielTest extends IntegrationTestCase
         try {
             $sessionManager = $factory->createFielSessionManager();
         } catch (Throwable $exception) {
-            $this->markTestSkipped($exception->getMessage());
+            $this->markTestSkipped(sprintf('Cannot test using FIEL: %s', $exception->getMessage()));
         }
 
         $scraper = $factory->createSatScraper($sessionManager);
