@@ -23,8 +23,8 @@ final class HtmlFormTest extends TestCase
         $elements = $htmlForm->getFormValues();
 
         $expected = [
-          'key' => 'value',
-          'otherKey' => '',
+            'key' => 'value',
+            'otherKey' => '',
         ];
 
         $this->assertSame($expected, $elements);

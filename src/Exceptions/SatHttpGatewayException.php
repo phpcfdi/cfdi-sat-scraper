@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Exceptions;
 
+use RuntimeException;
 use Throwable;
 
 /**
@@ -14,7 +15,7 @@ use Throwable;
  * @see SatHttpGatewayClientException
  * @see SatHttpGatewayResponseException
  */
-abstract class SatHttpGatewayException extends \RuntimeException implements SatException
+abstract class SatHttpGatewayException extends RuntimeException implements SatException
 {
     /**
      * @param array<string, mixed> $requestHeaders

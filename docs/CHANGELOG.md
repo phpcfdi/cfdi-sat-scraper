@@ -8,6 +8,15 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 Ninguno.
 
+## Versión 5.0.1 2025-09-26
+
+Los cambios a esta versión son principalmente al entorno de desarrollo, pero al mejorarse el estándar de código
+se hicieron modificaciones al código inocuas.
+
+- Se actualizó la configuración de `php-cs-fixer` para agregar reglas estándar y renombrar reglas deprecadas.
+- Se actualizó la versión de la acción `SonarSource/sonarqube-scan-action` de 5 a 6.
+- Se actualizaron las herramientas de desarrollo.
+
 ## Versión 5.0.0 2025-09-13
 
 Los cambios en esta versión son principalmente de actualización de lenguaje y especificación de tipos de datos.
