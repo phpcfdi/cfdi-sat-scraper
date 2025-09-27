@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Exceptions;
 
+use RuntimeException;
 use Throwable;
 
 /**
  * The LoginException defines a problem on registering to the SAT platform with specific credentials.
  * It contains the SAT session data, retrieved contents and posted data.
  */
-abstract class LoginException extends \RuntimeException implements SatException
+abstract class LoginException extends RuntimeException implements SatException
 {
     public function __construct(string $message, private readonly string $contents, ?Throwable $previous = null)
     {

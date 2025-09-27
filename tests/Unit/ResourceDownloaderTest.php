@@ -76,11 +76,11 @@ final class ResourceDownloaderTest extends TestCase
     public function testMakePromises(): void
     {
         $medataArray = [
-                $uuidWithoutLink = $this->fakes()->faker()->uuid => new Metadata($uuidWithoutLink),
-            ] + $this->createMetadataArrayUsingUuids(...[
-                $uuidWithUrlXml1 = $this->fakes()->faker()->uuid,
-                $uuidWithUrlXml2 = $this->fakes()->faker()->uuid,
-            ]);
+            $uuidWithoutLink = $this->fakes()->faker()->uuid => new Metadata($uuidWithoutLink),
+        ] + $this->createMetadataArrayUsingUuids(...[
+            $uuidWithUrlXml1 = $this->fakes()->faker()->uuid,
+            $uuidWithUrlXml2 = $this->fakes()->faker()->uuid,
+        ]);
         $downloader = new class ($this->createSatHttpGateway(), ResourceType::xml()) extends ResourceDownloader {
             public function makePromises(): Traversable
             {

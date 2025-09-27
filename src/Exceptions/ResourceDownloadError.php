@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpCfdi\CfdiSatScraper\Exceptions;
 
+use RuntimeException;
 use Stringable;
 use Throwable;
 
@@ -16,7 +17,7 @@ use Throwable;
  * @see ResourceDownloadResponseError
  * @see ResourceDownloadRequestExceptionError
  */
-class ResourceDownloadError extends \RuntimeException implements SatException
+class ResourceDownloadError extends RuntimeException implements SatException
 {
     private readonly mixed $reason;
 

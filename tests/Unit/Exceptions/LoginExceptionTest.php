@@ -7,6 +7,7 @@ namespace PhpCfdi\CfdiSatScraper\Tests\Unit\Exceptions;
 use PhpCfdi\CfdiSatScraper\Exceptions\LoginException;
 use PhpCfdi\CfdiSatScraper\Exceptions\SatException;
 use PhpCfdi\CfdiSatScraper\Tests\TestCase;
+use RuntimeException;
 use Throwable;
 
 final class LoginExceptionTest extends TestCase
@@ -14,7 +15,7 @@ final class LoginExceptionTest extends TestCase
     public function testHierarchy(): void
     {
         $exception = $this->createMock(LoginException::class);
-        $this->assertInstanceOf(\RuntimeException::class, $exception);
+        $this->assertInstanceOf(RuntimeException::class, $exception);
         $this->assertInstanceOf(SatException::class, $exception);
     }
 
