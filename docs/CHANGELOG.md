@@ -6,13 +6,14 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
-## Pruebas 2025-09-30
+### Pruebas 2025-09-30
 
 - Se mejoran las pruebas unitarias.
 - Se agrega una FIEL, datos de CIEC y un repositorio comparable al entorno de pruebas de SonarCube,
   con el propósito de incrementar sustancialmente la cobertura de código.
 - La FIEL, datos de CIEC y repositorio se encuentra encriptada y solo GitHub puede desencriptarla.
 - La clave de encriptación está en un secreto el repositorio llamado `ENCFILESKEY`.
+- Obtener los archivos del modelo para ejecutar BOX Factura AI y ejecutar pruebas de integración.
 
 ## Versión 5.0.1 2025-09-26
 
