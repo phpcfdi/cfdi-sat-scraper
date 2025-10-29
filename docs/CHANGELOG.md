@@ -6,6 +6,12 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 ## Cambios aún no liberados en una versión
 
+No existen cambios aún no liberados en una versión.
+
+## Versión 5.0.2 2025-10-29
+
+- Se corrige en `composer.json` la sección `suggest` que tenía el nombre `recommended`.
+
 ### Pruebas 2025-09-30
 
 - Se mejoran las pruebas unitarias.
