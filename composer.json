@@ -92,7 +92,7 @@
         "dev:fix-style": "DEV: fix code style errors using composer-normalize, php-cs-fixer and phpcbf",
         "dev:tests": "DEV: run executes phpunit tests"
     },
-    "recommended": {
+    "suggest": {
         "phpcfdi/image-captcha-resolver-boxfactura-ai": "Permite resolver los captchas localmente con inteligencia artificial"
     }
 }
