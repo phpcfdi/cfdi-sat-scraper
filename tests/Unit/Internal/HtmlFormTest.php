@@ -142,7 +142,7 @@ final class HtmlFormTest extends TestCase
         $form = '<form>';
         $form .= '<input name="foo" type="radio" value="1">';
         $form .= '<input name="foo" type="radio" value="2" checked="checked">';
-        $form .= '<input name="bar" type="radio" value="1" checked>';
+        $form .= '<input name="bar" type="radio" value="1" checked="checked">';
         $form .= '<input name="bar" type="radio" value="2">';
         $form .= '</form>';
 

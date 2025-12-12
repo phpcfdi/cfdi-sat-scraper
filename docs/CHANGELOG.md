@@ -8,6 +8,18 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 No existen cambios aún no liberados en una versión.
 
+## Versión 5.0.3 2025-12-12
+
+- Se cambian las dependencias de Symfony a la versión `7.4+` ó `8.0+`.
+- Se corrigen las expresiones XPath, pues ahora el resultado de *DomCrawler* se basa en
+  el intérprete interno de PHP para HTML5 en lugar de `masterminds/html5`.
+
+### Entorno de desarrollo
+
+- Se agrega PHP 8.5 a la matriz de pruebas.
+- Se corrige el trabajo `composer-normalize` para que falle como es esperado.
+- Se actualizaron las herramientas de desarrollo.
+
 ## Versión 5.0.2 2025-10-29
 
 - Se corrige en `composer.json` la sección `suggest` que tenía el nombre `recommended`.
@@ -57,8 +69,8 @@ Esta versión libera un cambio mayor provocado por el cambio de columnas que imp
 
 En la información de *Metadata* se ajusta la información a la nueva estructura de datos del SAT:
 
-- Ya no existe `fechaProcesoCancelacion`. 
-- Se agrega `fechaSolicitudCancelacion`. 
+- Ya no existe `fechaProcesoCancelacion`.
+- Se agrega `fechaSolicitudCancelacion`.
 - Se agrega `fechaDeCancelacion`.
 
 Gracias totales a `@cruzcraul` por notar este cambio y la implementación.
@@ -164,7 +176,7 @@ Se agregan los siguientes cambios en el entorno de desarrollo:
 - Se elimina `PHP_CS_FIXER_IGNORE_ENV` del flujo de trabajo principal en el trabajo `php-cs-fixer`.
 - Se agrega la opción para ejecutar flujos de trabajo a solicitud.
 
-### Cambios no liberados: 2023-02-13
+### Cambios no liberados: 2023-06-13
 
 - Se corrige la configuración de `sonar-project.properties` para excluir correctamente los archivos para pruebas.
 - Se excluye correctamente el archivo `sonar-project.properties` del paquete de Git.
@@ -278,7 +290,7 @@ Se mejoran los test para probar valores idénticos en lugar de valores iguales.
 
 Se actualizan las herramientas de desarrollo.
 
-Se actualiza el archivo de configuración de `php-cs-fixer`. 
+Se actualiza el archivo de configuración de `php-cs-fixer`.
 
 ## Versión 3.1.0
 

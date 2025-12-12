@@ -15,8 +15,8 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR12' => true,
         '@PSR12:risky' => true,
-        '@PHP8x2Migration:risky' => true,
         '@PHP8x2Migration' => true,
+        '@PHP8x2Migration:risky' => true,
         // symfony
         'array_indentation' => true,
         'class_attributes_separation' => true,
@@ -24,7 +24,7 @@ return (new PhpCsFixer\Config())
         'no_empty_statement' => true,
         'no_extra_blank_lines' => true,
         'type_declaration_spaces' => true,
-        'trailing_comma_in_multiline' => ['after_heredoc' => true, 'elements' => ['arrays', 'match', 'arguments', 'parameters']],
+        'trailing_comma_in_multiline' => ['after_heredoc' => true, 'elements' => ['array_destructuring', 'arrays', 'match', 'arguments', 'parameters']],
         'no_blank_lines_after_phpdoc' => true,
         'object_operator_without_whitespace' => true,
         'binary_operator_spaces' => true,

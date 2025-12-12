@@ -34,8 +34,8 @@
         "phpcfdi/credentials": "^1.1",
         "phpcfdi/image-captcha-resolver": "^0.3.0",
         "psr/http-message": "^1.1 || ^2.0",
-        "symfony/css-selector": "^5.4 || ^6.0 || ^7.0",
-        "symfony/dom-crawler": "^5.4 || ^6.0 || ^7.0"
+        "symfony/css-selector": "^7.4 || ^8.0",
+        "symfony/dom-crawler": "^7.4 || ^8.0"
     },
     "require-dev": {
         "ext-iconv": "*",
@@ -43,6 +43,9 @@
         "phpcfdi/image-captcha-resolver-boxfactura-ai": "^0.2.0",
         "phpunit/phpunit": "^11.5",
         "symfony/dotenv": "^5.4 || ^6.0 || ^7.0"
+    },
+    "suggest": {
+        "phpcfdi/image-captcha-resolver-boxfactura-ai": "Permite resolver los captchas localmente con inteligencia artificial"
     },
     "autoload": {
         "psr-4": {
@@ -91,8 +94,5 @@
         "dev:check-style": "DEV: search for code style errors using composer-normalize, php-cs-fixer and phpcs",
         "dev:fix-style": "DEV: fix code style errors using composer-normalize, php-cs-fixer and phpcbf",
         "dev:tests": "DEV: run executes phpunit tests"
-    },
-    "suggest": {
-        "phpcfdi/image-captcha-resolver-boxfactura-ai": "Permite resolver los captchas localmente con inteligencia artificial"
     }
 }

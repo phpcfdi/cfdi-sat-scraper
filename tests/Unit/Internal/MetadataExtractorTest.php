@@ -20,7 +20,7 @@ final class MetadataExtractorTest extends TestCase
         ];
 
         $firstRow = (new Crawler(
-            '<tr><th>Alpha</th><th>Folio Fiscal</th><th>RFC Emisor</th></tr>',
+            '<table><tr><th>Alpha</th><th>Folio Fiscal</th><th>RFC Emisor</th></tr></table>',
         ))->filter('tr')->first();
         $extractor = new MetadataExtractor();
         $fieldsPositions = $extractor->locateFieldsPositions($firstRow, $fieldsCaptions);
@@ -41,7 +41,7 @@ final class MetadataExtractorTest extends TestCase
         ];
 
         $row = (new Crawler(
-            '<tr><td>Alpha</td><td>Bravo</td><td>Charlie</td><td>Delta</td><td>Echo</td></tr>',
+            '<table><tr><td>Alpha</td><td>Bravo</td><td>Charlie</td><td>Delta</td><td>Echo</td></tr></table>',
         ))->filter('tr')->first();
         $extractor = new MetadataExtractor();
         $values = $extractor->obtainMetadataValues($row, $fieldsPositions);
@@ -56,7 +56,7 @@ final class MetadataExtractorTest extends TestCase
 
     public function testObtainMetadataValuesWithEmptyRow(): void
     {
-        $row = (new Crawler('<tr></tr>'))->filter('tr')->first();
+        $row = (new Crawler('<table><tr></tr></table>'))->filter('tr')->first();
         $extractor = new MetadataExtractor();
         $values = $extractor->obtainMetadataValues($row, ['uuid' => 1]);
         $this->assertArrayHasKey('uuid', $values);
@@ -65,7 +65,7 @@ final class MetadataExtractorTest extends TestCase
 
     public function testObtainUrlWithoutButton(): void
     {
-        $row = (new Crawler('<tr></tr>'))->filter('tr')->first();
+        $row = (new Crawler('<table><tr></tr></table>'))->filter('tr')->first();
         $extractor = new MetadataExtractor();
         $this->assertEmpty($extractor->obtainUrlXml($row));
     }
