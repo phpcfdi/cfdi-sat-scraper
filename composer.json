@@ -44,6 +44,9 @@
         "phpunit/phpunit": "^11.5",
         "symfony/dotenv": "^5.4 || ^6.0 || ^7.0"
     },
+    "suggest": {
+        "phpcfdi/image-captcha-resolver-boxfactura-ai": "Permite resolver los captchas localmente con inteligencia artificial"
+    },
     "autoload": {
         "psr-4": {
             "PhpCfdi\\CfdiSatScraper\\": "src"
@@ -91,8 +94,5 @@
         "dev:check-style": "DEV: search for code style errors using composer-normalize, php-cs-fixer and phpcs",
         "dev:fix-style": "DEV: fix code style errors using composer-normalize, php-cs-fixer and phpcbf",
         "dev:tests": "DEV: run executes phpunit tests"
-    },
-    "suggest": {
-        "phpcfdi/image-captcha-resolver-boxfactura-ai": "Permite resolver los captchas localmente con inteligencia artificial"
     }
 }
