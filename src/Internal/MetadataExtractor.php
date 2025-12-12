@@ -29,7 +29,9 @@ class MetadataExtractor
         }
 
         try {
-            $rows = (new Crawler($html))->filter('table#ctl00_MainContent_tblResult > tbody > tr');
+            $rows = (new Crawler($html))->filter(
+                'table#ctl00_MainContent_tblResult > tbody > tr , table#ctl00_MainContent_tblResult > tr'
+            );
         } catch (RuntimeException) {
             return new MetadataList([]);
         }
