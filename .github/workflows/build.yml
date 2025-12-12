@@ -28,7 +28,7 @@ jobs:
         env:
           fail-fast: true
       - name: Composer normalize
-        run: composer-normalize
+        run: composer-normalize --dry-run
 
   phpcs:
     name: Code style (phpcs)
