@@ -8,6 +8,18 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 No existen cambios aún no liberados en una versión.
 
+## Versión 5.0.3 2025-12-12
+
+- Se cambian las dependencias de Symfony a la versión `7.4+` ó `8.0+`.
+- Se corrigen las expresiones XPath, pues ahora el resultado de *DomCrawler* se basa en
+  el intérprete interno de PHP para HTML5 en lugar de `masterminds/html5`.
+
+### Entorno de desarrollo
+
+- Se agrega PHP 8.5 a la matriz de pruebas.
+- Se corrige el trabajo `composer-normalize` para que falle como es esperado.
+- Se actualizaron las herramientas de desarrollo.
+
 ## Versión 5.0.2 2025-10-29
 
 - Se corrige en `composer.json` la sección `suggest` que tenía el nombre `recommended`.
