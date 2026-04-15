@@ -133,6 +133,11 @@ class SatHttpGateway
         return [] === $this->cookieJar->toArray();
     }
 
+    public function getCookieJar(): CookieJarInterface
+    {
+        return $this->cookieJar;
+    }
+
     /**
      * Helper to make a GET request
      *
