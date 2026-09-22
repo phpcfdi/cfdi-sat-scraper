@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpCfdi\CfdiSatScraper\MassiveDownload;
+namespace PhpCfdi\CfdiSatScraper\MetadataPackage;
 
 use ArrayIterator;
 use Countable;
@@ -11,29 +11,40 @@ use JsonSerializable;
 use PhpCfdi\CfdiSatScraper\Exceptions\LogicException;
 
 /**
+ * Collection of available packages.
+ * When iterated, the key is the package uuid but in lowercase.
+ *
  * @implements IteratorAggregate<AvailablePackage>
  */
 final class AvailablePackageList implements Countable, IteratorAggregate, JsonSerializable
 {
     /** @var array<string, AvailablePackage> */
-    private array $list = [];
+    private readonly array $list;
 
-    /** @param AvailablePackage[]|mixed[] $list */
-    public function __construct(array $list)
+    /** @var array<string, string> */
+    private array $baseFields = [];
+
+    public function __construct(AvailablePackage ...$list)
     {
+        $final = [];
         foreach ($list as $package) {
-            if (! $package instanceof AvailablePackage) {
-                continue;
-            }
-            $this->list[strtolower($package->uuid())] = $package;
+            $final[strtolower($package->getUuid())] = $package;
         }
+        $this->list = $final;
     }
 
-    public function merge(self $list): self
+    /** @param array<string, string> $fields */
+    public function withBaseFields(array $fields): self
     {
-        $new = new self([]);
-        $new->list = array_merge($this->list, $list->list);
-        return $new;
+        $list = clone $this;
+        $list->baseFields = $fields;
+        return $list;
+    }
+
+    /** @return array<string, string> */
+    public function getBaseFields(): array
+    {
+        return $this->baseFields;
     }
 
     public function has(string $uuid): bool
@@ -42,7 +53,7 @@ final class AvailablePackageList implements Countable, IteratorAggregate, JsonSe
     }
 
     /**
-     * Retrieve an AvailablePackage by UUID, if the package does not exists returns NULL
+     * Retrieve an AvailablePackage by UUID, if the package does not exist returns NULL
      */
     public function find(string $uuid): ?AvailablePackage
     {

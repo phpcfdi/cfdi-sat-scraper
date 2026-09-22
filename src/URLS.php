@@ -18,6 +18,9 @@ final class URLS
     /** @var string The page to log out */
     public const PORTAL_CFDI_LOGOUT = 'https://portalcfdi.facturaelectronica.sat.gob.mx/logout.aspx';
 
+    /** @var string The page to list and download the requested metadata packages */
+    public const PORTAL_CFDI_DESCARGA_MASIVA = 'https://portalcfdi.facturaelectronica.sat.gob.mx/ConsultaDescargaMasiva.aspx';
+
     /** @var string The authorization page to log in */
     public const AUTH_LOGIN = 'https://cfdiau.sat.gob.mx/nidp/app/login?id=SATUPCFDiCon&sid=0&option=credential&sid=0';
 
