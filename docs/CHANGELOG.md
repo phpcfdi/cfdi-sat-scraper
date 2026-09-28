@@ -8,6 +8,29 @@ Usamos [Versionado Semántico 2.0.0](SEMVER.md) por lo que puedes usar esta libr
 
 No existen cambios aún no liberados en una versión.
 
+## Versión 5.1.0 2026-09-28
+
+Se agrega la capacidad para crear y descargar paquetes de Metadata usando `MetadataPackageScraper`.
+Esto trae cambios importantes internos y ajustes en la documentación.
+Gracias especiales a `@TheSpectroMx` por su investigación, propuesta y desarrollo.
+
+Se documenta cómo incluir el certificado intermedio no publicado por el SAT.
+
+Algunos cambios internos al código:
+
+- Se usa el certificado intermedio para conectar con el SAT en pruebas de integración.
+- Se corrigen los textos `does not exists` a  `does not exist`.
+- Se agregan excepciones lógicas para que los gestores de los formularios estén vinculados a
+  su tipo de consulta y que admitan el periodo de la consulta.
+- Se extrae parte de la lógica de `MetadataExtractor::extract()` a `MetadataExtractor::extractRows()`.
+- Se extrae parte de la lógica de `QueryResolver::resolve()` a `QueryResolver::executeSearch()`.
+- Se extrae parte de la lógica de `SatScraper` a `CommonMethodsScraperTrait` para reusarse en `MetadataPackageScraper`.
+- Se agregan en `SatHttpGateway` los métodos `postDownloadPackage()` y `postJson()`.
+
+En el entorno de desarrollo:
+
+- Se cambian las versiones de dependencias de `symfony/dotenv`.
+
 ## Versión 5.0.4 2026-09-20
 
 - Se actualiza el año de la licencia a 2026.
