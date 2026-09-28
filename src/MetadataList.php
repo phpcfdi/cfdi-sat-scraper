@@ -72,7 +72,7 @@ class MetadataList implements Countable, IteratorAggregate, JsonSerializable
     }
 
     /**
-     * Retrieve a Metadata by UUID, if the metadata object does not exists returns NULL
+     * Retrieve a Metadata by UUID, if the metadata object does not exist returns NULL
      */
     public function find(string $uuid): ?Metadata
     {

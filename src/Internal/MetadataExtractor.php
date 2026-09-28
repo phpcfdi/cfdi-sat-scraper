@@ -20,23 +20,19 @@ use Throwable;
 class MetadataExtractor
 {
     /**
+     * Extract all the Metadata records from HTML
+     *
      * @param array<string, string>|null $fieldsCaptions
      */
     public function extract(string $html, ?array $fieldsCaptions = null): MetadataList
     {
-        if (null === $fieldsCaptions) {
-            $fieldsCaptions = $this->defaultFieldsCaptions();
+        $rows = $this->extractRows($html);
+        if (null === $rows) {
+            return new MetadataList([]);
         }
 
-        try {
-            $rows = (new Crawler($html))->filter(
-                'table#ctl00_MainContent_tblResult > tbody > tr , table#ctl00_MainContent_tblResult > tr',
-            );
-        } catch (RuntimeException) {
-            return new MetadataList([]);
-        }
-        if ($rows->count() < 2) {
-            return new MetadataList([]);
+        if (null === $fieldsCaptions) {
+            $fieldsCaptions = $this->defaultFieldsCaptions();
         }
 
         // first row is the only expected to have the th elements
@@ -59,6 +55,29 @@ class MetadataExtractor
 
         // build metadata using uuid as key
         return new MetadataList($data);
+    }
+
+    /**
+     * Extract rows obtains headers and data (must include at least 2)
+     * It can be used to know that the HTML has results.
+     *
+     * @param string $html
+     * @return Crawler|null
+     */
+    public function extractRows(string $html): Crawler|null
+    {
+        try {
+            $rows = (new Crawler($html))->filter(
+                'table#ctl00_MainContent_tblResult > tbody > tr , table#ctl00_MainContent_tblResult > tr',
+            );
+        } catch (RuntimeException) {
+            return null;
+        }
+        if ($rows->count() < 2) {
+            return null;
+        }
+
+        return $rows;
     }
 
     /**
@@ -167,7 +186,7 @@ class MetadataExtractor
     public function obtainUrlCancelVoucher(Crawler $row): string
     {
         $onClickAttribute = $this->obtainOnClickFromElement($row, 'span#BtnRecuperaAcuseFinal');
-        // change javascript call and replace it with complete url
+        // change JavaScript call and replace it with complete url
         return str_replace(
             ["javascript:window.location.href='", "';"],
             [URLS::PORTAL_CFDI, ''],

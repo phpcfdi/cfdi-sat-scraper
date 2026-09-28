@@ -34,10 +34,7 @@ class SatHttpGateway
 
         // if the cookieJar was set on the client but not in the configuration
         if (null === $cookieJar) {
-            /**
-             * @noinspection PhpDeprecationInspection
-             * @var mixed $cookieJar
-             */
+            /** @var mixed $cookieJar */
             $cookieJar = $client->getConfig(RequestOptions::COOKIES);
             if (! $cookieJar instanceof CookieJarInterface) {
                 $cookieJar = new CookieJar();
@@ -71,6 +68,20 @@ class SatHttpGateway
     public function postPortalMainPage(array $formData): string
     {
         return $this->post('post to portal main page', URLS::PORTAL_CFDI, Headers::post('', ''), $formData);
+    }
+
+    /**
+     * @param array<string, string> $formData
+     * @throws SatHttpGatewayException
+     */
+    public function postDownloadPackage(array $formData): string
+    {
+        $url = URLS::PORTAL_CFDI_DESCARGA_MASIVA;
+        $headers = array_merge(
+            Headers::post(host: (string) parse_url($url, PHP_URL_HOST), referer: $url),
+            ['Accept-Encoding' => 'identity'],
+        );
+        return $this->post('post to download package', $url, $headers, $formData);
     }
 
     /**
@@ -109,6 +120,23 @@ class SatHttpGateway
     {
         $headers = Headers::postAjax($this->urlHost(URLS::PORTAL_CFDI), $url);
         return $this->post('query search page', $url, $headers, $formParams);
+    }
+
+    /**
+     * Perform a POST request sending a raw JSON body (used by ASP.NET PageMethods)
+     *
+     * @throws SatHttpGatewayClientException
+     * @throws SatHttpGatewayResponseException
+     */
+    public function postJson(string $url, string $jsonBody, string $reason = 'post json data'): string
+    {
+        $options = [
+            RequestOptions::HEADERS => [
+                'Content-Type' => 'application/json; charset=utf-8',
+            ],
+            RequestOptions::BODY => $jsonBody,
+        ];
+        return $this->request('POST', $url, $options, $reason);
     }
 
     /**

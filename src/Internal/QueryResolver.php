@@ -10,22 +10,22 @@ use PhpCfdi\CfdiSatScraper\MetadataList;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
 
 /**
- * This class is a method extraction for MetadataDownloader::resolveQuery
- * The entry point is the resolve method.
+ * This class encapsule the logic to perform a search
  *
- * @see QueryResolver::resolve()
+ * @see QueryResolver::executeSearch() used in MetadataPackageRequester::requestPackage()
+ * @see QueryResolver::resolve() used in MetadataDownloader::resolveQuery()
+ *
  * @internal
  */
 class QueryResolver
 {
-    public function __construct(private readonly SatHttpGateway $satHttpGateway)
-    {
+    public function __construct(
+        private readonly SatHttpGateway $satHttpGateway,
+    ) {
     }
 
-    /**
-     * @throws SatHttpGatewayException
-     */
-    public function resolve(InputsInterface $inputs): MetadataList
+    /** @throws SatHttpGatewayException */
+    public function executeSearch(InputsInterface $inputs): string
     {
         $url = $inputs->getUrl();
         $ajaxFilters = $inputs->getAjaxInputs();
@@ -39,10 +39,16 @@ class QueryResolver
 
         // execute search
         $post = array_merge($baseInputs, $ajaxFilters, $lastViewStates, $inputs->getQueryAsInputs());
-        $htmlWithMetadata = $this->htmlFromExecuteQuery($url, $post);
+        return $this->htmlFromExecuteQuery($url, $post);
+    }
+
+    /** @throws SatHttpGatewayException */
+    public function resolve(InputsInterface $inputs): MetadataList
+    {
+        $html = $this->executeSearch($inputs);
 
         // extract metadata from search results
-        return (new MetadataExtractor())->extract($htmlWithMetadata);
+        return (new MetadataExtractor())->extract($html);
     }
 
     /**

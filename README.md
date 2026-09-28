@@ -16,6 +16,8 @@ Obtiene las facturas emitidas, recibidas, vigentes y cancelados por medio de web
 Los recursos descargables son los archivos XML de CFDI y los archivos PDF de representación impresa,
 solicitud de cancelación y acuse de cancelación.
 
+Adicionalmente, puede generar *Paquetes de Metadata* y descargarlos.
+
 ## Instalacion por composer
 
 ```shell
@@ -378,6 +380,81 @@ $downloadedUuids = $satScraper->resourceDownloader(ResourceType::xml(), $list)->
 echo json_encode($downloadedUuids);
 ```
 
+## Descarga masiva de Metadata (paquetes ZIP)
+
+Además de la consulta de Metadata registro por registro (`listByPeriod`, `listByUuids`), el portal del SAT
+ofrece la opción *Descargar Metadata*, que genera de forma **asíncrona** un archivo ZIP con la Metadata.
+
+La principal ventaja de descargar en forma de paquete, es que en este caso no existe la restricción de
+500 registros en un mismo segundo. El paquete de Metadata generado contiene todos los registros.
+
+Es importante mencionar que el paquete de Metadata contiene un archivo de texto con la misma estructura
+que entrega el Web Service de Descarga Masiva del SAT, para lo que existe otro proyecto llamado
+[phpcfdi/sat-ws-descarga-masiva](https://github.com/phpcfdi/sat-ws-descarga-masiva) con el que
+se pueden leer estos archivos de texto corrigiendo algunos problemas conocidos.
+
+Para realizar la implementación ten en cuenta el siguiente flujo.
+
+1. Ejecutar la consulta por filtros y solicitar al portal la generación del paquete.
+   Las solicitudes se pueden dividir según el tipo de solicitud y las fechas. 
+   El portal devuelve un folio por cada solicitud.
+2. Esperar que los paquetes estén disponibles para descarga, puede tardar hasta 48 horas en aparecer.
+   Los paquetes están disponibles por 3 días, posteriormente son automáticamente eliminados.
+3. Descargar el archivo ZIP de cada uno de los paquetes a una ruta local.
+
+El objeto que permite hacer estas descargas es `MetadataPackageScraper` y es muy parecido a `SatScraper`.
+
+Los métodos para ejecutar la descarga masiva son:
+
+- Solicitar paquetes (meses completos): `MetadataPackageScraper::requestByMonths(QueryByFilters $query): QueryResults`.
+- Solicitar paquetes (días completos): `MetadataPackageScraper::requestByPeriod(QueryByFilters $query): QueryResults`.
+- Solicitar paquetes (fechas exactas): `MetadataPackageScraper::requestByDateTime(QueryByFilters $query): QueryResults`.
+- Listar paquetes disponibles: `MetadataPackageScraper::listAvailablePackages(): AvailablePackageList`.
+- Descargar un paquete sin reusando la lista de paquetes disponibles:
+  `MetadataPackageScraper::downloadPackageFromAvailable(AvailablePackageList $available, string $uuid, string $destinationPath): void`.
+- Descargar un paquete volviendo a consultar la lista de paquetes disponibles:
+  `MetadataPackageScraper::downloadPackage(string $uuid, string $destinationPath): void`.
+
+El método `requestByMonths` normaliza el periodo a meses completos, la fecha inicial se convierte en el primer
+día del mes a las `00:00:00` y la fecha final al último día del mes a las `23:59:59`.
+Este es el método recomendado para prevenir la generación de múltiples paquetes por equivocación.
+
+Al igual que `SatScraper::listByPeriod`, el método `MetadataPackageScraper::requestByPeriod` normaliza el periodo
+a días completos: la fecha inicial se ajusta a las `00:00:00` y la fecha final a las `23:59:59`.
+Si necesitas un periodo con horas exactas utiliza `requestByDateTime`.
+
+Cuando la consulta es de CFDI *Recibidos*, la consulta se divide en días y meses completos -de ser posible-.
+Esto es porque el portal para CFDI *Recibidos* solo permite especificar una fecha y no un periodo de fechas,
+y especificar todo un mes completo. Cuando la consulta es de CFDI *Emitidos* no se subdivide.
+
+Por lo anterior, una consulta de CFDI *Recibidos* con el periodo 2026-01-30 01:02:03 a 2026-03-02 11:12:13
+generará estas consultas y sus respectivos paquetes:
+
+- 2026-01-30 01:02:03 a 2026-01-30 23:59:59 (día parcial).
+- 2026-01-31 00:00:00 a 2026-01-31 23:59:59 (día completo).
+- 2026-02-01 00:00:00 a 2026-02-28 23:59:59 (mes completo).
+- 2026-03-01 00:00:00 a 2026-03-01 23:59:59 (día completo).
+- 2026-03-02 00:00:00 a 2026-03-02 11:12:13 (día parcial).
+
+El resultado de la consulta es el objeto `QueryResults` que es una colección de objetos de tipo `QueryResult`
+que se puede iterar para obtener los periodos consultados. En el caso de CFDI Emitidos solo tendrá un periodo consultado
+pero en el caso de CFDI Recibidos tendrá todas las divisiones del periodo original.
+
+El objeto `QueryResult` cuenta con los siguientes métodos:
+
+- `getStartDate()` y `getEndDate()`: devuelven las fechas del periodo consultado.
+- `hasUuid(): bool`: devuelve si se generó el UUID del paquete.
+- `getUuid(): string`: devuelven el valor del UUID del paquete.
+- `getException(): MassiveDownloadException`: devuelve la excepción en caso de no haber podido generar el paquete.
+
+Es posible que alguno de estos periodos no se haya generado, en ese caso el resultado para ese periodo
+no tendrá UUID, pero sí tendrá registrado el motivo en la excepción.
+
+Se puede usar el método `QueryResults::filterWithUuids()` para devolver un listado con únicamente los paqetes
+que sí se pudieron generar.
+
+Visita el [Ejemplo de descarga de paquetes de Metadata](docs/EjemploPaquetesMetadata.md) para entender el código.
+
 ## Usar con `phpcfdi/image-captcha-resolver-boxfactura-ai`
 
 Recuerda consultar la documentación específica del proyecto
@@ -449,6 +526,8 @@ El siguiente ejemplo muestra cómo usar el método `SatScraper::confirmSessionIs
 los datos de sesión sean (o continuen siendo) correctos. El funcionamiento interno del scraper es:
 Si la sesión no se inicializó previamente entonces se intentará hacer el proceso de autenticación,
 además se comprobará que la sesión (`cookie`) se encuentre vigente.
+
+Este método también se encuentra en `MetadataPackageScraper::confirmSessionIsAlive`.
 
 Se hacen los dos pasos para evitar consumir el servicio de resolución de captcha en forma innecesaria.
 

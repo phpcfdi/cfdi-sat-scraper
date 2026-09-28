@@ -67,7 +67,7 @@ class ResourceDownloadStoreInFolderTest extends TestCase
     {
         $downloader = $this->createResourceDownloadStoreInFolder(__DIR__ . '/non-existent');
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('does not exists');
+        $this->expectExceptionMessage('does not exist');
         $downloader->checkDestinationFolder(false);
     }
 
@@ -75,7 +75,7 @@ class ResourceDownloadStoreInFolderTest extends TestCase
     {
         $downloader = $this->createResourceDownloadStoreInFolder(__FILE__);
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('does not exists');
+        $this->expectExceptionMessage('does not exist');
         $downloader->checkDestinationFolder(false);
     }
 
