@@ -77,9 +77,7 @@ class MetadataDownloader
      */
     public function downloadByDate(QueryByFilters $query): MetadataList
     {
-        /** @var DateTimeImmutable $startDate set this type definition as setTime can return FALSE */
         $startDate = $query->getStartDate()->setTime(0, 0, 0);
-        /** @var DateTimeImmutable $endDate set this type definition as setTime can return FALSE */
         $endDate = $query->getEndDate()->setTime(23, 59, 59);
 
         $query = clone $query;
@@ -167,14 +165,17 @@ class MetadataDownloader
     public function createInputsFromQuery(QueryInterface $query): InputsInterface
     {
         if ($query instanceof QueryByFilters) {
-            if ($query->getDownloadType()->isEmitidos()) {
-                return new InputsByFiltersIssued($query);
-            }
-            return new InputsByFiltersReceived($query);
+            return match (true) {
+                $query->getDownloadType()->isEmitidos() => new InputsByFiltersIssued($query),
+                $query->getDownloadType()->isRecibidos() => new InputsByFiltersReceived($query),
+                default => throw LogicException::generic('Cannot convert QueryByFilters to InputsInterface'),
+            };
         }
+
         if ($query instanceof QueryByUuid) {
             return new InputsByUuid($query);
         }
+
         throw LogicException::generic(sprintf('Unable to create input filters from query type %s', $query::class));
     }
 

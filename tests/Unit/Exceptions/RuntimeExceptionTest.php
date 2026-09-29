@@ -21,7 +21,7 @@ final class RuntimeExceptionTest extends TestCase
     public function testPathDoesNotExists(): void
     {
         $exception = RuntimeException::pathDoesNotExists('/path/to/file');
-        $this->assertSame('The path /path/to/file does not exists', $exception->getMessage());
+        $this->assertSame('The path /path/to/file does not exist', $exception->getMessage());
     }
 
     public function testPathIsNotFolder(): void

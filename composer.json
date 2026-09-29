@@ -42,7 +42,7 @@
         "fakerphp/faker": "^1.13",
         "phpcfdi/image-captcha-resolver-boxfactura-ai": "^0.2.0",
         "phpunit/phpunit": "^11.5",
-        "symfony/dotenv": "^5.4 || ^6.0 || ^7.0"
+        "symfony/dotenv": "^7.0 || ^8.0"
     },
     "suggest": {
         "phpcfdi/image-captcha-resolver-boxfactura-ai": "Permite resolver los captchas localmente con inteligencia artificial"

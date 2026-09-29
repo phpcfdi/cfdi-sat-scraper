@@ -15,7 +15,7 @@ class RuntimeException extends \RuntimeException implements SatException
 
     public static function pathDoesNotExists(string $path): self
     {
-        return new self(sprintf('The path %s does not exists', $path));
+        return new self(sprintf('The path %s does not exist', $path));
     }
 
     public static function pathIsNotFolder(string $path): self

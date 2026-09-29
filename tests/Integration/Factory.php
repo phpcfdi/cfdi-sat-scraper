@@ -143,6 +143,7 @@ class Factory
         $stack->push(Middleware::history($container)); /** @phpstan-ignore argument.type */
         return new Client([
             'handler' => $stack,
+            'verify' => __DIR__ . '/../_files/http-certs/intermediate.pem',
             'curl' => [CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1'],
         ]);
     }

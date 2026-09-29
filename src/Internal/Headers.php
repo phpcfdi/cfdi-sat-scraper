@@ -33,7 +33,6 @@ class Headers
     /**
      * Return the headers to use on general form submit
      *
-     *
      * @return array<string, string>
      */
     public static function post(string $host, string $referer): array
