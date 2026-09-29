@@ -18,7 +18,6 @@ Se documenta cómo incluir el certificado intermedio no publicado por el SAT.
 
 Algunos cambios internos al código:
 
-- Se usa el certificado intermedio para conectar con el SAT en pruebas de integración.
 - Se corrigen los textos `does not exists` a  `does not exist`.
 - Se agregan excepciones lógicas para que los gestores de los formularios estén vinculados a
   su tipo de consulta y que admitan el periodo de la consulta.
@@ -29,7 +28,9 @@ Algunos cambios internos al código:
 
 En el entorno de desarrollo:
 
+- Se usa el certificado intermedio para conectar con el SAT en pruebas de integración.
 - Se cambian las versiones de dependencias de `symfony/dotenv`.
+- Se actualiza la información base de las pruebas de integración.
 
 ## Versión 5.0.4 2026-09-20
 

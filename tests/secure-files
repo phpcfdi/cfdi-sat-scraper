@@ -2,7 +2,7 @@
 
 function secure_files_help() {
     echo "This tool has been created to encrypt and decrypt files on a repository based on an environment"
-    echo "variable names ENCFILESKEY."
+    echo "variable named ENCFILESKEY."
     echo "WARNING: This tool overrides existing files and you can lost data"
     echo ""
     echo "Syntax:"
