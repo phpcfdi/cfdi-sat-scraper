@@ -617,6 +617,8 @@ $scraper = new SatScraper($sessionManager, $gateway);
 
 ## Problemas de conectividad con el SAT
 
+### `cURL error 35: ... dh key too small`
+
 Es frecuente encontrar este problema dependiendo de la configuración general del sistema:
 
 ```text
@@ -626,25 +628,55 @@ cURL error 35: error:141A318A:SSL routines:tls_process_ske_dhe:dh key too small 
 Este problema es por la configuración de los servidores que atienden las peticiones del SAT.
 
 Una forma de solucionar este problema únicamente para esta librería, consiste en establecer la configuración de cURL
-en el cliente del `SatHttpGateway` al crear el `SatScraper`:
+en el cliente del `SatHttpGateway`:
 
 ```php
 <?php declare(strict_types=1);
 use GuzzleHttp\Client;
 use PhpCfdi\CfdiSatScraper\SatHttpGateway;
-use PhpCfdi\CfdiSatScraper\SatScraper;
-use PhpCfdi\CfdiSatScraper\Sessions\SessionManager;
 
-$client = new Client([
-    'curl' => [CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1'],
-]);
-
-/** @var SessionManager $sessionManager */
-$scraper = new SatScraper($sessionManager, new SatHttpGateway($client));
+$gateway = new SatHttpGateway(
+    new Client([
+        'curl' => [CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1'],
+    ])
+);
 ```
 
 Otra solución consiste en degradar la seguridad general de OpenSSL, algunas instrucciones se pueden ver en
 <https://askubuntu.com/questions/1250787/when-i-try-to-curl-a-website-i-get-ssl-error>.
+
+### `cURL error 60: ... unable to get local issuer certificate`
+
+Es frecuente encontrar este problema dependiendo de la configuración general del sistema:
+
+```text
+cURL error 60: SSL certificate OpenSSL verify result: unable to get local issuer certificate (20) (see https://curl.se/libcurl/c/libcurl-errors.html) for https://portalcfdi.facturaelectronica.sat.gob.mx/
+```
+
+La razón de este error es que SAT no está publicando los certificados intermedios violando el *RFC 5280 Sección 6.1*,
+*RFC 5246 sección 7.4.2* y cuando soporte TLS 1.3 *RFC 8446, Section 4.4.2*.
+
+Los navegadores como *Chrome* o *Firefox* tienen una solución construida dentro de ellos para hacer la descarga
+de los certificados intermedios, pero cURL/libssl no cuenta con esta solución integrada.
+
+Afortunadamente, es posible proporcionarle los certificados intermedios a la librería estableciendo la configuración
+de cURL en el cliente del `SatHttpGateway`:
+
+```php
+<?php declare(strict_types=1);
+use GuzzleHttp\Client;
+use PhpCfdi\CfdiSatScraper\SatHttpGateway;
+
+$gateway = new SatHttpGateway(
+    new Client([
+        'verify' => 'storage/http-certs/intermediate.pem',
+    ])
+);
+```
+
+El certificado intermedio *GlobalSign RSA OV SSL CA 2018* `01:ee:5f:22:1d:fc:62:3b:d4:33:3a:85:57`
+para `*.facturaelectronica.sat.gob.mx` serial `56:b7:22:d1:39:78:3f:5c:4f:6a:fd:ae` está disponible
+en <https://raw.githubusercontent.com/phpcfdi/cfdi-sat-scraper/refs/heads/main/tests/_files/http-certs/intermediate.pem>.
 
 ## Compatibilidad
 
