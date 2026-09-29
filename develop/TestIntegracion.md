@@ -78,7 +78,7 @@ Los archivos involucrados son:
 - `tests/_files/secure/private.pass`
 - `tests/_files/secure/repository.json`, que se reubica en `tests/repository.json`.
 
-Para encriptar y desencriptar los archivos se usa el *script* `tests/` que a su vez usa `gpg`.
+Para encriptar y desencriptar los archivos se usa el *script* `tests/secure-files` que a su vez usa `gpg`.
 Esta herramienta requiere de la variable de entorno `ENCFILESKEY`, que se establece en los
 flujos de trabajo de GitHub usando los secretos del repositorio.
 
